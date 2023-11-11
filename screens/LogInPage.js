@@ -1,16 +1,16 @@
 import * as React from "react";
 import { StyleSheet, Text, View, Pressable, TextInput, Image} from 'react-native';
-import { Border, Color, FontFamily, FontSize } from "./GlobalStyles";
+import { Border, Color, FontFamily, FontSize } from "../GlobalStyles";
 import { useState } from 'react';
 
-const App = () => {
+const LoginPage = () => {
   const [enteredEmail,setEnteredEmail]=useState('');
   const [enteredPwd,setEnteredPwd]=useState('');
   const [account,setAccount]=useState([]);
 
   function inputEmailHandler(enteredEmail){
     setEnteredEmail(enteredEmail)
-    // console.log(enteredEmail)
+    console.log(enteredEmail)
   };
   function inputPwdHandler(enteredPwd){
     setEnteredPwd(enteredPwd)
@@ -26,15 +26,15 @@ const App = () => {
     <View style={styles.logInPage}>
       <Image
         style={[styles.brainIcon, styles.iconPosition]}
-        source={require("./assets/favicon.png")}
+        source={require("../assets/favicon.png")}
       />
       <Image
         style={[styles.barbellIcon, styles.iconPosition]}
-        source={require("./assets/favicon.png")}
+        source={require("../assets/favicon.png")}
       />
       <Image
         style={[styles.heartbeatIcon, styles.iconPosition]}
-        source={require("./assets/favicon.png")}
+        source={require("../assets/favicon.png")}
       />
       <View style={[styles.userid, styles.useridLayout]}>
         <View style={[styles.useridChild, styles.childPosition]} />
@@ -49,7 +49,7 @@ const App = () => {
       </View>
        
       
-      <Pressable style={styles.login} onPress={loginHandler}>
+      <Pressable style={styles.login} onClick={loginHandler}>
         <View style={[styles.loginChild, styles.childPosition]} />
         <Text style={[styles.logIn, styles.logInTypo]}>Log in</Text>
       </Pressable>
@@ -79,12 +79,12 @@ const App = () => {
       
       <Image
         style={styles.rightSideIcon}
-        source={require("./assets/favicon.png")}
+        source={require("../assets/favicon.png")}
       />
-      <Pressable style={styles.caretleft} onPress={loginHandler}>
+      <Pressable style={styles.caretleft} onClick={() => {}}>
         <Image
           style={styles.icon}
-          source={require("./assets/favicon.png")}
+          source={require("../assets/favicon.png")}
         />
         <Text style={[styles.logIn1, styles.signUpTypo]}>Log in</Text>
       </Pressable>
@@ -394,4 +394,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default LoginPage;
