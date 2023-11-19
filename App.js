@@ -1,94 +1,102 @@
 import * as React from "react";
-import { StyleSheet, Text, View, Pressable, TextInput, Image} from 'react-native';
+import { StyleSheet, Text, View, Pressable, TextInput, Image } from 'react-native';
 import { Border, Color, FontFamily, FontSize } from "./GlobalStyles";
 import { useState } from 'react';
+import { StatusBar } from "react-native";
 
 const App = () => {
-  const [enteredEmail,setEnteredEmail]=useState('');
-  const [enteredPwd,setEnteredPwd]=useState('');
-  const [account,setAccount]=useState([]);
+  const [enteredEmail, setEnteredEmail] = useState('');
+  const [enteredPwd, setEnteredPwd] = useState('');
+  const [account, setAccount] = useState([]);
 
-  function inputEmailHandler(enteredEmail){
+  function inputEmailHandler(enteredEmail) {
     setEnteredEmail(enteredEmail)
     // console.log(enteredEmail)
   };
-  function inputPwdHandler(enteredPwd){
+  function inputPwdHandler(enteredPwd) {
     setEnteredPwd(enteredPwd)
   };
-  function signupHandler(){};
-  function loginHandler(){
+  function signupHandler() { };
+  function loginHandler() {
     // console.log(enteredEmail)
-    setAccount([enteredEmail,enteredPwd]);
-    console.log(account)
+    setAccount([enteredEmail, enteredPwd]);
+    console.log(account);
+    setEnteredEmail('');
+    setEnteredPwd('');
   };
-  function resetHandler(){};
+  function resetHandler() { };
   return (
-    <View style={styles.logInPage}>
-      <Image
-        style={[styles.brainIcon, styles.iconPosition]}
-        source={require("./assets/favicon.png")}
-      />
-      <Image
-        style={[styles.barbellIcon, styles.iconPosition]}
-        source={require("./assets/favicon.png")}
-      />
-      <Image
-        style={[styles.heartbeatIcon, styles.iconPosition]}
-        source={require("./assets/favicon.png")}
-      />
-      <View style={[styles.userid, styles.useridLayout]}>
-        <View style={[styles.useridChild, styles.childPosition]} />
-        <TextInput 
-        style={[styles.usernameemail, styles.password1Typo]}
-        placeholder="Username/Email" onChangeText={inputEmailHandler}/>
-      </View>
-      <View style={[styles.password, styles.useridLayout]}>
-        <View style={[styles.useridChild, styles.childPosition]} />
-        <TextInput style={[styles.password1, styles.password1Typo]}
-        placeholder="Password" onChangeText={inputPwdHandler}/>
-      </View>
-       
-      
-      <Pressable style={styles.login} onPress={loginHandler}>
-        <View style={[styles.loginChild, styles.childPosition]} />
-        <Text style={[styles.logIn, styles.logInTypo]}>Log in</Text>
-      </Pressable>
-      <Text style={[styles.forgotpassword, styles.logIn1Layout]}>
-        Oh no I forgot 😱
-      </Text>
-      <View style={[styles.rememberMe, styles.logIn1Layout]}>
-        <Text style={[styles.rememberMe1, styles.orTypo]}>Remember me</Text>
-        <View style={styles.rememberMeChild} />
-        
-      </View>
-        <Pressable
-        style={[styles.signUpToContainer, styles.newToHabitalPosition]}
-        onClick={() => {}}
-      >
-        <Text style={[styles.text, styles.orTypo]}>
-          <Text style={[styles.signUp, styles.signUpTypo]}>{`Sign up `}</Text>
-          <Text style={[styles.toStart, styles.orTypo1]}>to start</Text>
-        </Text>
-      </Pressable>
-        
-          
-      <Text style={[styles.newToHabital, styles.newToHabitalPosition]}>
-        New to Habital?
-      </Text>
-      <Text style={[styles.or, styles.orTypo]}>or</Text>
-      
-      <Image
-        style={styles.rightSideIcon}
-        source={require("./assets/favicon.png")}
-      />
-      <Pressable style={styles.caretleft} onPress={loginHandler}>
+    <>
+      <StatusBar style='auto'/>
+      <View style={styles.logInPage}>
         <Image
-          style={styles.icon}
+          style={[styles.brainIcon, styles.iconPosition]}
           source={require("./assets/favicon.png")}
         />
-        <Text style={[styles.logIn1, styles.signUpTypo]}>Log in</Text>
-      </Pressable>
-    </View>
+        <Image
+          style={[styles.barbellIcon, styles.iconPosition]}
+          source={require("./assets/favicon.png")}
+        />
+        <Image
+          style={[styles.heartbeatIcon, styles.iconPosition]}
+          source={require("./assets/favicon.png")}
+        />
+        <View style={[styles.userid, styles.useridLayout]}>
+          <View style={[styles.useridChild, styles.childPosition]} />
+          <TextInput
+            style={[styles.usernameemail, styles.password1Typo]}
+            placeholder="Username/Email" onChangeText={inputEmailHandler}
+            value={enteredEmail} />
+        </View>
+        <View style={[styles.password, styles.useridLayout]}>
+          <View style={[styles.useridChild, styles.childPosition]} />
+          <TextInput style={[styles.password1, styles.password1Typo]}
+            placeholder="Password" onChangeText={inputPwdHandler}
+            value={enteredPwd} />
+        </View>
+
+
+        <Pressable style={styles.login} onPress={loginHandler}>
+          <View style={[styles.loginChild, styles.childPosition]} />
+          <Text style={[styles.logIn, styles.logInTypo]}>Log in</Text>
+        </Pressable>
+        <Text style={[styles.forgotpassword, styles.logIn1Layout]}>
+          Oh no I forgot 😱
+        </Text>
+        <View style={[styles.rememberMe, styles.logIn1Layout]}>
+          <Text style={[styles.rememberMe1, styles.orTypo]}>Remember me</Text>
+          <View style={styles.rememberMeChild} />
+
+        </View>
+        <Pressable
+          style={[styles.signUpToContainer, styles.newToHabitalPosition]}
+          onClick={() => { }}
+        >
+          <Text style={[styles.text, styles.orTypo]}>
+            <Text style={[styles.signUp, styles.signUpTypo]}>{`Sign up `}</Text>
+            <Text style={[styles.toStart, styles.orTypo1]}>to start</Text>
+          </Text>
+        </Pressable>
+
+
+        <Text style={[styles.newToHabital, styles.newToHabitalPosition]}>
+          New to Habital?
+        </Text>
+        <Text style={[styles.or, styles.orTypo]}>or</Text>
+
+        <Image
+          style={styles.rightSideIcon}
+          source={require("./assets/favicon.png")}
+        />
+        <Pressable style={styles.caretleft} onPress={loginHandler}>
+          <Image
+            style={styles.icon}
+            source={require("./assets/favicon.png")}
+          />
+          <Text style={[styles.logIn1, styles.signUpTypo]}>Log in</Text>
+        </Pressable>
+      </View>
+    </>
   );
 };
 
@@ -243,9 +251,8 @@ const styles = StyleSheet.create({
     top: 291,
     height: 45,
   },
-  loginChild: {
-    backgroundColor: "#143214",
-  },
+
+
   logIn: {
     top: "15.15%",
     left: "18.6%",
@@ -259,7 +266,7 @@ const styles = StyleSheet.create({
   },
   forgotpassword: {
     top: 625,
-    textDecorationLine:"underline",
+    textDecorationLine: "underline",
     width: 162,
     fontSize: FontSize.size_mini,
     textAlign: "left",

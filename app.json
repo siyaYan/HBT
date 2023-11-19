@@ -1,10 +1,11 @@
 {
   "expo": {
     "name": "HBT",
-    "slug": "HBT",
+    "slug": "hbt",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "backgroundColor": "#143214",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -25,6 +26,18 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "99d4bd85-0d66-46ad-9093-759f537d68f8"
+      }
+    },
+    "owner": "hbt-project",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/99d4bd85-0d66-46ad-9093-759f537d68f8"
     }
   }
 }
