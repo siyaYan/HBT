@@ -7,7 +7,7 @@ const HomeScreen = ({ navigation }) => {
       <Text>Home Screen</Text>
       <Button
         title="Register"
-        onPress={() => navigation.navigate('Register')}
+        onPress={() => navigation.navigate('SignUp')}
       />
       <Button
         title="Login"

@@ -17,7 +17,7 @@ import { registerUser } from '../components/MockApi'; // Import the mock functio
 
 const defaultTheme = createTheme();
 
-export default function SignUp() {
+export default function SignUp({ navigation }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -25,6 +25,7 @@ export default function SignUp() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    navigation.navigate('Home')
   };
 
   return (
