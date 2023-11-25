@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+// import { View, Text, TextInput, Button, Alert } from 'react-native';
 import { resetPassword } from '../components/MockApi'; // Import the mock function
+import BuildForm from '../components/BuildForm';
+import { Center } from 'native-base';
 
-const ResetPasswordScreen = () => {
+const ResetPassword = () => {
   const [email, setEmail] = useState('');
 
   const handlePasswordReset = async () => {
@@ -24,16 +26,21 @@ const ResetPasswordScreen = () => {
   };
 
   return (
-    <View>
-      <Text>Reset Password Screen</Text>
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={text => setEmail(text)}
-      />
-      <Button title="Reset Password" onPress={handlePasswordReset} />
-    </View>
+    // <View>
+    //   <Text>Reset Password Screen</Text>
+    //   <TextInput
+    //     placeholder="Email"
+    //     value={email}
+    //     onChangeText={text => setEmail(text)}
+    //   />
+    //   <Button title="Reset Password" onPress={handlePasswordReset} />
+    // </View>
+
+    <Center flex={1}>
+      <BuildForm />
+    </Center>
+
   );
 };
 
-export default ResetPasswordScreen;
+export default ResetPassword;
