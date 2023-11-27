@@ -1,43 +1,29 @@
 import React, { useState } from 'react';
 // import { View, Text, TextInput, Button, Alert } from 'react-native';
-import { resetPassword } from '../components/MockApi'; // Import the mock function
 import BuildForm from '../components/BuildForm';
-import { Center } from 'native-base';
+import { Center, Heading, VStack, Box } from 'native-base';
 
 const ResetPassword = () => {
-  const [email, setEmail] = useState('');
-
-  const handlePasswordReset = async () => {
-    try {
-      // Call the mock registration function
-      const response = await resetPassword(email);
-
-      // Handle success or error response
-      if (response.success) {
-        Alert.alert('Success', response.message);
-        // You can navigate to the login screen or perform other actions
-      } else {
-        Alert.alert('Error', response.message || 'Reset Password failed');
-      }
-    } catch (error) {
-      console.error('Error during Reset Passsword:', error);
-      Alert.alert('Error', 'Reset Passsword failed. Please try again later.');
-    }
-  };
 
   return (
-    // <View>
-    //   <Text>Reset Password Screen</Text>
-    //   <TextInput
-    //     placeholder="Email"
-    //     value={email}
-    //     onChangeText={text => setEmail(text)}
-    //   />
-    //   <Button title="Reset Password" onPress={handlePasswordReset} />
-    // </View>
-
-    <Center flex={1}>
-      <BuildForm />
+    <Center w="100%">
+      <Box safeArea py="8" w="90%" maxW="290">
+      <VStack space={1} alignItems="center">
+        <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
+          color: "warmGray.50"
+        }}>
+          Reset Your Password
+        </Heading>
+        <Heading mt="3" Center _dark={{
+          color: "warmGray.200"
+        }} color="coolGray.600" fontWeight="medium" size="xs">
+          Enter a new password to reset!
+        </Heading>
+        </VStack>
+        <VStack mt="5">
+          <BuildForm />
+        </VStack>
+      </Box>
     </Center>
 
   );

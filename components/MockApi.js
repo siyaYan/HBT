@@ -66,7 +66,40 @@ export const loginUser = async (email, password) => {
   //   });
 };
 
-export const resetPassword = async (email) => {
+export const resetPassword = async (password) => {
+  // Simulate a successful password reset
+  return { success: true, message: 'Password reset success!' };
+      // // Add validation checks
+      // if (!email) {
+      //   Alert.alert('Error', 'Please enter your email address');
+      //   return;
+      // }
+  
+      // // Assuming you have an API endpoint for password reset
+      // fetch('https://your-api-url/reset-password', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ email }),
+      // })
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     // Handle success or error response from the server
+      //     if (data.success) {
+      //       Alert.alert('Success', 'Password reset email sent');
+      //       // You can navigate to the login screen or perform other actions
+      //     } else {
+      //       Alert.alert('Error', data.message || 'Password reset failed');
+      //     }
+      //   })
+      //   .catch(error => {
+      //     console.error('Error during password reset:', error);
+      //     Alert.alert('Error', 'Password reset failed. Please try again later.');
+      //   });
+};
+
+export const sendEmail = async (email) => {
   // Simulate a successful password reset
   return { success: true, message: 'Password reset email sent' };
       // // Add validation checks

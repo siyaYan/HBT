@@ -1,7 +1,9 @@
 import { Modal } from "native-base";
-import { useState, Alert } from "react";
+import { useState } from "react";
 import { Center } from 'native-base';
 import { FormControl, Input, Button, Pressable, Text } from 'native-base'; // Adjust based on
+import { sendEmail } from "./MockApi";
+import { Alert } from 'react-native';
 
 const ResetModal = () => {
     const [showModal, setShowModal] = useState(false);
@@ -17,10 +19,9 @@ const ResetModal = () => {
         // Validate the email
         if (validateEmail(email)) {
             console.log({ email });
-
             // TODO: call end point
             // If the email is valid, you would typically make an API call to your backend here
-
+            handleSentEmail();
             setShowModal(false);
             setEmail(''); // Clear the email state after successful submission
             setError(false)
@@ -31,6 +32,23 @@ const ResetModal = () => {
             // Keep the modal open and display the error message
         }
     };
+
+    const handleSentEmail = async () => {
+        try {
+          // Call the mock registration function
+          const response = await sendEmail(email);
+          // Handle success or error response
+          if (response.success) {
+            Alert.alert('Success', response.message);
+            // You can navigate to the login screen or perform other actions
+          } else {
+            Alert.alert('Error', response.message || 'Send email failed');
+          }
+        } catch (error) {
+          console.error('Error during Send email:', error);
+          Alert.alert('Error', 'Please try again later.');
+        }
+      };
 
     return (
         <Center>

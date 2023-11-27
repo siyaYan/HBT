@@ -33,9 +33,10 @@
       }
     },
     "owner": "hbt-project",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    // "runtimeVersion": {
+    //   "policy": "appVersion"
+    // },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/99d4bd85-0d66-46ad-9093-759f537d68f8"
     }

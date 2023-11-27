@@ -1,11 +1,13 @@
-import { Modal } from "native-base";
-import { useState,Pressable } from "react";
-import { Center, VStack, HStack, FormControl, Input, Button, Box, Heading, Link, Text } from 'native-base';
+
+import { Input, Icon, Pressable, Center} from "native-base";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useState } from "react";
+import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'native-base';
 import ResetModal from "../components/ResetModal";
 
 const Login = () => {
     const [showModal, setShowModal] = useState(false);
-
+    const [show, setShow] = useState(false);
     return (
         <Center w="100%">
             <Box safeArea p="2" py="8" w="90%" maxW="290">
@@ -27,10 +29,14 @@ const Login = () => {
                     </FormControl>
                     <FormControl isRequired>
                         <FormControl.Label>Password</FormControl.Label>
-                        <Input type="password" />
+                        <Input type={show ? "text" : "password"} InputRightElement={<Pressable onPress={() => setShow(!show)}>
+            <Icon as={<MaterialIcons name={show ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
+          </Pressable>}/>
+                        {/* TODO:Reset email */}
                         <Link alignSelf="flex-end" mt="1">
                             <ResetModal />
                         </Link>
+
                     </FormControl>
                     <Button mt="2" colorScheme="indigo">
                         Sign in
@@ -41,9 +47,6 @@ const Login = () => {
                         }}>
                             I'm a new user.{" "}
                         </Text>
-                        {/* <Pressable onPress={() => setShowModal(true)}>
-                            <Text fontSize={15} color="indigo.500">forget password?</Text>
-                        </Pressable> */}
                         <Link _text={{
                             color: "indigo.500",
                             fontWeight: "medium",
@@ -53,7 +56,6 @@ const Login = () => {
                         </Link>
                     </HStack>
                 </VStack>
-
             </Box>
         </Center>)
 };
