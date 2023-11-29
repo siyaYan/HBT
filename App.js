@@ -6,6 +6,7 @@ import AccountScreen from './screens/AccountPage'
 import ResetPassword from './screens/ResetPage';
 import { NativeBaseProvider} from "native-base";
 import Login from './screens/LoginPage';
+import Register from './screens/RegisterPage'
 
 
 
@@ -16,11 +17,12 @@ export default function App() {
     <NativeBaseProvider>
       {/* <Box flex={1} bg="#fff" alignItems="center" justifyContent="center"> */}
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login">
+          <Stack.Navigator initialRouteName="Account">
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Account" component={AccountScreen} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Reset" component={ResetPassword} />
+            <Stack.Screen name="Register" component={Register} />
           </Stack.Navigator>
         </NavigationContainer>
       {/* </Box> */}

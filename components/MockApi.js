@@ -99,6 +99,7 @@ export const resetPassword = async (password) => {
       //   });
 };
 
+//TODO: sent email
 export const sendEmail = async (email) => {
   // Simulate a successful password reset
   return { success: true, message: 'Password reset email sent' };

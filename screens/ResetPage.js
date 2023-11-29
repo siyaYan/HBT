@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import BuildForm from '../components/BuildForm';
 import { Center, Heading, VStack, Box } from 'native-base';
 
-const ResetPassword = () => {
+const ResetPassword = ({ navigation }) => {
 
   return (
     <Center w="100%">

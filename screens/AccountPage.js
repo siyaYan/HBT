@@ -1,19 +1,22 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { Center,Box,Heading,VStack,Button } from 'native-base';
 
 const AccountScreen = ({ navigation }) => {
   return (
-    <View>
-      <Text>Account Screen</Text>
-      <Button
-        title="Register"
-        onPress={() => navigation.navigate('SignUp')}
-      />
-      <Button
-        title="Login"
-        onPress={() => navigation.navigate('Login')}
-      />
-    </View>
+    <Center flex={1} w="100%">
+      <Box safeArea py='8' w="90%" maxW="290">
+        <VStack space={3} alignItems='center' >
+        <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
+          color: "warmGray.50"
+        }}>
+          Account Page
+        </Heading>
+        <Button
+          onPress={() => navigation.navigate('Login')}
+        >  Log out  </Button>
+        </VStack>
+      </Box>
+    </Center>
   );
 };
 
