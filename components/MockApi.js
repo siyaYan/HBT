@@ -1,6 +1,6 @@
 // Mock API functions for testing without a backend
 
-export const registerUser = async (username, password) => {
+export const registerUser = async (username, nickname, email, password) => {
   // Simulate a successful registration
   return { success: true, message: 'Registration successful' };
   // if (!username || !password) {

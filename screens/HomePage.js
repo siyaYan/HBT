@@ -20,6 +20,9 @@ const HomeScreen = ({ navigation }) => {
         <Button
           onPress={() => navigation.navigate('Reset')}
         >  Reset  </Button>
+        <Button
+          onPress={() => navigation.navigate('Account')}
+        >  Account  </Button>
         </VStack>
       </Box>
     </Center>

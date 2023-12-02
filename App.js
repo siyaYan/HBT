@@ -17,7 +17,7 @@ export default function App() {
     <NativeBaseProvider>
       {/* <Box flex={1} bg="#fff" alignItems="center" justifyContent="center"> */}
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Account">
+          <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Account" component={AccountScreen} />
             <Stack.Screen name="Login" component={Login} />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormControl, Button, Text, Center } from 'native-base'; // Adjust based on
-import { resetPassword} from './MockApi'; // Import the mock function
+import { resetPassword } from './MockApi'; // Import the mock function
 import { Alert } from 'react-native';
 import { Input, Icon,  Pressable } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -44,7 +44,7 @@ function BuildForm() {
     return true;
   };
 
-  const onSubmit = () => {
+  const handleSubmit = () => {
     if(validate()){
       console.log('Submitted') 
       handlePasswordReset();
@@ -68,6 +68,7 @@ function BuildForm() {
     //TODO: call reset endpoint
 
   };
+  
   const handlePasswordReset = async () => {
     try {
       // Call the mock registration function
@@ -126,7 +127,7 @@ function BuildForm() {
         Please confirm your password!
       </FormControl.HelperText>}
     </FormControl>
-    <Button w="100%" onPress={onSubmit} mt="5" colorScheme="cyan">
+    <Button w="100%" onPress={handleSubmit} mt="5" colorScheme="cyan">
       Reset Password
     </Button>
   </Center>);

@@ -4,7 +4,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Text } from 'native-base';
 import { Alert } from 'react-native';
-import { Tooltip } from "native-base";
+import { registerUser } from "../components/MockApi";
+import { Popover } from 'native-base';
+
 
 const Register = ({ navigation }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -12,71 +14,173 @@ const Register = ({ navigation }) => {
 
     const [formData, setData] = useState({});
     const [errors, setErrors] = useState({
-        length: false,
-        letterAndNumber: false,
-        noSpaces: false,
-        specialChars: false,
+        username:false,
+        email:false,
+        password:false,
+        confirmPassword:false
     });
 
-    const validateEmail = (email) => {
+    //TODO: refactor the variables
+    const validateEmail = () => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-    }
-
-    const validatePassword = (text) => {
-        setData({
-            ...formData,
-            password: text
-        })
-        if (text) {
-            setErrors({
-                length: text.length >= 8 && text.length <= 20,
-                letterAndNumber: /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(text),
-                noSpaces: !/\s/.test(text),
-                specialChars: /[!@#%&_?#=-]/.test(text),
-            });
-            return errors.length && errors.letterAndNumber && errors.noSpaces && errors.specialChars;
-        }
-
-    };
-
-    const validate = () => {
-        if (formData.password !== formData.confirmPassword) {
-            console.log('Passwords do not match.');
-            return false;
-        } else if (!validatePassword(formData.password)) {
-            console.log('Password validation failed.');
-            return false;
-        }
-        return true;
-    };
-
-    const onSubmit = () => {
-        if (validate()) {
-            console.log('Submitted')
-            handlePasswordReset();
-        } else if (validatePassword(formData.password)) {
-            console.log('Confirm Failed');
-            setData({
-                password: formData.password,
-                confirmPassword: ''
-            });
+        if (regex.test(formData.email)) {
             setErrors({
                 ...errors,
-                confirmPassword: ''
+                email: false
             });
+            console.log("email valid", errors.email);
+            return true;
         } else {
-            console.log('Validation Failed');
+            setErrors({
+                ...errors,
+                email: true
+            });
+            console.log("email invalid", errors.email);
+        }
+        return false;
+    };
+
+    const validateUser = () => {
+        if(formData.username){
+            console.log("username valid");
+            setErrors({
+                ...errors,
+                username: false
+            });
+            return true;
+        }else{
+            console.log('username invalid');
+            setErrors({
+                ...errors,
+                username: true
+            });
+            return false;
+        }
+        
+    }
+
+    const validatePassword = () => {
+        if (formData.password) {
+            const length = formData.password.length >= 8 && formData.password.length <= 20;
+            const letterAndNumber = /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(formData.password);
+            const noSpaces = !/\s/.test(formData.password);
+            const specialChars = /[!@#%&_?#=-]/.test(formData.password);
+            if (length && letterAndNumber && noSpaces && specialChars) {
+                setErrors({
+                    ...errors,
+                    password: false
+                });
+                console.log("password valid");
+                return true;
+            } else {
+                setErrors({
+                    ...errors,
+                    password: true
+                });
+            }
+        } else {
+            setErrors({
+                ...errors,
+                password: true
+            });
+        }
+        return false;
+    };
+
+    const validateConfirm = () => {
+        if (formData.confirmPassword) {
+            if (formData.confirmPassword == formData.password) {
+                setErrors({
+                    ...errors,
+                    confirmPassword: false
+                });
+                console.log("confirm password valid");
+                return true;
+            } else {
+                setErrors({
+                    ...errors,
+                    confirmPassword: true
+                });
+            }
+        } else {
+            setErrors({
+                ...errors,
+                confirmPassword: true
+            });
+        }
+        return false;
+    };
+
+    const handleSubmit = () => {
+        if(!validateUser()){
             setData({
-                password: '',
+                ...formData,
+                username: ''
+            });
+        }
+        if (!validateEmail()) {
+            setData({
+                ...formData,
+                email: ''
+            });
+        } 
+        if (!validatePassword()) {
+            setData({
+                ...formData,
+                password: ''
+            });
+        } 
+        if (!validateConfirm()) {
+            setData({
+                ...formData,
                 confirmPassword: ''
             });
         }
-        //TODO: call Register endpoint
+        if(validateUser()&&validateEmail()&&validateConfirm()&&validatePassword()) {
+            if (formData.nickname == '') {
+                setData({
+                    ...formData,
+                    nickname: formData.username
+                })
+            }
+            console.log('Submitted');
+            handleRegister();
+        }
+        console.log({
+            username: formData.username,
+            nickname: formData.nickname,
+            email: formData.email,
+            password: formData.password,
+        });
+        console.log('error',{
+            username: errors.username,
+        
+            email: errors.email,
+            password: errors.password,
+            confirm:errors.confirmPassword
+        });
+    };
 
+    //TODO: call Register endpoint
+    const handleRegister = async () => {
+        try {
+            // Call the mock registration function
+            const response = await registerUser(formData.username, formData.email, formData.password);
+            // Handle success or error response
+            if (response.success) {
+                Alert.alert('Success', response.message);
+                // You can navigate to the login screen or perform other actions
+            } else {
+                Alert.alert('Error', response.message || 'Register failed');
+            }
+        } catch (error) {
+            console.error('Error during Register:', error);
+            Alert.alert('Error', 'Register failed. Please try again later.');
+        }
     };
 
     return (
+
         <Center flex={1} w="100%">
             <Box safeArea p="2" py="8" w="90%" maxW="290">
                 <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
@@ -91,43 +195,59 @@ const Register = ({ navigation }) => {
                 </Heading>
 
                 <VStack space={3} mt="5">
-                    <FormControl isRequired>
+                    <FormControl isRequired isInvalid={errors.username}>
                         <FormControl.Label>Username</FormControl.Label>
-                        <Input />
+                        <Input value={formData.username} onChangeText={value => setData({
+                            ...formData,
+                            username: value
+                        })} />
                     </FormControl>
                     <FormControl >
                         <FormControl.Label>Nickname</FormControl.Label>
-                        <Input />
+                        <Input value={formData.nickname} onChangeText={value => setData({
+                            ...formData,
+                            nickname: value
+                        })} />
                     </FormControl>
-                    <FormControl isRequired>
+                    <FormControl isRequired isInvalid={errors.email}>
                         <FormControl.Label>Email Address</FormControl.Label>
-                        <Input />
+                        <Input value={formData.email} onChangeText={value => setData({
+                            ...formData,
+                            email: value
+                        })} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={'password' in errors}>
-                        <HStack alignItems="space-between">
+                    <FormControl isRequired isInvalid={errors.password}>
+                        <HStack alignItems="right">
                             <FormControl.Label _text={{
                                 bold: true
                             }}>Password</FormControl.Label>
-                            <Tooltip label="Click here to read more" openDelay={100}>
-                                <IconButton icon={<Icon as={MaterialIcons} name="info" />} />
-                            </Tooltip>
+
+                            <Popover trigger={triggerProps => {
+                                return <IconButton {...triggerProps} />;
+                            }}>
+                                <Popover.Content accessibilityLabel="info" w={'95%'}>
+                                    <Popover.Body>
+                                        ✅Between 8-20 characters
+                                        ✅Must include a letter and a number
+                                        ✅Cannot have any spaces
+                                        ✅Special characters: !@#%&_?#=-
+                                    </Popover.Body>
+                                </Popover.Content>
+                            </Popover>
                         </HStack>
                         <Input value={formData.password}
                             placeholder="Password"
-                            onChangeText={validatePassword}
+                            onChangeText={value => setData({
+                                ...formData,
+                                password: value
+                            })}
                             type={showPassword ? "text" : "password"}
                             InputRightElement={
                                 <Pressable onPress={() => setShowPassword(!showPassword)}>
                                     <Icon as={<MaterialIcons name={showPassword ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
-                        {/* <FormControl.HelperText>
-                            <Text>{errors.length ? '✅' : '❌'} Between 8-20 characters</Text>
-                            <Text>{errors.letterAndNumber ? '✅' : '❌'} Must include a letter and a number</Text>
-                            <Text>{errors.noSpaces ? '✅' : '❌'} Cannot have any spaces</Text>
-                            <Text>{errors.specialChars ? '✅' : '❌'} Special characters: !@#%&_?#=- </Text>
-                        </FormControl.HelperText> */}
                     </FormControl>
-                    <FormControl isRequired isInvalid={'confirmPassword' in errors}>
+                    <FormControl isRequired isInvalid={errors.confirmPassword}>
                         <FormControl.Label _text={{
                             bold: true
                         }}>Confirm Password</FormControl.Label>
@@ -136,17 +256,18 @@ const Register = ({ navigation }) => {
                             onChangeText={value => setData({
                                 ...formData,
                                 confirmPassword: value
-                            })} type={showConfirm ? "text" : "password"}
+                            })}
+                            type={showConfirm ? "text" : "password"}
                             InputRightElement={
                                 <Pressable onPress={() => setShowConfirm(!showConfirm)}>
                                     <Icon as={<MaterialIcons name={showConfirm ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
-                        {'confirmPassword' in errors ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
+                        {errors.confirmPassword ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
                             Please confirm your password!
                         </FormControl.HelperText>}
                     </FormControl>
 
-                    <Button onPress={onSubmit} mt="2" colorScheme="indigo">
+                    <Button onPress={handleSubmit} mt="2" colorScheme="indigo">
                         Register
                     </Button>
                     <HStack mb={8} justifyContent="center">
@@ -161,7 +282,9 @@ const Register = ({ navigation }) => {
                     </HStack>
                 </VStack>
             </Box>
-        </Center>)
+        </Center>
+
+    )
 };
 
 export default Register;
