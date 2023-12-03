@@ -17,7 +17,7 @@ const Register = ({ navigation }) => {
         username:false,
         email:false,
         password:false,
-        confirmPassword:false
+        confirmPassword:false,
     });
 
     //TODO: refactor the variables
@@ -40,8 +40,9 @@ const Register = ({ navigation }) => {
         return false;
     };
 
-    const validateUser = () => {
-        if(formData.username){
+    const validateUsername = () => {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
+        if(regex.test(formData.username)){
             console.log("username valid");
             setErrors({
                 ...errors,
@@ -112,7 +113,7 @@ const Register = ({ navigation }) => {
     };
 
     const handleSubmit = () => {
-        if(!validateUser()){
+        if(!validateUsername()){
             setData({
                 ...formData,
                 username: ''
@@ -136,7 +137,7 @@ const Register = ({ navigation }) => {
                 confirmPassword: ''
             });
         }
-        if(validateUser()&&validateEmail()&&validateConfirm()&&validatePassword()) {
+        if(validateUsername()&&validateEmail()&&validateConfirm()&&validatePassword()) {
             if (formData.nickname == '') {
                 setData({
                     ...formData,
@@ -151,6 +152,7 @@ const Register = ({ navigation }) => {
             nickname: formData.nickname,
             email: formData.email,
             password: formData.password,
+            confirmPassword:formData.confirmPassword
         });
         console.log('error',{
             username: errors.username,
@@ -165,7 +167,7 @@ const Register = ({ navigation }) => {
     const handleRegister = async () => {
         try {
             // Call the mock registration function
-            const response = await registerUser(formData.username, formData.email, formData.password);
+            const response = await registerUser(formData.username,formData.nickname, formData.email, formData.password,formData.confirmPassword);
             // Handle success or error response
             if (response.success) {
                 Alert.alert('Success', response.message);

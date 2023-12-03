@@ -16,23 +16,22 @@ const Login = ({ navigation }) => {
     // Method to handle login
     const handleSubmit = async () => {
         console.log({
-            email: formData.email,
+            id: formData.id,
             password: formData.password,
             status: formData.status,
         });
         if(submitValidation()){
             try {
                 // Call the mock registration function
-                const response = await loginUser(formData.email, formData.password);
-                // Handle success or error response
-                if (response.success) {
-                    Alert.alert('Success', response.message);
-                    // Alert.alert('Success', response.message);
-                    navigation.navigate('Home')
+                // console.log(loginUser(formData.id, formData.password));
+                const response = await loginUser(formData.id, formData.password);
+                // // Handle success or error response
+                if (response) {
+                    console.log("!!");
+                    navigation.navigate('Home');
                     // You can navigate to the login screen or perform other actions
-                } else {
-                    Alert.alert('Error', response.message || 'Login failed');
-                }
+                } 
+                // console.log("!!")
             } catch (error) {
                 console.error('Error during Login:', error);
                 Alert.alert('Error', 'Login failed. Please try again later.');
@@ -48,17 +47,17 @@ const Login = ({ navigation }) => {
 
     // TODO: do not know whether is email or username
     const submitValidation = () => {
-        if (formData.email&&formData.password) {
+        if (formData.id&&formData.password) {
             // validateEmail();
             return true;
-        }else if(formData.email){
+        }else if(formData.id){
             setErrors({
                 password:''
             })
             return false;
         }else{
             setErrors({
-                email:'',
+                id:'',
                 password:''
             })
             return false;
@@ -80,11 +79,11 @@ const Login = ({ navigation }) => {
                 </Heading>
 
                 <VStack space={3} mt="5">
-                    <FormControl isRequired isInvalid={'email' in errors}>
+                    <FormControl isRequired isInvalid={'id' in errors}>
                         <FormControl.Label>Email/Username</FormControl.Label>
                         <Input onChangeText={value => setData({
                             ...formData,
-                            email: value
+                            id: value
                         })} />
                         <FormControl.ErrorMessage></FormControl.ErrorMessage>
                     </FormControl>
