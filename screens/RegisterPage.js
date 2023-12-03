@@ -14,16 +14,19 @@ const Register = ({ navigation }) => {
 
     const [formData, setData] = useState({});
     const [errors, setErrors] = useState({
-        username: false,
-        email: false,
-        password: false,
-        confirmPassword: false,
     });
+
+    // do not work
+    const removeError = fieldToRemove => {
+        const { [fieldToRemove]: _, ...newErrors } = errors;
+        setErrors(newErrors);
+    };
 
     //TODO: refactor the variables
     const validateEmail = () => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (regex.test(formData.email)) {
+            // removeError('email');
             setErrors({
                 ...errors,
                 email: false
@@ -43,18 +46,19 @@ const Register = ({ navigation }) => {
     const validateUsername = () => {
         const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
         if (regex.test(formData.username)) {
-            console.log("username valid");
             setErrors({
                 ...errors,
                 username: false
             });
+            console.log("username valid",errors.username);
             return true;
         } else {
-            console.log('username invalid');
+            
             setErrors({
                 ...errors,
                 username: true
             });
+            console.log('username invalid',errors.username);
             return false;
         }
 
@@ -71,7 +75,7 @@ const Register = ({ navigation }) => {
                     ...errors,
                     password: false
                 });
-                console.log("password valid");
+                console.log("password valid",errors.password);
                 return true;
             } else {
                 setErrors({
@@ -95,7 +99,7 @@ const Register = ({ navigation }) => {
                     ...errors,
                     confirmPassword: false
                 });
-                console.log("confirm password valid");
+                console.log("confirm password valid",errors.confirmPassword);
                 return true;
             } else {
                 setErrors({
@@ -103,40 +107,11 @@ const Register = ({ navigation }) => {
                     confirmPassword: true
                 });
             }
-        } else {
-            setErrors({
-                ...errors,
-                confirmPassword: true
-            });
         }
         return false;
     };
 
-    const handleSubmit = async () => {
-        if (!validateUsername()) {
-            setData({
-                ...formData,
-                username: ''
-            });
-        }
-        if (!validateEmail()) {
-            setData({
-                ...formData,
-                email: ''
-            });
-        }
-        if (!validatePassword()) {
-            setData({
-                ...formData,
-                password: ''
-            });
-        }
-        if (!validateConfirm()) {
-            setData({
-                ...formData,
-                confirmPassword: ''
-            });
-        }
+    const handleSubmit = () => {
         if (validateUsername() && validateEmail() && validateConfirm() && validatePassword()) {
             if (formData.nickname == '') {
                 setData({
@@ -146,7 +121,30 @@ const Register = ({ navigation }) => {
             }
             console.log('Submitted');
             handleRegister();
+        } else if (!validateUsername()) {
+            setData({
+                ...formData,
+                username: ''
+            });
+        } else if (!validateEmail()) {
+            setData({
+                ...formData,
+                email: ''
+            });
+        } else if (!validatePassword()) {
+            setData({
+                ...formData,
+                password: ''
+            });
+        } else if (!validateConfirm()) {
+            setData({
+                ...formData,
+                confirmPassword: ''
+            });
         }
+
+
+
         console.log({
             username: formData.username,
             nickname: formData.nickname,
@@ -190,7 +188,7 @@ const Register = ({ navigation }) => {
                 </Heading>
 
                 <VStack space={3} mt="5">
-                    <FormControl isRequired isInvalid={errors.username}>
+                    <FormControl isRequired isInvalid={errors.username === true}>
                         <FormControl.Label>Username</FormControl.Label>
                         <Input value={formData.username} onChangeText={value => setData({
                             ...formData,
@@ -204,14 +202,14 @@ const Register = ({ navigation }) => {
                             nickname: value
                         })} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.email}>
+                    <FormControl isRequired isInvalid={errors.email === true}>
                         <FormControl.Label>Email Address</FormControl.Label>
                         <Input value={formData.email} onChangeText={value => setData({
                             ...formData,
                             email: value
                         })} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.password}>
+                    <FormControl isRequired isInvalid={errors.password === true}>
                         <HStack alignItems="right">
                             <FormControl.Label _text={{
                                 bold: true
@@ -242,7 +240,7 @@ const Register = ({ navigation }) => {
                                     <Icon as={<MaterialIcons name={showPassword ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.confirmPassword}>
+                    <FormControl isRequired isInvalid={errors.confirmPassword === true}>
                         <FormControl.Label _text={{
                             bold: true
                         }}>Confirm Password</FormControl.Label>
@@ -257,7 +255,7 @@ const Register = ({ navigation }) => {
                                 <Pressable onPress={() => setShowConfirm(!showConfirm)}>
                                     <Icon as={<MaterialIcons name={showConfirm ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
-                        {errors.confirmPassword ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
+                        {errors.confirmPassword===true ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
                             Please confirm your password!
                         </FormControl.HelperText>}
                     </FormControl>
