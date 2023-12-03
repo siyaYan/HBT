@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormControl, Button, Text, Center } from 'native-base'; // Adjust based on
-import { resetPassword } from './Endpoint'; // Import the mock function
+import { resetPassword } from '../components/Endpoint'; // Import the mock function
 import { Alert } from 'react-native';
 import { Input, Icon, Pressable } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
