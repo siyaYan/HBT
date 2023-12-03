@@ -4,7 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Text } from 'native-base';
 import { Alert } from 'react-native';
-import { registerUser } from "../components/MockApi";
+import { registerUser } from "../components/Endpoint";
 import { Popover } from 'native-base';
 
 

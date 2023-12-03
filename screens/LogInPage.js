@@ -5,7 +5,7 @@ import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'native-base';
 import ResetModal from "../components/ResetModal";
 import { Alert } from 'react-native';
-import { loginUser, sendEmail } from '../components/MockApi'
+import { loginUser, sendEmail } from '../components/Endpoint'
 
 const Login = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
