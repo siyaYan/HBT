@@ -5,74 +5,56 @@ export const registerUser = async (username, nickname, email, password, confirmP
   //     Alert.alert('Error', 'Please enter both username and password');
   //     return;
   //   }
-
-  // Assuming you have an API endpoint for registration
-  fetch('http://localhost:8000/habital/v1/signup', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      "email": email,
-      "nickname": nickname,
-      "username": username,
-      "password": password,
-      "passwordConfirm": confirmPassword
-    }),
-  })
-    .then(response => response.json())
-    .then(data => {
-      // Handle success or error response from the server
-      if (data.status == "success") {
-        Alert.alert('Success', 'Registration successful');
-        // You can navigate to the login screen or perform other actions
-        // console.log(data);
-        return { success: true, message: 'Signin successful', token: data.token };
-      } else {
-        Alert.alert('Error', data.message || 'Registration failed');
-      }
-    })
-    .catch(error => {
-      console.error('Error during registration:', error);
-      Alert.alert('Error', 'Registration failed. Please try again later.');
+  try {
+    const response = await fetch('http://localhost:8000/habital/v1/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "email": email,
+        "nickname": nickname,
+        "username": username,
+        "password": password,
+        "passwordConfirm": confirmPassword
+      }),
     });
+
+    const data = await response.json();
+    if (data.status == "success") {
+      Alert.alert('Success', 'Registration successful');
+    } else {
+      Alert.alert('Error', data.message || 'Registration failed');
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error('Error in loginUser:', error);
+    Alert.alert('Error', 'Registration failed. Please try again later.');
+  }
 };
 
-export const loginUser = async (id, password) => {
-  // Simulate a successful login
-  // // Add validation checks
-  // if (!id || !password) {
-  //   Alert.alert('Error', 'Please enter both username and password');
-  //   return;
-  // }
-  // Assuming you have an API endpoint for login
-  fetch('http://localhost:8000/habital/v1/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      "id": id,
-      "password": password
-    }),
-  })
-    .then(response => response.json())
-    .then(data => {
-      // Handle success or error response from the server
-      if (data.status == "success") {
-        Alert.alert('Success', 'Login successful');
-        // You can navigate to the home screen or perform other actions
-        console.log(data)
-        // return data.token;
-        return { success: true, message: 'Login successful', token: data.token };
-      } else {
-        Alert.alert('Error', data.message || 'Login failed');
-      }
-    })
-    .catch(error => {
-      console.error('Error during login:', error);
-      Alert.alert('Error', 'Login failed. Please try again later.');
+export async function loginUser(id, password) {
+  try {
+    const response = await fetch('http://localhost:8000/habital/v1/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id, password }),
     });
+
+    const data = await response.json();
+    if (data.status == 'success') {
+      Alert.alert('Success', 'Login successful');
+    } else {
+      Alert.alert('Error', data.message || 'Login failed');
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error('Error in loginUser:', error);
+    Alert.alert('Error', 'Login failed. Please try again later.');
+    // Decide how to handle the error. You may want to re-throw it or return a specific value.
+  }
 };
 
 export const resetPassword = async (password) => {

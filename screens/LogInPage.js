@@ -5,39 +5,28 @@ import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'native-base';
 import ResetModal from "../components/ResetModal";
 import { Alert } from 'react-native';
-import { loginUser } from '../components/MockApi'
+import { loginUser, sendEmail } from '../components/MockApi'
 
 const Login = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
     const [show, setShow] = useState(false);
-    const [formData, setData] = useState({status:true});
+    const [formData, setData] = useState({ status: true });
     const [errors, setErrors] = useState({});
 
     // Method to handle login
-    const handleSubmit = async () => {
+    async function handleSubmit() {
         console.log({
             id: formData.id,
             password: formData.password,
             status: formData.status,
         });
-        if(submitValidation()){
-            try {
-                // Call the mock registration function
-                // console.log(loginUser(formData.id, formData.password));
-                const response = await loginUser(formData.id, formData.password);
-                // // Handle success or error response
-                if (response) {
-                    console.log("!!");
-                    navigation.navigate('Home');
-                    // You can navigate to the login screen or perform other actions
-                } 
-                // console.log("!!")
-            } catch (error) {
-                console.error('Error during Login:', error);
-                Alert.alert('Error', 'Login failed. Please try again later.');
+        if (submitValidation()) {
+            const response = await loginUser(formData.id, formData.password)
+            if (response.token) {
+                navigation.navigate('Home');
+                console.log(response.token);
             }
         }
-
     };
 
     const validateEmail = (email) => {
@@ -47,18 +36,18 @@ const Login = ({ navigation }) => {
 
     // TODO: do not know whether is email or username
     const submitValidation = () => {
-        if (formData.id&&formData.password) {
+        if (formData.id && formData.password) {
             // validateEmail();
             return true;
-        }else if(formData.id){
+        } else if (formData.id) {
             setErrors({
-                password:''
+                password: ''
             })
             return false;
-        }else{
+        } else {
             setErrors({
-                id:'',
-                password:''
+                id: '',
+                password: ''
             })
             return false;
         }
@@ -97,16 +86,16 @@ const Login = ({ navigation }) => {
                         </Pressable>} />
                     </FormControl>
                     <HStack space={6} >
-                            <Checkbox ml='1' size='sm' defaultIsChecked onChange={value => setData({
-                                ...formData,
-                                status: value
-                            })} >Remember
-                            </Checkbox>
-                            {/* <Checkbox isChecked={status} onChange={setStatus(value)} value={status}>check</Checkbox> */}
-                            <Link>
-                                <ResetModal />
-                            </Link>
-                        </HStack>
+                        <Checkbox ml='1' size='sm' defaultIsChecked onChange={value => setData({
+                            ...formData,
+                            status: value
+                        })} >Remember
+                        </Checkbox>
+                        {/* <Checkbox isChecked={status} onChange={setStatus(value)} value={status}>check</Checkbox> */}
+                        <Link>
+                            <ResetModal />
+                        </Link>
+                    </HStack>
                     <Button onPress={handleSubmit} mt="2" colorScheme="indigo">
                         Sign in
                     </Button>

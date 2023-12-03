@@ -14,10 +14,10 @@ const Register = ({ navigation }) => {
 
     const [formData, setData] = useState({});
     const [errors, setErrors] = useState({
-        username:false,
-        email:false,
-        password:false,
-        confirmPassword:false,
+        username: false,
+        email: false,
+        password: false,
+        confirmPassword: false,
     });
 
     //TODO: refactor the variables
@@ -42,14 +42,14 @@ const Register = ({ navigation }) => {
 
     const validateUsername = () => {
         const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
-        if(regex.test(formData.username)){
+        if (regex.test(formData.username)) {
             console.log("username valid");
             setErrors({
                 ...errors,
                 username: false
             });
             return true;
-        }else{
+        } else {
             console.log('username invalid');
             setErrors({
                 ...errors,
@@ -57,7 +57,7 @@ const Register = ({ navigation }) => {
             });
             return false;
         }
-        
+
     }
 
     const validatePassword = () => {
@@ -112,8 +112,8 @@ const Register = ({ navigation }) => {
         return false;
     };
 
-    const handleSubmit = () => {
-        if(!validateUsername()){
+    const handleSubmit = async () => {
+        if (!validateUsername()) {
             setData({
                 ...formData,
                 username: ''
@@ -124,20 +124,20 @@ const Register = ({ navigation }) => {
                 ...formData,
                 email: ''
             });
-        } 
+        }
         if (!validatePassword()) {
             setData({
                 ...formData,
                 password: ''
             });
-        } 
+        }
         if (!validateConfirm()) {
             setData({
                 ...formData,
                 confirmPassword: ''
             });
         }
-        if(validateUsername()&&validateEmail()&&validateConfirm()&&validatePassword()) {
+        if (validateUsername() && validateEmail() && validateConfirm() && validatePassword()) {
             if (formData.nickname == '') {
                 setData({
                     ...formData,
@@ -152,32 +152,25 @@ const Register = ({ navigation }) => {
             nickname: formData.nickname,
             email: formData.email,
             password: formData.password,
-            confirmPassword:formData.confirmPassword
+            confirmPassword: formData.confirmPassword
         });
-        console.log('error',{
+        console.log('error', {
             username: errors.username,
-        
+
             email: errors.email,
             password: errors.password,
-            confirm:errors.confirmPassword
+            confirm: errors.confirmPassword
         });
     };
 
     //TODO: call Register endpoint
-    const handleRegister = async () => {
-        try {
-            // Call the mock registration function
-            const response = await registerUser(formData.username,formData.nickname, formData.email, formData.password,formData.confirmPassword);
-            // Handle success or error response
-            if (response.success) {
-                Alert.alert('Success', response.message);
-                // You can navigate to the login screen or perform other actions
-            } else {
-                Alert.alert('Error', response.message || 'Register failed');
-            }
-        } catch (error) {
-            console.error('Error during Register:', error);
-            Alert.alert('Error', 'Register failed. Please try again later.');
+    async function handleRegister() {
+
+        // Call the mock registration function
+        const response = await registerUser(formData.username, formData.nickname, formData.email, formData.password, formData.confirmPassword);
+        // Handle success or error response
+        if (response.token) {
+            navigation.navigate('Login');
         }
     };
 
