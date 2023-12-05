@@ -185,7 +185,6 @@ const Register = ({ navigation }) => {
         });
     };
 
-    //TODO: call Register endpoint
     async function handleRegister() {
 
         // Call the mock registration function

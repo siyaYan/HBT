@@ -87,7 +87,6 @@ const ResetPassword = ({ navigation }) => {
         password:true
       })
     }
-    //TODO: call reset endpoint
 
   };
 

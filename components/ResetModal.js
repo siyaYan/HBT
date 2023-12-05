@@ -19,8 +19,6 @@ const ResetModal = (navigation) => {
         // Validate the email
         if (validateEmail(email)) {
             console.log({ email });
-            // TODO: call end point
-            // If the email is valid, you would typically make an API call to your backend here
             handleSentEmail();
             setShowModal(false);
             setEmail(''); // Clear the email state after successful submission

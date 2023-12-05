@@ -1,32 +1,65 @@
 
-import { Input, Icon, Checkbox, Pressable, Center, Modal} from "native-base";
+import { Input, Icon, Checkbox, Pressable, Center, Modal } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'native-base';
 import ResetModal from "../components/ResetModal";
 import { Alert } from 'react-native';
 import { loginUser, sendEmail } from '../components/Endpoint';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Keychain from 'react-native-keychain';
 
 const Login = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
     const [show, setShow] = useState(false);
-    const [formData, setData] = useState({ status: true });
+    const [formData, setData] = useState({ rememberMe: true });
     const [errors, setErrors] = useState({});
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
+
+
+    const saveRememberMe = async (isChecked) => {
+        try {
+            await AsyncStorage.setItem('@RememberMe', isChecked ? 'true' : 'false');
+        } catch (error) {
+            console.error('Failed to save the Remember Me preference', error);
+            // Inform the user of the error, possibly with a UI update
+            Alert.alert('Error', 'Failed to save your preferences. You may need to login again next time.');
+        }
+    };
+    
+    const saveCredentials = async (id, password) => {
+        try {
+            await Keychain.setGenericPassword(id, password);
+        } catch (error) {
+            console.error('Failed to store the credentials securely', error);
+            // Inform the user of the error, possibly with a UI update
+            Alert.alert('Error', 'Failed to securely save your credentials. You may need to login again next time.');
+        }
+    };
 
     // Method to handle login
     async function handleSubmit() {
         console.log({
             id: formData.id,
             password: formData.password,
-            status: formData.status,
+            rememberMe: formData.rememberMe,
         });
         if (submitValidation()) {
             const response = await loginUser(formData.id, formData.password)
             if (response.token) {
+                if (rememberMe) {
+                    await saveRememberMe(true);
+                    await saveCredentials(formData.id, formData.password);
+                  } else {
+                    // If not, ensure any existing credentials are cleared
+                    await saveRememberMe(false);
+                    await Keychain.resetGenericPassword();
+                  }
                 navigation.navigate('Home');
                 console.log(response.token);
+            }else{
+                console.log('login failed');
             }
         }
     };
@@ -40,8 +73,6 @@ const Login = ({ navigation }) => {
         // Validate the email
         if (validateEmail(email)) {
             console.log({ email });
-            // TODO: call end point
-            // If the email is valid, you would typically make an API call to your backend here
             handleSentEmail();
             setShowModal(false);
             setEmail(''); // Clear the email state after successful submission
@@ -56,12 +87,11 @@ const Login = ({ navigation }) => {
 
     const handleSentEmail = async () => {
         const response = await sendEmail(email);
-        if (response.status=='success') {
+        if (response.status == 'success') {
             navigation.navigate('Reset');
         };
     }
 
-    // TODO: do not know whether is email or username
     const submitValidation = () => {
         if (formData.id && formData.password) {
             // validateEmail();
@@ -115,45 +145,45 @@ const Login = ({ navigation }) => {
                     <HStack space={6} >
                         <Checkbox ml='1' size='sm' defaultIsChecked onChange={value => setData({
                             ...formData,
-                            status: value
+                            rememberMe: value
                         })} >Remember
                         </Checkbox>
                         {/* <Checkbox isChecked={status} onChange={setStatus(value)} value={status}>check</Checkbox> */}
                         <Link>
                             {/* <ResetModal /> */}
-                            
-                                <Pressable onPress={() => setShowModal(true)}>
-                                    <Text fontSize={15} color="indigo.500">forget password?</Text>
-                                </Pressable>
-                                {/* <Button onPress={() => setShowModal(true)}>Forget Password?</Button> */}
-                                <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-                                    <Modal.Content maxWidth="400px">
-                                        <Modal.CloseButton />
-                                        <Modal.Header>Send Reset Password Email</Modal.Header>
-                                        <Modal.Body>
-                                            <FormControl mt="3" isInvalid={!!error} isRequired>
-                                                <FormControl.Label>Email</FormControl.Label>
-                                                <Input value={email} onChangeText={setEmail} />
-                                                {error ? <FormControl.ErrorMessage>Please enter a valid email address.</FormControl.ErrorMessage> : <FormControl.HelperText>
-                                                    Example@gmail.com
-                                                </FormControl.HelperText>}
-                                            </FormControl>
-                                        </Modal.Body>
-                                        <Modal.Footer>
-                                            <Button.Group space={2}>
-                                                <Button variant="ghost" colorScheme="blueGray" onPress={() => {
-                                                    setShowModal(false);
-                                                    setError(false); // Clear any errors
-                                                }}>
-                                                    Cancel
-                                                </Button>
-                                                <Button onPress={handleResend}>
-                                                    Send
-                                                </Button>
-                                            </Button.Group>
-                                        </Modal.Footer>
-                                    </Modal.Content>
-                                </Modal>
+
+                            <Pressable onPress={() => setShowModal(true)}>
+                                <Text fontSize={15} color="indigo.500">forget password?</Text>
+                            </Pressable>
+                            {/* <Button onPress={() => setShowModal(true)}>Forget Password?</Button> */}
+                            <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                                <Modal.Content maxWidth="400px">
+                                    <Modal.CloseButton />
+                                    <Modal.Header>Send Reset Password Email</Modal.Header>
+                                    <Modal.Body>
+                                        <FormControl mt="3" isInvalid={!!error} isRequired>
+                                            <FormControl.Label>Email</FormControl.Label>
+                                            <Input value={email} onChangeText={setEmail} />
+                                            {error ? <FormControl.ErrorMessage>Please enter a valid email address.</FormControl.ErrorMessage> : <FormControl.HelperText>
+                                                Example@gmail.com
+                                            </FormControl.HelperText>}
+                                        </FormControl>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button.Group space={2}>
+                                            <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                                                setShowModal(false);
+                                                setError(false); // Clear any errors
+                                            }}>
+                                                Cancel
+                                            </Button>
+                                            <Button onPress={handleResend}>
+                                                Send
+                                            </Button>
+                                        </Button.Group>
+                                    </Modal.Footer>
+                                </Modal.Content>
+                            </Modal>
                         </Link>
                     </HStack>
                     <Button onPress={handleSubmit} mt="2" colorScheme="indigo">

@@ -54,7 +54,6 @@ export async function loginUser(id, password) {
   }
 };
 
-//TODO: waiting for beckend update
 export async function resetPassword(password, passwordConfirm, token) {
   // const toke=token.toString()
   try {
@@ -83,7 +82,7 @@ export async function resetPassword(password, passwordConfirm, token) {
   }
 };
 
-//TODO: back end still not right
+
 export async function sendEmail(email) {
 
   try {
