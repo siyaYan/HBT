@@ -6,8 +6,7 @@ import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'n
 import ResetModal from "../components/ResetModal";
 import { Alert } from 'react-native';
 import { loginUser, sendEmail } from '../components/Endpoint';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 
 const Login = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
@@ -18,25 +17,16 @@ const Login = ({ navigation }) => {
     const [error, setError] = useState('');
 
 
-    const saveRememberMe = async (isChecked) => {
-        try {
-            await AsyncStorage.setItem('@RememberMe', isChecked ? 'true' : 'false');
-        } catch (error) {
-            console.error('Failed to save the Remember Me preference', error);
-            // Inform the user of the error, possibly with a UI update
-            Alert.alert('Error', 'Failed to save your preferences. You may need to login again next time.');
-        }
-    };
-    
     const saveCredentials = async (id, password) => {
         try {
-            await Keychain.setGenericPassword(id, password);
+            await SecureStore.setItemAsync('userCredentials', JSON.stringify({ id, password }));
         } catch (error) {
             console.error('Failed to store the credentials securely', error);
-            // Inform the user of the error, possibly with a UI update
+            // Handle the error, like showing an alert to the user
             Alert.alert('Error', 'Failed to securely save your credentials. You may need to login again next time.');
         }
     };
+      
 
     // Method to handle login
     async function handleSubmit() {
@@ -48,14 +38,17 @@ const Login = ({ navigation }) => {
         if (submitValidation()) {
             const response = await loginUser(formData.id, formData.password)
             if (response.token) {
-                if (rememberMe) {
-                    await saveRememberMe(true);
+                if (formData.rememberMe) {
                     await saveCredentials(formData.id, formData.password);
-                  } else {
-                    // If not, ensure any existing credentials are cleared
-                    await saveRememberMe(false);
-                    await Keychain.resetGenericPassword();
-                  }
+                }
+                // if (formData.rememberMe) {
+                //     await saveRememberMe(true);
+                //     await saveCredentials(formData.id, formData.password);
+                //   } else {
+                //     // If not, ensure any existing credentials are cleared
+                //     await saveRememberMe(false);
+                //     await Keychain.resetGenericPassword();
+                //   }
                 navigation.navigate('Home');
                 console.log(response.token);
             }else{

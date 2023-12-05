@@ -1,13 +1,19 @@
 import React from 'react';
 import { Center,Box,Heading,VStack,Button } from 'native-base';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 
 const AccountScreen = ({ navigation }) => {
+  const deleteCredentials = async () => {
+    try {
+        await SecureStore.deleteItemAsync('userCredentials');
+    } catch (error) {
+        console.error('Failed to delete the credentials', error);
+        // Handle the error, like showing an alert to the user
+    }
+};
   const logout = async () => {
     try {
-      await AsyncStorage.removeItem('@RememberMe');
-      await Keychain.resetGenericPassword();
+      await deleteCredentials()
       navigation.navigate('Login');
     } catch (error) {
       // Error clearing the credentials

@@ -5,7 +5,7 @@ import { FormControl, Input, Button, Pressable, Text } from 'native-base'; // Ad
 import { sendEmail } from "./Endpoint";
 import { Alert } from 'react-native';
 
-const ResetModal = (navigation) => {
+const ResetModal = () => {
     const [showModal, setShowModal] = useState(false);
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
@@ -34,7 +34,7 @@ const ResetModal = (navigation) => {
     const handleSentEmail = async () => {
         const response = await sendEmail(email);
         if (response.status=='success') {
-            navigation.navigate('Reset');
+            console.log('successful sent')
         };
     }
 
