@@ -1,17 +1,19 @@
 
-import { Input, Icon, Checkbox, Pressable, Center } from "native-base";
+import { Input, Icon, Checkbox, Pressable, Center, Modal} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'native-base';
 import ResetModal from "../components/ResetModal";
 import { Alert } from 'react-native';
-import { loginUser, sendEmail } from '../components/Endpoint'
+import { loginUser, sendEmail } from '../components/Endpoint';
 
 const Login = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
     const [show, setShow] = useState(false);
     const [formData, setData] = useState({ status: true });
     const [errors, setErrors] = useState({});
+    const [email, setEmail] = useState('');
+    const [error, setError] = useState('');
 
     // Method to handle login
     async function handleSubmit() {
@@ -32,7 +34,32 @@ const Login = ({ navigation }) => {
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
+    }
+
+    const handleResend = () => {
+        // Validate the email
+        if (validateEmail(email)) {
+            console.log({ email });
+            // TODO: call end point
+            // If the email is valid, you would typically make an API call to your backend here
+            handleSentEmail();
+            setShowModal(false);
+            setEmail(''); // Clear the email state after successful submission
+            setError(false)
+
+        } else {
+            setEmail(''); // Clear the email state after successful submission
+            setError(true);
+            // Keep the modal open and display the error message
+        }
     };
+
+    const handleSentEmail = async () => {
+        const response = await sendEmail(email);
+        if (response.status=='success') {
+            navigation.navigate('Reset');
+        };
+    }
 
     // TODO: do not know whether is email or username
     const submitValidation = () => {
@@ -93,7 +120,40 @@ const Login = ({ navigation }) => {
                         </Checkbox>
                         {/* <Checkbox isChecked={status} onChange={setStatus(value)} value={status}>check</Checkbox> */}
                         <Link>
-                            <ResetModal />
+                            {/* <ResetModal /> */}
+                            
+                                <Pressable onPress={() => setShowModal(true)}>
+                                    <Text fontSize={15} color="indigo.500">forget password?</Text>
+                                </Pressable>
+                                {/* <Button onPress={() => setShowModal(true)}>Forget Password?</Button> */}
+                                <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                                    <Modal.Content maxWidth="400px">
+                                        <Modal.CloseButton />
+                                        <Modal.Header>Send Reset Password Email</Modal.Header>
+                                        <Modal.Body>
+                                            <FormControl mt="3" isInvalid={!!error} isRequired>
+                                                <FormControl.Label>Email</FormControl.Label>
+                                                <Input value={email} onChangeText={setEmail} />
+                                                {error ? <FormControl.ErrorMessage>Please enter a valid email address.</FormControl.ErrorMessage> : <FormControl.HelperText>
+                                                    Example@gmail.com
+                                                </FormControl.HelperText>}
+                                            </FormControl>
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button.Group space={2}>
+                                                <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                                                    setShowModal(false);
+                                                    setError(false); // Clear any errors
+                                                }}>
+                                                    Cancel
+                                                </Button>
+                                                <Button onPress={handleResend}>
+                                                    Send
+                                                </Button>
+                                            </Button.Group>
+                                        </Modal.Footer>
+                                    </Modal.Content>
+                                </Modal>
                         </Link>
                     </HStack>
                     <Button onPress={handleSubmit} mt="2" colorScheme="indigo">

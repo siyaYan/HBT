@@ -13,8 +13,7 @@ const Register = ({ navigation }) => {
     const [showConfirm, setShowConfirm] = useState(false);
 
     const [formData, setData] = useState({});
-    const [errors, setErrors] = useState({
-    });
+    const [errors, setErrors] = useState({});
 
     // do not work
     const removeError = fieldToRemove => {
@@ -27,23 +26,27 @@ const Register = ({ navigation }) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (regex.test(formData.email)) {
             // removeError('email');
-            setErrors({
-                ...errors,
-                email: false
-            });
+            // setErrors({
+            //     ...errors,
+            //     email: false
+            // });
             console.log("email valid", errors.email);
             return true;
         } else {
-            setErrors({
-                ...errors,
-                email: true
-            });
+            // setErrors({
+            //     ...errors,
+            //     email: true
+            // });
             console.log("email invalid", errors.email);
         }
         return false;
     };
 
     const validateUsername = () => {
+        // setData({
+        //     ...formData,
+        //     username: value
+        // })
         const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
         if (regex.test(formData.username)) {
             setErrors({
@@ -71,23 +74,23 @@ const Register = ({ navigation }) => {
             const noSpaces = !/\s/.test(formData.password);
             const specialChars = /[!@#%&_?#=-]/.test(formData.password);
             if (length && letterAndNumber && noSpaces && specialChars) {
-                setErrors({
-                    ...errors,
-                    password: false
-                });
+                // setErrors({
+                //     ...errors,
+                //     password: false
+                // });
                 console.log("password valid",errors.password);
                 return true;
             } else {
-                setErrors({
-                    ...errors,
-                    password: true
-                });
+                // setErrors({
+                //     ...errors,
+                //     password: true
+                // });
             }
         } else {
-            setErrors({
-                ...errors,
-                password: true
-            });
+            // setErrors({
+            //     ...errors,
+            //     password: true
+            // });
         }
         return false;
     };
@@ -95,29 +98,31 @@ const Register = ({ navigation }) => {
     const validateConfirm = () => {
         if (formData.confirmPassword) {
             if (formData.confirmPassword == formData.password) {
-                setErrors({
-                    ...errors,
-                    confirmPassword: false
-                });
+                // setErrors({
+                //     ...errors,
+                //     confirmPassword: false
+                // });
                 console.log("confirm password valid",errors.confirmPassword);
                 return true;
             } else {
-                setErrors({
-                    ...errors,
-                    confirmPassword: true
-                });
+                // setErrors({
+                //     ...errors,
+                //     confirmPassword: true
+                // });
             }
         }
         return false;
     };
 
     const handleSubmit = () => {
+        // const error={};
         if (validateUsername() && validateEmail() && validateConfirm() && validatePassword()) {
             if (formData.nickname == '') {
                 setData({
                     ...formData,
                     nickname: formData.username
                 })
+                setErrors({});
             }
             console.log('Submitted');
             handleRegister();
@@ -126,24 +131,43 @@ const Register = ({ navigation }) => {
                 ...formData,
                 username: ''
             });
+            setErrors({
+                ...errors,
+                username: ''
+            });
+            // error['username']=''
         } else if (!validateEmail()) {
             setData({
                 ...formData,
                 email: ''
             });
+            setErrors({
+                ...errors,
+                email: ''
+            });
+            // error['email']='';
         } else if (!validatePassword()) {
             setData({
                 ...formData,
                 password: ''
             });
+            setErrors({
+                ...errors,
+                password: ''
+            });
+            // error['password']='';
         } else if (!validateConfirm()) {
             setData({
                 ...formData,
                 confirmPassword: ''
             });
+            setErrors({
+                ...errors,
+                confirmPassword: ''
+            });
         }
-
-
+        // setErrors({error});
+        // console.log(error);
 
         console.log({
             username: formData.username,
@@ -188,12 +212,11 @@ const Register = ({ navigation }) => {
                 </Heading>
 
                 <VStack space={3} mt="5">
-                    <FormControl isRequired isInvalid={errors.username === true}>
+                    <FormControl isRequired isInvalid={'username' in errors}>
                         <FormControl.Label>Username</FormControl.Label>
                         <Input value={formData.username} onChangeText={value => setData({
                             ...formData,
-                            username: value
-                        })} />
+                            username:value})} />
                     </FormControl>
                     <FormControl >
                         <FormControl.Label>Nickname</FormControl.Label>
@@ -202,14 +225,14 @@ const Register = ({ navigation }) => {
                             nickname: value
                         })} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.email === true}>
+                    <FormControl isRequired isInvalid={'email' in errors}>
                         <FormControl.Label>Email Address</FormControl.Label>
                         <Input value={formData.email} onChangeText={value => setData({
                             ...formData,
                             email: value
                         })} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.password === true}>
+                    <FormControl isRequired isInvalid={'password' in errors}>
                         <HStack alignItems="right">
                             <FormControl.Label _text={{
                                 bold: true

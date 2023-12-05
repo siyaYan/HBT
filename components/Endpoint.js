@@ -55,17 +55,18 @@ export async function loginUser(id, password) {
 };
 
 //TODO: waiting for beckend update
-export async function resetPassword(password, token) {
-
+export async function resetPassword(password, passwordConfirm, token) {
+  // const toke=token.toString()
   try {
-    const response = await fetch('http://localhost:8000/habital/v1/users/resetPassword/${token}', {
-      method: 'POST',
+    const response = await fetch("http://localhost:8000/habital/v1/users/resetPassword/"+token, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        // "Authorization":  token,
       },
       body: JSON.stringify({
         "password": password,
-        "token": token
+        "passwordConfirm":passwordConfirm
       }),
     });
 

@@ -94,7 +94,7 @@ const ResetPassword = ({ navigation }) => {
   const handlePasswordReset = async () => {
 
       // Call the mock registration function
-      const response = await resetPassword(formData.password, formData.token);
+      const response = await resetPassword(formData.password, formData.confirmPassword,formData.token);
       // Handle success or error response
       if (response.token) {
         navigation.navigate('Login');
