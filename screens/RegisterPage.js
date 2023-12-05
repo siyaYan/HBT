@@ -11,60 +11,23 @@ import { Popover } from 'native-base';
 const Register = ({ navigation }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-
     const [formData, setData] = useState({});
-    const [errors, setErrors] = useState({});
-
-    // do not work
-    const removeError = fieldToRemove => {
-        const { [fieldToRemove]: _, ...newErrors } = errors;
-        setErrors(newErrors);
-    };
+    const [errors, setErrors] = useState({
+        username:false,
+        email:false,
+        password:false,
+        confirmPassword:false
+    });
 
     //TODO: refactor the variables
     const validateEmail = () => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (regex.test(formData.email)) {
-            // removeError('email');
-            // setErrors({
-            //     ...errors,
-            //     email: false
-            // });
-            console.log("email valid", errors.email);
-            return true;
-        } else {
-            // setErrors({
-            //     ...errors,
-            //     email: true
-            // });
-            console.log("email invalid", errors.email);
-        }
-        return false;
+        return regex.test(formData.email);
     };
 
     const validateUsername = () => {
-        // setData({
-        //     ...formData,
-        //     username: value
-        // })
         const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
-        if (regex.test(formData.username)) {
-            setErrors({
-                ...errors,
-                username: false
-            });
-            console.log("username valid",errors.username);
-            return true;
-        } else {
-            
-            setErrors({
-                ...errors,
-                username: true
-            });
-            console.log('username invalid',errors.username);
-            return false;
-        }
-
+        return regex.test(formData.username);
     }
 
     const validatePassword = () => {
@@ -73,101 +36,59 @@ const Register = ({ navigation }) => {
             const letterAndNumber = /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(formData.password);
             const noSpaces = !/\s/.test(formData.password);
             const specialChars = /[!@#%&_?#=-]/.test(formData.password);
-            if (length && letterAndNumber && noSpaces && specialChars) {
-                // setErrors({
-                //     ...errors,
-                //     password: false
-                // });
-                console.log("password valid",errors.password);
-                return true;
-            } else {
-                // setErrors({
-                //     ...errors,
-                //     password: true
-                // });
-            }
-        } else {
-            // setErrors({
-            //     ...errors,
-            //     password: true
-            // });
+            return length && letterAndNumber && noSpaces && specialChars
         }
         return false;
     };
 
     const validateConfirm = () => {
         if (formData.confirmPassword) {
-            if (formData.confirmPassword == formData.password) {
-                // setErrors({
-                //     ...errors,
-                //     confirmPassword: false
-                // });
-                console.log("confirm password valid",errors.confirmPassword);
-                return true;
-            } else {
-                // setErrors({
-                //     ...errors,
-                //     confirmPassword: true
-                // });
-            }
+            return formData.confirmPassword == formData.password
         }
         return false;
     };
 
     const handleSubmit = () => {
-        // const error={};
-        if (validateUsername() && validateEmail() && validateConfirm() && validatePassword()) {
+        let newErrors = {};
+
+        newErrors.username = validateUsername() ? false : true;
+        newErrors.email = validateEmail() ? false : true;
+        newErrors.password = validatePassword() ? false : true;
+        newErrors.confirmPassword = validateConfirm() ? false : true;
+
+        setErrors(newErrors);
+
+        const hasErrors = Object.values(newErrors).some(error => error !== false);
+        if (!hasErrors) {
+            // If all validations pass, handle successful submission
             if (formData.nickname == '') {
                 setData({
                     ...formData,
                     nickname: formData.username
                 })
-                setErrors({});
+                console.log('Submitted');
+                handleRegister();
             }
-            console.log('Submitted');
-            handleRegister();
-        } else if (!validateUsername()) {
-            setData({
-                ...formData,
-                username: ''
-            });
-            setErrors({
-                ...errors,
-                username: ''
-            });
-            // error['username']=''
-        } else if (!validateEmail()) {
-            setData({
-                ...formData,
-                email: ''
-            });
-            setErrors({
-                ...errors,
-                email: ''
-            });
-            // error['email']='';
-        } else if (!validatePassword()) {
-            setData({
-                ...formData,
-                password: ''
-            });
-            setErrors({
-                ...errors,
-                password: ''
-            });
-            // error['password']='';
-        } else if (!validateConfirm()) {
-            setData({
-                ...formData,
-                confirmPassword: ''
-            });
-            setErrors({
-                ...errors,
-                confirmPassword: ''
-            });
+        } else {
+            // Optionally clear inputs here if necessary
+            if (newErrors.username) {
+                // Clear username if it's invalid
+                setData({ ...formData, username: '' });
+            }
+            if (newErrors.email) {
+                // Clear email if it's invalid
+                setData({ ...formData, email: '' });
+            }
+            if (newErrors.password) {
+                // Clear username if it's invalid
+                setData({ ...formData, password: '' });
+            }
+            if (newErrors.confirmPassword) {
+                // Clear email if it's invalid
+                setData({ ...formData, confirmPassword: '' });
+            }
+            console.log('Form has errors');
         }
-        // setErrors({error});
-        // console.log(error);
 
         console.log({
             username: formData.username,
@@ -196,7 +117,6 @@ const Register = ({ navigation }) => {
     };
 
     return (
-
         <Center flex={1} w="100%">
             <Box safeArea p="2" py="8" w="90%" maxW="290">
                 <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
@@ -211,11 +131,12 @@ const Register = ({ navigation }) => {
                 </Heading>
 
                 <VStack space={3} mt="5">
-                    <FormControl isRequired isInvalid={'username' in errors}>
+                    <FormControl isRequired isInvalid={errors.username !== false}>
                         <FormControl.Label>Username</FormControl.Label>
                         <Input value={formData.username} onChangeText={value => setData({
                             ...formData,
-                            username:value})} />
+                            username: value
+                        })} />
                     </FormControl>
                     <FormControl >
                         <FormControl.Label>Nickname</FormControl.Label>
@@ -224,14 +145,14 @@ const Register = ({ navigation }) => {
                             nickname: value
                         })} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={'email' in errors}>
+                    <FormControl isRequired isInvalid={errors.email !== false}>
                         <FormControl.Label>Email Address</FormControl.Label>
                         <Input value={formData.email} onChangeText={value => setData({
                             ...formData,
                             email: value
                         })} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={'password' in errors}>
+                    <FormControl isRequired isInvalid={errors.password !== false}>
                         <HStack alignItems="right">
                             <FormControl.Label _text={{
                                 bold: true
@@ -262,7 +183,7 @@ const Register = ({ navigation }) => {
                                     <Icon as={<MaterialIcons name={showPassword ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.confirmPassword === true}>
+                    <FormControl isRequired isInvalid={errors.confirmPassword !== false}>
                         <FormControl.Label _text={{
                             bold: true
                         }}>Confirm Password</FormControl.Label>
@@ -277,7 +198,7 @@ const Register = ({ navigation }) => {
                                 <Pressable onPress={() => setShowConfirm(!showConfirm)}>
                                     <Icon as={<MaterialIcons name={showConfirm ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
-                        {errors.confirmPassword===true ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
+                        {errors.confirmPassword === true ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
                             Please confirm your password!
                         </FormControl.HelperText>}
                     </FormControl>
