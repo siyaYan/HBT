@@ -13,7 +13,17 @@ const Register = ({ navigation }) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const [formData, setData] = useState({});
     const [errors, setErrors] = useState({
-        username:false,
+        username: false,
+        email: false,
+        password: false,
+        confirmPassword: false
+    });
+    const [showMessage, setShowMessage]=useState({
+        username:{
+            constrain1:true,
+            constrain2:false,
+            constrain3:false
+        },
         email:false,
         password:false,
         confirmPassword:false
@@ -30,19 +40,36 @@ const Register = ({ navigation }) => {
         return regex.test(formData.username);
     }
 
-    const validatePassword = () => {
-        if (formData.password) {
-            const length = formData.password.length >= 8 && formData.password.length <= 20;
-            const letterAndNumber = /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(formData.password);
-            const noSpaces = !/\s/.test(formData.password);
-            const specialChars = /[!@#%&_?#=-]/.test(formData.password);
-            return length && letterAndNumber && noSpaces && specialChars
+    // const validatePassword = () => {
+    //     if (formData.password) {
+    //         const length = formData.password.length >= 8 && formData.password.length <= 20;
+    //         const letterAndNumber = /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(formData.password);
+    //         const noSpaces = !/\s/.test(formData.password);
+    //         const specialChars = /[!@#%&_?#=-]/.test(formData.password);
+    //         return length && letterAndNumber && noSpaces && specialChars
+    //     }
+    //     return false;
+    // };
+    const validatePassword = (text) => {
+        setData({
+            ...formData,
+            password: text
+        })
+        if (text) {
+            setErrors({
+                length: text.length >= 8 && text.length <= 20,
+                letterAndNumber: /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(text),
+                noSpaces: !/\s/.test(text),
+                specialChars: /[!@#%&_?#=-]/.test(text),
+            });
+            return errors.length && errors.letterAndNumber && errors.noSpaces && errors.specialChars;
         }
-        return false;
     };
 
     const validateConfirm = () => {
+
         if (formData.confirmPassword) {
+            // console.log(formData.confirmPassword == formData.password)
             return formData.confirmPassword == formData.password
         }
         return false;
@@ -56,19 +83,22 @@ const Register = ({ navigation }) => {
         newErrors.password = validatePassword() ? false : true;
         newErrors.confirmPassword = validateConfirm() ? false : true;
 
+        console.log(newErrors);
         setErrors(newErrors);
 
         const hasErrors = Object.values(newErrors).some(error => error !== false);
+
         if (!hasErrors) {
+
             // If all validations pass, handle successful submission
             if (formData.nickname == '') {
                 setData({
                     ...formData,
                     nickname: formData.username
                 })
-                console.log('Submitted');
-                handleRegister();
             }
+            console.log('Submitted');
+            handleRegister();
         } else {
             // Optionally clear inputs here if necessary
             if (newErrors.username) {
@@ -99,7 +129,6 @@ const Register = ({ navigation }) => {
         });
         console.log('error', {
             username: errors.username,
-
             email: errors.email,
             password: errors.password,
             confirm: errors.confirmPassword
@@ -132,32 +161,28 @@ const Register = ({ navigation }) => {
 
                 <VStack space={3} mt="5">
                     <FormControl isRequired isInvalid={errors.username !== false}>
-                        <FormControl.Label>Username</FormControl.Label>
-                        <Input value={formData.username} onChangeText={value => setData({
+                        {/* <FormControl.Label>Username</FormControl.Label> */}
+                        <Input placeholder="Username" value={formData.username} onChangeText={value => setData({
                             ...formData,
                             username: value
                         })} />
                     </FormControl>
                     <FormControl >
-                        <FormControl.Label>Nickname</FormControl.Label>
-                        <Input value={formData.nickname} onChangeText={value => setData({
+                        {/* <FormControl.Label>Nickname</FormControl.Label> */}
+                        <Input placeholder="Nickname" value={formData.nickname} onChangeText={value => setData({
                             ...formData,
                             nickname: value
                         })} />
                     </FormControl>
                     <FormControl isRequired isInvalid={errors.email !== false}>
-                        <FormControl.Label>Email Address</FormControl.Label>
-                        <Input value={formData.email} onChangeText={value => setData({
+                        {/* <FormControl.Label>Email Address</FormControl.Label> */}
+                        <Input placeholder="Email" value={formData.email} onChangeText={value => setData({
                             ...formData,
                             email: value
                         })} />
                     </FormControl>
                     <FormControl isRequired isInvalid={errors.password !== false}>
-                        <HStack alignItems="right">
-                            <FormControl.Label _text={{
-                                bold: true
-                            }}>Password</FormControl.Label>
-
+                        {/* <HStack alignItems="right">
                             <Popover trigger={triggerProps => {
                                 return <IconButton {...triggerProps} />;
                             }}>
@@ -170,23 +195,31 @@ const Register = ({ navigation }) => {
                                     </Popover.Body>
                                 </Popover.Content>
                             </Popover>
-                        </HStack>
-                        <Input value={formData.password}
+                        </HStack> */}
+                    
+                        <Input onFocus={() => setShowMessage(!showMessage.password)}
+                        value={formData.password}
                             placeholder="Password"
-                            onChangeText={value => setData({
-                                ...formData,
-                                password: value
-                            })}
+                            onChangeText={validatePassword}
                             type={showPassword ? "text" : "password"}
                             InputRightElement={
                                 <Pressable onPress={() => setShowPassword(!showPassword)}>
                                     <Icon as={<MaterialIcons name={showPassword ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
+                        
+                        {showMessage.password?
+                            <FormControl.HelperText>
+                            <Text>{errors.length ? '✅' : '❌'} Between 8-20 characters</Text>
+                            <Text>{errors.letterAndNumber ? '✅' : '❌'} Must include a letter and a number</Text>
+                            <Text>{errors.noSpaces ? '✅' : '❌'} Cannot have any spaces</Text>
+                            <Text>{errors.specialChars ? '✅' : '❌'} Special characters: !@#%&_?#=- </Text>
+                        </FormControl.HelperText>:''
+                        }
                     </FormControl>
                     <FormControl isRequired isInvalid={errors.confirmPassword !== false}>
-                        <FormControl.Label _text={{
+                        {/* <FormControl.Label _text={{
                             bold: true
-                        }}>Confirm Password</FormControl.Label>
+                        }}>Confirm Password</FormControl.Label> */}
                         <Input value={formData.confirmPassword}
                             placeholder="Confirm Password"
                             onChangeText={value => setData({

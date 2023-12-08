@@ -119,16 +119,16 @@ const Login = ({ navigation }) => {
 
                 <VStack space={3} mt="5">
                     <FormControl isRequired isInvalid={'id' in errors}>
-                        <FormControl.Label>Email/Username</FormControl.Label>
+                        {/* <FormControl.Label></FormControl.Label> */}
                         <Input onChangeText={value => setData({
                             ...formData,
                             id: value
-                        })} />
+                        })} placeholder="Email/Username"/>
                         <FormControl.ErrorMessage></FormControl.ErrorMessage>
                     </FormControl>
                     <FormControl isRequired isInvalid={'password' in errors}>
-                        <FormControl.Label>Password</FormControl.Label>
-                        <Input onChangeText={value => setData({
+                        {/* <FormControl.Label></FormControl.Label> */}
+                        <Input placeholder='Password' onChangeText={value => setData({
                             ...formData,
                             password: value
                         })} type={show ? "text" : "password"} InputRightElement={<Pressable onPress={() => setShow(!show)}>
@@ -156,9 +156,9 @@ const Login = ({ navigation }) => {
                                     <Modal.Body>
                                         <FormControl mt="3" isInvalid={!!error} isRequired>
                                             <FormControl.Label>Email</FormControl.Label>
-                                            <Input value={email} onChangeText={setEmail} />
+                                            <Input value={email} onChangeText={setEmail} placeholder="example@email.com"/>
                                             {error ? <FormControl.ErrorMessage>Please enter a valid email address.</FormControl.ErrorMessage> : <FormControl.HelperText>
-                                                Example@gmail.com
+                                        
                                             </FormControl.HelperText>}
                                         </FormControl>
                                     </Modal.Body>
