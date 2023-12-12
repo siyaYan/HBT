@@ -2,10 +2,11 @@
 import { Input, Icon, Pressable, Center, IconButton } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { VStack, HStack, FormControl, Button, Box, Heading, Text } from 'native-base';
+import { VStack, HStack, FormControl, Button, Box, Heading, Text ,WarningOutlineIcon} from 'native-base';
 import { Alert } from 'react-native';
 import { registerUser } from "../components/Endpoint";
 import { Popover } from 'native-base';
+import { TabRouter } from "@react-navigation/routers";
 
 
 const Register = ({ navigation }) => {
@@ -13,32 +14,87 @@ const Register = ({ navigation }) => {
     const [showConfirm, setShowConfirm] = useState(false);
     const [formData, setData] = useState({});
     const [errors, setErrors] = useState({
-        username: false,
-        email: false,
-        password: false,
-        confirmPassword: false
+        email:true,
+        username:true,
+        confirmPassword:true,
+        password:true,
     });
-    const [showMessage, setShowMessage]=useState({
-        username:{
-            constrain1:true,
-            constrain2:false,
-            constrain3:false
+    const [showMessage, setShowMessage] = useState({
+        username: {
+            constrain1: true,
+            constrain2: true,
+            constrain3: true
         },
-        email:false,
-        password:false,
-        confirmPassword:false
+        password: false,
+        confirmPassword: 'Please confirm your password.',
+        textProp: 'Input your username start with charactor.'
     });
 
-    //TODO: refactor the variables
-    const validateEmail = () => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(formData.email);
+    //Implement show corresponding messages for each input field
+    // Handle focus for password field
+    const handlePasswordFocus = () => {
+        setShowMessage({ ...showMessage, password: true });
     };
 
-    const validateUsername = () => {
-        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
-        return regex.test(formData.username);
-    }
+    // Handle blur for password field
+    const handlePasswordBlur = () => {
+        setShowMessage({ ...showMessage, password: false });
+    };
+
+    const validateEmail = (text) => {
+        setData({
+            ...formData,
+            email: text
+        });
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const res = regex.test(text);
+        console.log(res)
+        if (text) {
+            setErrors({
+                ...errors,
+                email: res
+            })
+            return res;
+        }
+    };
+
+    const validateUsername = (text) => {
+        setData({
+            ...formData,
+            username: text
+        })
+        // It must start with a letter.
+        // It must be between 5 and 20 characters in length.
+        // It must contain at least one digit.
+        if (text) {
+            let Prop = '';
+            if (!/(?=.*\d)[A-Za-z\d]/.test(text)) {
+                Prop = 'It should contain at least one digit.'
+            }
+            if (!(text.length <= 20 && text.length >= 5)) {
+                Prop = 'Length should be between 5 to 20 characters.'
+            }
+            if (!/^(?=.*[A-Za-z])/.test(text)) {
+                Prop = 'It should start with a letter.'
+            }
+            setShowMessage({
+                ...showMessage,
+                username: {
+                    constrain1: /^(?=.*[A-Za-z])/.test(text),
+                    constrain2: text.length <= 20 && text.length >= 5,
+                    constrain3: /(?=.*\d)[A-Za-z\d]/.test(text)
+                },
+                textProp: Prop
+            }),
+            setErrors({
+                ...errors,
+                username:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(text)
+            })
+            console.log(showMessage.username);
+            // console.log(showMessage.textProp,'in');
+            return showMessage.username.constrain1 && showMessage.username.constrain2 && showMessage.username.constrain3;
+        }
+    };
 
     // const validatePassword = () => {
     //     if (formData.password) {
@@ -57,39 +113,36 @@ const Register = ({ navigation }) => {
         })
         if (text) {
             setErrors({
+                ...errors,
                 length: text.length >= 8 && text.length <= 20,
                 letterAndNumber: /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(text),
                 noSpaces: !/\s/.test(text),
                 specialChars: /[!@#%&_?#=-]/.test(text),
+                password:/^(?=.*[A-Za-z].*[0-9]|[0-9].*[A-Za-z])(?=\S{8,20})(?=.*[!@#%&_?#=-])/.test(text)
             });
             return errors.length && errors.letterAndNumber && errors.noSpaces && errors.specialChars;
         }
     };
 
-    const validateConfirm = () => {
-
-        if (formData.confirmPassword) {
-            // console.log(formData.confirmPassword == formData.password)
-            return formData.confirmPassword == formData.password
+    const validateConfirm = (text) => {
+        setData({
+            ...formData,
+            confirmPassword: text
+        })
+        const res = text === formData.password
+        if(text){
+            setErrors({
+                ...errors,
+                confirmPassword: res
+            });
+            return res
         }
-        return false;
     };
 
     const handleSubmit = () => {
-        let newErrors = {};
-
-        newErrors.username = validateUsername() ? false : true;
-        newErrors.email = validateEmail() ? false : true;
-        newErrors.password = validatePassword() ? false : true;
-        newErrors.confirmPassword = validateConfirm() ? false : true;
-
-        console.log(newErrors);
-        setErrors(newErrors);
-
-        const hasErrors = Object.values(newErrors).some(error => error !== false);
+        const hasErrors = Object.values(errors).some(error => error == false);
 
         if (!hasErrors) {
-
             // If all validations pass, handle successful submission
             if (formData.nickname == '') {
                 setData({
@@ -101,22 +154,22 @@ const Register = ({ navigation }) => {
             handleRegister();
         } else {
             // Optionally clear inputs here if necessary
-            if (newErrors.username) {
-                // Clear username if it's invalid
-                setData({ ...formData, username: '' });
-            }
-            if (newErrors.email) {
-                // Clear email if it's invalid
-                setData({ ...formData, email: '' });
-            }
-            if (newErrors.password) {
-                // Clear username if it's invalid
-                setData({ ...formData, password: '' });
-            }
-            if (newErrors.confirmPassword) {
-                // Clear email if it's invalid
-                setData({ ...formData, confirmPassword: '' });
-            }
+            // if (newErrors.username) {
+            //     // Clear username if it's invalid
+            //     setData({ ...formData, username: '' });
+            // }
+            // if (newErrors.email) {
+            //     // Clear email if it's invalid
+            //     setData({ ...formData, email: '' });
+            // }
+            // if (newErrors.password) {
+            //     // Clear username if it's invalid
+            //     setData({ ...formData, password: '' });
+            // }
+            // if (newErrors.confirmPassword) {
+            //     // Clear email if it's invalid
+            //     setData({ ...formData, confirmPassword: '' });
+            // }
             console.log('Form has errors');
         }
 
@@ -160,45 +213,44 @@ const Register = ({ navigation }) => {
                 </Heading>
 
                 <VStack space={3} mt="5">
-                    <FormControl isRequired isInvalid={errors.username !== false}>
-                        {/* <FormControl.Label>Username</FormControl.Label> */}
-                        <Input placeholder="Username" value={formData.username} onChangeText={value => setData({
-                            ...formData,
-                            username: value
-                        })} />
+                    <FormControl isRequired isInvalid={!errors.username}>
+                        <Input placeholder="Username" value={formData.username} onChangeText={validateUsername} />
+                        {Object.values(showMessage.username).some(value => value === false) ?
+                            <FormControl.ErrorMessage>
+                                {showMessage.textProp}
+                            </FormControl.ErrorMessage> :
+                            <FormControl.HelperText>
+                                {showMessage.textProp?showMessage.textProp:'Well done!'}
+                            </FormControl.HelperText>
+                        }
                     </FormControl>
                     <FormControl >
-                        {/* <FormControl.Label>Nickname</FormControl.Label> */}
                         <Input placeholder="Nickname" value={formData.nickname} onChangeText={value => setData({
                             ...formData,
                             nickname: value
                         })} />
+                        <FormControl.HelperText>
+                            Nick name is optional.
+                        </FormControl.HelperText>
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.email !== false}>
-                        {/* <FormControl.Label>Email Address</FormControl.Label> */}
-                        <Input placeholder="Email" value={formData.email} onChangeText={value => setData({
-                            ...formData,
-                            email: value
-                        })} />
+
+                    <FormControl isRequired isInvalid={!errors.email}>
+                        <Input placeholder="Email" value={formData.email} onChangeText={validateEmail} />
+                        {errors.email ?
+                            <FormControl.HelperText>
+                                Please input your email address.
+                            </FormControl.HelperText>
+                            :
+                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+                            Invalid email address.
+                          </FormControl.ErrorMessage>
+                        }
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.password !== false}>
-                        {/* <HStack alignItems="right">
-                            <Popover trigger={triggerProps => {
-                                return <IconButton {...triggerProps} />;
-                            }}>
-                                <Popover.Content accessibilityLabel="info" w={'95%'}>
-                                    <Popover.Body>
-                                        ✅Between 8-20 characters
-                                        ✅Must include a letter and a number
-                                        ✅Cannot have any spaces
-                                        ✅Special characters: !@#%&_?#=-
-                                    </Popover.Body>
-                                </Popover.Content>
-                            </Popover>
-                        </HStack> */}
-                    
-                        <Input onFocus={() => setShowMessage(!showMessage.password)}
-                        value={formData.password}
+
+                    <FormControl isRequired isInvalid={!errors.password}>
+                        <Input onFocus={handlePasswordFocus}
+                            onBlur={handlePasswordBlur}
+                            value={formData.password}
                             placeholder="Password"
                             onChangeText={validatePassword}
                             type={showPassword ? "text" : "password"}
@@ -206,40 +258,37 @@ const Register = ({ navigation }) => {
                                 <Pressable onPress={() => setShowPassword(!showPassword)}>
                                     <Icon as={<MaterialIcons name={showPassword ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
-                        
-                        {showMessage.password?
+                        {showMessage.password ?
                             <FormControl.HelperText>
-                            <Text>{errors.length ? '✅' : '❌'} Between 8-20 characters</Text>
-                            <Text>{errors.letterAndNumber ? '✅' : '❌'} Must include a letter and a number</Text>
-                            <Text>{errors.noSpaces ? '✅' : '❌'} Cannot have any spaces</Text>
-                            <Text>{errors.specialChars ? '✅' : '❌'} Special characters: !@#%&_?#=- </Text>
-                        </FormControl.HelperText>:''
+                                <Text>{errors.length ? '✅' : '❌'} Between 8-20 characters</Text>
+                                <Text>{errors.letterAndNumber ? '✅' : '❌'} Must include a letter and a number</Text>
+                                <Text>{errors.noSpaces ? '✅' : '❌'} Cannot have any spaces</Text>
+                                <Text>{errors.specialChars ? '✅' : '❌'} Special characters: !@#%&_?#=- </Text>
+                            </FormControl.HelperText> :
+                            <FormControl.HelperText>
+                                Please input your password.
+                            </FormControl.HelperText>
                         }
                     </FormControl>
-                    <FormControl isRequired isInvalid={errors.confirmPassword !== false}>
-                        {/* <FormControl.Label _text={{
-                            bold: true
-                        }}>Confirm Password</FormControl.Label> */}
+
+                    <FormControl isRequired isInvalid={!errors.confirmPassword}>
                         <Input value={formData.confirmPassword}
                             placeholder="Confirm Password"
-                            onChangeText={value => setData({
-                                ...formData,
-                                confirmPassword: value
-                            })}
+                            onChangeText={validateConfirm}
                             type={showConfirm ? "text" : "password"}
                             InputRightElement={
                                 <Pressable onPress={() => setShowConfirm(!showConfirm)}>
                                     <Icon as={<MaterialIcons name={showConfirm ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                                 </Pressable>} />
-                        {errors.confirmPassword === true ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
-                            Please confirm your password!
-                        </FormControl.HelperText>}
+                        {!errors.confirmPassword ? 
+                        <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> 
+                        : <FormControl.HelperText>Please confirm your password.</FormControl.HelperText>}
                     </FormControl>
 
                     <Button onPress={handleSubmit} mt="2" colorScheme="indigo">
                         Register
                     </Button>
-                    <HStack mb={8} justifyContent="center">
+                    <HStack mb={6} justifyContent="center">
                         <Text fontSize="sm" color="coolGray.600" _dark={{
                             color: "warmGray.200"
                         }}>
