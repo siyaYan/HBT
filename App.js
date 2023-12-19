@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomePage';
 import AccountScreen from './screens/AccountPage'
 import ResetPassword from './screens/ResetPage';
-import { NativeBaseProvider } from "native-base";
+import { NativeBaseProvider, Box } from "native-base";
 import Login from './screens/LoginPage';
 import Register from './screens/RegisterPage'
 import * as SecureStore from 'expo-secure-store';
@@ -52,7 +52,6 @@ export default function App() {
 
   return (
     <NativeBaseProvider>
-      {/* <Box flex={1} bg="#fff" alignItems="center" justifyContent="center"> */}
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Home" component={HomeScreen} />
@@ -62,9 +61,7 @@ export default function App() {
           <Stack.Screen name="Register" component={Register} />
         </Stack.Navigator>
       </NavigationContainer>
-      {/* </Box> */}
     </NativeBaseProvider>
-
   )
 };
 

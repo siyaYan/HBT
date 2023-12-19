@@ -3,7 +3,7 @@ import { Input, Icon, Checkbox, Pressable, Center, Modal } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'native-base';
-import ResetModal from "../components/ResetModal";
+// import ResetModal from "../components/ResetModal";
 import { Alert } from 'react-native';
 import { loginUser, sendEmail } from '../components/Endpoint';
 import * as SecureStore from 'expo-secure-store';
@@ -49,7 +49,7 @@ const Login = ({ navigation }) => {
                 //     await saveRememberMe(false);
                 //     await Keychain.resetGenericPassword();
                 //   }
-                navigation.navigate('Home');
+                navigation.navigate('Home',{ userName: formData.userName, token: response.token});
                 console.log(response.token);
             }else{
                 console.log('login failed');
@@ -199,7 +199,8 @@ const Login = ({ navigation }) => {
                     </HStack>
                 </VStack>
             </Box>
-        </Center>)
+        </Center>
+        )
 };
 
 export default Login;

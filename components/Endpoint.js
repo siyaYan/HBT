@@ -42,7 +42,7 @@ export async function loginUser(id, password) {
 
     const data = await response.json();
     if (data.status == 'success') {
-      Alert.alert('Success', 'Login successful');
+      // Alert.alert('Success', 'Login successful');
     } else {
       Alert.alert('Error', data.message || 'Login failed');
     }

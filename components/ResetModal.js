@@ -33,47 +33,46 @@ const ResetModal = () => {
 
     const handleSentEmail = async () => {
         const response = await sendEmail(email);
-        if (response.status=='success') {
+        if (response.status == 'success') {
             console.log('successful sent')
         };
     }
 
-        return (
-            <Center>
-                <Pressable onPress={() => setShowModal(true)}>
-                    <Text fontSize={15} color="indigo.500">forget password?</Text>
-                </Pressable>
-                {/* <Button onPress={() => setShowModal(true)}>Forget Password?</Button> */}
-                <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-                    <Modal.Content maxWidth="400px">
-                        <Modal.CloseButton />
-                        <Modal.Header>Send Reset Password Email</Modal.Header>
-                        <Modal.Body>
-                            <FormControl mt="3" isInvalid={!!error} isRequired>
-                                <FormControl.Label>Email</FormControl.Label>
-                                <Input value={email} onChangeText={setEmail} />
-                                {error ? <FormControl.ErrorMessage>Please enter a valid email address.</FormControl.ErrorMessage> : <FormControl.HelperText>
-                                    Example@gmail.com
-                                </FormControl.HelperText>}
-                            </FormControl>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button.Group space={2}>
-                                <Button variant="ghost" colorScheme="blueGray" onPress={() => {
-                                    setShowModal(false);
-                                    setError(false); // Clear any errors
-                                }}>
-                                    Cancel
-                                </Button>
-                                <Button onPress={handleSubmit}>
-                                    Send
-                                </Button>
-                            </Button.Group>
-                        </Modal.Footer>
-                    </Modal.Content>
-                </Modal>
-            </Center>
-        );
-    };
-
-    export default ResetModal;
+    return (
+        <Center>
+            <Pressable onPress={() => setShowModal(true)}>
+                <Text fontSize={15} color="indigo.500">forget password?</Text>
+            </Pressable>
+            {/* <Button onPress={() => setShowModal(true)}>Forget Password?</Button> */}
+            <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                <Modal.Content maxWidth="400px">
+                    <Modal.CloseButton />
+                    <Modal.Header>Send Reset Password Email</Modal.Header>
+                    <Modal.Body>
+                        <FormControl mt="3" isInvalid={!!error} isRequired>
+                            <FormControl.Label>Email</FormControl.Label>
+                            <Input value={email} onChangeText={setEmail} />
+                            {error ? <FormControl.ErrorMessage>Please enter a valid email address.</FormControl.ErrorMessage> : <FormControl.HelperText>
+                                Example@gmail.com
+                            </FormControl.HelperText>}
+                        </FormControl>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button.Group space={2}>
+                            <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                                setShowModal(false);
+                                setError(false); // Clear any errors
+                            }}>
+                                Cancel
+                            </Button>
+                            <Button onPress={handleSubmit}>
+                                Send
+                            </Button>
+                        </Button.Group>
+                    </Modal.Footer>
+                </Modal.Content>
+            </Modal>
+        </Center>
+    );
+};
+export default ResetModal;
