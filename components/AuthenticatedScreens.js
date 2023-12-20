@@ -11,23 +11,21 @@ export default function AuthenticatedScreens() {
     const navigationRef = useRef();
     const { userData, updateUserData } = useData();
     const handleTabPress = (value) => {
-        // Custom logic to handle data passing when clicking on a tab
-        // console.log(value.target)
+
         if (value.target.includes("Home")) {
             // Pass data to the Home screen
-            navigationRef.current?.navigate('Home', { userName: userData.userName, token: userData.token });
+            navigationRef.current?.navigate('Home');
             console.log(userData.userName, 'home')
         }
         if (value.target.includes("Account")) {
-            navigationRef.current?.navigate('Account', { userName: userData.userName, token: userData.token })
+            navigationRef.current?.navigate('Account')
             console.log(userData.userName, 'account')
         }
         if (value.target.includes("Setting")) {
-            navigationRef.current?.navigate('Setting', { userName: userData.userName, token: userData.token })
+            navigationRef.current?.navigate('Setting')
             console.log(userData.userName, 'setting')
         }
     }
-    
     return (
         <Tab.Navigator>
             <Tab.Screen

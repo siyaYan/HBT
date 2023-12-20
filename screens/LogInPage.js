@@ -43,9 +43,7 @@ const LoginScreen = ({ navigation }) => {
                 if (remember) {
                     await saveCredentials(formData.id, formData.password);
                 }
-                
                 navigation.navigate('MainStack', { screen: 'Home'});
-
                 // console.log(response.token);
             } else {
                 console.log('login failed');
