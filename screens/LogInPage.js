@@ -7,6 +7,7 @@ import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'n
 import { Alert } from 'react-native';
 import { loginUser, sendEmail } from '../components/Endpoint';
 import * as SecureStore from 'expo-secure-store';
+import { useData } from '../context/DataContext';
 
 const LoginScreen = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
@@ -16,7 +17,8 @@ const LoginScreen = ({ navigation }) => {
     const [errors, setErrors] = useState({});
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
-
+    const {userData, updateUserData}= useData();
+    console.log(userData)
 
     const saveCredentials = async (id, password) => {
         try {
@@ -41,7 +43,8 @@ const LoginScreen = ({ navigation }) => {
                 if (remember) {
                     await saveCredentials(formData.id, formData.password);
                 }
-                navigation.navigate('MainStack', { screen: 'Home', params: { userName: formData.id, token: response.token } });
+                
+                navigation.navigate('MainStack', { screen: 'Home'});
 
                 // console.log(response.token);
             } else {

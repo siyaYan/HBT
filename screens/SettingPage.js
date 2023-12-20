@@ -23,7 +23,7 @@ const SettingScreen = ({ navigation }) => {
               color: "warmGray.50"
             }}>
               Setting Page
-              {/* {data.userName} */}
+              {userData.userName}
             </Heading>
           </VStack>
         </Box>

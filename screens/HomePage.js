@@ -7,10 +7,6 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 
 const HomeScreen = () => {
-  // const route = useRoute();
-  // const { params } = route;
-  // const data = params;
-  // console.log(data,'inHome');
   const { userData, updateUserData } = useData();
   console.log(userData,'inHome');
 
@@ -40,7 +36,7 @@ const HomeScreen = () => {
             {/* <FontAwesome name="user-circle-o" size={30} color="black" /> */}
             {/* {data.userName} */}
           </Avatar>
-          {/* {data.userName} */}
+          {userData.userName}
         </Box>
 
         <Box py='5' safeArea w="100%" maxW="290" alignItems="center">

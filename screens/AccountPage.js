@@ -39,7 +39,7 @@ const AccountScreen = ({ navigation }) => {
               color: "warmGray.50"
             }}>
               Account Page
-              {/* {data.userName} */}
+              {userData.userName}
             </Heading>
             <Button
               onPress={logout}

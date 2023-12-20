@@ -3,7 +3,7 @@ import { useState } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AuthenticatedScreens from '../components/AuthenticatedScreens';
-import MainStackNavigator from '../components/MainStackNavigator';
+import LoginStackNavigator from '../components/LoginStackNavigator';
 import * as SecureStore from 'expo-secure-store';
 import { loginUser } from '../components/Endpoint';
 import { useData } from '../context/DataContext';
@@ -24,7 +24,7 @@ const getCredentials = async () => {
 
 export default function AppContainer () {
     const navigationRef = useRef();
-    const userData= useData();
+    const {userData, updateUserData}= useData();
     console.log(userData)
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -61,7 +61,7 @@ export default function AppContainer () {
             <NavigationContainer ref={navigationRef}>
                 <Stack.Navigator initialRouteName="Login">
                     <Stack.Screen name="MainStack" component={AuthenticatedScreens} options={{ headerShown: false }} />
-                    <Stack.Screen name="LoginStack" component={MainStackNavigator} options={{ headerShown: false }} />
+                    <Stack.Screen name="LoginStack" component={LoginStackNavigator} options={{ headerShown: false }} />
                 </Stack.Navigator>
             </NavigationContainer>
     )
