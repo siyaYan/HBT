@@ -4,6 +4,9 @@ import SettingScreen from '../screens/SettingPage';
 import HomeScreen from '../screens/HomePage';
 import AccountScreen from '../screens/AccountPage'
 import { useData } from '../context/DataContext';
+import {  Icon} from 'native-base';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; 
 
 const Tab = createBottomTabNavigator();
 
@@ -32,16 +35,43 @@ export default function AuthenticatedScreens() {
                 name="Home"
                 component={HomeScreen}
                 listeners={{ tabPress: handleTabPress }}
+                options={{
+                  tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons
+                      name={'home'}
+                      color={color}
+                      size={size}
+                    />
+                  ),
+                }}
             />
             <Tab.Screen
                 name="Account"
                 component={AccountScreen}
                 listeners={{ tabPress: handleTabPress }}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name={'account'}
+                        color={color}
+                        size={size}
+                      />
+                    ),
+                  }}
             />
             <Tab.Screen
                 name="Setting"
                 component={SettingScreen}
                 listeners={{ tabPress: handleTabPress }}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons 
+                        name={'settings'}
+                        color={color}
+                        size={size}
+                      />
+                    ),
+                  }}
             />
         </Tab.Navigator>
     )
