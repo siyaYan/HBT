@@ -8,10 +8,11 @@ import { Alert } from 'react-native';
 import { loginUser, sendEmail } from '../components/Endpoint';
 import * as SecureStore from 'expo-secure-store';
 
-const Login = ({ navigation }) => {
+const LoginScreen = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
     const [show, setShow] = useState(false);
-    const [formData, setData] = useState({ rememberMe: true });
+    const [formData, setData] = useState();
+    const [remember, setRemember] = useState(true);
     const [errors, setErrors] = useState({});
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
@@ -26,32 +27,24 @@ const Login = ({ navigation }) => {
             Alert.alert('Error', 'Failed to securely save your credentials. You may need to login again next time.');
         }
     };
-      
 
     // Method to handle login
     async function handleSubmit() {
         console.log({
             id: formData.id,
             password: formData.password,
-            rememberMe: formData.rememberMe,
+            rememberMe: remember
         });
         if (submitValidation()) {
             const response = await loginUser(formData.id, formData.password)
             if (response.token) {
-                if (formData.rememberMe) {
+                if (remember) {
                     await saveCredentials(formData.id, formData.password);
                 }
-                // if (formData.rememberMe) {
-                //     await saveRememberMe(true);
-                //     await saveCredentials(formData.id, formData.password);
-                //   } else {
-                //     // If not, ensure any existing credentials are cleared
-                //     await saveRememberMe(false);
-                //     await Keychain.resetGenericPassword();
-                //   }
-                navigation.navigate('Home',{ userName: formData.userName, token: response.token});
-                console.log(response.token);
-            }else{
+                navigation.navigate('MainStack', { screen: 'Home', params: { userName: formData.id, token: response.token } });
+
+                // console.log(response.token);
+            } else {
                 console.log('login failed');
             }
         }
@@ -81,7 +74,8 @@ const Login = ({ navigation }) => {
     const handleSentEmail = async () => {
         const response = await sendEmail(email);
         if (response.status == 'success') {
-            navigation.navigate('Reset');
+            // navigation.navigate('Reset');
+            navigation.navigate('LoginStack', { screen: 'Reset' })
         };
     }
 
@@ -123,7 +117,7 @@ const Login = ({ navigation }) => {
                         <Input onChangeText={value => setData({
                             ...formData,
                             id: value
-                        })} placeholder="Email/Username"/>
+                        })} placeholder="Email/Username" />
                         <FormControl.ErrorMessage></FormControl.ErrorMessage>
                     </FormControl>
                     <FormControl isRequired isInvalid={'password' in errors}>
@@ -136,15 +130,10 @@ const Login = ({ navigation }) => {
                         </Pressable>} />
                     </FormControl>
                     <HStack space={6} >
-                        <Checkbox ml='1' size='sm' defaultIsChecked onChange={value => setData({
-                            ...formData,
-                            rememberMe: value
-                        })} >Remember
+                        <Checkbox ml='1' size='sm' defaultIsChecked onPress={value => setRemember(!remember)} >Remember
                         </Checkbox>
-                        {/* <Checkbox isChecked={status} onChange={setStatus(value)} value={status}>check</Checkbox> */}
                         <Link>
                             {/* <ResetModal /> */}
-
                             <Pressable onPress={() => setShowModal(true)}>
                                 <Text fontSize={15} color="indigo.500">forget password?</Text>
                             </Pressable>
@@ -156,9 +145,9 @@ const Login = ({ navigation }) => {
                                     <Modal.Body>
                                         <FormControl mt="3" isInvalid={!!error} isRequired>
                                             <FormControl.Label>Email</FormControl.Label>
-                                            <Input value={email} onChangeText={setEmail} placeholder="example@email.com"/>
+                                            <Input value={email} onChangeText={setEmail} placeholder="example@email.com" />
                                             {error ? <FormControl.ErrorMessage>Please enter a valid email address.</FormControl.ErrorMessage> : <FormControl.HelperText>
-                                        
+
                                             </FormControl.HelperText>}
                                         </FormControl>
                                     </Modal.Body>
@@ -188,7 +177,7 @@ const Login = ({ navigation }) => {
                         }}>
                             New to Habital?{"  "}
                         </Text>
-                        <Pressable onPress={() => navigation.navigate('Register')}>
+                        <Pressable onPress={() => navigation.navigate('LoginStack', { screen: 'Register' })}>
                             <Text fontSize='sm' color="indigo.500">Sign Up</Text>
                         </Pressable>
                         <Text fontSize="sm" color="coolGray.600" _dark={{
@@ -200,7 +189,7 @@ const Login = ({ navigation }) => {
                 </VStack>
             </Box>
         </Center>
-        )
+    )
 };
 
-export default Login;
+export default LoginScreen;

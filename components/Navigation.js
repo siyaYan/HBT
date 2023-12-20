@@ -5,7 +5,7 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
 
 const Navigation = ({ onSelect }) => {
-    const [selected, setSelected] = useState();
+    const [selected, setSelected] = useState(0);
     const handleSelect = (value) =>{
         setSelected(value)
         onSelect(value)
@@ -13,7 +13,6 @@ const Navigation = ({ onSelect }) => {
     return(
     <NativeBaseProvider>
         <HStack alignItems="center" safeAreaBottom shadow={6}>
-
             <Pressable cursor="pointer" opacity={selected === 0 ? 1 : 0.5} py="3" flex={1} onPress={()=>handleSelect(0)}>
                 <Center>
                     <Icon mb="1" as={<MaterialCommunityIcons name={selected === 0 ? 'home' : 'home-outline'} />} color="white" size="md" />

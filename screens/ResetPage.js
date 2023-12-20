@@ -96,7 +96,7 @@ const ResetPassword = ({ navigation }) => {
       const response = await resetPassword(formData.password, formData.confirmPassword,formData.token);
       // Handle success or error response
       if (response.token) {
-        navigation.navigate('Login');
+        navigation.navigate('LoginStack', { screen: 'Login'})
         console.log(response.token);
       }
   };

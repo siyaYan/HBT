@@ -9,7 +9,7 @@ import { Popover } from 'native-base';
 import { TabRouter } from "@react-navigation/routers";
 
 
-const Register = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const [formData, setData] = useState({});
@@ -194,7 +194,7 @@ const Register = ({ navigation }) => {
         const response = await registerUser(formData.username, formData.nickname, formData.email, formData.password, formData.confirmPassword);
         // Handle success or error response
         if (response.token) {
-            navigation.navigate('Login');
+            navigation.navigate('LoginStack', { screen: 'Login'})
         }
     };
 
@@ -294,7 +294,7 @@ const Register = ({ navigation }) => {
                         }}>
                             I'm a exist user.{" "}
                         </Text>
-                        <Pressable onPress={() => navigation.navigate('Login')}>
+                        <Pressable onPress={() => navigation.navigate('LoginStack', { screen: 'Login'})}>
                             <Text fontSize='sm' color="indigo.500">Log in</Text>
                         </Pressable>
                     </HStack>
@@ -305,4 +305,4 @@ const Register = ({ navigation }) => {
     )
 };
 
-export default Register;
+export default RegisterScreen;

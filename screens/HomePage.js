@@ -1,52 +1,57 @@
 import { useState } from "react";
-import { Center, Box, Heading, VStack, HStack, Button, NativeBaseProvider, Flex } from 'native-base';
-import Navigation from '../components/Navigation'
+import { Menu, Center, HamburgerIcon, Pressable, Box, Heading, VStack, HStack, ZStack, IconButton, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
 import { useRoute } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import { useData } from '../context/DataContext';
 
-const HomeScreen = ({ navigation }) => {
-  const [selected, setSelected] = useState();
-  const route = useRoute();
-  const { userName, token } = route.params; // Access parameters here
+const HomeScreen = () => {
+  // const route = useRoute();
+  // const { params } = route;
+  // const data = params;
+  // console.log(data,'inHome');
+  const { userData, updateUserData } = useData();
+  console.log(userData,'inHome');
 
-  function handleNavigate(value) {
-    setSelected(value);
-    console.log(value, selected);
-    if (value == 0) {
-      navigation.navigate('Home')
-    }
-    if (value == 1) {
-      navigation.navigate('Account')
-    }
-    if (value == 2) {
-      // navigation.navigate('Account')
-    }
+  function inviteFriend(value){
+    console.log('invite friend')
   }
   return (
     <NativeBaseProvider>
-        <Flex direction="column" mt='5' alignItems='center'>
-          <Avatar bg="purple.600" alignSelf="center" size="md" source={{
-            uri: "https://images.unsplash.com/photo-1510771463146-e89e6e86560e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80"
-          }}>
-            {userName}
-          </Avatar>
-          <Box py='5' safeArea w="100%" maxW="290" alignItems="center">
-            <Heading mt='140' size="lg" fontWeight="600" color="coolGray.300" _dark={{
-              color: "Gray.50"
+      <Flex direction="column" alignItems='center'>
+        <ZStack alignSelf='flex-end' mr='8' mt='2' >
+          <Box alignItems="flex-start">
+            <Menu mt='-20' shadow={2} mr='2' w="140" trigger={triggerProps => {
+              return <Pressable accessibilityLabel="Options menu" {...triggerProps}>
+                <AntDesign  name="plus" size={24} color="black" />
+              </Pressable>;
             }}>
-              Home Page
-            </Heading>
-          </Box >
-        </Flex>
-      <Center flex={1} justifyContent="flex-end">
-        <Box safeArea bg="black" w="100%" >
-          <Flex direction='row' width='100%' >
-            <Navigation onSelect={handleNavigate} />
-          </Flex>
-        </Box>
-      </Center>
-    </NativeBaseProvider>
+              <Menu.Item px='0' onPress={inviteFriend}><AntDesign name="adduser" size={24} color="black" />Add a friend</Menu.Item>
+              <Menu.Item px='0' >Test</Menu.Item>
+              <Menu.Item px='0' >Test</Menu.Item>
+            </Menu>
+          </Box>
+        </ZStack>
 
+        <Box py='2' px='2' alignItems="center" justifyContent="center">
+          <Avatar bg='white' mb='1' size="md">
+            <AntDesign name="user" size={30} color="black" />
+            {/* <FontAwesome name="user-circle-o" size={30} color="black" /> */}
+            {/* {data.userName} */}
+          </Avatar>
+          {/* {data.userName} */}
+        </Box>
+
+        <Box py='5' safeArea w="100%" maxW="290" alignItems="center">
+          <Heading mt='140' size="lg" fontWeight="600" color="coolGray.300" _dark={{
+            color: "Gray.50"
+          }}>
+            Home Page
+          </Heading>
+        </Box >
+      </Flex>
+    </NativeBaseProvider>
   );
 };
 
