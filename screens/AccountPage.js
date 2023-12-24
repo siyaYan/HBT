@@ -37,7 +37,6 @@ const AccountScreen = ({ navigation }) => {
               <Box py='2's alignItems="center" justifyContent="center">
                 <Avatar bg='white' mb='1' size="lg" borderWidth={2}>
                   <AntDesign name="user" size={40} color="black" />
-                  {/* <Avatar.Badge bg="white" > */}
                   <Avatar.Badge
                     bg="white"
                     position="absolute"

@@ -25,7 +25,6 @@ const getCredentials = async () => {
 export default function AppContainer () {
     const navigationRef = useRef();
     const {userData, updateUserData}= useData();
-    console.log(userData)
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
@@ -43,6 +42,7 @@ export default function AppContainer () {
                         userName: storedCredentials.id,
                         token: response.token
                     })
+                    console.log(userData)
                     setIsAuthenticated(true);
                     // navigationRef.current?.AuthenticatedScreens.navigate('Home', { userName: storedCredentials.id, token: response.token })
                     navigationRef.current?.navigate('MainStack', { screen: 'Home' });

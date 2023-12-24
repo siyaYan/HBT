@@ -43,6 +43,10 @@ const LoginScreen = ({ navigation }) => {
                 if (remember) {
                     await saveCredentials(formData.id, formData.password);
                 }
+                updateUserData({
+                    token:response.token,
+                    userName:formData.id
+                })
                 navigation.navigate('MainStack', { screen: 'Home'});
                 // console.log(response.token);
             } else {
