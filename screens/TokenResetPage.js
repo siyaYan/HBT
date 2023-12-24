@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Input, Icon, Pressable, Center, Heading, VStack, Box,FormControl, Button, Text } from 'native-base';
-import { resetPassword } from '../components/Endpoint'; // Import the mock function
+import { tokenResetPassword } from '../components/Endpoint'; // Import the mock function
 import { Alert } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 
-const ResetPassword = ({ navigation }) => {
+const ResetPasswordScreen = ({ navigation }) => {
 
   const [formData, setData] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -93,7 +93,7 @@ const ResetPassword = ({ navigation }) => {
   const handlePasswordReset = async () => {
 
       // Call the mock registration function
-      const response = await resetPassword(formData.password, formData.confirmPassword,formData.token);
+      const response = await tokenResetPassword(formData.password, formData.confirmPassword,formData.token);
       // Handle success or error response
       if (response.token) {
         navigation.navigate('LoginStack', { screen: 'Login'})
@@ -123,7 +123,7 @@ const ResetPassword = ({ navigation }) => {
                 bold: true
               }}>Token</FormControl.Label>
               <Input value={formData.token}
-                placeholder="Input your reset password token"
+                placeholder="Enter your reset password token"
                 onChangeText={value => setData({
                   ...formData,
                   token: value
@@ -134,7 +134,7 @@ const ResetPassword = ({ navigation }) => {
                 bold: true
               }}>Password</FormControl.Label>
               <Input value={formData.password}
-                placeholder="Password"
+                placeholder="Enter the new password"
                 onChangeText={validatePassword}
                 type={showPassword ? "text" : "password"}
                 InputRightElement={
@@ -155,7 +155,7 @@ const ResetPassword = ({ navigation }) => {
                 bold: true
               }}>Confirm Password</FormControl.Label>
               <Input value={formData.confirmPassword}
-                placeholder="Confirm Password"
+                placeholder="Confirm new password"
                 onChangeText={value => setData({
                   ...formData,
                   confirmPassword: value
@@ -179,4 +179,4 @@ const ResetPassword = ({ navigation }) => {
   );
 };
 
-export default ResetPassword;
+export default ResetPasswordScreen;

@@ -9,4 +9,6 @@ install async-storage to keep the data while refresh the app
 Test account:
 Test12/Test13
 passowrd: test123!
-Testing: reset password didn't work correctly
+Testing: 
+1.Reset password didn't work correctly
+2.Login endpoint only have status&token

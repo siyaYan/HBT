@@ -23,8 +23,6 @@ const HomeScreen = ({navigation}) => {
           <Avatar bg='white' mb='1' size="md" borderWidth={2}>
             <AntDesign name="user" size={30} color="black" 
             onPress={handleAvatarPress} />
-            {/* <FontAwesome name="user-circle-o" size={30} color="black" /> */}
-            {/* {data.userName} */}
           </Avatar>
           {userData.userName}
         </Box>

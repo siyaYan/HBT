@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ResetPassword from '../screens/ResetPage';
+import ResetPassword from '../screens/TokenResetPage';
 import LoginScreen from '../screens/LoginPage';
 import RegisterScreen from '../screens/RegisterPage'
 
@@ -8,7 +8,6 @@ import RegisterScreen from '../screens/RegisterPage'
 const Stack = createStackNavigator();
 
 export default function LoginStackNavigator() {
-    const navigationRef = useRef();
     return (
         <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login" component={LoginScreen} options={{

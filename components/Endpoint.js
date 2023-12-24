@@ -54,7 +54,7 @@ export async function loginUser(id, password) {
   }
 };
 
-export async function resetPassword(password, passwordConfirm, token) {
+export async function tokenResetPassword(password, passwordConfirm, token) {
   // const toke=token.toString()
   try {
     const response = await fetch("http://localhost:8000/habital/v1/users/resetPassword/"+token, {
@@ -82,9 +82,7 @@ export async function resetPassword(password, passwordConfirm, token) {
   }
 };
 
-
-export async function sendEmail(email) {
-
+export async function forgetSendEmail(email) {
   try {
     const response = await fetch('http://localhost:8000/habital/v1/users/forgotPassword', {
       method: 'POST',
@@ -109,3 +107,49 @@ export async function sendEmail(email) {
   }
 
 };
+
+export async function resetPassword(currentPassword, newPassword, passwordConfirm) {
+  //dummy success
+  Alert.alert('Success', 'Password updated');
+  console.log('reset password success');
+  return 'success';
+  //dummy failed
+  // Alert.alert('Failed', 'wrong current password!');
+  // console.log('wrong current password!');
+  // return 'failed';
+};
+
+export async function resetProfile(nickname, username) {
+  //dummy success
+  // Alert.alert('Success', 'Reset Profile successful');
+  // console.log('reset profile success');
+  // return 'success';
+  //dummy failed
+  Alert.alert('Failed', 'username must be unique!');
+  console.log('username must be unique!');
+  return 'failed';
+};
+
+export async function resetSendEmail(email) {
+  //dummy success
+Alert.alert('Success', 'Send reset email successful');
+console.log('send reset email success');
+return 'success';
+//dummy failed
+// Alert.alert('Failed', 'Non valid email address!');
+// console.log('Non valid email address!');
+// return 'failed';
+};
+
+export async function resetEmail(email, token) {
+  //dummy success
+  Alert.alert('Success', 'Reset email successful');
+  console.log('reset email success');
+  return 'success';
+  //dummy failed
+  // Alert.alert('Failed', 'wrong email reset token!');
+  // console.log('wrong email reset token!');
+  // return 'failed';
+};
+
+

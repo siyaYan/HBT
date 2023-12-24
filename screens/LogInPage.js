@@ -5,7 +5,7 @@ import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Link, Text } from 'native-base';
 // import ResetModal from "../components/ResetModal";
 import { Alert } from 'react-native';
-import { loginUser, sendEmail } from '../components/Endpoint';
+import { loginUser, forgetSendEmail } from '../components/Endpoint';
 import * as SecureStore from 'expo-secure-store';
 import { useData } from '../context/DataContext';
 
@@ -18,7 +18,7 @@ const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const {userData, updateUserData}= useData();
-    console.log(userData)
+    // console.log(userData)
 
     const saveCredentials = async (id, password) => {
         try {
@@ -77,7 +77,7 @@ const LoginScreen = ({ navigation }) => {
     };
 
     const handleSentEmail = async () => {
-        const response = await sendEmail(email);
+        const response = await forgetSendEmail(email);
         if (response.status == 'success') {
             // navigation.navigate('Reset');
             navigation.navigate('LoginStack', { screen: 'Reset' })

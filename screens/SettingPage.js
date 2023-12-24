@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Center, Divider, Box, Heading, VStack, IconButton, Button, NativeBaseProvider, Flex } from 'native-base';
+import { Center, Divider, Box, Heading, HStack, VStack, IconButton, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
@@ -15,6 +15,11 @@ const SettingScreen = ({ navigation }) => {
     navigation.navigate('MainStack', { screen: 'Account' });
   };
 
+  const goAccountSetting = () => {
+    // Navigate to another screen when the Avatar is pressed
+    navigation.navigate('AccountStack', {screen: 'AccountSetting'}); 
+  };
+
   return (
     <NativeBaseProvider>
       <Flex direction="column" alignItems='center' >
@@ -27,30 +32,38 @@ const SettingScreen = ({ navigation }) => {
           {userData.userName}
         </Box>
         <Box safeArea w="90%" maxW="290">
+
           <VStack space={1} alignItems='left' >
+
             <Heading size="sm" fontWeight="600" color="coolGray.800" _dark={{
               color: "warmGray.50"
             }}>
               System Settings
             </Heading>
+
             <Divider my="2" _light={{
               bg: "muted.800"
             }} _dark={{
               bg: "muted.50"
             }} />
-            <Box py='2' alignItems="center" justifyContent="center">
-              <Avatar bg='white' mb='1' size="lg" borderWidth={2}>
-                <AntDesign name="user" size={40} color="black" />
+
+            <Box alignItems="center" justifyContent="center">
+              <HStack>
+              <Avatar bg='white' size={6} borderWidth={2}>
+                <AntDesign name="user" size={15} color="black" />
                 <Avatar.Badge
                   bg="white"
                   position="absolute"
-                  top={0}
-                  right={0}
+                  top={-4}
+                  right={-4}
                 >
-                  <Ionicons name="settings-sharp" size={16} color="black" />
+                  <Ionicons name="settings-sharp" size={8} color="black" />
                 </Avatar.Badge>
               </Avatar>
-              {userData.userName}
+              <Box alignItems="center" justifyContent="center" ml={2}>
+                <Button p={0} variant="unstyled" onPress={goAccountSetting}>Account Setting</Button>
+              </Box>
+              </HStack>
             </Box>
             <Divider my="2" _light={{
               bg: "muted.800"

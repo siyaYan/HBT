@@ -4,7 +4,6 @@ import SettingScreen from '../screens/SettingPage';
 import HomeScreen from '../screens/HomePage';
 import AccountScreen from '../screens/AccountPage'
 import { useData } from '../context/DataContext';
-import {  Icon} from 'native-base';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
 

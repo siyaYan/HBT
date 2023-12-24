@@ -3,10 +3,7 @@ import { Input, Icon, Pressable, Center, IconButton } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { VStack, HStack, FormControl, Button, Box, Heading, Text ,WarningOutlineIcon} from 'native-base';
-import { Alert } from 'react-native';
 import { registerUser } from "../components/Endpoint";
-import { Popover } from 'native-base';
-import { TabRouter } from "@react-navigation/routers";
 
 
 const RegisterScreen = ({ navigation }) => {
