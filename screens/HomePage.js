@@ -18,8 +18,7 @@ const HomeScreen = ({navigation}) => {
     <NativeBaseProvider>
       <Flex direction="column" alignItems='center'>
         <OptionMenu/>
-
-        <Box py='2' px='2' alignItems="center" justifyContent="center">
+        <Box py='5' px='2' alignItems="center" justifyContent="center">
           <Avatar bg='white' mb='1' size="md" borderWidth={2}>
             <AntDesign name="user" size={30} color="black" 
             onPress={handleAvatarPress} />
@@ -33,8 +32,10 @@ const HomeScreen = ({navigation}) => {
           }}>
             Home Page
           </Heading>
+          <Button onPress={()=>{navigation.navigate('LoginStack', {screen: 'Login'}) }}>Login</Button>
         </Box >
       </Flex>
+
     </NativeBaseProvider>
   );
 };

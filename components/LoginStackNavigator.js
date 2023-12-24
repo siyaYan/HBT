@@ -11,10 +11,13 @@ export default function LoginStackNavigator() {
     return (
         <Stack.Navigator initialRouteName="Login">
             <Stack.Screen name="Login" component={LoginScreen} options={{
-                headerShown: false, // Show the header
-                headerLeft: () => null, // Hide the back button
+                headerBackTitleVisible: false,
+            }}/>
+            <Stack.Screen name="Reset" component={ResetPassword} options={{
+                headerBackTitleVisible: false,
             }} />
-            <Stack.Screen name="Reset" component={ResetPassword} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} options={{
+                headerBackTitleVisible: false,
+            }} />
         </Stack.Navigator>)
 };

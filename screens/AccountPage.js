@@ -15,6 +15,10 @@ const AccountScreen = ({ navigation }) => {
   const deleteCredentials = async () => {
     try {
       await SecureStore.deleteItemAsync('userCredentials');
+      updateUserData({
+        token:'',
+        userName:''
+      })
     } catch (error) {
       console.error('Failed to delete the credentials', error);
       // Handle the error, like showing an alert to the user
