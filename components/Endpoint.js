@@ -152,4 +152,15 @@ export async function resetEmail(email, token) {
   // return 'failed';
 };
 
+export async function updateAvatar(data) {
+  //dummy success
+  Alert.alert('Success', 'Avatar updated!');
+  console.log('update avatar!');
+  return 'success';
+  //dummy failed
+  // Alert.alert('Failed', 'wrong email reset token!');
+  // console.log('wrong email reset token!');
+  // return 'failed';
+};
+
 

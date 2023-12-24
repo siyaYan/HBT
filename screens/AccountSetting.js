@@ -1,7 +1,7 @@
 
 import { Input, Icon, Pressable, Center, IconButton, Row } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { Avatar } from "native-base";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -14,6 +14,12 @@ import { Alert } from 'react-native';
 
 const AccountSettingScreen = ({ navigation }) => {
     const { userData, updateUserData } = useData();
+    useEffect(() => {
+        // Fetch or update avatar dynamically
+        // userData=useData().useData
+        console.log(userData, 'inHome');
+      }, [userData]);
+    
     const [formData, setData] = useState({
         nickname: 'nickname',
         username: userData.userName,
@@ -178,6 +184,8 @@ const AccountSettingScreen = ({ navigation }) => {
         <Center w="100%">
             <Box w="100%" maxW="290">
                 <Box mt={5} alignItems="center" justifyContent="center">
+                {userData.avatar ?
+              (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.avatar }} />) : 
                     <Avatar bg='white' mb='1' size="lg" borderWidth={2}>
                         <AntDesign name="user" size={40} color="black" />
                         <Avatar.Badge
@@ -188,7 +196,7 @@ const AccountSettingScreen = ({ navigation }) => {
                         >
                             <Ionicons name="settings-sharp" size={16} color="black" />
                         </Avatar.Badge>
-                    </Avatar>
+                    </Avatar>}
                 </Box>
                 <VStack space={8} mt="5">
                     <FormControl isInvalid={errors.nickname}>

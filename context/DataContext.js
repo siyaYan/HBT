@@ -32,6 +32,7 @@ export const DataProvider = ({ children }) => {
     const saveData = async () => {
       try {
         await AsyncStorage.setItem('userData', JSON.stringify(userData));
+        console.log(userData,'???')
       } catch (error) {
         console.error('Error saving user data:', error);
       }
@@ -40,8 +41,11 @@ export const DataProvider = ({ children }) => {
     saveData();
   }, [userData]);
 
+  // const updateUserData = (newUserData) => {
+  //   setUserData(newUserData);
+  // };
   const updateUserData = (newUserData) => {
-    setUserData(newUserData);
+    setUserData((prevUserData) => ({ ...prevUserData, ...newUserData }));
   };
 
   return (

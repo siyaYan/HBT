@@ -8,6 +8,7 @@ const ResetPassword = ({ navigation }) => {
   const [formData, setData] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showCurrent, setShowCurrent] = useState(false);
   const [errors, setErrors] = useState({
     length: false,
     letterAndNumber: false,
@@ -117,23 +118,11 @@ const ResetPassword = ({ navigation }) => {
   };
 
   return (
-    <Center w="100%">
-      <Box safeArea py="8" w="90%" maxW="290">
-        <VStack space={1} alignItems="center">
-          <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
-            color: "warmGray.50"
-          }}>
-            Reset Your Password
-          </Heading>
-          <Heading mt="3" Center _dark={{
-            color: "warmGray.200"
-          }} color="coolGray.600" fontWeight="medium" size="xs">
-            Enter a new password to reset!
-          </Heading>
-        </VStack>
-        <VStack mt="5">
+    <Center w="100%" >
+      <Box safeArea py="8" w="90%" maxW="290" >
+        <VStack mt="5" >
           <Center>
-            <FormControl isRequired isInvalid={errors.current}>
+            <FormControl mb={5} isRequired isInvalid={errors.current}>
               <FormControl.Label _text={{
                 bold: true
               }}>Current password</FormControl.Label>
@@ -142,11 +131,15 @@ const ResetPassword = ({ navigation }) => {
                 onChangeText={value => setData({
                   ...formData,
                   current: value
-                })} />
+                })} type={showCurrent ? "text" : "password"}
+                InputRightElement={
+                  <Pressable onPress={() => setShowCurrent(!showCurrent)}>
+                    <Icon as={<MaterialIcons name={showCurrent ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
+                  </Pressable>} />
               <FormControl.ErrorMessage>{errors.current ? 'Current Password is not correct!' : ''}</FormControl.ErrorMessage>
 
             </FormControl>
-            <FormControl isRequired isInvalid={errors.password}>
+            <FormControl  mb={5} isRequired isInvalid={errors.password}>
               <FormControl.Label _text={{
                 bold: true
               }}>Password</FormControl.Label>
@@ -167,7 +160,7 @@ const ResetPassword = ({ navigation }) => {
                 </Text>
               </FormControl.HelperText>
             </FormControl>
-            <FormControl isRequired isInvalid={errors.confirmPassword}>
+            <FormControl mb={5}  isRequired isInvalid={errors.confirmPassword}>
               <FormControl.Label _text={{
                 bold: true
               }}>Confirm Password</FormControl.Label>

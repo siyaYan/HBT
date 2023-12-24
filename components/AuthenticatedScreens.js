@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef,useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SettingScreen from '../screens/SettingPage';
 import HomeScreen from '../screens/HomePage';
@@ -16,17 +16,23 @@ export default function AuthenticatedScreens() {
         if (value.target.includes("Home")) {
             // Pass data to the Home screen
             navigationRef.current?.navigate('Home');
-            console.log(userData.userName, 'home')
+            console.log(userData, 'home')
         }
         if (value.target.includes("Account")) {
             navigationRef.current?.navigate('Account')
-            console.log(userData.userName, 'account')
+            console.log(userData, 'account')
         }
         if (value.target.includes("Setting")) {
             navigationRef.current?.navigate('Setting')
-            console.log(userData.userName, 'setting')
+            console.log(userData, 'setting')
         }
     }
+    // useEffect(() => {
+    //     // Update the 'userData' parameter for each tab whenever it changes
+    //     Tab.Navigator?.state?.routes.forEach((route) => {
+    //       route.params = { ...route.params, userData };
+    //     });
+    //   }, [userData]);
     return (
         <Tab.Navigator>
             <Tab.Screen
@@ -34,6 +40,7 @@ export default function AuthenticatedScreens() {
                 component={HomeScreen}
                 listeners={{ tabPress: handleTabPress }}
                 options={{
+                    initialParams:{ avatar: userData.avatar },
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (
                         <MaterialCommunityIcons

@@ -8,6 +8,7 @@ import AccountStackNavigator from '../components/AccountStackNavigator';
 import * as SecureStore from 'expo-secure-store';
 import { loginUser } from '../components/Endpoint';
 import { useData } from '../context/DataContext';
+import Test from '../screens/Test.js';
 
 const Stack = createStackNavigator();
 
@@ -64,6 +65,7 @@ export default function AppContainer () {
                     <Stack.Screen name="MainStack" component={AuthenticatedScreens}  />
                     <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
                     <Stack.Screen name="AccountStack" component={AccountStackNavigator} />
+                    <Stack.Screen name="Test" component={Test}/>
                 </Stack.Navigator>
             </NavigationContainer>
     )
