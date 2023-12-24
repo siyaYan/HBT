@@ -1,33 +1,48 @@
 import { useState } from "react";
-import { Menu, Center, HamburgerIcon, Pressable, Box, Heading, VStack, HStack, ZStack, IconButton, Button, NativeBaseProvider, Flex } from 'native-base';
+import { Center, Divider, Box, Heading, VStack, IconButton, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
-import { useRoute } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
-
+import OptionMenu from '../components/OptionMenu';
 
 const SettingScreen = ({ navigation }) => {
-  // const route = useRoute();
-  // const { params } = route;
-  // const data = params;
-  // console.log(data,'setting');
   const { userData, updateUserData } = useData();
-  console.log(userData,'setting');
+  console.log(userData, 'setting');
+
+  const handleAvatarPress = () => {
+    // Navigate to another screen when the Avatar is pressed
+    navigation.navigate('MainStack', {screen: 'Account'}); 
+  };
 
   return (
     <NativeBaseProvider>
-      <Center flex={1} w="100%">
-        <Box safeArea py='8' w="90%" maxW="290">
-          <VStack space={3} alignItems='center' >
-            <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
+       <Flex direction="column" alignItems='center' >
+          <OptionMenu />
+          <Box width='90%' py='2' px='2' alignItems="center" justifyContent="center">
+          <Avatar alignSelf='flex-end' bg='white' mt='5' mr='5' size="md" borderWidth={2}>
+            <AntDesign name="user" size={30} color="black" 
+            onPress={handleAvatarPress} />
+            {/* {data.userName} */}
+          </Avatar>
+          {userData.userName}
+        </Box>
+        <Box safeArea  w="90%" maxW="290">
+          <VStack space={1} alignItems='left' >
+            <Heading size="sm" fontWeight="600" color="coolGray.800" _dark={{
               color: "warmGray.50"
             }}>
-              Setting Page
-              {userData.userName}
+              System Settings
             </Heading>
+            {/* {userData.userName} */}
+            <Divider my="2" _light={{
+              bg: "muted.800"
+            }} _dark={{
+              bg: "muted.50"
+            }} />
+
           </VStack>
         </Box>
-      </Center>
+      </Flex>
     </NativeBaseProvider>
   );
 };

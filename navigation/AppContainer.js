@@ -59,9 +59,9 @@ export default function AppContainer () {
 
     return (
             <NavigationContainer ref={navigationRef}>
-                <Stack.Navigator initialRouteName="Login">
-                    <Stack.Screen name="MainStack" component={AuthenticatedScreens} options={{ headerShown: false }} />
-                    <Stack.Screen name="LoginStack" component={LoginStackNavigator} options={{ headerShown: false }} />
+                <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="MainStack" component={AuthenticatedScreens}  />
+                    <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
                 </Stack.Navigator>
             </NavigationContainer>
     )

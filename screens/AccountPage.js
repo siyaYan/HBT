@@ -1,18 +1,16 @@
 
 import * as SecureStore from 'expo-secure-store';
 import { useState } from "react";
-import { Menu, Center, HamburgerIcon, Pressable, Box, Heading, VStack, HStack, ZStack, IconButton, Button, NativeBaseProvider, Flex } from 'native-base';
+import { Center, Box, VStack, IconButton, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
-// import { useRoute } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
+import { Ionicons } from '@expo/vector-icons';
+import OptionMenu from '../components/OptionMenu';
 
 const AccountScreen = ({ navigation }) => {
-  // const route = useRoute();
-  // const { params } = route;
-  // const data = params;
   const { userData, updateUserData } = useData();
-  console.log(userData,'account');
+  console.log(userData, 'account');
 
   const deleteCredentials = async () => {
     try {
@@ -32,21 +30,31 @@ const AccountScreen = ({ navigation }) => {
   };
   return (
     <NativeBaseProvider>
-      <Center flex={1} w="100%">
-        <Box safeArea py='8' w="90%" maxW="290">
-          <VStack space={3} alignItems='center' >
-            <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
-              color: "warmGray.50"
-            }}>
-              Account Page
-              {userData.userName}
-            </Heading>
-            <Button
-              onPress={logout}
-            >  Log out  </Button>
-          </VStack>
-        </Box>
-      </Center>
+      <Flex direction="column" alignItems='center'>
+          <OptionMenu />
+          <Box safeArea py='2' w="100%" maxW="290">
+            <VStack space={3} alignItems='center' >
+              <Box py='2's alignItems="center" justifyContent="center">
+                <Avatar bg='white' mb='1' size="lg" borderWidth={2}>
+                  <AntDesign name="user" size={40} color="black" />
+                  {/* <Avatar.Badge bg="white" > */}
+                  <Avatar.Badge
+                    bg="white"
+                    position="absolute"
+                    top={0}
+                    right={0}
+                  >
+                    <Ionicons name="settings-sharp" size={16} color="black" />
+                  </Avatar.Badge>
+                </Avatar>
+                {userData.userName}
+              </Box>
+              <Button
+                onPress={logout} size='md' p='1'
+              >  Log out  </Button>
+            </VStack>
+          </Box>
+      </Flex>
     </NativeBaseProvider>
   );
 };
