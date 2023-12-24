@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Input, Icon, Pressable, Center, Heading, VStack, Box,FormControl, Button, Text } from 'native-base';
+import { Input, Icon, Pressable, Center, Heading, VStack, Box, FormControl, Button, Text } from 'native-base';
 import { resetPassword } from '../components/Endpoint'; // Import the mock function
 import { MaterialIcons } from "@expo/vector-icons";
 
 const ResetPassword = ({ navigation }) => {
+  const current = '123'
   const [formData, setData] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -34,31 +35,57 @@ const ResetPassword = ({ navigation }) => {
 
   //Only validate the password match
   const validate = () => {
-    if (formData.password !== formData.confirmPassword) {
-      console.log('Passwords do not match.');
-      setData({
-        ...formData,
-        confirmPassword: ''
-      });
+    let error1 = false;
+    let error2 = false;
+    let data1 = formData.confirmPassword;
+    let data2 = formData.current;
+    if (formData.password == formData.confirmPassword && formData.current == current) {
       setErrors({
         ...errors,
-        confirmPassword:true
+        confirmPassword: error1,
+        current: error2,
       })
-      return false;
+      return true;
     } else {
-      console.log('Passwords match.');
+      if (formData.password !== formData.confirmPassword) {
+        console.log('Passwords do not match.');
+        data1 = ''
+        error1 = true;
+        // return false;
+      } else {
+        console.log('Password match.');
+      }
+      if (formData.current !== current) {
+        console.log('Current Password is wrong.');
+        data2 = ''
+        error2 = true;
+        // return false;
+      } else {
+        console.log('current password is right.');
+      }
+      setErrors({
+        ...errors,
+        confirmPassword: error1,
+        current: error2,
+      })
+      setData({
+        ...formData,
+        confirmPassword: data1,
+        current: data2
+      });
+      return false;
     }
-    return true;
   };
 
   const handleSubmit = () => {
     if (validatePassword(formData.password)) {
       setErrors({
         ...errors,
-        password:false
+        password: false
       });
       if (validate()) {
         console.log('Submitted')
+        console.log(errors.confirmPassword)
         handlePasswordReset();
       }
     } else {
@@ -69,24 +96,24 @@ const ResetPassword = ({ navigation }) => {
       });
       setErrors({
         ...errors,
-        password:true
+        password: true
       })
     }
 
   };
 
   const handlePasswordReset = async () => {
-      // Call the mock registration function
-      const response = await resetPassword(formData.current, formData.password, formData.confirmPassword);
-      // Handle success or error response
-      if (response=='failed') {
-          setErrors({
-            ...errors,
-            current: true
-          })
-          console.log("current password wrong")
-          return false;       
-      }
+    // Call the mock registration function
+    const response = await resetPassword(formData.current, formData.password, formData.confirmPassword);
+    // Handle success or error response
+    if (response == 'failed') {
+      setErrors({
+        ...errors,
+        current: true
+      })
+      console.log("current password wrong")
+      return false;
+    }
   };
 
   return (
@@ -106,7 +133,7 @@ const ResetPassword = ({ navigation }) => {
         </VStack>
         <VStack mt="5">
           <Center>
-            <FormControl isRequired isInvalid={errors.current===true}>
+            <FormControl isRequired isInvalid={errors.current}>
               <FormControl.Label _text={{
                 bold: true
               }}>Current password</FormControl.Label>
@@ -114,10 +141,12 @@ const ResetPassword = ({ navigation }) => {
                 placeholder="Enter your current password"
                 onChangeText={value => setData({
                   ...formData,
-                  token: value
+                  current: value
                 })} />
+              <FormControl.ErrorMessage>{errors.current ? 'Current Password is not correct!' : ''}</FormControl.ErrorMessage>
+
             </FormControl>
-            <FormControl isRequired isInvalid={errors.password===true}>
+            <FormControl isRequired isInvalid={errors.password}>
               <FormControl.Label _text={{
                 bold: true
               }}>Password</FormControl.Label>
@@ -138,7 +167,7 @@ const ResetPassword = ({ navigation }) => {
                 </Text>
               </FormControl.HelperText>
             </FormControl>
-            <FormControl isRequired isInvalid={errors.confirmPassword===true}>
+            <FormControl isRequired isInvalid={errors.confirmPassword}>
               <FormControl.Label _text={{
                 bold: true
               }}>Confirm Password</FormControl.Label>
@@ -152,9 +181,10 @@ const ResetPassword = ({ navigation }) => {
                   <Pressable onPress={() => setShowConfirm(!showConfirm)}>
                     <Icon as={<MaterialIcons name={showConfirm ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                   </Pressable>} />
-              {'confirmPassword' in errors ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
-                Please confirm your password!
-              </FormControl.HelperText>}
+              <FormControl.ErrorMessage>
+                {errors.confirmPassword ? 'Confirm Password is not correct!' : ''}
+              </FormControl.ErrorMessage>
+
             </FormControl>
             <Button w="100%" onPress={handleSubmit} mt="5" colorScheme="cyan">
               Proceed to change

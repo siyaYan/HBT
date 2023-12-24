@@ -4,6 +4,7 @@ setState({...state, new property:})
 if use twice in a function, it would work only the last time dynamically
 property name in state could affect each other
 install async-storage to keep the data while refresh the app
+Note: setData func can run only one time in one func
 
 
 Safety Key chain:[SecureStore]
