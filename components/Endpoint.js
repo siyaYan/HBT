@@ -57,7 +57,7 @@ export async function loginUser(id, password) {
 export async function tokenResetPassword(password, passwordConfirm, token) {
   // const toke=token.toString()
   try {
-    const response = await fetch("http://localhost:8000/habital/v1/users/resetPassword/"+token, {
+    const response = await fetch("http://localhost:8000/habital/v1/users/resetPassword/" + token, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export async function tokenResetPassword(password, passwordConfirm, token) {
       },
       body: JSON.stringify({
         "password": password,
-        "passwordConfirm":passwordConfirm
+        "passwordConfirm": passwordConfirm
       }),
     });
 
@@ -121,24 +121,24 @@ export async function resetPassword(currentPassword, newPassword, passwordConfir
 
 export async function resetProfile(nickname, username) {
   //dummy success
-  // Alert.alert('Success', 'Reset Profile successful');
-  // console.log('reset profile success');
-  // return 'success';
+  Alert.alert('Success', 'Reset Profile successful');
+  console.log('reset profile success');
+  return 'success';
   //dummy failed
-  Alert.alert('Failed', 'username must be unique!');
-  console.log('username must be unique!');
-  return 'failed';
+  // Alert.alert('Failed', 'username must be unique!');
+  // console.log('username must be unique!');
+  // return 'failed';
 };
 
 export async function resetSendEmail(email) {
   //dummy success
-Alert.alert('Success', 'Send reset email successful');
-console.log('send reset email success');
-return 'success';
-//dummy failed
-// Alert.alert('Failed', 'Non valid email address!');
-// console.log('Non valid email address!');
-// return 'failed';
+  Alert.alert('Success', 'Send reset email successful');
+  console.log('send reset email success');
+  return 'success';
+  //dummy failed
+  // Alert.alert('Failed', 'Non valid email address!');
+  // console.log('Non valid email address!');
+  // return 'failed';
 };
 
 export async function resetEmail(email, token) {

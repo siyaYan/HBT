@@ -38,7 +38,7 @@ const AccountScreen = ({ navigation }) => {
           <OptionMenu />
           <Box safeArea py='2' w="100%" maxW="290">
             <VStack space={3} alignItems='center' >
-              <Box py='2's alignItems="center" justifyContent="center">
+              <Box py='2' alignItems="center" justifyContent="center">
                 <Avatar bg='white' mb='1' size="lg" borderWidth={2}>
                   <AntDesign name="user" size={40} color="black" />
                   <Avatar.Badge

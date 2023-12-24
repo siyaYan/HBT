@@ -1,13 +1,26 @@
 
-import { Input, Icon, Pressable, Center, IconButton } from "native-base";
+import { Input, Icon, Pressable, Center, IconButton, Row } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { VStack, HStack, FormControl, Button, Box, Heading, Text, WarningOutlineIcon } from 'native-base';
+import { Avatar } from "native-base";
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { VStack, HStack, FormControl, Button, Box, Heading, Text, Label } from 'native-base';
 import { resetEmail, resetProfile, resetSendEmail } from "../components/Endpoint";
+import { useData } from '../context/DataContext';
+import { Alert } from 'react-native';
 
 
 const AccountSettingScreen = ({ navigation }) => {
-    const [formData, setData] = useState({});
+    const { userData, updateUserData } = useData();
+    const [formData, setData] = useState({
+        nickname: 'nickname',
+        username: userData.userName,
+        email: '123@123.com',
+        token:'',
+        send:false
+    });
     const [errors, setErrors] = useState({
         email: true,
         username: true,
@@ -36,7 +49,7 @@ const AccountSettingScreen = ({ navigation }) => {
         if (text) {
             setErrors({
                 ...errors,
-                email: 'Invalid email address.'
+                email: res
             })
             return res;
         }
@@ -78,97 +91,179 @@ const AccountSettingScreen = ({ navigation }) => {
             return showMessage.username.constrain1 && showMessage.username.constrain2 && showMessage.username.constrain3;
         }
     };
-    async function saveProfile () {
-        const response = await resetProfile(formData.nickname,formData.username);
+    const validateNickname = (text) => {
+        setData({
+            ...formData,
+            nickname: text
+        })
+        if (text) {
+            console.log(text, 'nickname');
+            setErrors({
+                ...errors,
+                nickname: false
+            })
+            return true;
+        } else {
+            setErrors({
+                ...errors,
+                nickname: 'nick name can not be empty.'
+            })
+            return false;
+        }
+    }
+    async function saveNickName() {
+        Alert.alert('Success', 'Reset Profile successful');
+        console.log('reset profile success');
+        // const response = await resetProfile(formData.nickname, formData.username);
         // Handle success or error response
-        if (response=='failed') {
+        // if (response == 'failed') {
+        //     setData({
+        //         ...formData,
+        //         username: ''
+        //     })
+        // }
+    };
+    async function saveUsername() {
+        const response = await resetProfile(formData.nickname, formData.username);
+        // Handle success or error response
+        if (response == 'failed') {
             setData({
                 ...formData,
-                username:''
+                username: ''
             })
         }
     };
-    async function saveEmail () {
-        const response = await resetEmail(email, token);
+    async function saveEmail() {
+        const response = await resetEmail(formData.email, formData.token);
         // Handle success or error response
-        if (response=='failed') {
+        if (response == 'failed') {
             setData({
                 ...formData,
-                token:''
+                token: ''
             })
             setErrors({
                 ...errors,
-                token:'Reset token invalid'
+                token: 'Reset token invalid'
             })
         }
     };
-    async function sendToken () {
-        const response = await resetSendEmail(email);
+    async function sendToken() {
+        const response = await resetSendEmail(formData.email);
         // Handle success or error response
-        if (response=='failed') {
+        if (response == 'failed') {
             setData({
                 ...formData,
-                email:''
+                email: '',
+                send:false
             })
             setErrors({
                 ...errors,
-                email:'Email address invalid'
+                email: 'Email address invalid'
+            })
+
+        }else{
+            setData({
+                ...formData,
+                send:true
             })
         }
     };
 
     const goResetPassword = () => {
         // Navigate to another screen when the Avatar is pressed
-        navigation.navigate('AccountStack', {screen: 'ResetPassword'}); 
-      };
+        navigation.navigate('AccountStack', { screen: 'ResetPassword' });
+    };
 
     return (
-        <Center flex={1} w="100%">
-            <Box safeArea p="2" py="8" w="90%" maxW="290">
-                <VStack space={3} mt="5">
-                    <FormControl isRequired isInvalid={!errors.username}>
-                        <Input placeholder="Username" value={formData.username} onChangeText={validateUsername} />
-                        {Object.values(showMessage.username).some(value => value === false) ?
+        <Center w="100%">
+            <Box w="100%" maxW="290">
+                <Box mt={5} alignItems="center" justifyContent="center">
+                    <Avatar bg='white' mb='1' size="lg" borderWidth={2}>
+                        <AntDesign name="user" size={40} color="black" />
+                        <Avatar.Badge
+                            bg="white"
+                            position="absolute"
+                            top={0}
+                            right={0}
+                        >
+                            <Ionicons name="settings-sharp" size={16} color="black" />
+                        </Avatar.Badge>
+                    </Avatar>
+                </Box>
+                <VStack space={8} mt="5">
+                    <FormControl isInvalid={errors.nickname}>
+                        <Box flexDir="row" w="100%">
+                            <FormControl.Label _text={{
+                                bold: true
+                            }}>Nick name</FormControl.Label>
+                            <Input ml={2} mr={3} w="60%" placeholder="Nickname" value={formData.nickname} onChangeText={validateNickname} />
+                            <IconButton icon={<Ionicons name="save-outline" size={24} color="black" />}
+                                p={0} onPress={saveNickName} />
+                        </Box>
+                        <Box ml={20} >
                             <FormControl.ErrorMessage>
-                                {showMessage.textProp}
-                            </FormControl.ErrorMessage> :
-                            <FormControl.HelperText>
-                                {showMessage.textProp ? showMessage.textProp : 'Well done!'}
-                            </FormControl.HelperText>
-                        }
-                        <Button onPress={saveProfile} mt="2" colorScheme="indigo">
-                            Save
-                        </Button>
-                    </FormControl>
-                    <FormControl >
-                        <Input placeholder="Nickname" value={formData.nickname} onChangeText={value => setData({
-                            ...formData,
-                            nickname: value
-                        })} />
-                        <FormControl.HelperText>
-                            Nick name is optional.
-                        </FormControl.HelperText>
-                        <Button onPress={saveProfile} mt="2" colorScheme="indigo">
-                            Save
-                        </Button>
-                    </FormControl>
-
-                    <FormControl isRequired isInvalid={!errors.email}>
-                        <Input placeholder="Email" value={formData.email} onChangeText={validateEmail} />
-                        {errors.email ?
-                            <FormControl.HelperText>
-                            </FormControl.HelperText>
-                            :
-                            <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                                {errors.email}
+                                {errors.nickname ? errors.nickname : ''}
                             </FormControl.ErrorMessage>
-                        }
-                        <Button onPress={sendToken} mt="2" colorScheme="indigo">
-                            verify
-                        </Button>
+                        </Box>
+
                     </FormControl>
 
-                    <Button onPress={goResetPassword} mt="2" colorScheme="indigo">
+                    <FormControl isInvalid={!errors.username}>
+                        <Box flexDir="row" w="100%">
+                            <FormControl.Label _text={{
+                                bold: true
+                            }}>User name</FormControl.Label>
+                            <Input ml={2} mr={3} w="60%" placeholder="Username" value={formData.username} onChangeText={validateUsername} />
+                            <IconButton icon={<Ionicons name="save-outline" size={24} color="black" />}
+                                p={0} onPress={saveUsername} />
+                        </Box>
+                        <Box ml={20} >
+                            <FormControl.ErrorMessage>
+                                {Object.values(showMessage.username).some(value => value === false) ? showMessage.textProp : ''}
+                            </FormControl.ErrorMessage>
+                        </Box>
+                    </FormControl>
+
+
+                    <FormControl isInvalid={!errors.email}>
+                        <Box flexDir="row" w="100%">
+                            <FormControl.Label mr={9} _text={{
+                                bold: true
+                            }}>Email</FormControl.Label>
+                            <Input ml={2} mr={3} w="60%" placeholder="Email" value={formData.email} onChangeText={validateEmail} />
+                            <IconButton icon={<MaterialCommunityIcons name="email-search-outline" size={24} color="black" />}
+                                p={0} onPress={sendToken} />
+                        </Box>
+                        <Box ml={20}>
+                            <FormControl.ErrorMessage>
+                                {!errors.email ? 'Email address is not valid' : ''}
+                            </FormControl.ErrorMessage>
+                        </Box>
+                    </FormControl>
+                    {formData.send? (<Box flexDir="row" w="100%" alignItems="center">
+                        <Text mr={8}>Vertify</Text>
+                        <Input ml={2} mr={3} w="60%" placeholder="Enter your email token" value={formData.token} onChangeText={(value)=>{
+                            setData({
+                                ...formData,
+                                token:value
+                            })
+                        }} />
+                        <IconButton icon={<Ionicons name="save-outline" size={24} color="black" />}
+                                p={0} onPress={saveEmail} />
+                    </Box>):('')}
+                    {/* <Box flexDir="row" w="100%" alignItems="center">
+                        <Text mr={8}>Vertify</Text>
+                        <Input ml={2} mr={3} w="60%" placeholder="Enter your email token" value={formData.token} onChangeText={(value)=>{
+                            setData({
+                                ...formData,
+                                token:value
+                            })
+                        }} />
+                        <IconButton icon={<Ionicons name="save-outline" size={24} color="black" />}
+                                p={0} onPress={saveEmail} />
+                    </Box> */}
+
+                    <Button mt={5} onPress={goResetPassword} >
                         Change your password
                     </Button>
                 </VStack>
