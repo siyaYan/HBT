@@ -1,49 +1,37 @@
-# Need to be fix:
-do not show up the menu option in iPhone13
-# Coding Notes
-## Notes:(firebase)
-Android:eas credentials[need eas build to generate eas.json]
-- expo install expo-updates && eas update:configure && eas build:configure
-- expo install expo-dev-client
+Store keychain:expo secure store
+usestate do not update immediataly
+setState({...state, new property:})
+if use twice in a function, it would work only the last time dynamically
+property name in state could affect each other
+install async-storage to keep the data while refresh the app
+install react-native-image-picker react-native-camera to let user pick picture as avatar
+I am using EXPO, it do not supprt [react-native-image-picker], so I have to Install Expo Image Picker:
+expo install expo-image-picker
 
-## Notes:(useState)
-- usestate do not update immediataly
-- setState({...state, new property:})
-- if use twice in a function, it would work only the last time dynamically
-- property name in state could affect each other
-- setData func can run only one time in one func
-
-## Notes:(take picture)
-- install react-native-image-picker react-native-camera to let user pick picture as avatar
-- I am using EXPO, it do not supprt [react-native-image-picker], so I have to Install Expo Image Picker:
-- expo install expo-image-picker
-
-## Note: (data Storage)
-### Safety Store Keychain:[SecureStore] expo secure store
-- id:username/Email
-- password
-
-### Local Storage:[AsyncStorage]
-- id&token(temperary)
-- nickname
-- user perferance
-- avatar
+Note: setData func can run only one time in one func
 
 
-#### Test account:
-- Test12/Test13
-- passowrd: test123!
+Safety Key chain:[SecureStore]
+id:username/Email
+password
 
-## Testing: 
+local Storage:[AsyncStorage]
+id&token(temperary)
+nickname
+user perferance
+avatar
+
+
+Test account:
+Test12/Test13
+passowrd: test123!
+Testing: 
 1.Reset password didn't work correctly
 2.Login endpoint only have status&token(need username)
 
-
-# Other Notes
-## fix the permission issue of npm---not work
-- sudo chown -R 501:20 "/Users/siyayan/.npm"
 ## What is the difference between `SecureStore` and `AsyncStorage`
-- `SecureStore` and `AsyncStorage` are both storage solutions provided by React Native for persisting data, but there are some key differences between them:
+
+`SecureStore` and `AsyncStorage` are both storage solutions provided by React Native for persisting data, but there are some key differences between them:
 
 1. **Security:**
    - **AsyncStorage:** This is a simple, asynchronous, unencrypted, key-value storage system. It's suitable for storing non-sensitive data, but it's not designed to provide a high level of security.

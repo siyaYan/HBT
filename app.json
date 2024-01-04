@@ -16,7 +16,6 @@
       "**/*"
     ],
     "ios": {
-      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false,
@@ -24,11 +23,9 @@
           "NSCameraUsageDescription": "We need access to your camera for taking pictures",
           "NSPhotoLibraryUsageDescription": "We need access to your photo library to choose pictures"
         }
-      },
-      "bundleIdentifier": "com.hbtproject.hbt"
+      }
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -37,8 +34,7 @@
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
-      ],
-      "package": "com.hbtproject.hbt"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -49,10 +45,12 @@
       }
     },
     "owner": "hbt-project",
+    // "runtimeVersion": {
+    //   "policy": "appVersion"
+    // },
     "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/99d4bd85-0d66-46ad-9093-759f537d68f8"
-    },
-    "plugins": ["@react-native-google-signin/google-signin"]
+    }
   }
 }
