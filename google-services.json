@@ -12,20 +12,7 @@
           "package_name": "com.habproject.hbt"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "720818502811-h3e6t8efvbmu685merdoj4idkmssfvpk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.habproject.hbt",
-            "certificate_hash": "5e4b710c94bcf53bb9c792cff21e1d6e9d1f8a1f"
-          }
-        },
-        {
-          "client_id": "720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyAwJ7a1rDOXfVRpq1koHIroTJfQAN0c2ZY"
@@ -33,19 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "720818502811-6lj2ut861vlueuflri1qnl5e93744qi5.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.hbtproject.hbt"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
