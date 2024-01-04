@@ -16,6 +16,7 @@
       "**/*"
     ],
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false,
@@ -23,9 +24,11 @@
           "NSCameraUsageDescription": "We need access to your camera for taking pictures",
           "NSPhotoLibraryUsageDescription": "We need access to your photo library to choose pictures"
         }
-      }
+      },
+      "bundleIdentifier": "com.hbtproject.hbt"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -34,7 +37,8 @@
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "package": "com.hbtproject.hbt"
     },
     "web": {
       "favicon": "./assets/favicon.png"
