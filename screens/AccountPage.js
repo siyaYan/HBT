@@ -82,6 +82,12 @@ const AccountScreen = ({ navigation }) => {
 
     if (!result.canceled) {
       setSelectedImage(result);
+      console.log('Take Image Result:', result);
+      updateUserData({
+        token: userData.token,
+        userName: userData.userName,
+        avatar: result.assets[0].uri
+      })
       // console.log('Take Image Result:', result);
       handleUploadImage();
     }
