@@ -8,11 +8,11 @@ import { Alert } from 'react-native';
 import { loginUser, forgetSendEmail } from '../components/Endpoint';
 import * as SecureStore from 'expo-secure-store';
 import { useData } from '../context/DataContext';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+// import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 
-GoogleSignin.configure({
-    webClientId: '720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com', // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access. 
-  });
+// GoogleSignin.configure({
+//     webClientId: '720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com', // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access. 
+//   });
 const LoginScreen = ({ navigation }) => {
     const [showModal, setShowModal] = useState(false);
     const [show, setShow] = useState(false);
@@ -23,23 +23,23 @@ const LoginScreen = ({ navigation }) => {
     const [error, setError] = useState('');
     const {userData, updateUserData}= useData();
     // console.log(userData)
-    const signIn = async () => {
-        try {
-          await GoogleSignin.hasPlayServices();
-          const userInfo = await GoogleSignin.signIn();
-          setState({ userInfo });
-        } catch (error) {
-          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-            // user cancelled the login flow
-          } else if (error.code === statusCodes.IN_PROGRESS) {
-            // operation (e.g. sign in) is in progress already
-          } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-            // play services not available or outdated
-          } else {
-            // some other error happened
-          }
-        }
-      };
+    // const signIn = async () => {
+    //     try {
+    //       await GoogleSignin.hasPlayServices();
+    //       const userInfo = await GoogleSignin.signIn();
+    //       setState({ userInfo });
+    //     } catch (error) {
+    //       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+    //         // user cancelled the login flow
+    //       } else if (error.code === statusCodes.IN_PROGRESS) {
+    //         // operation (e.g. sign in) is in progress already
+    //       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+    //         // play services not available or outdated
+    //       } else {
+    //         // some other error happened
+    //       }
+    //     }
+    //   };
 
     const saveCredentials = async (id, password) => {
         try {

@@ -82,15 +82,12 @@ const AccountScreen = ({ navigation }) => {
 
     if (!result.canceled) {
       setSelectedImage(result);
-<<<<<<< HEAD
       console.log('Take Image Result:', result);
       updateUserData({
         token: userData.token,
         userName: userData.userName,
         avatar: result.assets[0].uri
       })
-=======
->>>>>>> parent of 1bc32a4 (feat:third-party authentication config)
       // console.log('Take Image Result:', result);
       handleUploadImage();
     }
