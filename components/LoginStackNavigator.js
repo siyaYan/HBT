@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 
 export default function LoginStackNavigator() {
     return (
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator  initialRouteName='Login'>
             <Stack.Screen name="Login" component={LoginScreen} options={{
                 headerBackTitleVisible: false,
             }}/>
