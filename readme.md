@@ -1,3 +1,11 @@
+Installation:
+1. git clone repository
+2. install brew
+   - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   - (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/joanne/.zprofile
+   - eval "$(/opt/homebrew/bin/brew shellenv)"
+3. brew install watchman
+
 Store keychain:expo secure store
 usestate do not update immediataly
 setState({...state, new property:})
