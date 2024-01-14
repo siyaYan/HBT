@@ -5,6 +5,10 @@ Installation:
    - (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/joanne/.zprofile
    - eval "$(/opt/homebrew/bin/brew shellenv)"
 3. brew install watchman
+4. npm install
+
+Usage:
+2. npm start
 
 Store keychain:expo secure store
 usestate do not update immediataly
