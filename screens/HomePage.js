@@ -5,6 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 import OptionMenu from "../components/OptionMenu";
 
+// TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation, route }) => {
   const { userData, updateUserData } = useData();
   console.log(userData, 'inHome');

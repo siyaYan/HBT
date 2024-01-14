@@ -8,7 +8,7 @@ export default OptionMenu = () => {
     function inviteFriend(value) {
         console.log('invite friend')
     }
-    return (<ZStack alignSelf='flex-end' mr='8' mt='5' >
+    return (<ZStack alignSelf='flex-end' mr='15%' mt='10%' >
         <Box alignItems="flex-start">
             <Menu shadow={2} mr='2' w="140" trigger={triggerProps => {
                 return <Pressable accessibilityLabel="Options menu" {...triggerProps}>
