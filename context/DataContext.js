@@ -9,7 +9,7 @@ export const useData = () => {
 };
 
 export const DataProvider = ({ children }) => {
-  const [userData, setUserData] = useState({ userName: '', token: '' });
+  const [userData, setUserData] = useState({ data: '', token: '' });
 
   // Load data from AsyncStorage on component mount
   useEffect(() => {

@@ -66,7 +66,7 @@ const LoginScreen = ({ navigation }) => {
                 }
                 updateUserData({
                     token:response.token,
-                    userName:formData.id
+                    data:response.data.user
                 })
                 navigation.navigate('MainStack', { screen: 'Home'});
                 // console.log(response.token);

@@ -41,7 +41,7 @@ export default function AppContainer () {
                 const response = await loginUser(storedCredentials.id, storedCredentials.password)
                 if (response.token) {
                     updateUserData({
-                        userName: storedCredentials.id,
+                        data: response.data.user,
                         token: response.token
                     })
                     console.log(userData)

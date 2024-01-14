@@ -32,7 +32,7 @@ const AccountScreen = ({ navigation }) => {
       await SecureStore.deleteItemAsync('userCredentials');
       updateUserData({
         token: '',
-        userName: '',
+        data: '',
         avatar: ''
       })
     } catch (error) {
@@ -68,7 +68,7 @@ const AccountScreen = ({ navigation }) => {
       console.log('Captured Image Result:', result);
       updateUserData({
       token: userData.token,
-      userName: userData.userName,
+      data: userData.data,
       avatar: result.assets[0].uri
     })
       handleUploadImage();
@@ -85,7 +85,7 @@ const AccountScreen = ({ navigation }) => {
       console.log('Take Image Result:', result);
       updateUserData({
         token: userData.token,
-        userName: userData.userName,
+        data: userData.data,
         avatar: result.assets[0].uri
       })
       // console.log('Take Image Result:', result);
@@ -114,7 +114,7 @@ const AccountScreen = ({ navigation }) => {
                 {selectedImage ?
                   (
                     <Avatar bg='white' mb='1' size="lg" source={{ uri: selectedImage.assets[0].uri }} >
-                      {userData.userName}
+                      {userData.data.nickname}
                     </Avatar>) :
                   (
                     <Avatar bg='white' mb='1' size="lg" borderWidth={2}>
@@ -128,7 +128,7 @@ const AccountScreen = ({ navigation }) => {
                         <Ionicons name="settings-sharp" size={16} color="black" />
                       </Avatar.Badge>
                     </Avatar>)}
-                {userData.userName}
+                {userData.data.nickname}
               </Box>
             </Pressable>
             <Button

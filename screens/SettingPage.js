@@ -38,7 +38,7 @@ const SettingScreen = ({ navigation }) => {
               <AntDesign name="user" size={30} color="black" />
             </Avatar>}
           </Pressable>
-          {userData.userName}
+          {userData.data.nickname}
         </Box>
 
         <Box safeArea w="90%" maxW="290">

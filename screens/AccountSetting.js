@@ -20,10 +20,11 @@ const AccountSettingScreen = ({ navigation }) => {
         console.log(userData, 'inHome');
       }, [userData]);
     
+    //   TODO: token of reset email
     const [formData, setData] = useState({
-        nickname: 'nickname',
-        username: userData.userName,
-        email: '123@123.com',
+        nickname: userData.data.nickname,
+        username: userData.data.username,
+        email: userData.data.email,
         token:'',
         send:false
     });
@@ -197,6 +198,7 @@ const AccountSettingScreen = ({ navigation }) => {
                             <Ionicons name="settings-sharp" size={16} color="black" />
                         </Avatar.Badge>
                     </Avatar>}
+                    
                 </Box>
                 <VStack space={8} mt="5">
                     <FormControl isInvalid={errors.nickname}>

@@ -33,16 +33,17 @@ const HomeScreen = ({ navigation, route }) => {
                 <Avatar bg='white' mb='1' size="md" borderWidth={2}>
                   <AntDesign name="user" size={30} color="black" />
                 </Avatar>)}
-            {userData.userName}
+            {userData.data.nickname}
           </Box>
         </Pressable>
         <Box py='5' px='2' safeArea w="100%" maxW="290" alignItems="center">
-          <Heading mt='140' size="lg" fontWeight="600" color="coolGray.300" _dark={{
+          
+          {!userData ? <Button onPress={() => { navigation.navigate('LoginStack', { screen: 'Login' }) }}>Login</Button>: <Heading mt='140' size="lg" fontWeight="600" color="coolGray.300" _dark={{
             color: "Gray.50"
           }}>
             Home Page
-          </Heading>
-          <Button onPress={() => { navigation.navigate('LoginStack', { screen: 'Login' }) }}>Login</Button>
+          </Heading>}
+          
         </Box >
       </Flex>
 
