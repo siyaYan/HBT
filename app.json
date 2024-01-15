@@ -16,14 +16,9 @@
       "**/*"
     ],
     "ios": {
-      "simulator":true,
       "supportsTablet": true,
       "config": {
-        "usesNonExemptEncryption": false,
-        "infoPlist": {
-          "NSCameraUsageDescription": "We need access to your camera for taking pictures",
-          "NSPhotoLibraryUsageDescription": "We need access to your photo library to choose pictures"
-        }
+        "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "com.hbtproject.hbt"
     },

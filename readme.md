@@ -1,3 +1,23 @@
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf",
+            "./assets/fonts/Montserrat_Alternates/MontserratAlternates-SemiBoldItalic.ttf",
+            "./assets/fonts/Source_Sans_3/SourceSans3-VariableFont_wght.ttf"
+          ]
+        }
+      ]
+    ]
+
+    "config": {
+        "usesNonExemptEncryption": false,
+        "infoPlist": {
+          "NSCameraUsageDescription": "We need access to your camera for taking pictures",
+          "NSPhotoLibraryUsageDescription": "We need access to your photo library to choose pictures"
+        }
+      },
 Installation:
 1. git clone repository
 2. install brew

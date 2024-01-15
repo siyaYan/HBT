@@ -1,12 +1,30 @@
 import { useState, useEffect } from "react";
+import { Text } from 'react-native';
 import { Box, Heading, IconButton, Pressable, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 import OptionMenu from "../components/OptionMenu";
+// import { useFonts } from 'expo-font';
+// import * as SplashScreen from 'expo-splash-screen';
 
 // TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation, route }) => {
+  // const [fontsLoaded] = useFonts({
+  //   'Inter-Black': require('./assets/fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf'),
+  // });
+  // useEffect(() => {
+  //   async function prepare() {
+  //     await SplashScreen.preventAutoHideAsync();
+  //   }
+  //   prepare();
+  // },[])
+
+  // if (!fontsLoaded ) {
+  //   return null;
+  // }else{
+  //   SplashScreen.hideAsync();
+  // }
   const { userData, updateUserData } = useData();
   console.log(userData, 'inHome');
   // const avatar=route.params;
@@ -33,7 +51,9 @@ const HomeScreen = ({ navigation, route }) => {
                 <Avatar bg='white' mb='1' size="md" borderWidth={2}>
                   <AntDesign name="user" size={30} color="black" />
                 </Avatar>)}
-            {userData.data.nickname}
+                <Text  style={{ fontFamily: 'Inter-Black', fontSize: 30 }} >
+                  {userData.data.nickname}
+                  </Text>
           </Box>
         </Pressable>
         <Box py='5' px='2' safeArea w="100%" maxW="290" alignItems="center">
