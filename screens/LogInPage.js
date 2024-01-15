@@ -124,23 +124,25 @@ const LoginScreen = ({ navigation }) => {
     };
 
     return (
-        <Center flex={1} w="100%">
-            <Box safeArea p="2" py="8" w="90%" maxW="290">
-                <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
-                    color: "warmGray.50"
-                }}>
-                    Welcome to Habital
-                </Heading>
-                <Heading mt="1" _dark={{
-                    color: "warmGray.200"
-                }} color="coolGray.600" fontWeight="medium" size="xs">
+        <Center w="100%">
+            <Box py='5' safeArea w="100%" maxW="300">
+                <Text height={10} fontSize={30} style={{fontFamily:'Bold'}}>
+                    Welcome to 
+                </Text>
+                <Text height={10} fontSize={30} style={{fontFamily:'Bold', textAlign:'left'}}>
+                Habital
+                </Text>
+                <Text style={{marginTop:40,marginBottom:20, fontFamily:'Semi Bold', fontSize:20, height:20}}>
                     Log in to continue!
-                </Heading>
+                </Text>
 
                 <VStack space={3} mt="5">
-                    {/* <Button onPress={()=>signIn()}>test</Button> */}
+                    <Button onPress={()=>signIn()}>Google</Button>
+                    <Button onPress={()=>signIn()}>Facebook</Button>
+                    <Text py='4' textAlign={'center'} fontFamily={'Semi Bold'} fontSize={20} >
+                    Or
+                </Text>
                     <FormControl isRequired isInvalid={'id' in errors}>
-                        {/* <FormControl.Label></FormControl.Label> */}
                         <Input onChangeText={value => setData({
                             ...formData,
                             id: value
@@ -148,7 +150,6 @@ const LoginScreen = ({ navigation }) => {
                         <FormControl.ErrorMessage></FormControl.ErrorMessage>
                     </FormControl>
                     <FormControl isRequired isInvalid={'password' in errors}>
-                        {/* <FormControl.Label></FormControl.Label> */}
                         <Input placeholder='Password' onChangeText={value => setData({
                             ...formData,
                             password: value
@@ -157,12 +158,15 @@ const LoginScreen = ({ navigation }) => {
                         </Pressable>} />
                     </FormControl>
                     <HStack space={6} >
-                        <Checkbox ml='1' size='sm' defaultIsChecked onPress={value => setRemember(!remember)} >Remember
+                        <Checkbox ml='1' size='sm' defaultIsChecked onPress={value => setRemember(!remember)} >
+                            <Text fontFamily={'Regular'} fontSize={15}>
+                            Remember
+                            </Text>
                         </Checkbox>
                         <Link>
                             {/* <ResetModal /> */}
                             <Pressable onPress={() => setShowModal(true)}>
-                                <Text fontSize={15} color="indigo.500">forget password?</Text>
+                                <Text marginLeft={'10'} fontFamily={'Regular'} fontSize={15} color="indigo.500">forget password?</Text>
                             </Pressable>
                             {/* <Button onPress={() => setShowModal(true)}>Forget Password?</Button> */}
                             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -199,17 +203,13 @@ const LoginScreen = ({ navigation }) => {
                         Sign in
                     </Button>
                     <HStack mt="6" justifyContent="center">
-                        <Text fontSize="sm" color="coolGray.600" _dark={{
-                            color: "warmGray.200"
-                        }}>
+                        <Text fontFamily={'Regular'} fontSize={15}>
                             New to Habital?{"  "}
                         </Text>
                         <Pressable onPress={() => navigation.navigate('LoginStack', { screen: 'Register' })}>
-                            <Text fontSize='sm' color="indigo.500">Sign Up</Text>
+                            <Text fontFamily={'Regular'} fontSize={15} color="indigo.500">Sign Up</Text>
                         </Pressable>
-                        <Text fontSize="sm" color="coolGray.600" _dark={{
-                            color: "warmGray.200"
-                        }}>
+                        <Text fontFamily={'Regular'} fontSize={15}>
                             {" "}to start!
                         </Text>
                     </HStack>

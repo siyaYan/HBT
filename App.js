@@ -7,7 +7,9 @@ import * as SplashScreen from 'expo-splash-screen';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'Inter-Black': require('./assets/fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf'),
+    'Bold': require('./assets/fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf'),
+    'Semi Bold': require('./assets/fonts/Montserrat_Alternates/MontserratAlternates-SemiBoldItalic.ttf'),
+    'Regular': require('./assets/fonts/Source_Sans_3/SourceSans3-VariableFont_wght.ttf')
   });
   useEffect(() => {
     async function prepare() {
