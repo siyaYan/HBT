@@ -12,6 +12,7 @@ export default function LoginStackNavigator() {
         <Stack.Navigator  initialRouteName='Login'>
             <Stack.Screen name="Login" component={LoginScreen} options={{
                 headerBackTitleVisible: false,
+                headerShown:false
             }}/>
             <Stack.Screen name="Reset" component={ResetPassword} options={{
                 headerBackTitleVisible: false,
