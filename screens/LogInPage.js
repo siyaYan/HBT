@@ -1,4 +1,5 @@
 import { Input, Icon, Checkbox, Pressable, Center, Modal } from "native-base";
+import { Image, ImageBackground } from "react-native";
 import { View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -139,113 +140,126 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <Center w="100%">
-      <Box py="5" safeArea w="100%" h="100%" maxW="300">
-        <Center h="100%">
-          <VStack space={10}>
-            <HStack style={{ justifyContent: "space-between" }}>
-              <Text fontSize="4xl" style={{ fontFamily: "Bold" }}>
-                Log in
-              </Text>
-              <VStack>
-                <Text fontFamily={"Regular"} fontSize="lg">
-                  New to Habital?{"  "}
+    <ImageBackground
+      source={require("../assets/background.png")} // Replace with the actual path to your image
+      style={{ flex: 1, resizeMode: "cover" , opacity:"0.2" }}
+    >
+      <Center w="100%">
+        <Box py="5" safeArea w="100%" h="100%" maxW="300">
+          <Center w="100%" h="100%">
+            <VStack w="100%" space={8}>
+              <HStack
+                w="95%"
+                style={{ alignSelf: "center", justifyContent: "space-between" }}
+              >
+                <Text fontSize="4xl" style={{ fontFamily: "Bold" }}>
+                  Log in
                 </Text>
-                <HStack>
-                  <Pressable
-                    onPress={() =>
-                      navigation.navigate("LoginStack", { screen: "Register" })
-                    }
-                  >
-                    <Text
-                      marginTop={0.5}
-                      fontFamily={"Regular.500"}
-                      fontSize="md"
-                      color="#49a579"
-                    >
-                      Sign Up
-                    </Text>
-                  </Pressable>
+                <VStack>
                   <Text fontFamily={"Regular"} fontSize="lg">
-                    {" "}
-                    to start!
+                    New to Habital?{"  "}
                   </Text>
-                </HStack>
-              </VStack>
-            </HStack>
-
-            <VStack space={7} mt="5">
-              <Button
-                rounded={30}
-                shadow="6"
-                size="lg"
-                onPress={() => signIn()}
-              >
-                Google
-              </Button>
-              <Button
-                rounded={30}
-                shadow="6"
-                size="lg"
-                onPress={() => signIn()}
-              >
-                Facebook
-              </Button>
-              <Text textAlign={"center"} fontFamily={"Regular"} fontSize={"lg"}>
-                Or
-              </Text>
-
-              <FormControl isRequired isInvalid={"id" in errors}>
-                <Input
-                  rounded={30}
-                  size="2xl"
-                  fontFamily={"Regular"}
-                  onChangeText={(value) =>
-                    setData({
-                      ...formData,
-                      id: value,
-                    })
-                  }
-                  placeholder="Email/Username"
-                />
-                <FormControl.ErrorMessage></FormControl.ErrorMessage>
-              </FormControl>
-
-              <FormControl isRequired isInvalid={"password" in errors}>
-                <Input
-                  rounded={30}
-                  size="2xl"
-                  fontFamily={"Regular"}
-                  placeholder="Password"
-                  onChangeText={(value) =>
-                    setData({
-                      ...formData,
-                      password: value,
-                    })
-                  }
-                  type={show ? "text" : "password"}
-                  InputRightElement={
-                    <Pressable onPress={() => setShow(!show)}>
-                      <Icon
-                        as={
-                          <MaterialIcons
-                            name={show ? "visibility" : "visibility-off"}
-                          />
-                        }
-                        size={5}
-                        mr="2"
-                        color="muted.400"
-                      />
+                  <HStack>
+                    <Pressable
+                      onPress={() =>
+                        navigation.navigate("LoginStack", {
+                          screen: "Register",
+                        })
+                      }
+                    >
+                      <Text
+                        fontFamily={"Regular Semi Bold"}
+                        fontSize="lg"
+                        color="#49a579"
+                      >
+                        Sign Up
+                      </Text>
                     </Pressable>
-                  }
-                />
-              </FormControl>
+                    <Text fontFamily={"Regular"} fontSize="lg">
+                      {" "}
+                      to start!
+                    </Text>
+                  </HStack>
+                </VStack>
+              </HStack>
+
+              <VStack space={7} mt="5">
+                <Button
+                  rounded={30}
+                  shadow="6"
+                  size="lg"
+                  onPress={() => signIn()}
+                >
+                  Google
+                </Button>
+                <Button
+                  rounded={30}
+                  shadow="6"
+                  size="lg"
+                  onPress={() => signIn()}
+                >
+                  Facebook
+                </Button>
+                <Text
+                  textAlign={"center"}
+                  fontFamily={"Regular Semi Bold"}
+                  fontSize={"lg"}
+                >
+                  Or
+                </Text>
+
+                <FormControl isRequired isInvalid={"id" in errors}>
+                  <Input
+                    rounded={30}
+                    size="2xl"
+                    fontFamily={"Regular"}
+                    onChangeText={(value) =>
+                      setData({
+                        ...formData,
+                        id: value,
+                      })
+                    }
+                    placeholder="Email/Username"
+                  />
+                  <FormControl.ErrorMessage></FormControl.ErrorMessage>
+                </FormControl>
+
+                <FormControl isRequired isInvalid={"password" in errors}>
+                  <Input
+                    rounded={30}
+                    size="2xl"
+                    fontFamily={"Regular"}
+                    placeholder="Password"
+                    onChangeText={(value) =>
+                      setData({
+                        ...formData,
+                        password: value,
+                      })
+                    }
+                    type={show ? "text" : "password"}
+                    InputRightElement={
+                      <Pressable onPress={() => setShow(!show)}>
+                        <Icon
+                          as={
+                            <MaterialIcons
+                              name={show ? "visibility" : "visibility-off"}
+                            />
+                          }
+                          size={5}
+                          mr="2"
+                          color="muted.400"
+                        />
+                      </Pressable>
+                    }
+                  />
+                </FormControl>
               </VStack>
 
               <HStack style={{ justifyContent: "space-between" }}>
                 <VStack space={2}>
                   <Checkbox
-                    backgroundColor={"blue"}
+                    // backgroundColor={"blue"}
+                    colorScheme="green"
                     ml="1"
                     size="sm"
                     defaultIsChecked
@@ -294,24 +308,24 @@ const LoginScreen = ({ navigation }) => {
                         </Modal.Body>
                         <Modal.Footer>
                           <Button.Group space={2}>
-                            {/* <Button
-                            variant="ghost"
-                            colorScheme="blueGray"
-                            onPress={() => {
-                              setShowModal(false);
-                              setError(false); // Clear any errors
-                            }}
-                          >
-                            Cancel
-                          </Button> */}
-                            {/* <Button onPress={handleResend}>Send</Button> */}
+                            <Button
+                              variant="ghost"
+                              colorScheme="blueGray"
+                              onPress={() => {
+                                setShowModal(false);
+                                setError(false); // Clear any errors
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button onPress={handleResend}>Send</Button>
                           </Button.Group>
                         </Modal.Footer>
                       </Modal.Content>
                     </Modal>
                   </Link>
                 </VStack>
-                <Button
+                {/* <Button
                   rounded={30}
                   shadow="7"
                   width="50%"
@@ -324,13 +338,21 @@ const LoginScreen = ({ navigation }) => {
                   }}
                 >
                   Sign in
-                </Button>
+                 </Button> */}
+                <Image
+                  source={require("../assets/cherry.png")}
+                  style={{ width: 80, height: 80 }}
+                  alt="image"
+                />
+                {/* source={{
+                  uri: "../assets/cherry.png",
+                }} */}
               </HStack>
-            
-          </VStack>
-        </Center>
-      </Box>
-    </Center>
+            </VStack>
+          </Center>
+        </Box>
+      </Center>
+    </ImageBackground>
   );
 };
 
