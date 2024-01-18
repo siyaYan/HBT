@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "HBT",
+    "name": "Habital",
     "slug": "hbt",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,6 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -20,7 +23,7 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "bundleIdentifier": "com.hbtproject.hbt"
+      "bundleIdentifier": "com.habitalproject.habital"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,7 +35,7 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "package": "com.hbtproject.hbt"
+      "package": "com.habitalproject.habital"
     },
     "web": {
       "favicon": "./assets/favicon.png"

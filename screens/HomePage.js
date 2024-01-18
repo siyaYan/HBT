@@ -34,7 +34,7 @@ const HomeScreen = ({ navigation, route }) => {
                   <AntDesign name="user" size={30} color="black" />
                 </Avatar>)}
                 <Text fontFamily={'Regular'} fontSize={30}>
-                  {userData.data.nickname}
+                  {/* {userData.data.nickname} */}
                   </Text>
           </Box>
         </Pressable>

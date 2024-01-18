@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:720818502811:android:8290cd5671e9b1bc289a3e",
         "android_client_info": {
-          "package_name": "com.habproject.hbt"
+          "package_name": "com.habproject.habital"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "720818502811-h3e6t8efvbmu685merdoj4idkmssfvpk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.habproject.hbt",
+            "package_name": "com.habproject.habital",
             "certificate_hash": "5e4b710c94bcf53bb9c792cff21e1d6e9d1f8a1f"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "720818502811-6lj2ut861vlueuflri1qnl5e93744qi5.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.hbtproject.hbt"
+                "bundle_id": "com.hbtproject.habital"
               }
             }
           ]
