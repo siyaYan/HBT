@@ -1,4 +1,13 @@
-import { Input, Icon, Checkbox, Pressable, Center, Modal ,KeyboardAvoidingView ,ScrollView} from "native-base";
+import {
+  Input,
+  Icon,
+  Checkbox,
+  Pressable,
+  Center,
+  Modal,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "native-base";
 import { Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -161,6 +170,7 @@ const LoginScreen = ({ navigation }) => {
             safeArea
             h="100%"
             w={"80%"}
+            maxW={320}
           >
             <Center w="90%" h="100%">
               <VStack w="100%" space={8}>
@@ -188,13 +198,13 @@ const LoginScreen = ({ navigation }) => {
                       >
                         <Text
                           fontFamily={"Regular Semi Bold"}
-                          fontSize="lg"
+                          fontSize={"lg"}
                           color="#49a579"
                         >
                           Sign Up
                         </Text>
                       </Pressable>
-                      <Text fontFamily={"Regular"} fontSize="lg">
+                      <Text fontFamily={"Regular"} fontSize={"lg"}>
                         {" "}
                         to start!
                       </Text>
@@ -202,7 +212,7 @@ const LoginScreen = ({ navigation }) => {
                   </VStack>
                 </HStack>
 
-                <VStack space={7} mt="5">
+                <VStack space={5} mt="5">
                   <Button
                     rounded={30}
                     shadow="6"
@@ -231,7 +241,7 @@ const LoginScreen = ({ navigation }) => {
                     <Input
                       rounded={30}
                       size="2xl"
-                      fontFamily={"Regular"}
+                      fontFamily={"Regular Semi Bold"}
                       onChangeText={(value) =>
                         setData({
                           ...formData,
@@ -247,7 +257,7 @@ const LoginScreen = ({ navigation }) => {
                     <Input
                       rounded={30}
                       size="2xl"
-                      fontFamily={"Regular"}
+                      fontFamily={"Regular Semi Bold"}
                       placeholder="Password"
                       onChangeText={(value) =>
                         setData({
@@ -305,20 +315,40 @@ const LoginScreen = ({ navigation }) => {
                         isOpen={showModal}
                         onClose={() => setShowModal(false)}
                       >
-                        <Modal.Content maxWidth="400px">
+                        <Modal.Content maxWidth="300px">
                           <Modal.CloseButton />
-                          <Modal.Header>Send Reset Password Email</Modal.Header>
+                          <Modal.Header>
+                            <Text
+                              fontFamily={"Regular Semi Bold"}
+                              fontSize="xl"
+                            >
+                              Reset your password
+                            </Text>
+                          </Modal.Header>
                           <Modal.Body>
                             <FormControl mt="3" isInvalid={!!error} isRequired>
-                              <FormControl.Label>Email</FormControl.Label>
+                              {/* <FormControl.Label>
+                                <Text ml={3}
+                                  fontFamily={"Regular Semi Bold"}
+                                  fontSize="md"
+                                >
+                                  Email
+                                </Text>
+                              </FormControl.Label> */}
                               <Input
+                                rounded={30}
+                                size="2xl"
+                                fontFamily={"Regular Semi Bold"}
+                                fontSize="md"
                                 value={email}
                                 onChangeText={setEmail}
                                 placeholder="example@email.com"
                               />
                               {error ? (
                                 <FormControl.ErrorMessage>
-                                  Please enter a valid email address.
+                                  <Text fontFamily={"Regular"} fontSize="md">
+                                    Please enter a valid email address.
+                                  </Text>
                                 </FormControl.ErrorMessage>
                               ) : (
                                 <FormControl.HelperText></FormControl.HelperText>
@@ -326,9 +356,15 @@ const LoginScreen = ({ navigation }) => {
                             </FormControl>
                           </Modal.Body>
                           <Modal.Footer>
-                            <Button.Group space={2}>
+                            <Button.Group w={"90%"} marginX={"5"} space={2}>
                               <Button
-                                variant="ghost"
+                                rounded={30}
+                                shadow="7"
+                                width="50%"
+                                size={"md"}
+                                _text={{
+                                  color: "#f9f8f2",
+                                }}
                                 colorScheme="blueGray"
                                 onPress={() => {
                                   setShowModal(false);
@@ -337,7 +373,19 @@ const LoginScreen = ({ navigation }) => {
                               >
                                 Cancel
                               </Button>
-                              <Button onPress={handleResend}>Send</Button>
+                              <Button
+                                rounded={30}
+                                shadow="7"
+                                width="50%"
+                                size={"md"}
+                                _text={{
+                                  color: "#f9f8f2",
+                                }}
+                                backgroundColor={"#49a579"}
+                                onPress={handleResend}
+                              >
+                                Send
+                              </Button>
                             </Button.Group>
                           </Modal.Footer>
                         </Modal.Content>
