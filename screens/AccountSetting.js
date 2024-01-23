@@ -10,7 +10,7 @@ import { VStack, HStack, FormControl, Button, Box, Heading, Text, Label } from '
 import { resetEmail, resetProfile, resetSendEmail } from "../components/Endpoint";
 import { useData } from '../context/DataContext';
 import { Alert } from 'react-native';
-
+import Background from "../components/Background";
 
 const AccountSettingScreen = ({ navigation }) => {
     const { userData, updateUserData } = useData();
@@ -183,6 +183,7 @@ const AccountSettingScreen = ({ navigation }) => {
 
     return (
         <Center w="100%">
+            <Background />
             <Box w="100%" maxW="290">
                 <Box mt={5} alignItems="center" justifyContent="center">
                 {userData.avatar ?

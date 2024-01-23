@@ -233,24 +233,19 @@ const LoginScreen = ({ navigation }) => {
                 </HStack>
 
                 <VStack space={5} mt="5">
-                  {/* <Button
+                  <Button
                     rounded={30}
                     shadow="6"
                     size="lg"
                     onPress={() => signIn()}
+                    padding={0}
+                    style={{backgroundColor: "rgb(66,133,245)"}}
                   >
-                    Google
-                  </Button> */}
-                  {thirdPartyUserData && (
-                    <Text>{JSON.stringify(thirdPartyUserData.user)}</Text>
-                  )}
-                  {thirdPartyUserData ? (
-                    <Button rounded={30} shadow="6" size="lg" onPress={logout}>
-                      Logout
-                    </Button>
-                  ) : (
-                    <GoogleSigninButton onPress={signIn} />
-                  )}
+                    <GoogleSigninButton style={{ width:265, height:50 }} size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={signIn}/> 
+                  </Button>
+     
+                  	
+               
                   <Button
                     rounded={30}
                     shadow="6"

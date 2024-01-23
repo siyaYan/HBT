@@ -1,23 +1,5 @@
-    "plugins": [
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf",
-            "./assets/fonts/Montserrat_Alternates/MontserratAlternates-SemiBoldItalic.ttf",
-            "./assets/fonts/Source_Sans_3/SourceSans3-VariableFont_wght.ttf"
-          ]
-        }
-      ]
-    ]
-
-    "config": {
-        "usesNonExemptEncryption": false,
-        "infoPlist": {
-          "NSCameraUsageDescription": "We need access to your camera for taking pictures",
-          "NSPhotoLibraryUsageDescription": "We need access to your photo library to choose pictures"
-        }
-      },
+Cloud server:
+http://54.252.176.246:8000/habital/v1
 Installation:
 1. git clone repository
 2. install brew
