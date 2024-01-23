@@ -10,7 +10,7 @@ import {
 } from "native-base";
 import { Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   VStack,
   HStack,
@@ -29,11 +29,12 @@ import * as SecureStore from "expo-secure-store";
 import { useData } from "../context/DataContext";
 import Background from "../components/Background";
 
-// import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
-// GoogleSignin.configurer({
-//     webClientId: '720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com', // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
-//   });
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [show, setShow] = useState(false);
@@ -43,24 +44,43 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { userData, updateUserData } = useData();
-  // console.log(userData)
-  // const signIn = async () => {
-  //     try {
-  //       await GoogleSignin.hasPlayServices();
-  //       const userInfo = await GoogleSignin.signIn();
-  //       setState({ userInfo });
-  //     } catch (error) {
-  //       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-  //         // user cancelled the login flow
-  //       } else if (error.code === statusCodes.IN_PROGRESS) {
-  //         // operation (e.g. sign in) is in progress already
-  //       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-  //         // play services not available or outdated
-  //       } else {
-  //         // some other error happened
-  //       }
-  //     }
-  //   };
+  const [ thirdPartyUserData, setThirdPartyUserData ] = useState(false);
+  const [ errorT, setErrorT ] = useState(false);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com", // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
+    });
+  }, []);
+
+  const signIn = async () => {
+    try {
+      console.log("Signing in...");
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+      setThirdPartyUserData(userInfo);
+    } catch (error) {
+      console.log(error);
+      setErrorT(error.code);
+      // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      //   // user cancelled the login flow
+      // } else if (error.code === statusCodes.IN_PROGRESS) {
+      //   // operation (e.g. sign in) is in progress already
+      // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      //   // play services not available or outdated
+      // } else {
+      //   // some other error happened
+      // }
+    }
+  };
+
+  const logout = () => {
+    setThirdPartyUserData();
+    GoogleSignin.revokeAccess();
+    GoogleSignin.signOut();
+  };
 
   const saveCredentials = async (id, password) => {
     try {
@@ -213,14 +233,24 @@ const LoginScreen = ({ navigation }) => {
                 </HStack>
 
                 <VStack space={5} mt="5">
-                  <Button
+                  {/* <Button
                     rounded={30}
                     shadow="6"
                     size="lg"
                     onPress={() => signIn()}
                   >
                     Google
-                  </Button>
+                  </Button> */}
+                  {thirdPartyUserData && (
+                    <Text>{JSON.stringify(thirdPartyUserData.user)}</Text>
+                  )}
+                  {thirdPartyUserData ? (
+                    <Button rounded={30} shadow="6" size="lg" onPress={logout}>
+                      Logout
+                    </Button>
+                  ) : (
+                    <GoogleSigninButton onPress={signIn} />
+                  )}
                   <Button
                     rounded={30}
                     shadow="6"
