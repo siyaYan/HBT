@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import ResetPassword from '../screens/TokenResetPage';
-import LoginScreen from '../screens/LoginPage';
+import LoginScreen from '../screens/LogInPage';
 import RegisterScreen from '../screens/RegisterPage'
 
 
