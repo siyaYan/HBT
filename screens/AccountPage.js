@@ -64,7 +64,6 @@ const AccountScreen = ({ navigation }) => {
 
   const handleChooseImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync();
-
     if (!result.canceled) {
       setSelectedImage(result);
       console.log('Captured Image Result:', result);
@@ -101,8 +100,6 @@ const AccountScreen = ({ navigation }) => {
   const handleUploadImage = async () => {
     // Implement image upload to backend here
     // You can use the 'selectedImage' state to get the image data
-    // console.log('getin')
-    // console.log(userData.avatar,'updated');
     const response = await updateAvatar(userData.token,userData.data.email,userData.avatar);
     if(response.data){
       console.log(response.data)
@@ -139,7 +136,7 @@ const AccountScreen = ({ navigation }) => {
                     </Avatar>
                     ) :
                   (
-                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.data.profileImageUrl}}>
+                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.data.avatar}}>
                       <Avatar.Badge
                         bg="white"
                         position="absolute"

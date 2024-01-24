@@ -30,8 +30,8 @@ const HomeScreen = ({ navigation, route }) => {
         <OptionMenu />
         <Pressable onPress={handleAvatarPress}>
           <Box py='5' px='2' alignItems="center" justifyContent="center">
-            {userData.data.profileImageUrl ?
-              (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.data.profileImageUrl }} />) : (
+            {userData.avatar ?
+              (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.avatar}} />) : (
                 <Avatar bg='white' mb='1' size="md" borderWidth={2}>
                   <AntDesign name="user" size={30} color="black" />
                 </Avatar>)}
@@ -44,7 +44,6 @@ const HomeScreen = ({ navigation, route }) => {
           {!userData ? <Button onPress={() => { navigation.navigate('LoginStack', { screen: 'Login' }) }}>Login</Button>: 
             <Text fontFamily={'Bold'} fontSize={30} style={{ marginTop:'50%',}} >Home Page</Text>
           }
-          
         </Box >
       </Flex>
 

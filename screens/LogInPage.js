@@ -114,6 +114,7 @@ const LoginScreen = ({ navigation }) => {
         updateUserData({
           token: response.token,
           data: response.data.user,
+          avatar: response.data.user.profileImageUrl 
         });
         navigation.navigate("MainStack", { screen: "Home" });
         // console.log(response.token);
