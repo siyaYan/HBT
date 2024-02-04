@@ -11,6 +11,8 @@ Installation:
 
 Usage:
 2. npm start
+Run Latest Build in Ios stimulator:
+eas build:run -p ios --latest
 
 Store keychain:expo secure store
 usestate do not update immediataly
