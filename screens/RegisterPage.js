@@ -38,6 +38,7 @@ const RegisterScreen = ({ navigation }) => {
       constrain1: true,
       constrain2: true,
       constrain3: true,
+      constrain4: true,
     },
     password: false,
     confirmPassword: "Please confirm your password.",
@@ -69,6 +70,11 @@ const RegisterScreen = ({ navigation }) => {
         email: res,
       });
       return res;
+    } else {
+      setErrors({
+        ...errors,
+        email:false
+      });
     }
   };
 
@@ -91,26 +97,38 @@ const RegisterScreen = ({ navigation }) => {
       if (!/^(?=.*[A-Za-z])/.test(text)) {
         Prop = "It should start with a letter.";
       }
+      if (!/^\S+$/.test(text)) {
+        Prop = "No space is allowed.";
+      }
       setShowMessage({
         ...showMessage,
         username: {
           constrain1: /^(?=.*[A-Za-z])/.test(text),
           constrain2: text.length <= 20 && text.length >= 5,
           constrain3: /(?=.*\d)[A-Za-z\d]/.test(text),
+          constrain4: /^\S+$/.test(text),
         },
         textProp: Prop,
       }),
         setErrors({
           ...errors,
-          username: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(text),
+          username:
+            (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(text) &&
+            /^\S+$/.test(text)),
         });
       console.log(showMessage.username);
       // console.log(showMessage.textProp,'in');
       return (
         showMessage.username.constrain1 &&
         showMessage.username.constrain2 &&
-        showMessage.username.constrain3
+        showMessage.username.constrain3 &&
+        showMessage.username.constrain4
       );
+    }else{
+      setErrors({
+        ...errors,
+        username:false
+      });
     }
   };
 
@@ -147,6 +165,11 @@ const RegisterScreen = ({ navigation }) => {
         errors.noSpaces &&
         errors.specialChars
       );
+    }else{
+      setErrors({
+        ...errors,
+        password:false
+      });
     }
   };
 
@@ -162,11 +185,16 @@ const RegisterScreen = ({ navigation }) => {
         confirmPassword: res,
       });
       return res;
+    }else{
+      setErrors({
+        ...errors,
+        confirmPassword:false
+      });
     }
   };
 
   const handleSubmit = () => {
-    const hasErrors = Object.values(errors).some((error) => error == false);
+    const hasErrors = Object.values(errors).some((error) => error == true);
 
     if (!hasErrors) {
       // If all validations pass, handle successful submission
@@ -180,23 +208,33 @@ const RegisterScreen = ({ navigation }) => {
       handleRegister();
     } else {
       // Optionally clear inputs here if necessary
-      // if (newErrors.username) {
-      //     // Clear username if it's invalid
-      //     setData({ ...formData, username: '' });
-      // }
-      // if (newErrors.email) {
-      //     // Clear email if it's invalid
-      //     setData({ ...formData, email: '' });
-      // }
-      // if (newErrors.password) {
-      //     // Clear username if it's invalid
-      //     setData({ ...formData, password: '' });
-      // }
-      // if (newErrors.confirmPassword) {
-      //     // Clear email if it's invalid
-      //     setData({ ...formData, confirmPassword: '' });
-      // }
-      console.log("Form has errors");
+      if (
+        validateUsername(formData.username) &&
+        validateEmail(formData.email) &&
+        validatePassword(formData.password) &&
+        validateConfirm(formData.confirmPassword)
+      ) {
+        console.log("secuss");
+        handleRegister();
+      } else {
+        console.log("error!!");
+        // if (errors.username) {
+        //   // Clear username if it's invalid
+        //   setData({ ...formData, username: "" });
+        // }
+        // if (errors.email) {
+        //   // Clear email if it's invalid
+        //   setData({ ...formData, email: "" });
+        // }
+        // if (errors.password) {
+        //   // Clear username if it's invalid
+        //   setData({ ...formData, password: "" });
+        // }
+        // if (errors.confirmPassword) {
+        //   // Clear email if it's invalid
+        //   setData({ ...formData, confirmPassword: "" });
+        // }
+      }
     }
 
     console.log({
@@ -254,9 +292,14 @@ const RegisterScreen = ({ navigation }) => {
           >
             <Center w="90%" h="100%">
               <VStack w="100%" h="100%" space={6}>
-                <VStack >
-                  <Text mt={10} ml={2} fontSize="3xl" style={{ fontFamily: "Bold" }}>
-                    Creat account
+                <VStack>
+                  <Text
+                    mt={10}
+                    ml={2}
+                    fontSize="3xl"
+                    style={{ fontFamily: "Bold" }}
+                  >
+                    Create account
                   </Text>
                 </VStack>
                 <VStack w="100%" space={4}>
@@ -272,17 +315,17 @@ const RegisterScreen = ({ navigation }) => {
                     {Object.values(showMessage.username).some(
                       (value) => value === false
                     ) ? (
-                      <FormControl.ErrorMessage ml={3} mt={1} >
+                      <FormControl.ErrorMessage ml={3} mt={1}>
                         <Text fontFamily={"Regular"} fontSize="sm">
                           {showMessage.textProp}
                         </Text>
                       </FormControl.ErrorMessage>
                     ) : (
-                      <FormControl.HelperText ml={3} mt={0} >
-                        <Text  fontFamily={"Regular"} fontSize="sm">
+                      <FormControl.HelperText ml={3} mt={1}>
+                        <Text fontFamily={"Regular"} fontSize="sm">
                           {showMessage.textProp
                             ? showMessage.textProp
-                            : "Well done!"}
+                            : "✅ Username"}
                         </Text>
                       </FormControl.HelperText>
                     )}
@@ -301,9 +344,11 @@ const RegisterScreen = ({ navigation }) => {
                         })
                       }
                     />
-                    <FormControl.HelperText ml={3} mt={0} >
+                    <FormControl.HelperText ml={3} mt={0}>
                       <Text fontFamily={"Regular"} fontSize="sm">
-                      {formData.nickname?"Hey "+formData.nickname+" 👋🏻":"Nick name is optional"}
+                        {formData.nickname
+                          ? "Hey " + formData.nickname + " 👋🏻"
+                          : "Nick name is optional"}
                       </Text>
                     </FormControl.HelperText>
                   </FormControl>
@@ -318,17 +363,24 @@ const RegisterScreen = ({ navigation }) => {
                       onChangeText={validateEmail}
                     />
                     {errors.email ? (
-                      <FormControl.HelperText ml={3} mt={0} >
+                      <FormControl.HelperText ml={3} mt={1}>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                          Please input your email address.
+                          
+                          {formData.email
+                            ? "✅ Email"
+                            : "Please input your email address"}
                         </Text>
+                        
                       </FormControl.HelperText>
                     ) : (
-                      <FormControl.ErrorMessage ml={3} mt={1}
+                      <FormControl.ErrorMessage
+                        ml={3}
+                        mt={1}
                         leftIcon={<WarningOutlineIcon size="xs" />}
                       >
                         <Text ml={3} fontFamily={"Regular"} fontSize="sm">
-                          Invalid email address.
+                  
+                          Invalid email address
                         </Text>
                       </FormControl.ErrorMessage>
                     )}
@@ -365,26 +417,29 @@ const RegisterScreen = ({ navigation }) => {
                       }
                     />
                     {showMessage.password ? (
-                      <FormControl.HelperText ml={3} mt={1} >
-                        <Text  fontFamily={"Regular"} fontSize="sm">
+                      <FormControl.HelperText ml={3} mt={1}>
+                        <Text fontFamily={"Regular"} fontSize="sm">
                           {errors.length ? "✅" : "❌"} Between 8-20 characters
                         </Text>
                         <Text fontFamily={"Regular"} fontSize="sm">
                           {errors.letterAndNumber ? "✅" : "❌"} Must include a
                           letter and a number
                         </Text>
-                        <Text  fontFamily={"Regular"} fontSize="sm">
-                          {errors.noSpaces ? "✅" : "❌"} Cannot have any spaces
+                        <Text fontFamily={"Regular"} fontSize="sm">
+                          {errors.noSpaces ? "✅" : "❌"} No space is allowed
                         </Text>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                          {errors.specialChars ? "✅" : "❌"} Special
-                          characters: !@#%&_?#=-{" "}
+                          {errors.specialChars ? "✅" : "❌"} At least one special
+                          case: !@#%&_?#=-{" "}
                         </Text>
                       </FormControl.HelperText>
                     ) : (
-                      <FormControl.HelperText ml={3} mt={0} >
+                      <FormControl.HelperText ml={3} mt={1}>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                          Please input your password.
+                        {formData.password
+                            ? "✅ Password"
+                            : "Please input your password"}
+                          
                         </Text>
                       </FormControl.HelperText>
                     )}
@@ -419,13 +474,16 @@ const RegisterScreen = ({ navigation }) => {
                     {!errors.confirmPassword ? (
                       <FormControl.ErrorMessage ml={3} mt={1}>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                          Confirm Password is not correct!
+                          Confirm password is not correct
                         </Text>
                       </FormControl.ErrorMessage>
                     ) : (
-                      <FormControl.HelperText ml={3} mt={0} >
+                      <FormControl.HelperText ml={3} mt={1}>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                          Please confirm your password.
+                        {formData.confirmPassword
+                            ? "✅ Confirm Password"
+                            : "Please confirm your password"}
+                          
                         </Text>
                       </FormControl.HelperText>
                     )}
@@ -441,24 +499,26 @@ const RegisterScreen = ({ navigation }) => {
                     backgroundColor={"#49a579"}
                     _text={{
                       color: "#f9f8f2",
-                      fontFamily:"Regular Semi Bold",
-                       fontSize:"lg"
+                      fontFamily: "Regular Semi Bold",
+                      fontSize: "lg",
                     }}
                   >
                     Register
                   </Button>
                   <HStack mb={6} justifyContent="center">
                     <Text fontFamily={"Regular"} fontSize="lg">
-                    Already a Habital citizen?{" "}
+                      Already a Habital citizen?{" "}
                     </Text>
                     <Pressable
                       onPress={() =>
                         navigation.navigate("LoginStack", { screen: "Login" })
                       }
                     >
-                      <Text fontFamily={"Regular Semi Bold"}
-                          fontSize="lg"
-                          color="#49a579">
+                      <Text
+                        fontFamily={"Regular Semi Bold"}
+                        fontSize="lg"
+                        color="#49a579"
+                      >
                         Log in
                       </Text>
                     </Pressable>

@@ -20,9 +20,10 @@ export async function registerUser(username, nickname, email, password, confirmP
 
     const data = await response.json();
     if (data.status == "success") {
-      Alert.alert('Success', 'Registration successful');
+      Alert.alert('Success', 'Please check your email inbox');
     } else {
-      Alert.alert('Error', data.message || 'Registration failed');
+      Alert.alert('Oh,No!', data.message || 'Registration failed');
+      console.log(data.message)
     }
     return data; // Make sure you return the data here
   } catch (error) {
@@ -45,12 +46,12 @@ export async function loginUser(id, password) {
     if (data.status == 'success') {
       // Alert.alert('Success', 'Login successful');
     } else {
-      Alert.alert('Error', data.message || 'Login failed');
+      Alert.alert('Unsuccessful', data.message || 'Login failed');
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error('Error in loginUser:', error);
-    Alert.alert('Error', 'Login failed. Please try again later.');
+    Alert.alert('Unsuccessful', 'Login failed. Please try again later');
     // Decide how to handle the error. You may want to re-throw it or return a specific value.
   }
 };
@@ -77,7 +78,7 @@ export async function tokenResetPassword(password, passwordConfirm, code) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error('Error in Reset password:', error);
-    Alert.alert('Error', 'Reset password failed. Please try again later.');
+    Alert.alert('Error', 'Reset password failed. Please try again later');
   }
 };
 
@@ -102,7 +103,7 @@ export async function forgetSendEmail(email) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error('Error in send email:', error);
-    Alert.alert('Error', 'Send Email failed. Please try again later.');
+    Alert.alert('Error', 'Send Email failed. Please try again later');
   }
 
 };
@@ -175,7 +176,7 @@ export async function updateAvatar(token, userId, avatar) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error('Error in Update avatar:', error);
-    Alert.alert('Error', 'Reset password failed. Please try again later.');
+    Alert.alert('Error', 'Reset password failed. Please try again later');
   }
   //dummy failed
   // Alert.alert('Failed', 'wrong email reset token!');

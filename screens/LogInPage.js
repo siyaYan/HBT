@@ -35,6 +35,8 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 
+
+// TODO: shaking the buttons
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [show, setShow] = useState(false);
@@ -321,7 +323,7 @@ const LoginScreen = ({ navigation }) => {
                       onPress={(value) => setRemember(!remember)}
                     >
                       <Text fontFamily={"Regular"} fontSize={"lg"}>
-                        Remember
+                        Stay signed in
                       </Text>
                     </Checkbox>
 
@@ -334,7 +336,7 @@ const LoginScreen = ({ navigation }) => {
                           color="#191919"
                           textDecorationLine={"underline"}
                         >
-                          Oh no! I forget😱
+                          😱  Oh no! I forgot
                         </Text>
                       </Pressable>
                       <Modal
