@@ -1,9 +1,10 @@
 // Mock API functions for testing without a backend
 import { Alert } from 'react-native';
+import RNFS from 'react-native-fs';
 export async function registerUser(username, nickname, email, password, confirmPassword) {
 
   try {
-    const response = await fetch('http://localhost:8000/habital/v1/signup', {
+    const response = await fetch('http://54.252.176.246:8000/habital/v1/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,9 +20,10 @@ export async function registerUser(username, nickname, email, password, confirmP
 
     const data = await response.json();
     if (data.status == "success") {
-      Alert.alert('Success', 'Registration successful');
+      Alert.alert('Success', 'Please check your email inbox');
     } else {
-      Alert.alert('Error', data.message || 'Registration failed');
+      Alert.alert('Oh,No!', data.message || 'Registration failed');
+      console.log(data.message)
     }
     return data; // Make sure you return the data here
   } catch (error) {
@@ -32,7 +34,7 @@ export async function registerUser(username, nickname, email, password, confirmP
 
 export async function loginUser(id, password) {
   try {
-    const response = await fetch('http://localhost:8000/habital/v1/login', {
+    const response = await fetch('http://54.252.176.246:8000/habital/v1/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,24 +46,22 @@ export async function loginUser(id, password) {
     if (data.status == 'success') {
       // Alert.alert('Success', 'Login successful');
     } else {
-      Alert.alert('Error', data.message || 'Login failed');
+      Alert.alert('Unsuccessful', data.message || 'Login failed');
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error('Error in loginUser:', error);
-    Alert.alert('Error', 'Login failed. Please try again later.');
+    Alert.alert('Unsuccessful', 'Login failed. Please try again later');
     // Decide how to handle the error. You may want to re-throw it or return a specific value.
   }
 };
 
-export async function tokenResetPassword(password, passwordConfirm, token) {
-  // const toke=token.toString()
+export async function tokenResetPassword(password, passwordConfirm, code) {
   try {
-    const response = await fetch("http://localhost:8000/habital/v1/users/resetPassword/" + token, {
+    const response = await fetch("http://54.252.176.246:8000/habital/v1/users/resetPassword/" + code, {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json',
-        // "Authorization":  token,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         "password": password,
@@ -78,13 +78,13 @@ export async function tokenResetPassword(password, passwordConfirm, token) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error('Error in Reset password:', error);
-    Alert.alert('Error', 'Reset password failed. Please try again later.');
+    Alert.alert('Error', 'Reset password failed. Please try again later');
   }
 };
 
 export async function forgetSendEmail(email) {
   try {
-    const response = await fetch('http://localhost:8000/habital/v1/users/forgotPassword', {
+    const response = await fetch('http://54.252.176.246:8000/habital/v1/users/forgotPassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ export async function forgetSendEmail(email) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error('Error in send email:', error);
-    Alert.alert('Error', 'Send Email failed. Please try again later.');
+    Alert.alert('Error', 'Send Email failed. Please try again later');
   }
 
 };
@@ -152,11 +152,32 @@ export async function resetEmail(email, token) {
   // return 'failed';
 };
 
-export async function updateAvatar(data) {
-  //dummy success
-  Alert.alert('Success', 'Avatar updated!');
-  console.log('update avatar!');
-  return 'success';
+export async function updateAvatar(token, userId, avatar) {
+  const binaryData = await RNFS.readFile(avatar, 'base64');
+  try {
+    const response = await fetch("http://54.252.176.246:8000/habital/v1/users/${userId}/profileImage", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body:  JSON.stringify({
+        profileImage: binaryData
+    })
+        
+    });
+
+    const data = await response.json();
+    if (data.status == "success") {
+      Alert.alert('Success', 'Avatar updated!');
+    } else {
+      Alert.alert('Error', data.message || 'update avatar failed');
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error('Error in Update avatar:', error);
+    Alert.alert('Error', 'Reset password failed. Please try again later');
+  }
   //dummy failed
   // Alert.alert('Failed', 'wrong email reset token!');
   // console.log('wrong email reset token!');

@@ -12,11 +12,17 @@ export default function AccountStackNavigator() {
         <Stack.Navigator >
             <Stack.Screen name="ResetPassword" component={ResetPassword} options={{
                 headerBackTitleVisible: false,
-                title: 'Change password',
+                title: '',
+                headerStyle: {
+                    backgroundColor:'rgba(255,255,255,0)',
+                  },
             }}/>
             <Stack.Screen name="AccountSetting" component={AccountSettingScreen} options={{
                 headerBackTitleVisible: false,
-                title: 'Change profile',
+                title: '',
+                headerStyle: {
+                    backgroundColor:'rgba(255,255,255,0)',
+                  },
             }}/>
         </Stack.Navigator>)
 };

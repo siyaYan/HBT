@@ -13,7 +13,18 @@
       "backgroundColor": "#ffffff"
     },
     "plugins": [
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      "@react-native-firebase/app",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "assetBundlePatterns": [
       "**/*"
@@ -23,7 +34,8 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "bundleIdentifier": "com.habitalproject.habital"
+      "bundleIdentifier": "com.habitalproject.habital",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -35,7 +47,8 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "package": "com.habitalproject.habital"
+      "package": "com.habitalproject.habital",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"

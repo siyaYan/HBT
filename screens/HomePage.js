@@ -4,6 +4,7 @@ import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 import OptionMenu from "../components/OptionMenu";
+import Background from "../components/Background";
 
 // TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation, route }) => {
@@ -24,17 +25,18 @@ const HomeScreen = ({ navigation, route }) => {
 
   return (
     <NativeBaseProvider>
+      <Background />
       <Flex direction="column" alignItems='center'>
         <OptionMenu />
         <Pressable onPress={handleAvatarPress}>
           <Box py='5' px='2' alignItems="center" justifyContent="center">
             {userData.avatar ?
-              (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.avatar }} />) : (
+              (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.avatar}} />) : (
                 <Avatar bg='white' mb='1' size="md" borderWidth={2}>
                   <AntDesign name="user" size={30} color="black" />
                 </Avatar>)}
                 <Text fontFamily={'Regular'} fontSize={30}>
-                  {/* {userData.data.nickname} */}
+                  {userData.data.nickname}
                   </Text>
           </Box>
         </Pressable>
@@ -42,7 +44,6 @@ const HomeScreen = ({ navigation, route }) => {
           {!userData ? <Button onPress={() => { navigation.navigate('LoginStack', { screen: 'Login' }) }}>Login</Button>: 
             <Text fontFamily={'Bold'} fontSize={30} style={{ marginTop:'50%',}} >Home Page</Text>
           }
-          
         </Box >
       </Flex>
 

@@ -10,7 +10,8 @@ import {
 } from "native-base";
 import { Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { AntDesign } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
 import {
   VStack,
   HStack,
@@ -29,11 +30,13 @@ import * as SecureStore from "expo-secure-store";
 import { useData } from "../context/DataContext";
 import Background from "../components/Background";
 
-// import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
-// GoogleSignin.configurer({
-//     webClientId: '720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com', // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
-//   });
+// TODO: shaking the buttons
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [show, setShow] = useState(false);
@@ -43,24 +46,43 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { userData, updateUserData } = useData();
-  // console.log(userData)
-  // const signIn = async () => {
-  //     try {
-  //       await GoogleSignin.hasPlayServices();
-  //       const userInfo = await GoogleSignin.signIn();
-  //       setState({ userInfo });
-  //     } catch (error) {
-  //       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-  //         // user cancelled the login flow
-  //       } else if (error.code === statusCodes.IN_PROGRESS) {
-  //         // operation (e.g. sign in) is in progress already
-  //       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-  //         // play services not available or outdated
-  //       } else {
-  //         // some other error happened
-  //       }
-  //     }
-  //   };
+  const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
+  const [errorT, setErrorT] = useState(false);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        "720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com", // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
+    });
+  }, []);
+
+  const signIn = async () => {
+    try {
+      console.log("Signing in...");
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+      setThirdPartyUserData(userInfo);
+    } catch (error) {
+      console.log(error);
+      setErrorT(error.code);
+      // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      //   // user cancelled the login flow
+      // } else if (error.code === statusCodes.IN_PROGRESS) {
+      //   // operation (e.g. sign in) is in progress already
+      // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+      //   // play services not available or outdated
+      // } else {
+      //   // some other error happened
+      // }
+    }
+  };
+
+  const logout = () => {
+    setThirdPartyUserData();
+    GoogleSignin.revokeAccess();
+    GoogleSignin.signOut();
+  };
 
   const saveCredentials = async (id, password) => {
     try {
@@ -94,6 +116,7 @@ const LoginScreen = ({ navigation }) => {
         updateUserData({
           token: response.token,
           data: response.data.user,
+          avatar: response.data.user.profileImageUrl,
         });
         navigation.navigate("MainStack", { screen: "Home" });
         // console.log(response.token);
@@ -197,7 +220,7 @@ const LoginScreen = ({ navigation }) => {
                         }
                       >
                         <Text
-                          fontFamily={"Regular Semi Bold"}
+                          fontFamily={"Regular Medium"}
                           fontSize={"lg"}
                           color="#49a579"
                         >
@@ -217,31 +240,49 @@ const LoginScreen = ({ navigation }) => {
                     rounded={30}
                     shadow="6"
                     size="lg"
+                    height="15%"
                     onPress={() => signIn()}
+                    padding={0}
+                    style={{ backgroundColor: "white" }}
                   >
-                    Google
+                    <HStack
+                      space={5}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
+                      {/* <AntDesign name="google" size={24} color="#f9f8f2" /> */}
+                      <GoogleSigninButton
+                        size={GoogleSigninButton.Size.Icon}
+                        color={GoogleSigninButton.Color.Light}
+                        onPress={signIn}
+                      />
+                      <Text
+                        textAlign={"center"}
+                        fontFamily={"Regular Medium"}
+                        fontSize={"lg"}
+                        color={"#191919"}
+                      >
+                        Continue with Google
+                      </Text>
+                    </HStack>
                   </Button>
+
                   <Button
-                    rounded={30}
-                    shadow="6"
                     size="lg"
+                    _text={{
+                      color: "#f9f8f2",
+                      fontFamily: "Regular Medium",
+                      fontSize: "lg",
+                    }}
                     onPress={() => signIn()}
                   >
                     Facebook
                   </Button>
-                  <Text
-                    textAlign={"center"}
-                    fontFamily={"Regular Semi Bold"}
-                    fontSize={"lg"}
-                  >
-                    Or
-                  </Text>
+                  <Text textAlign="center">Or</Text>
 
                   <FormControl isRequired isInvalid={"id" in errors}>
                     <Input
-                      rounded={30}
-                      size="2xl"
-                      fontFamily={"Regular Semi Bold"}
+                      fontSize="lg"
                       onChangeText={(value) =>
                         setData({
                           ...formData,
@@ -255,9 +296,7 @@ const LoginScreen = ({ navigation }) => {
 
                   <FormControl isRequired isInvalid={"password" in errors}>
                     <Input
-                      rounded={30}
-                      size="2xl"
-                      fontFamily={"Regular Semi Bold"}
+                      fontSize="lg"
                       placeholder="Password"
                       onChangeText={(value) =>
                         setData({
@@ -295,7 +334,7 @@ const LoginScreen = ({ navigation }) => {
                       onPress={(value) => setRemember(!remember)}
                     >
                       <Text fontFamily={"Regular"} fontSize={"lg"}>
-                        Remember
+                        Stay signed in
                       </Text>
                     </Checkbox>
 
@@ -308,7 +347,7 @@ const LoginScreen = ({ navigation }) => {
                           color="#191919"
                           textDecorationLine={"underline"}
                         >
-                          Oh no! I forget😱
+                          😱 Oh no! I forgot
                         </Text>
                       </Pressable>
                       <Modal
@@ -318,10 +357,7 @@ const LoginScreen = ({ navigation }) => {
                         <Modal.Content maxWidth="300px">
                           <Modal.CloseButton />
                           <Modal.Header>
-                            <Text
-                              fontFamily={"Regular Semi Bold"}
-                              fontSize="xl"
-                            >
+                            <Text fontFamily={"Regular Medium"} fontSize="xl">
                               Reset your password
                             </Text>
                           </Modal.Header>
@@ -329,7 +365,7 @@ const LoginScreen = ({ navigation }) => {
                             <FormControl mt="3" isInvalid={!!error} isRequired>
                               {/* <FormControl.Label>
                                 <Text ml={3}
-                                  fontFamily={"Regular Semi Bold"}
+                                  fontFamily={"Regular Medium"}
                                   fontSize="md"
                                 >
                                   Email
@@ -338,7 +374,7 @@ const LoginScreen = ({ navigation }) => {
                               <Input
                                 rounded={30}
                                 size="2xl"
-                                fontFamily={"Regular Semi Bold"}
+                                fontFamily={"Regular Medium"}
                                 fontSize="md"
                                 value={email}
                                 onChangeText={setEmail}
@@ -408,7 +444,7 @@ const LoginScreen = ({ navigation }) => {
                  </Button> */}
                   <Pressable onPress={handleSubmit}>
                     <Image
-                      source={require("../assets/cherry.png")}
+                      source={require("../assets/Buttonicons/ic_login.png")}
                       style={{ width: 80, height: 80 }}
                       alt="image"
                     />

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Input, Icon, Pressable, Center, Heading, VStack, Box, FormControl, Button, Text } from 'native-base';
 import { resetPassword } from '../components/Endpoint'; // Import the mock function
 import { MaterialIcons } from "@expo/vector-icons";
+import Background from "../components/Background";
 
 const ResetPassword = ({ navigation }) => {
   const current = '123'
@@ -119,6 +120,7 @@ const ResetPassword = ({ navigation }) => {
 
   return (
     <Center w="100%" >
+      <Background />
       <Box safeArea py="8" w="90%" maxW="290" >
         <VStack mt="5" >
           <Center>

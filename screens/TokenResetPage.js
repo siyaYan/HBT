@@ -3,6 +3,7 @@ import { Input, Icon, Pressable, Center, Heading, VStack, Box,FormControl, Butto
 import { tokenResetPassword } from '../components/Endpoint'; // Import the mock function
 import { Alert } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
+import Background from "../components/Background";
 
 const ResetPasswordScreen = ({ navigation }) => {
 
@@ -103,6 +104,7 @@ const ResetPasswordScreen = ({ navigation }) => {
 
   return (
     <Center w="100%">
+      <Background/>
       <Box safeArea py="8" w="90%" maxW="290">
         <VStack space={1} alignItems="center">
           <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
@@ -121,9 +123,9 @@ const ResetPasswordScreen = ({ navigation }) => {
             <FormControl isRequired isInvalid={errors.token===true}>
               <FormControl.Label _text={{
                 bold: true
-              }}>Token</FormControl.Label>
+              }}>Reset code</FormControl.Label>
               <Input value={formData.token}
-                placeholder="Enter your reset password token"
+                placeholder="Enter your 6 digit reset code"
                 onChangeText={value => setData({
                   ...formData,
                   token: value

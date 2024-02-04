@@ -8,6 +8,7 @@ import AccountStackNavigator from '../components/AccountStackNavigator';
 import * as SecureStore from 'expo-secure-store';
 import { loginUser } from '../components/Endpoint';
 import { useData } from '../context/DataContext';
+import AppHomeScreen from '../screens/AppHomePage';
 // import Test from '../screens/Test.js';
 
 const Stack = createStackNavigator();
@@ -52,7 +53,8 @@ export default function AppContainer () {
                 }
             } else {
                 setIsAuthenticated(false);
-                navigationRef.current?.navigate('LoginStack', { screen: 'Login' })
+                // navigationRef.current?.navigate('LoginStack', { screen: 'Login' })
+                navigationRef.current?.navigate('Home')
             }
         };
 
@@ -62,6 +64,7 @@ export default function AppContainer () {
     return (
             <NavigationContainer ref={navigationRef}>
                 <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false ,headerBackTitleVisible: false}}>
+                    <Stack.Screen name="Home" component={AppHomeScreen}  />
                     <Stack.Screen name="MainStack" component={AuthenticatedScreens}  />
                     <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
                     <Stack.Screen name="AccountStack" component={AccountStackNavigator} />

@@ -10,6 +10,8 @@ import OptionMenu from '../components/OptionMenu';
 // import ImagePicker from 'react-native-image-picker';
 // import { Camera } from 'react-native-camera';
 import * as ImagePicker from 'expo-image-picker';
+import Background from "../components/Background";
+import { updateAvatar } from '../components/Endpoint';
 
 const AccountScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
@@ -62,7 +64,6 @@ const AccountScreen = ({ navigation }) => {
 
   const handleChooseImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync();
-
     if (!result.canceled) {
       setSelectedImage(result);
       console.log('Captured Image Result:', result);
@@ -99,12 +100,21 @@ const AccountScreen = ({ navigation }) => {
   const handleUploadImage = async () => {
     // Implement image upload to backend here
     // You can use the 'selectedImage' state to get the image data
-    console.log('getin')
-    console.log(userData.avatar,'updated');
+    const response = await updateAvatar(userData.token,userData.data.email,userData.avatar);
+    if(response.data){
+      console.log(response.data)
+      const newData = userData.data;
+      newData.profileImageUrl = response.data.profileImageUrl;
+      updateUserData({
+        ...userData,
+        data:newData
+      })
+    }
   };
 
   return (
     <NativeBaseProvider>
+      <Background />
       <Flex direction="column" alignItems='center'>
         <OptionMenu />
         <Box safeArea py='2' w="100%" maxW="290">
@@ -114,11 +124,19 @@ const AccountScreen = ({ navigation }) => {
                 {selectedImage ?
                   (
                     <Avatar bg='white' mb='1' size="lg" source={{ uri: selectedImage.assets[0].uri }} >
-                      {userData.data.nickname}
-                    </Avatar>) :
+                      
+                      <Avatar.Badge
+                        bg="white"
+                        position="absolute"
+                        top={0}
+                        right={0}
+                      >
+                        <Ionicons name="settings-sharp" size={16} color="black" />
+                      </Avatar.Badge>
+                    </Avatar>
+                    ) :
                   (
-                    <Avatar bg='white' mb='1' size="lg" borderWidth={2}>
-                      <AntDesign name="user" size={40} color="black" />
+                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.avatar}}>
                       <Avatar.Badge
                         bg="white"
                         position="absolute"
