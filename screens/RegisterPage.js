@@ -20,7 +20,7 @@ import {
   KeyboardAvoidingView,
 } from "native-base";
 
-import { registerUser } from "../components/Endpoint";
+import { User } from "../components/Endpoint";
 import Background from "../components/Background";
 
 const RegisterScreen = ({ navigation }) => {
@@ -73,7 +73,7 @@ const RegisterScreen = ({ navigation }) => {
     } else {
       setErrors({
         ...errors,
-        email:false
+        email: false,
       });
     }
   };
@@ -113,8 +113,8 @@ const RegisterScreen = ({ navigation }) => {
         setErrors({
           ...errors,
           username:
-            (/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(text) &&
-            /^\S+$/.test(text)),
+            /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(text) &&
+            /^\S+$/.test(text),
         });
       console.log(showMessage.username);
       // console.log(showMessage.textProp,'in');
@@ -124,10 +124,10 @@ const RegisterScreen = ({ navigation }) => {
         showMessage.username.constrain3 &&
         showMessage.username.constrain4
       );
-    }else{
+    } else {
       setErrors({
         ...errors,
-        username:false
+        username: false,
       });
     }
   };
@@ -165,10 +165,10 @@ const RegisterScreen = ({ navigation }) => {
         errors.noSpaces &&
         errors.specialChars
       );
-    }else{
+    } else {
       setErrors({
         ...errors,
-        password:false
+        password: false,
       });
     }
   };
@@ -185,10 +185,10 @@ const RegisterScreen = ({ navigation }) => {
         confirmPassword: res,
       });
       return res;
-    }else{
+    } else {
       setErrors({
         ...errors,
-        confirmPassword:false
+        confirmPassword: false,
       });
     }
   };
@@ -205,7 +205,7 @@ const RegisterScreen = ({ navigation }) => {
         });
       }
       console.log("Submitted");
-      handleRegister();
+      handle();
     } else {
       // Optionally clear inputs here if necessary
       if (
@@ -215,7 +215,7 @@ const RegisterScreen = ({ navigation }) => {
         validateConfirm(formData.confirmPassword)
       ) {
         console.log("secuss");
-        handleRegister();
+        handle();
       } else {
         console.log("error!!");
         // if (errors.username) {
@@ -252,9 +252,9 @@ const RegisterScreen = ({ navigation }) => {
     });
   };
 
-  async function handleRegister() {
+  async function handle() {
     // Call the mock registration function
-    const response = await registerUser(
+    const response = await User(
       formData.username,
       formData.nickname,
       formData.email,
@@ -305,9 +305,7 @@ const RegisterScreen = ({ navigation }) => {
                 <VStack w="100%" space={4}>
                   <FormControl isRequired isInvalid={!errors.username}>
                     <Input
-                      rounded={30}
                       size="lg"
-                      fontFamily={"Regular Semi Bold"}
                       placeholder="Username"
                       value={formData.username}
                       onChangeText={validateUsername}
@@ -332,9 +330,7 @@ const RegisterScreen = ({ navigation }) => {
                   </FormControl>
                   <FormControl>
                     <Input
-                      rounded={30}
                       size="lg"
-                      fontFamily={"Regular Semi Bold"}
                       placeholder="Nickname"
                       value={formData.nickname}
                       onChangeText={(value) =>
@@ -355,9 +351,7 @@ const RegisterScreen = ({ navigation }) => {
 
                   <FormControl isRequired isInvalid={!errors.email}>
                     <Input
-                      rounded={30}
                       size="lg"
-                      fontFamily={"Regular Semi Bold"}
                       placeholder="Email"
                       value={formData.email}
                       onChangeText={validateEmail}
@@ -365,12 +359,10 @@ const RegisterScreen = ({ navigation }) => {
                     {errors.email ? (
                       <FormControl.HelperText ml={3} mt={1}>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                          
                           {formData.email
                             ? "✅ Email"
                             : "Please input your email address"}
                         </Text>
-                        
                       </FormControl.HelperText>
                     ) : (
                       <FormControl.ErrorMessage
@@ -379,7 +371,6 @@ const RegisterScreen = ({ navigation }) => {
                         leftIcon={<WarningOutlineIcon size="xs" />}
                       >
                         <Text ml={3} fontFamily={"Regular"} fontSize="sm">
-                  
                           Invalid email address
                         </Text>
                       </FormControl.ErrorMessage>
@@ -388,9 +379,7 @@ const RegisterScreen = ({ navigation }) => {
 
                   <FormControl isRequired isInvalid={!errors.password}>
                     <Input
-                      rounded={30}
                       size="lg"
-                      fontFamily={"Regular Semi Bold"}
                       onFocus={handlePasswordFocus}
                       onBlur={handlePasswordBlur}
                       value={formData.password}
@@ -429,17 +418,16 @@ const RegisterScreen = ({ navigation }) => {
                           {errors.noSpaces ? "✅" : "❌"} No space is allowed
                         </Text>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                          {errors.specialChars ? "✅" : "❌"} At least one special
-                          case: !@#%&_?#=-{" "}
+                          {errors.specialChars ? "✅" : "❌"} At least one
+                          special case: !@#%&_?#=-{" "}
                         </Text>
                       </FormControl.HelperText>
                     ) : (
                       <FormControl.HelperText ml={3} mt={1}>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                        {formData.password
+                          {formData.password
                             ? "✅ Password"
                             : "Please input your password"}
-                          
                         </Text>
                       </FormControl.HelperText>
                     )}
@@ -447,9 +435,7 @@ const RegisterScreen = ({ navigation }) => {
 
                   <FormControl isRequired isInvalid={!errors.confirmPassword}>
                     <Input
-                      rounded={30}
                       size="lg"
-                      fontFamily={"Regular Semi Bold"}
                       value={formData.confirmPassword}
                       placeholder="Confirm Password"
                       onChangeText={validateConfirm}
@@ -480,26 +466,23 @@ const RegisterScreen = ({ navigation }) => {
                     ) : (
                       <FormControl.HelperText ml={3} mt={1}>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                        {formData.confirmPassword
+                          {formData.confirmPassword
                             ? "✅ Confirm Password"
                             : "Please confirm your password"}
-                          
                         </Text>
                       </FormControl.HelperText>
                     )}
                   </FormControl>
 
                   <Button
-                    rounded={30}
-                    shadow="7"
-                    width="100%"
-                    size={"lg"}
                     onPress={handleSubmit}
                     mt="2"
-                    backgroundColor={"#49a579"}
+                    width="100%"
+                    size="lg"
+                    bg= "#49a579"
                     _text={{
                       color: "#f9f8f2",
-                      fontFamily: "Regular Semi Bold",
+                      fontFamily: "Regular Medium",
                       fontSize: "lg",
                     }}
                   >
@@ -515,7 +498,7 @@ const RegisterScreen = ({ navigation }) => {
                       }
                     >
                       <Text
-                        fontFamily={"Regular Semi Bold"}
+                        fontFamily={"Regular Medium"}
                         fontSize="lg"
                         color="#49a579"
                       >

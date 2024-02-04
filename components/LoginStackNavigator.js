@@ -16,7 +16,7 @@ export default function LoginStackNavigator() {
                 title: '',
                 headerStyle: {
                     backgroundColor:'rgba(255,255,255,0)',
-                  },
+                  },                
             }}/>
             <Stack.Screen name="Reset" component={ResetPassword} options={{
                 headerBackTitleVisible: false,

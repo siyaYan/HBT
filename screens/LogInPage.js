@@ -10,6 +10,7 @@ import {
 } from "native-base";
 import { Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import {
   VStack,
@@ -35,7 +36,6 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 
-
 // TODO: shaking the buttons
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
@@ -46,8 +46,8 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { userData, updateUserData } = useData();
-  const [ thirdPartyUserData, setThirdPartyUserData ] = useState(false);
-  const [ errorT, setErrorT ] = useState(false);
+  const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
+  const [errorT, setErrorT] = useState(false);
 
   useEffect(() => {
     GoogleSignin.configure({
@@ -116,7 +116,7 @@ const LoginScreen = ({ navigation }) => {
         updateUserData({
           token: response.token,
           data: response.data.user,
-          avatar: response.data.user.profileImageUrl 
+          avatar: response.data.user.profileImageUrl,
         });
         navigation.navigate("MainStack", { screen: "Home" });
         // console.log(response.token);
@@ -220,7 +220,7 @@ const LoginScreen = ({ navigation }) => {
                         }
                       >
                         <Text
-                          fontFamily={"Regular Semi Bold"}
+                          fontFamily={"Regular Medium"}
                           fontSize={"lg"}
                           color="#49a579"
                         >
@@ -240,36 +240,49 @@ const LoginScreen = ({ navigation }) => {
                     rounded={30}
                     shadow="6"
                     size="lg"
+                    height="15%"
                     onPress={() => signIn()}
                     padding={0}
-                    style={{backgroundColor: "rgb(66,133,245)"}}
+                    style={{ backgroundColor: "white" }}
                   >
-                    <GoogleSigninButton style={{ width:265, height:50 }} size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={signIn}/> 
+                    <HStack
+                      space={5}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
+                      {/* <AntDesign name="google" size={24} color="#f9f8f2" /> */}
+                      <GoogleSigninButton
+                        size={GoogleSigninButton.Size.Icon}
+                        color={GoogleSigninButton.Color.Light}
+                        onPress={signIn}
+                      />
+                      <Text
+                        textAlign={"center"}
+                        fontFamily={"Regular Medium"}
+                        fontSize={"lg"}
+                        color={"#191919"}
+                      >
+                        Continue with Google
+                      </Text>
+                    </HStack>
                   </Button>
-     
-                  	
-               
+
                   <Button
-                    rounded={30}
-                    shadow="6"
                     size="lg"
+                    _text={{
+                      color: "#f9f8f2",
+                      fontFamily: "Regular Medium",
+                      fontSize: "lg",
+                    }}
                     onPress={() => signIn()}
                   >
                     Facebook
                   </Button>
-                  <Text
-                    textAlign={"center"}
-                    fontFamily={"Regular Semi Bold"}
-                    fontSize={"lg"}
-                  >
-                    Or
-                  </Text>
+                  <Text textAlign="center">Or</Text>
 
                   <FormControl isRequired isInvalid={"id" in errors}>
                     <Input
-                      rounded={30}
-                      size="2xl"
-                      fontFamily={"Regular Semi Bold"}
+                      fontSize="lg"
                       onChangeText={(value) =>
                         setData({
                           ...formData,
@@ -283,9 +296,7 @@ const LoginScreen = ({ navigation }) => {
 
                   <FormControl isRequired isInvalid={"password" in errors}>
                     <Input
-                      rounded={30}
-                      size="2xl"
-                      fontFamily={"Regular Semi Bold"}
+                      fontSize="lg"
                       placeholder="Password"
                       onChangeText={(value) =>
                         setData({
@@ -336,7 +347,7 @@ const LoginScreen = ({ navigation }) => {
                           color="#191919"
                           textDecorationLine={"underline"}
                         >
-                          😱  Oh no! I forgot
+                          😱 Oh no! I forgot
                         </Text>
                       </Pressable>
                       <Modal
@@ -346,10 +357,7 @@ const LoginScreen = ({ navigation }) => {
                         <Modal.Content maxWidth="300px">
                           <Modal.CloseButton />
                           <Modal.Header>
-                            <Text
-                              fontFamily={"Regular Semi Bold"}
-                              fontSize="xl"
-                            >
+                            <Text fontFamily={"Regular Medium"} fontSize="xl">
                               Reset your password
                             </Text>
                           </Modal.Header>
@@ -357,7 +365,7 @@ const LoginScreen = ({ navigation }) => {
                             <FormControl mt="3" isInvalid={!!error} isRequired>
                               {/* <FormControl.Label>
                                 <Text ml={3}
-                                  fontFamily={"Regular Semi Bold"}
+                                  fontFamily={"Regular Medium"}
                                   fontSize="md"
                                 >
                                   Email
@@ -366,7 +374,7 @@ const LoginScreen = ({ navigation }) => {
                               <Input
                                 rounded={30}
                                 size="2xl"
-                                fontFamily={"Regular Semi Bold"}
+                                fontFamily={"Regular Medium"}
                                 fontSize="md"
                                 value={email}
                                 onChangeText={setEmail}
@@ -436,7 +444,7 @@ const LoginScreen = ({ navigation }) => {
                  </Button> */}
                   <Pressable onPress={handleSubmit}>
                     <Image
-                      source={require("../assets/cherry.png")}
+                      source={require("../assets/Buttonicons/ic_login.png")}
                       style={{ width: 80, height: 80 }}
                       alt="image"
                     />
