@@ -21,7 +21,7 @@ import {
   KeyboardAvoidingView,
 } from "native-base";
 
-import { User } from "../components/Endpoint";
+import { registerUser } from "../components/Endpoint";
 import Background from "../components/Background";
 
 const RegisterScreen = ({ navigation }) => {
@@ -206,7 +206,7 @@ const RegisterScreen = ({ navigation }) => {
         });
       }
       console.log("Submitted");
-      handle();
+      handleRegister();
     } else {
       // Optionally clear inputs here if necessary
       if (
@@ -216,7 +216,7 @@ const RegisterScreen = ({ navigation }) => {
         validateConfirm(formData.confirmPassword)
       ) {
         console.log("secuss");
-        handle();
+        handleRegister();
       } else {
         console.log("error!!");
         // if (errors.username) {
@@ -253,9 +253,9 @@ const RegisterScreen = ({ navigation }) => {
     });
   };
 
-  async function handle() {
+  async function handleRegister() {
     // Call the mock registration function
-    const response = await User(
+    const response = await registerUser(
       formData.username,
       formData.nickname,
       formData.email,
