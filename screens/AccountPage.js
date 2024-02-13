@@ -5,14 +5,13 @@ import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import OptionMenu from '../components/OptionMenu';
 import * as ImagePicker from 'expo-image-picker';
 import Background from "../components/Background";
 import { updateAvatar } from '../components/Endpoint';
 
 const AccountScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
-  console.log(userData, 'inAccount');
+  // console.log(userData, 'inAccount');
   const [selectedImage, setSelectedImage] = useState(null);
   const {
     isOpen,
@@ -86,7 +85,6 @@ const AccountScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems='center'>
-        {/* <OptionMenu /> */}
         <Box safeArea py='2' w="100%" maxW="290">
           <VStack space={3} alignItems='center' >
             <Pressable onPress={onOpen}>
