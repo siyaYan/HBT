@@ -237,7 +237,7 @@ const ResetPassword = ({ navigation }) => {
                   bold: true,
                 }}
               >
-                Password
+                New password
               </FormControl.Label>
               <Input
                 value={formData.password}
@@ -294,7 +294,7 @@ const ResetPassword = ({ navigation }) => {
                   bold: true,
                 }}
               >
-                Confirm Password
+                Confirm password
               </FormControl.Label>
               <Input
                 value={formData.confirmPassword}

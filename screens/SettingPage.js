@@ -27,7 +27,7 @@ const SettingScreen = ({ navigation }) => {
 
   const handleAvatarPress = () => {
     // Navigate to another screen when the Avatar is pressed
-    navigation.navigate("MainStack", { screen: "Account" });
+    navigation.navigate("AccountStack", { screen: "Account" });
   };
 
   const goAccountSetting = () => {
@@ -70,11 +70,10 @@ const SettingScreen = ({ navigation }) => {
 
         <Box
           mt="5"
-          mr="5"
           width="90%"
           py="2"
           px="2"
-          alignItems="flex-end"
+          alignItems="center"
           justifyContent="center"
         >
           <Pressable onPress={handleAvatarPress}>
@@ -91,7 +90,8 @@ const SettingScreen = ({ navigation }) => {
               </Avatar>
             )}
           </Pressable>
-          {userData.data.nickname}
+          <Text >{userData.data.nickname}</Text>
+          
         </Box>
 
         <Box safeArea w="90%" maxW="290">
@@ -104,7 +104,7 @@ const SettingScreen = ({ navigation }) => {
                 color: "warmGray.50",
               }}
             >
-              System Settings
+              System settings
             </Heading>
 
             <Divider
@@ -131,7 +131,7 @@ const SettingScreen = ({ navigation }) => {
                       <Ionicons name="settings-sharp" size={8} color="black" />
                     </Avatar.Badge>
                   </Avatar>
-                  <Text ml={2}>Account Setting</Text>
+                  <Text ml={2}>Account setting</Text>
                 </HStack>
               </Button>
             </Box>

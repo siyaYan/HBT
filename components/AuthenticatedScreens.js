@@ -2,7 +2,7 @@ import React, { useRef,useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SettingScreen from '../screens/SettingPage';
 import HomeScreen from '../screens/HomePage';
-import AccountScreen from '../screens/AccountPage'
+
 import { useData } from '../context/DataContext';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -46,7 +46,7 @@ export default function AuthenticatedScreens() {
                     ),
                 }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="Account"
                 component={AccountScreen}
                 listeners={{ tabPress: handleTabPress }}
@@ -60,7 +60,7 @@ export default function AuthenticatedScreens() {
                         />
                     ),
                 }}
-            />
+            /> */}
             <Tab.Screen
                 name="Setting"
                 component={SettingScreen}

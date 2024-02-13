@@ -167,7 +167,7 @@ export async function resetProfile(userId, token, nickname, username) {
 
 export async function resetSendEmail(email) {
   //dummy success
-  Alert.alert('Success', 'Send reset email successful');
+  // Alert.alert('Success', 'Send reset email successful');
   console.log('send reset email success');
   return 'success';
   //dummy failed

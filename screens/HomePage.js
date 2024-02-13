@@ -13,7 +13,7 @@ const HomeScreen = ({ navigation }) => {
 
   const handleAvatarPress = () => {
     // Navigate to another screen when the Avatar is pressed
-    navigation.navigate('MainStack', { screen: 'Account' });
+    navigation.navigate('AccountStack', { screen: 'Account' });
   };
   useEffect(() => {
     // Fetch or update avatar dynamically
