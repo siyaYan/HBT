@@ -16,23 +16,18 @@ export default function AuthenticatedScreens() {
         if (value.target.includes("Home")) {
             // Pass data to the Home screen
             navigationRef.current?.navigate('Home');
-            console.log(userData, 'home')
+            // console.log(userData, 'home')
         }
         if (value.target.includes("Account")) {
             navigationRef.current?.navigate('Account')
-            console.log(userData, 'account')
+            // console.log(userData, 'account')
         }
         if (value.target.includes("Setting")) {
             navigationRef.current?.navigate('Setting')
-            console.log(userData, 'setting')
+            // console.log(userData, 'setting')
         }
     }
-    // useEffect(() => {
-    //     // Update the 'userData' parameter for each tab whenever it changes
-    //     Tab.Navigator?.state?.routes.forEach((route) => {
-    //       route.params = { ...route.params, userData };
-    //     });
-    //   }, [userData]);
+
     return (
         <Tab.Navigator>
             <Tab.Screen

@@ -75,6 +75,10 @@ const ResetPasswordScreen = ({ navigation }) => {
       });
       if (validate()) {
         console.log('Submitted')
+        setErrors({
+          ...errors,
+          confirmPassword:false
+        });
         handlePasswordReset();
       }
     } else {
@@ -92,13 +96,17 @@ const ResetPasswordScreen = ({ navigation }) => {
   };
 
   const handlePasswordReset = async () => {
-
       // Call the mock registration function
       const response = await tokenResetPassword(formData.password, formData.confirmPassword,formData.token);
       // Handle success or error response
       if (response.token) {
         navigation.navigate('LoginStack', { screen: 'Login'})
         console.log(response.token);
+      }else{
+        setErrors({
+          ...errors,
+          token:true
+        })
       }
   };
 
@@ -110,13 +118,13 @@ const ResetPasswordScreen = ({ navigation }) => {
           <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
             color: "warmGray.50"
           }}>
-            Reset Your Password
+            Reset your password
           </Heading>
-          <Heading mt="3" Center _dark={{
+          {/* <Heading mt="3" Center _dark={{
             color: "warmGray.200"
           }} color="coolGray.600" fontWeight="medium" size="xs">
             Enter a new password to reset!
-          </Heading>
+          </Heading> */}
         </VStack>
         <VStack mt="5">
           <Center>
@@ -166,12 +174,14 @@ const ResetPasswordScreen = ({ navigation }) => {
                   <Pressable onPress={() => setShowConfirm(!showConfirm)}>
                     <Icon as={<MaterialIcons name={showConfirm ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
                   </Pressable>} />
-              {'confirmPassword' in errors ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
-                Please confirm your password!
+              {'confirmPassword' in errors ? <FormControl.ErrorMessage>Confirm Password is not correct</FormControl.ErrorMessage> : <FormControl.HelperText>
               </FormControl.HelperText>}
             </FormControl>
-            <Button w="100%" onPress={handleSubmit} mt="5" colorScheme="cyan">
-              Reset Password
+            <Button w="100%" onPress={handleSubmit} mt="5"
+                    width="100%"
+                    size="lg"
+                    bg= "#49a579">
+              Reset
             </Button>
           </Center>
         </VStack>

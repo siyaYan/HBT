@@ -1,5 +1,4 @@
 
-import * as SecureStore from 'expo-secure-store';
 import { useState, useEffect } from "react";
 import { Center, Box, VStack, Pressable, IconButton, Icon, Text, Actionsheet, useDisclose, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
@@ -23,33 +22,6 @@ const AccountScreen = ({ navigation }) => {
     onClose
   } = useDisclose();
 
-  // const handleAvatarPress = () => {
-  //   // Navigate to another screen when the Avatar is pressed
-  //   console.log('rese')
-  //   navigation.navigate('Test');
-  // };
-
-  const deleteCredentials = async () => {
-    try {
-      await SecureStore.deleteItemAsync('userCredentials');
-      updateUserData({
-        token: '',
-        data: '',
-        avatar: ''
-      })
-    } catch (error) {
-      console.error('Failed to delete the credentials', error);
-      // Handle the error, like showing an alert to the user
-    }
-  };
-  const logout = async () => {
-    try {
-      await deleteCredentials()
-      navigation.navigate('LoginStack', { screen: 'Login' });
-    } catch (error) {
-      // Error clearing the credentials
-    }
-  };
 
   useEffect(() => {
     (async () => {
@@ -102,7 +74,7 @@ const AccountScreen = ({ navigation }) => {
     // You can use the 'selectedImage' state to get the image data
     const response = await updateAvatar(userData.token,userData.data.email,userData.avatar);
     if(response.data){
-      console.log(response.data)
+      console.log(response.data,"got")
       const newData = userData.data;
       newData.profileImageUrl = response.data.profileImageUrl;
       updateUserData({
@@ -149,9 +121,6 @@ const AccountScreen = ({ navigation }) => {
                 {userData.data.nickname}
               </Box>
             </Pressable>
-            <Button
-              onPress={logout} size='md' p='1'
-            >  Log out  </Button>
           </VStack>
         </Box>
       </Flex>
@@ -173,8 +142,6 @@ const AccountScreen = ({ navigation }) => {
         </Actionsheet.Content>
       </Actionsheet>
     </NativeBaseProvider>
-
-
   );
 };
 

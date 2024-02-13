@@ -412,18 +412,6 @@ const RegisterScreen = ({ navigation }) => {
                               />
                             </Icon>
                           )}
-                          {/* <Icon
-                            as={
-                              <MaterialIcons
-                                name={
-                                  showPassword ? "visibility" : "visibility-off"
-                                }
-                              />
-                            }
-                            size={5}
-                            mr="2"
-                            color="muted.400"
-                          /> */}
                         </Pressable>
                       }
                     />
@@ -510,11 +498,18 @@ const RegisterScreen = ({ navigation }) => {
                     mt="2"
                     width="100%"
                     size="lg"
-                    bg= "#49a579"
+                    bg="#49a579"
                     _text={{
                       color: "#f9f8f2",
                       fontFamily: "Regular Medium",
                       fontSize: "lg",
+                    }}
+                    _pressed={{
+                      // below props will only be applied on button is pressed
+                      bg: "emerald.600",
+                      _text: {
+                        color: "warmGray.50",
+                      },
                     }}
                   >
                     Register

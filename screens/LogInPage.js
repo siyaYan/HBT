@@ -244,7 +244,15 @@ const LoginScreen = ({ navigation }) => {
                     height="15%"
                     onPress={() => signIn()}
                     padding={0}
-                    style={{ backgroundColor: "white" }}
+                    bg={"white"}
+                    
+                    _pressed={{
+                      // below props will only be applied on button is pressed
+                      bg: "gray.100",
+                      _text: {
+                        color: "warmGray.50",
+                      },
+                    }}
                   >
                     <HStack
                       space={5}

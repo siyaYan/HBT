@@ -119,27 +119,38 @@ const AccountSettingScreen = ({ navigation }) => {
         }
     }
     async function saveNickName() {
-        Alert.alert('Success', 'Reset Profile successful');
-        console.log('reset profile success');
-        // const response = await resetProfile(formData.nickname, formData.username);
-        // Handle success or error response
-        // if (response == 'failed') {
-        //     setData({
-        //         ...formData,
-        //         username: ''
-        //     })
-        // }
+        // Alert.alert('Success', 'Reset Profile successful');
+        // console.log('reset profile success');
+        const response = await resetProfile(userData.data.email,userData.token, formData.nickname, userData.data.username);
+        // console.log(response)
+        if (response.status == 'success') {
+            updateUserData({
+                data:response.data.user,
+                avatar:response.data.user.profileImageUrl
+            })
+        }else{
+            setData({
+                ...formData,
+                nickname: ''
+            })
+        }
     };
     async function saveUsername() {
-        const response = await resetProfile(formData.nickname, formData.username);
-        // Handle success or error response
-        if (response == 'failed') {
+        const response = await resetProfile(userData.data.email,userData.token,userData.data.nickname, formData.username);
+        // console.log(response)
+        if (response.status == 'success') {
+            updateUserData({
+                data:response.data.user,
+                avatar:response.data.user.profileImageUrl
+            })
+        }else{
             setData({
                 ...formData,
                 username: ''
             })
         }
     };
+
     async function saveEmail() {
         const response = await resetEmail(formData.email, formData.token);
         // Handle success or error response
@@ -238,7 +249,7 @@ const AccountSettingScreen = ({ navigation }) => {
 
                     <FormControl isInvalid={!errors.email}>
                         <Box flexDir="row" w="100%">
-                            <FormControl.Label mr={9} _text={{
+                            <FormControl.Label mr={8} _text={{
                                 bold: true
                             }}>Email</FormControl.Label>
                             <Input ml={2} mr={3} w="60%" placeholder="Email" value={formData.email} onChangeText={validateEmail} />
@@ -252,7 +263,7 @@ const AccountSettingScreen = ({ navigation }) => {
                         </Box>
                     </FormControl>
                     {formData.send? (<Box flexDir="row" w="100%" alignItems="center">
-                        <Text mr={8}>Vertify</Text>
+                        <Text mr={7}>Vertify</Text>
                         <Input ml={2} mr={3} w="60%" placeholder="Enter your email token" value={formData.token} onChangeText={(value)=>{
                             setData({
                                 ...formData,
@@ -274,7 +285,22 @@ const AccountSettingScreen = ({ navigation }) => {
                                 p={0} onPress={saveEmail} />
                     </Box> */}
 
-                    <Button mt={5} onPress={goResetPassword} >
+                    <Button onPress={goResetPassword} mt="2"
+                    width="100%"
+                    size="lg"
+                    bg="#49a579"
+                    _text={{
+                      color: "#f9f8f2",
+                      fontFamily: "Regular Medium",
+                      fontSize: "lg",
+                    }}
+                    _pressed={{
+                      // below props will only be applied on button is pressed
+                      bg: "emerald.600",
+                      _text: {
+                        color: "warmGray.50",
+                      },
+                    }}>
                         Change your password
                     </Button>
                 </VStack>

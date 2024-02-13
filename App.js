@@ -35,12 +35,7 @@ export default function App() {
           rounded: 30,
           shadow: "6",
           // color: "#49a579",
-          bg: "#49a579",
-          // _text: {
-          //   color: "#f9f8f2",
-          //   fontFamily: "Regular Medium",
-          //   fontSize: "lg",
-          // },
+          bg: "#49a579",   
         },
       },
       Input: {

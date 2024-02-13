@@ -38,7 +38,6 @@ export default function AppContainer () {
                 // Use credentials to log in the user automatically
                 // Implement your login logic here using the retrieved credentials
                 console.log('Credentials successfully loaded for user ' + storedCredentials);
-                //TODO: get the userName, not use the stored ID
                 const response = await loginUser(storedCredentials.id, storedCredentials.password)
                 if (response.token) {
                     updateUserData({
