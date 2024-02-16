@@ -39,7 +39,7 @@ const AccountScreen = ({ navigation }) => {
       updateUserData({
       token: userData.token,
       data: userData.data,
-      avatar: result.assets[0].uri
+      avatar: result.assets[0]
     })
       handleUploadImage();
     }
@@ -56,7 +56,7 @@ const AccountScreen = ({ navigation }) => {
       updateUserData({
         token: userData.token,
         data: userData.data,
-        avatar: result.assets[0].uri
+        avatar: result.assets[0]
       })
       // console.log('Take Image Result:', result);
       handleUploadImage();
@@ -104,7 +104,7 @@ const AccountScreen = ({ navigation }) => {
                     </Avatar>
                     ) :
                   (
-                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.avatar}}>
+                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.data.profileImageUrl}}>
                       <Avatar.Badge
                         bg="white"
                         position="absolute"

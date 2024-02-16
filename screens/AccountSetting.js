@@ -80,7 +80,7 @@ const AccountSettingScreen = ({ navigation }) => {
       updateUserData({
         token: userData.token,
         data: userData.data,
-        avatar: result.assets[0].uri,
+        avatar: result.assets[0],
       });
       handleUploadImage();
     }
@@ -96,7 +96,7 @@ const AccountSettingScreen = ({ navigation }) => {
       updateUserData({
         token: userData.token,
         data: userData.data,
-        avatar: result.assets[0].uri,
+        avatar: result.assets[0],
       });
       // console.log('Take Image Result:', result);
       handleUploadImage();
@@ -113,7 +113,7 @@ const AccountSettingScreen = ({ navigation }) => {
       userData.avatar
     );
     if (response.data) {
-      console.log(response.data, "got");
+      // console.log(response.data, "got");
       const newData = userData.data;
       newData.profileImageUrl = response.data.profileImageUrl;
       updateUserData({
@@ -288,23 +288,7 @@ const AccountSettingScreen = ({ navigation }) => {
       <Center w="100%">
         <Background />
         <Box w="100%" maxW="290">
-          {/* <Box mt={5} alignItems="center" justifyContent="center">
-            {userData.avatar ? (
-              <Avatar
-                bg="white"
-                mb="1"
-                size="md"
-                source={{ uri: userData.avatar }}
-              />
-            ) : (
-              <Avatar bg="white" mb="1" size="lg" borderWidth={2}>
-                <AntDesign name="user" size={40} color="black" />
-                <Avatar.Badge bg="white" position="absolute" top={0} right={0}>
-                  <Ionicons name="settings-sharp" size={16} color="black" />
-                </Avatar.Badge>
-              </Avatar>
-            )}
-          </Box> */}
+          
           <Pressable onPress={onOpen}>
               <Box py='2' alignItems="center" justifyContent="center" >
                 {selectedImage ?
@@ -321,7 +305,7 @@ const AccountSettingScreen = ({ navigation }) => {
                     </Avatar>
                     ) :
                   (
-                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.avatar}}>
+                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.data.profileImageUrl}}>
                       <Avatar.Badge
                         bg="white"
                         position="absolute"
