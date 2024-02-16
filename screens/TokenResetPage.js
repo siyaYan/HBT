@@ -96,8 +96,10 @@ const ResetPasswordScreen = ({ navigation }) => {
         token: true,
       });
       console.log("have token");
+
       const hasErrors = Object.values(errors).some((error) => error == false);
       if (!hasErrors) {
+
         handlePasswordReset();
       }
     }
@@ -144,6 +146,7 @@ const ResetPasswordScreen = ({ navigation }) => {
             w="80%"
             maxW={320}
           >
+
             <VStack w="100%" h="100%" space={6}>
               <VStack>
                 <Text
@@ -155,6 +158,7 @@ const ResetPasswordScreen = ({ navigation }) => {
                   Reset password
                 </Text>
               </VStack>
+
               <VStack w="100%" space={4}>
                 <FormControl isRequired isInvalid={!errors.token}>
                   <Input

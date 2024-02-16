@@ -105,6 +105,7 @@ const AccountScreen = ({ navigation }) => {
                     </Avatar>
                     ) :
                   (
+
                     <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.avatar.uri}}>
                       <Avatar.Badge
                         bg="white"

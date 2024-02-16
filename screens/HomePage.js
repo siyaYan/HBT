@@ -28,6 +28,7 @@ const HomeScreen = ({ navigation }) => {
         <OptionMenu />
         <Pressable onPress={handleAvatarPress}>
           <Box py='5' px='2' alignItems="center" justifyContent="center">
+
             {userData.avatar.uri ?
               (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.avatar.uri}} />) : (
                 <Avatar bg='white' mb='1' size="md" borderWidth={2}>

@@ -82,7 +82,9 @@ const SettingScreen = ({ navigation }) => {
                 bg="white"
                 mb="1"
                 size="md"
+
                 source={{ uri:userData.avatar.uri }}
+
               />
             ) : (
               <Avatar size="md" bg="white" borderWidth={2}>
