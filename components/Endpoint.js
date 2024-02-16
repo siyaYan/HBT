@@ -190,18 +190,24 @@ export async function resetEmail(email, token) {
 
 //TODO: update avatar failed
 export async function updateAvatar(token, userId, avatar) {
-  const binaryData = await RNFS.readFile(avatar, 'base64');
+  // const binaryData = await RNFS.readFile(avatar, 'base64');
+  const file = {
+    uri: avatar.uri, // Local file URI
+    type: avatar.type, // MIME type of the image
+    name: avatar.fileName, // Any file name
+  };
+  console.log("innnnnnn!")
+  const formData = new FormData();
+  formData.append('profileImage', file);
+  // formData.append('file', file);
   try {
     const response = await fetch("http://54.252.176.246:8000/habital/v1/users/"+userId+"/profileImage", {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        profileImage: binaryData,
-      }),
-        
+      body: formData,
     });
     // console.log(response)
     const data = await response.json();

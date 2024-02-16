@@ -12,9 +12,6 @@ import { Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import Svg, { G, Path } from "react-native-svg";
-import testSvg from "../assets/Buttonicons/ic_login.svg";
-import { SvgUri } from "react-native-svg";
-import { SvgXml } from "react-native-svg";
 import { useEffect, useState } from "react";
 import {
   VStack,
@@ -52,9 +49,6 @@ const LoginScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
   const [errorT, setErrorT] = useState(false);
-  const xml =
-    '<svg id="a" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.b{fill:#f9f8f2;font-family:MontserratAlternates-Medium, Montserrat Alternates;font-size:17.63px;}.c{fill:#ff061e;}.d{letter-spacing:0em;}</style></defs><g><path class="c" d="M55.04,33.37c-3.11-1.32-4.95-2.78-5.71-3.26-7.13-4.45-37.09,5.1-40.81,28.57-2.66,16.74,9.23,33,24.47,38.29,19.24,6.69,42.17-4.7,47.36-22.48,4.39-15.01-3.9-34.49-15.72-38.46-2.98-1-5.46-.77-6.37-.77,.02-.03,.03-.07,.05-.11l-2.2,.41-1.06-2.21Z"/><path class="c" d="M91.38,12.33c-1.32-5.67-4.9-9.11-6.91-10.65-1.25-.96-3.04-.72-4,.53-.96,1.25-.72,3.04,.53,4,.8,.61,2.37,2.02,3.58,4.21-3.66,.69-12.95,3.29-21.77,12.6-1.05,1.23-2.11,2.46-3.17,3.69-5,5.82-7.01,11.35-7.62,12.84-.67,1.63-1.49,3.89-2.2,6.69l-.04-.02,1.06,2.21,2.2-.41c.91-1.87,1.81-3.85,2.66-5.95,.26-.65,.52-1.29,.76-1.93h-.01c10.19-21.68,26.31-25.12,29.53-25.6,.42,2.67-.08,4.95-.62,6.45-.53,1.48,.24,3.11,1.72,3.65,.22,.08,.44,.13,.66,.15,1.28,.14,2.53-.61,2.99-1.87,.86-2.38,1.66-6.15,.64-10.56Z"/></g><text class="b" transform="translate(15.56 69.02)"><tspan class="d" x="0" y="0">L</tspan><tspan x="10.35" y="0">og in</tspan></text></svg>';
-
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
@@ -466,44 +460,12 @@ const LoginScreen = ({ navigation }) => {
                 >
                   Sign in
                  </Button> */}
-                  <Pressable
-                    onPress={handleSubmit}
-                    style={{ width: 100, height: 100 }}
-                  >
-                    {/* <testSvg width={120} height={40} /> */}
-                    {/* <SvgUri
-                      width="100%"
-                      height="100%"
-                      uri="../assets/Buttonicons/ic_login.svg"
-                    /> */}
-                    <SvgXml xml={xml} width="100%" height="100%" />
-
-                    {/* <Svg viewBox="0 0 50 50">
-      <G >
-      <Path fill="#ff061e" d="M55.04,33.37c-3.11-1.32-4.95-2.78-5.71-3.26-7.13-4.45-37.09,5.1-40.81,28.57-2.66,16.74,9.23,33,24.47,38.29,19.24,6.69,42.17-4.7,47.36-22.48,4.39-15.01-3.9-34.49-15.72-38.46-2.98-1-5.46-.77-6.37-.77,.02-.03,.03-.07,.05-.11l-2.2,.41-1.06-2.21Z"/>
-      <Path fill="#ff061e" d="M91.38,12.33c-1.32-5.67-4.9-9.11-6.91-10.65-1.25-.96-3.04-.72-4,.53-.96,1.25-.72,3.04,.53,4,.8,.61,2.37,2.02,3.58,4.21-3.66,.69-12.95,3.29-21.77,12.6-1.05,1.23-2.11,2.46-3.17,3.69-5,5.82-7.01,11.35-7.62,12.84-.67,1.63-1.49,3.89-2.2,6.69l-.04-.02,1.06,2.21,2.2-.41c.91-1.87,1.81-3.85,2.66-5.95,.26-.65,.52-1.29,.76-1.93h-.01c10.19-21.68,26.31-25.12,29.53-25.6,.42,2.67-.08,4.95-.62,6.45-.53,1.48,.24,3.11,1.72,3.65,.22,.08,.44,.13,.66,.15,1.28,.14,2.53-.61,2.99-1.87,.86-2.38,1.66-6.15,.64-10.56Z"/>
-                      </G>
-                      <text fill="#f9f8f2" font-family="MontserratAlternates-Medium, Montserrat Alternates;" font-size="17.63px;" transform="translate(15.56 69.02)">
-                        <tspan letter-spacing="0em;" x="0" y="0">L</tspan>
-                        <tspan x="10.35" y="0">og in</tspan>
-                      </text>
-    </Svg> */}
-                    {/* <Icon viewBox="0 0 100 100">
-                      <G>
-                        <Path
-                          fill="#ff061e"
-                          d="M55.04,33.37c-3.11-1.32-4.95-2.78-5.71-3.26-7.13-4.45-37.09,5.1-40.81,28.57-2.66,16.74,9.23,33,24.47,38.29,19.24,6.69,42.17-4.7,47.36-22.48,4.39-15.01-3.9-34.49-15.72-38.46-2.98-1-5.46-.77-6.37-.77,.02-.03,.03-.07,.05-.11l-2.2,.41-1.06-2.21Z"
-                        />
-                        <Path
-                          fill="#ff061e"
-                          d="M91.38,12.33c-1.32-5.67-4.9-9.11-6.91-10.65-1.25-.96-3.04-.72-4,.53-.96,1.25-.72,3.04,.53,4,.8,.61,2.37,2.02,3.58,4.21-3.66,.69-12.95,3.29-21.77,12.6-1.05,1.23-2.11,2.46-3.17,3.69-5,5.82-7.01,11.35-7.62,12.84-.67,1.63-1.49,3.89-2.2,6.69l-.04-.02,1.06,2.21,2.2-.41c.91-1.87,1.81-3.85,2.66-5.95,.26-.65,.52-1.29,.76-1.93h-.01c10.19-21.68,26.31-25.12,29.53-25.6,.42,2.67-.08,4.95-.62,6.45-.53,1.48,.24,3.11,1.72,3.65,.22,.08,.44,.13,.66,.15,1.28,.14,2.53-.61,2.99-1.87,.86-2.38,1.66-6.15,.64-10.56Z"
-                        />
-                      </G>
-                      <Text fill="#f9f8f2" font-family="MontserratAlternates-Medium, Montserrat Alternates;" font-size="17.63px;" transform="translate(15.56 69.02)">
-                        <Text letter-spacing="0em;" x="0" y="0">L</Text>
-                        <Text x="10.35" y="0">og in</Text>
-                      </Text>
-                    </Icon> */}
+                   <Pressable onPress={handleSubmit}>
+                    <Image
+                      source={require("../assets/Buttonicons/ic_login.png")}
+                      style={{ width: 80, height: 80 }}
+                      alt="image"
+                    />
                   </Pressable>
                 </HStack>
               </VStack>

@@ -28,8 +28,8 @@ const HomeScreen = ({ navigation }) => {
         <OptionMenu />
         <Pressable onPress={handleAvatarPress}>
           <Box py='5' px='2' alignItems="center" justifyContent="center">
-            {userData.avatar ?
-              (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.avatar}} />) : (
+            {userData.data.profileImageUrl ?
+              (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.data.profileImageUrl}} />) : (
                 <Avatar bg='white' mb='1' size="md" borderWidth={2}>
                   <AntDesign name="user" size={30} color="black" />
                 </Avatar>)}
