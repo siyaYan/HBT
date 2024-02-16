@@ -29,7 +29,7 @@ const ResetPasswordScreen = ({ navigation }) => {
     username: true,
     confirmPassword: true,
     password: true,
-    token:true
+    token: true,
   });
 
   const validatePassword = (text) => {
@@ -96,7 +96,10 @@ const ResetPasswordScreen = ({ navigation }) => {
         token: true,
       });
       console.log("have token");
-      if (validateConfirm && validatePassword) {
+
+      const hasErrors = Object.values(errors).some((error) => error == false);
+      if (!hasErrors) {
+
         handlePasswordReset();
       }
     }
@@ -143,7 +146,7 @@ const ResetPasswordScreen = ({ navigation }) => {
             w="80%"
             maxW={320}
           >
-            {/* <Center w="90%" h="100%"> */}
+
             <VStack w="100%" h="100%" space={6}>
               <VStack>
                 <Text
@@ -155,19 +158,20 @@ const ResetPasswordScreen = ({ navigation }) => {
                   Reset password
                 </Text>
               </VStack>
-              <VStack  w="100%" space={4}>
+
+              <VStack w="100%" space={4}>
                 <FormControl isRequired isInvalid={!errors.token}>
                   <Input
-                      size="lg"
-                      placeholder="Enter your 6 digit reset code"
-                      value={formData.token}
-                      onChangeText={(value) =>
-                        setData({
-                          ...formData,
-                          token: value,
-                        })
-                      }
-                    />
+                    size="lg"
+                    placeholder="Enter your 6 digit reset code"
+                    value={formData.token}
+                    onChangeText={(value) =>
+                      setData({
+                        ...formData,
+                        token: value,
+                      })
+                    }
+                  />
                 </FormControl>
                 <FormControl isRequired isInvalid={!errors.password}>
                   <Input
@@ -351,14 +355,23 @@ const ResetPasswordScreen = ({ navigation }) => {
                   width="100%"
                   size="lg"
                   bg="#49a579"
+                  _text={{
+                    color: "#f9f8f2",
+                    fontFamily: "Regular Medium",
+                    fontSize: "lg",
+                  }}
+                  _pressed={{
+                    // below props will only be applied on button is pressed
+                    bg: "emerald.600",
+                    _text: {
+                      color: "warmGray.50",
+                    },
+                  }}
                 >
                   Reset
                 </Button>
-              {/* </Center> */}
+              </VStack>
             </VStack>
-            </VStack>
-            
-            {/* </Center> */}
           </Box>
         </ScrollView>
       </Center>

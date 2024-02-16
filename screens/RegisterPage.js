@@ -76,6 +76,7 @@ const RegisterScreen = ({ navigation }) => {
         ...errors,
         email: false,
       });
+      return false
     }
   };
 
@@ -130,19 +131,10 @@ const RegisterScreen = ({ navigation }) => {
         ...errors,
         username: false,
       });
+      return false;
     }
   };
 
-  // const validatePassword = () => {
-  //     if (formData.password) {
-  //         const length = formData.password.length >= 8 && formData.password.length <= 20;
-  //         const letterAndNumber = /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(formData.password);
-  //         const noSpaces = !/\s/.test(formData.password);
-  //         const specialChars = /[!@#%&_?#=-]/.test(formData.password);
-  //         return length && letterAndNumber && noSpaces && specialChars
-  //     }
-  //     return false;
-  // };
   const validatePassword = (text) => {
     setData({
       ...formData,
@@ -171,6 +163,7 @@ const RegisterScreen = ({ navigation }) => {
         ...errors,
         password: false,
       });
+      return false;
     }
   };
 
@@ -191,11 +184,12 @@ const RegisterScreen = ({ navigation }) => {
         ...errors,
         confirmPassword: false,
       });
+      return false
     }
   };
 
   const handleSubmit = () => {
-    const hasErrors = Object.values(errors).some((error) => error == true);
+    const hasErrors = Object.values(errors).some((error) => error == false);
 
     if (!hasErrors) {
       // If all validations pass, handle successful submission
@@ -208,34 +202,7 @@ const RegisterScreen = ({ navigation }) => {
       console.log("Submitted");
       handleRegister();
     } else {
-      // Optionally clear inputs here if necessary
-      if (
-        validateUsername(formData.username) &&
-        validateEmail(formData.email) &&
-        validatePassword(formData.password) &&
-        validateConfirm(formData.confirmPassword)
-      ) {
-        console.log("secuss");
-        handleRegister();
-      } else {
-        console.log("error!!");
-        // if (errors.username) {
-        //   // Clear username if it's invalid
-        //   setData({ ...formData, username: "" });
-        // }
-        // if (errors.email) {
-        //   // Clear email if it's invalid
-        //   setData({ ...formData, email: "" });
-        // }
-        // if (errors.password) {
-        //   // Clear username if it's invalid
-        //   setData({ ...formData, password: "" });
-        // }
-        // if (errors.confirmPassword) {
-        //   // Clear email if it's invalid
-        //   setData({ ...formData, confirmPassword: "" });
-        // }
-      }
+      console.log("error!!");
     }
 
     console.log({
