@@ -6,6 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+// import * as ImagePicker from "expo-image-picker/src/ImagePicker";
 import Background from "../components/Background";
 import { updateAvatar } from '../components/Endpoint';
 
@@ -71,7 +72,7 @@ const AccountScreen = ({ navigation }) => {
     // You can use the 'selectedImage' state to get the image data
     const response = await updateAvatar(userData.token,userData.data.email,userData.avatar);
     if(response.data){
-      console.log(response.data,"got")
+      console.log(response.data,"got!!")
       const newData = userData.data;
       newData.profileImageUrl = response.data.profileImageUrl;
       updateUserData({
@@ -104,7 +105,7 @@ const AccountScreen = ({ navigation }) => {
                     </Avatar>
                     ) :
                   (
-                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.data.profileImageUrl}}>
+                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.avatar.uri}}>
                       <Avatar.Badge
                         bg="white"
                         position="absolute"

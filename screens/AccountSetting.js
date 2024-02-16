@@ -305,7 +305,7 @@ const AccountSettingScreen = ({ navigation }) => {
                     </Avatar>
                     ) :
                   (
-                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.data.profileImageUrl}}>
+                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.avatar.uri}}>
                       <Avatar.Badge
                         bg="white"
                         position="absolute"
