@@ -116,7 +116,9 @@ const AccountScreen = ({ navigation }) => {
                         <Ionicons name="settings-sharp" size={16} color="black" />
                       </Avatar.Badge>
                     </Avatar>)}
+                    <Text fontFamily={"Regular"} fontSize="lg" >
                 {userData.data.nickname}
+                </Text>
               </Box>
             </Pressable>
           </VStack>

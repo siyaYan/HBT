@@ -201,7 +201,8 @@ const formData = new FormData();
   formData.append('profileImage', file);
 
   try {
-    const response = await fetch("http://54.252.176.246:8000/habital/v1/users/"+userId+"/profileImage", {
+    // const response = await fetch("http://54.252.176.246:8000/habital/v1/users/"+userId+"/profileImage", {
+      const response = await fetch("http://localhost:8000/habital/v1/users/"+userId+"/profileImage", {
       method: 'POST',
       headers: {
         'Content-Type': 'multipart/form-data',

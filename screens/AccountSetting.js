@@ -1,4 +1,13 @@
-import { Input, Icon, Pressable, Center, IconButton, Actionsheet, useDisclose,  NativeBaseProvider} from "native-base";
+import {
+  Input,
+  Icon,
+  Pressable,
+  Center,
+  IconButton,
+  Actionsheet,
+  useDisclose,
+  NativeBaseProvider,
+} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import { Avatar } from "native-base";
@@ -288,48 +297,59 @@ const AccountSettingScreen = ({ navigation }) => {
       <Center w="100%">
         <Background />
         <Box w="100%" maxW="290">
-          
           <Pressable onPress={onOpen}>
-              <Box py='2' alignItems="center" justifyContent="center" >
-                {selectedImage ?
-                  (
-                    <Avatar bg='white' mb='1' size="lg" source={{ uri: selectedImage.assets[0].uri }} >
-                      <Avatar.Badge
-                        bg="white"
-                        position="absolute"
-                        top={0}
-                        right={0}
-                      >
-                        <Ionicons name="settings-sharp" size={16} color="black" />
-                      </Avatar.Badge>
-                    </Avatar>
-                    ) :
-                  (
-
-                    <Avatar bg='white' mb='1' size="lg" source={{ uri:userData.avatar.uri}}>
-
-                      <Avatar.Badge
-                        bg="white"
-                        position="absolute"
-                        top={0}
-                        right={0}
-                      >
-                        <Ionicons name="settings-sharp" size={16} color="black" />
-                      </Avatar.Badge>
-                    </Avatar>)}
-              </Box>
-            </Pressable>
+            <Box py="5" alignItems="center" justifyContent="center">
+              {selectedImage ? (
+                <Avatar
+                  bg="white"
+                  mb="1"
+                  size="lg"
+                  source={{ uri: selectedImage.assets[0].uri }}
+                >
+                  <Avatar.Badge
+                    bg="white"
+                    position="absolute"
+                    top={0}
+                    right={0}
+                  >
+                    <Ionicons name="settings-sharp" size={16} color="black" />
+                  </Avatar.Badge>
+                </Avatar>
+              ) : (
+                <Avatar
+                  bg="white"
+                  mb="1"
+                  size="lg"
+                  source={{ uri: userData.avatar.uri }}
+                >
+                  <Avatar.Badge
+                    bg="white"
+                    position="absolute"
+                    top={0}
+                    right={0}
+                  >
+                    <Ionicons name="settings-sharp" size={16} color="black" />
+                  </Avatar.Badge>
+                </Avatar>
+              )}
+            </Box>
+          </Pressable>
           <VStack space={8} mt="5">
             <FormControl isInvalid={errors.nickname}>
               <Box flexDir="row" w="100%">
                 <FormControl.Label
                   _text={{
-                    bold: true,
+                    fontFamily: "Regular Bold",
+                    fontSize: "lg",
                   }}
                 >
                   Nick name
                 </FormControl.Label>
                 <Input
+                  borderColor="#49a579"
+                  rounded="30"
+                  fontFamily={"Regular Medium"}
+                  size="lg"
                   ml={2}
                   mr={3}
                   w="60%"
@@ -339,7 +359,7 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <IconButton
                   icon={
-                    <Ionicons name="save-outline" size={24} color="black" />
+                    <Ionicons name="save-outline" size={30} color="black" />
                   }
                   p={0}
                   onPress={saveNickName}
@@ -356,12 +376,17 @@ const AccountSettingScreen = ({ navigation }) => {
               <Box flexDir="row" w="100%">
                 <FormControl.Label
                   _text={{
-                    bold: true,
+                    fontFamily: "Regular Bold",
+                    fontSize: "lg",
                   }}
                 >
                   User name
                 </FormControl.Label>
                 <Input
+                  borderColor="#49a579"
+                  rounded="30"
+                  fontFamily={"Regular Medium"}
+                  size="lg"
                   ml={2}
                   mr={3}
                   w="60%"
@@ -371,7 +396,7 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <IconButton
                   icon={
-                    <Ionicons name="save-outline" size={24} color="black" />
+                    <Ionicons name="save-outline" size={30} color="black" />
                   }
                   p={0}
                   onPress={saveUsername}
@@ -391,14 +416,19 @@ const AccountSettingScreen = ({ navigation }) => {
             <FormControl isInvalid={!errors.email}>
               <Box flexDir="row" w="100%">
                 <FormControl.Label
-                  mr={8}
+                  mr={10}
                   _text={{
-                    bold: true,
+                    fontFamily: "Regular Bold",
+                    fontSize: "lg",
                   }}
                 >
                   Email
                 </FormControl.Label>
                 <Input
+                  borderColor="#49a579"
+                  rounded="30"
+                  fontFamily={"Regular Medium"}
+                  size="lg"
                   ml={2}
                   mr={3}
                   w="60%"
@@ -410,7 +440,7 @@ const AccountSettingScreen = ({ navigation }) => {
                   icon={
                     <MaterialCommunityIcons
                       name="email-search-outline"
-                      size={24}
+                      size={30}
                       color="black"
                     />
                   }
@@ -426,8 +456,20 @@ const AccountSettingScreen = ({ navigation }) => {
             </FormControl>
             {formData.send ? (
               <Box flexDir="row" w="100%" alignItems="center">
-                <Text mr={7}>Vertify</Text>
+                <FormControl.Label
+                  _text={{
+                    fontFamily: "Regular Bold",
+                    fontSize: "lg",
+                  }}
+                  mr={8}
+                >
+                  Vertify
+                </FormControl.Label>
                 <Input
+                  borderColor="#49a579"
+                  rounded="30"
+                  fontFamily={"Regular Medium"}
+                  size="lg"
                   ml={2}
                   mr={3}
                   w="60%"
@@ -442,7 +484,7 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <IconButton
                   icon={
-                    <Ionicons name="save-outline" size={24} color="black" />
+                    <Ionicons name="save-outline" size={30} color="black" />
                   }
                   p={0}
                   onPress={saveEmail}
@@ -465,7 +507,9 @@ const AccountSettingScreen = ({ navigation }) => {
 
             <Button
               onPress={goResetPassword}
-              mt="2"
+              rounded="30"
+              shadow="6"
+              mt="5"
               width="100%"
               size="lg"
               bg="#49a579"

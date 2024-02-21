@@ -92,22 +92,16 @@ const SettingScreen = ({ navigation }) => {
               </Avatar>
             )}
           </Pressable>
-          <Text >{userData.data.nickname}</Text>
+          <Text fontFamily={"Regular"} fontSize="lg">{userData.data.nickname}</Text>
           
         </Box>
 
         <Box safeArea w="90%" maxW="290">
           <VStack space={1} alignItems="left">
-            <Heading
-              size="sm"
-              fontWeight="600"
-              color="coolGray.800"
-              _dark={{
-                color: "warmGray.50",
-              }}
-            >
+            <Text fontFamily={"Regular Semi Bold"} fontSize="2xl">
               System settings
-            </Heading>
+              </Text>
+
 
             <Divider
               my="2"
@@ -133,7 +127,7 @@ const SettingScreen = ({ navigation }) => {
                       <Ionicons name="settings-sharp" size={8} color="black" />
                     </Avatar.Badge>
                   </Avatar>
-                  <Text ml={2}>Account setting</Text>
+                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">Account setting</Text>
                 </HStack>
               </Button>
             </Box>
@@ -152,7 +146,7 @@ const SettingScreen = ({ navigation }) => {
               <Button onPress={logout} size="md" p={0} variant="unstyled">
                 <HStack>
                   <AntDesign name="logout" size={24} color="black" />
-                  <Text ml={2}>Log out</Text>
+                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">Log out</Text>
                 </HStack>
               </Button>
             </Box>

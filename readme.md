@@ -1,4 +1,7 @@
-Cloud server:
+Notes for testing:
+the default image(1&5) in simulator have problems in uploading process.
+
+Cloud server:s
 http://54.252.176.246:8000/habital/v1
 Installation:
 1. git clone repository
