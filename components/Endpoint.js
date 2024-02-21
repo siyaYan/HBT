@@ -190,7 +190,7 @@ export async function resetEmail(email, token) {
 
 //TODO: update avatar failed
 export async function updateAvatar(token, userId, avatar) {
-  const binaryData = await RNFS.readFile(avatar, 'base64');
+  // const binaryData = await RNFS.readFile(avatar, 'base64');
 const file = {
     uri: avatar.uri, // Local file URI
     type: 'image/jpeg', // MIME type of the image
@@ -209,13 +209,13 @@ const formData = new FormData();
       },
       body: formData,
     });
-    // console.log(response)
     const data = await response.json();
-    // if (data.status == "success") {
-    //   Alert.alert('Success', 'Avatar updated!');
-    // } else {
-    //   Alert.alert('Error', data.message || 'update avatar failed');
-    // }
+    console.log(data,"update avatar")
+    if (data.status == "Successful operation") {
+      Alert.alert('Success', 'Avatar updated!');
+    } else {
+      Alert.alert('Error', data.message || 'update avatar failed');
+    }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error('Error in Update avatar:', error);
