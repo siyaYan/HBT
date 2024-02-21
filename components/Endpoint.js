@@ -22,13 +22,13 @@ export async function registerUser(username, nickname, email, password, confirmP
     if (data.status == "success") {
       Alert.alert('Success', 'Please check your email inbox');
     } else {
-      Alert.alert('Oh,No!', data.message || 'Registration failed');
+      Alert.alert('Oh,No!', data.message || 'Registration unsuccessful');
       console.log(data.message)
     }
     return data; // Make sure you return the data here
   } catch (error) {
-    console.error('Error in RegisterUser:', error);
-    Alert.alert('Error', 'Registration failed. Please try again later.');
+    console.error('Unsuccessful in register user:', error);
+    Alert.alert('Unsuccessful', 'Registration failed. Please try again later.');
   }
 };
 
@@ -50,7 +50,7 @@ export async function loginUser(id, password) {
     }
     return data; // Make sure you return the data here
   } catch (error) {
-    console.error('Error in loginUser:', error);
+    console.error('Unsuccessful in loginUser:', error);
     Alert.alert('Unsuccessful', 'Login failed. Please try again later');
     // Decide how to handle the error. You may want to re-throw it or return a specific value.
   }
@@ -73,12 +73,12 @@ export async function tokenResetPassword(password, passwordConfirm, code) {
     if (data.status == "success") {
       Alert.alert('Success', 'Please login using your new password');
     } else {
-      Alert.alert('Error', data.message || 'Reset password failed');
+      Alert.alert('Unsuccessful', data.message || 'Reset password failed');
     }
     return data; // Make sure you return the data here
   } catch (error) {
-    console.error('Error in Reset password:', error);
-    Alert.alert('Error', 'Reset password failed. Please try again later');
+    console.error('Unsuccessful in Reset password:', error);
+    Alert.alert('Unsuccessful', 'Reset password failed. Please try again later');
   }
 };
 
@@ -98,12 +98,12 @@ export async function forgetSendEmail(email) {
     if (data.status == "success") {
       Alert.alert('Success', 'Please check your email');
     } else {
-      Alert.alert('Error', data.message || 'send email failed');
+      Alert.alert('Unsuccessful', data.message || 'Send email unsuccessful');
     }
     return data; // Make sure you return the data here
   } catch (error) {
-    console.error('Error in send email:', error);
-    Alert.alert('Error', 'Send Email failed. Please try again later');
+    console.error('Unsuccessful in send email:', error);
+    Alert.alert('Unsuccessful', 'Send Email failed. Please try again later');
   }
 
 };
@@ -127,12 +127,12 @@ export async function resetPassword(userId, token, currentPassword, newPassword,
     if (data.status == "success") {
       Alert.alert('Success', 'Please login using your new password');
     } else {
-      Alert.alert('Error', data.message || 'Reset password failed');
+      Alert.alert('Unsuccessful', data.message || 'Reset password unsuccessful');
     }
     return data; // Make sure you return the data here
   } catch (error) {
-    console.error('Error in Reset password:', error);
-    Alert.alert('Error', 'Reset password failed. Please try again later');
+    console.error('Unsuccessful in Reset password:', error);
+    Alert.alert('Unsuccessful', 'Reset password failed. Please try again later');
   }
 };
 
@@ -156,12 +156,12 @@ export async function resetProfile(userId, token, nickname, username) {
     if (data.status == "success") {
       Alert.alert('Success', 'Update your profile');
     } else {
-      Alert.alert('Error', data.message || 'Reset profile failed');
+      Alert.alert('Unsuccessful', data.message || 'Reset profile unsuccessful');
     }
     return data; // Make sure you return the data here
   } catch (error) {
-    console.error('Error in Reset profile:', error);
-    Alert.alert('Error', 'Reset profile failed. Please try again later');
+    console.error('Unsuccessful in Reset profile:', error);
+    Alert.alert('Unsuccessful', 'Reset profile failed. Please try again later');
   }
 };
 
@@ -215,12 +215,12 @@ const formData = new FormData();
     if (data.status == "Successful operation") {
       Alert.alert('Success', 'Avatar updated!');
     } else {
-      Alert.alert('Error', data.message || 'update avatar failed');
+      Alert.alert('Unsuccessful', data.message || 'Update avatar unsuccessful');
     }
     return data; // Make sure you return the data here
   } catch (error) {
-    console.error('Error in Update avatar:', error);
-    Alert.alert('Error', 'Update avatar failed, Please try again later');
+    console.error('Unsuccessful in Update avatar:', error);
+    Alert.alert('Unsuccessful', 'Update avatar failed, Please try again later');
   }
 };
 

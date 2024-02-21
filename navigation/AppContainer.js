@@ -9,7 +9,6 @@ import * as SecureStore from 'expo-secure-store';
 import { loginUser } from '../components/Endpoint';
 import { useData } from '../context/DataContext';
 import AppHomeScreen from '../screens/AppHomePage';
-// import Test from '../screens/Test.js';
 
 const Stack = createStackNavigator();
 
