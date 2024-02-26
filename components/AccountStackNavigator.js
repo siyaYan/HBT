@@ -49,7 +49,7 @@ export default function AccountStackNavigator({navigation}) {
                     headerLeft: () => (
                       <IconButton ml={3} marginY={0}
                       icon={<Ionicons name="arrow-back" size={28} color="black" />}
-                      onPress={()=>{navigation.navigate('MainStack', { screen: 'Home' })}}
+                      onPress={()=>{navigation.goBack()}}
                       />
                     ), 
               }}

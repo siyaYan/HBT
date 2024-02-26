@@ -25,7 +25,7 @@ const HomeScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems='center'>
-        <OptionMenu />
+        <OptionMenu navigation={navigation} />
         <Pressable onPress={handleAvatarPress}>
           <Box py='5' px='2' alignItems="center" justifyContent="center">
 

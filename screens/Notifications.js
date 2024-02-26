@@ -14,7 +14,6 @@ const NotificationScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems='center'>
-        <OptionMenu />
         <Box safeArea w="100%" maxW="300" alignItems="center">
             <Text fontFamily={'Bold'} fontSize={"3xl"} style={{ marginTop:'50%',}} >Notification Page</Text>
         </Box >

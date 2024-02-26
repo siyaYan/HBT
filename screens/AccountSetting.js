@@ -222,7 +222,8 @@ const AccountSettingScreen = ({ navigation }) => {
     if (response.status == "success") {
       updateUserData({
         data: response.data.user,
-        avatar: response.data.user.profileImageUrl,
+        avatar: {
+          uri:response.data.user.profileImageUrl}
       });
     } else {
       setData({
@@ -242,7 +243,8 @@ const AccountSettingScreen = ({ navigation }) => {
     if (response.status == "success") {
       updateUserData({
         data: response.data.user,
-        avatar: response.data.user.profileImageUrl,
+        avatar: {
+          uri:response.data.user.profileImageUrl}
       });
     } else {
       setData({

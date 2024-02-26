@@ -66,7 +66,7 @@ const SettingScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems="center">
-        <OptionMenu />
+        <OptionMenu navigation={navigation}/>
 
         <Box
           mt="5"

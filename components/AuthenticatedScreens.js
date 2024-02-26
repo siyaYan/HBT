@@ -55,6 +55,10 @@ export default function AuthenticatedScreens() {
             </TouchableOpacity>
           ),
           tabBarLabelStyle: { display: "none" },
+          tabBarStyle: {
+            backgroundColor: '#d6d3d1', // Dark background color
+            borderTopColor: 'transparent', // Removes the border on the top
+          },
           tabBarShowLabel: false,
         }}
       />
@@ -77,6 +81,10 @@ export default function AuthenticatedScreens() {
               <Feather name="link" size={30} color="black" />
             </TouchableOpacity>
           ),
+          tabBarStyle: {
+            backgroundColor: '#d6d3d1', // Dark background color
+            borderTopColor: 'transparent', // Removes the border on the top
+          },
           tabBarLabelStyle: { display: "none" },
           tabBarShowLabel: false,
         }}
@@ -100,6 +108,10 @@ export default function AuthenticatedScreens() {
               <Feather name="camera" size={30} color="black" />
             </TouchableOpacity>
           ),
+          tabBarStyle: {
+            backgroundColor: '#d6d3d1', // Dark background color
+            borderTopColor: 'transparent', // Removes the border on the top
+          },
           tabBarLabelStyle: { display: "none" },
           tabBarShowLabel: false,
         }}
@@ -132,7 +144,10 @@ export default function AuthenticatedScreens() {
             //   style={{ width: 26, height: 26 }}
             //   source={require("../assets/Buttonicons/ic_login.png")}
             // />
-   
+            tabBarStyle: {
+                backgroundColor: '#d6d3d1', // Dark background color
+                borderTopColor: 'transparent', // Removes the border on the top
+              },
           tabBarLabelStyle: { display: "none" },
           tabBarShowLabel: false,
         }}
@@ -156,6 +171,10 @@ export default function AuthenticatedScreens() {
               <Feather name="settings" size={30} color="black" />
             </TouchableOpacity>
           ),
+          tabBarStyle: {
+            backgroundColor: '#d6d3d1', // Dark background color
+            borderTopColor: 'transparent', // Removes the border on the top
+          },
           tabBarLabelStyle: { display: "none" },
           tabBarShowLabel: false,
         }}

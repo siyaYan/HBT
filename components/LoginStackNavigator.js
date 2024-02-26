@@ -15,8 +15,6 @@ export default function LoginStackNavigator({navigation}) {
     return (
         <Stack.Navigator initialRouteName='Login'>
             <Stack.Screen name="Login" component={LoginScreen} options={{
-                // headerBackTitleVisible: false,
-                // headerShown:false,
                 title: '',
                 headerStyle: {
                     backgroundColor:'rgba(255,255,255,0)',

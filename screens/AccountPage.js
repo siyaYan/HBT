@@ -49,10 +49,6 @@ const AccountScreen = ({ navigation }) => {
     try {
       if (!result.canceled) {
         setSelectedImage(result);
-        // console.log(
-        //   "\n\nCaptured Image Result:====================\n\n",
-        //   result
-        // );
         const response = await updateAvatar(
           userData.token,
           userData.data.email,
@@ -83,10 +79,6 @@ const AccountScreen = ({ navigation }) => {
     try {
       if (!result.canceled) {
         setSelectedImage(result);
-        // console.log(
-        //   "\n\nTake Image Result:====================\n\n",
-        //   result
-        // );
         const response = await updateAvatar(
           userData.token,
           userData.data.email,

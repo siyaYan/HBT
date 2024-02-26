@@ -184,8 +184,6 @@ export async function resetProfile(userId, token, nickname, username) {
         body: JSON.stringify({
           nickname: nickname,
           username: username,
-          profileImageUrl:
-            "https://habital-images.s3.ap-southeast-2.amazonaws.com/profiles/default-profile-image.png",
         }),
       }
     );

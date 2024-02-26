@@ -19,7 +19,7 @@ import { useData } from "../context/DataContext";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Background from "../components/Background";
 
-const AccountScreen = ({ navigation }) => {
+const InviteScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
 
   return (
@@ -60,4 +60,4 @@ const AccountScreen = ({ navigation }) => {
   );
 };
 
-export default AccountScreen;
+export default InviteScreen;

@@ -15,7 +15,7 @@ const FriendsScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems='center'>
-        <OptionMenu />
+        <OptionMenu  navigation={navigation}/>
         <Box safeArea w="100%" maxW="300" alignItems="center">
             <Text fontFamily={'Bold'} fontSize={"3xl"} style={{ marginTop:'50%',}} >Friends Page</Text>
         </Box >
