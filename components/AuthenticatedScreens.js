@@ -1,78 +1,165 @@
-import React, { useRef,useEffect } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SettingScreen from '../screens/SettingPage';
-import HomeScreen from '../screens/HomePage';
-import TestScreen from '../screens/AppHomePage';
-import { useData } from '../context/DataContext';
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
+import React, { useRef, useEffect } from "react";
+import { Image } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import SettingScreen from "../screens/SettingPage";
+import HomeScreen from "../screens/HomePage";
+import FriendsScreen from "../screens/FriendsList";
+import NotificationScreen from "../screens/Notifications";
+import { useData } from "../context/DataContext";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { TouchableOpacity, View } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
 export default function AuthenticatedScreens() {
-    const navigationRef = useRef();
-    const { userData, updateUserData } = useData();
-    const handleTabPress = (value) => {
-        if (value.target.includes("Home")) {
-            // Pass data to the Home screen
-            navigationRef.current?.navigate('Home');
-            // console.log(userData, 'home')
-        }
-        if (value.target.includes("Account")) {
-            navigationRef.current?.navigate('Account')
-            // console.log(userData, 'account')
-        }
-        if (value.target.includes("Setting")) {
-            navigationRef.current?.navigate('Setting')
-            // console.log(userData, 'setting')
-        }
+  const navigationRef = useRef();
+  const { userData, updateUserData } = useData();
+  const onPress = (value) => {
+    if (value.target.includes("Home")) {
+      navigationRef.current?.navigate("Home");
     }
+    if (value.target.includes("Friends")) {
+      navigationRef.current?.navigate("Friends");
+    }
+    if (value.target.includes("Setting")) {
+      navigationRef.current?.navigate("Setting");
+    }
+    if (value.target.includes("Notifications")) {
+      navigationRef.current?.navigate("Notifications");
+    }
+    if (value.target.includes("Canmera")) {
+      console.log("Canmera");
+    }
+  };
 
-    return (
-        <Tab.Navigator>
-            <Tab.Screen
-                name="Home"
-                component={HomeScreen}
-                listeners={{ tabPress: handleTabPress }}
-                options={{
-                    initialParams:{ avatar: userData.avatar },
-                    headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons
-                            name={'home'}
-                            color={color}
-                            size={size}
-                        />
-                    ),
-                }}
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+          tabBarButton: ({ accessibilityState, onPress }) => (
+            <TouchableOpacity
+              onPress={onPress}
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: accessibilityState.selected ? "#e7e5e4":"#d6d3d1", // Change colors accordingly
+              }}
+            >
+              <Feather name="home" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+          tabBarLabelStyle: { display: "none" },
+          tabBarShowLabel: false,
+        }}
+      />
+      <Tab.Screen
+        name="Friends"
+        component={FriendsScreen}
+        listeners={{ tabPress: onPress }}
+        options={{
+          headerShown: false,
+          tabBarButton: ({ accessibilityState, onPress }) => (
+            <TouchableOpacity
+              onPress={onPress}
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: accessibilityState.selected ? "#e7e5e4":"#d6d3d1", // Change colors accordingly
+              }}
+            >
+              <Feather name="link" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+          tabBarLabelStyle: { display: "none" },
+          tabBarShowLabel: false,
+        }}
+      />
+      <Tab.Screen
+        name="Canmera"
+        component={HomeScreen}
+        listeners={{ tabPress: onPress }}
+        options={{
+          headerShown: false,
+          tabBarButton: ({ accessibilityState, onPress }) => (
+            <TouchableOpacity
+              onPress={onPress}
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: accessibilityState.selected ? "#e7e5e4":"#d6d3d1", // Change colors accordingly
+              }}
+            >
+              <Feather name="camera" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+          tabBarLabelStyle: { display: "none" },
+          tabBarShowLabel: false,
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={NotificationScreen}
+        listeners={{ tabPress: onPress }}
+        options={{
+          headerShown: false,
+          tabBarButton: ({ accessibilityState, onPress }) => (
+            <TouchableOpacity
+              onPress={onPress}
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: accessibilityState.selected ? "#e7e5e4":"#d6d3d1", // Change colors accordingly
+              }}
+            >
+              <MaterialCommunityIcons
+              name="fruit-cherries"
+              size={32}
+              color="black"
             />
-            <Tab.Screen
-                name="link"
-                component={TestScreen}
-                listeners={{ tabPress: handleTabPress }}
-                options={{
-                    headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Feather name="link" size={24} color="black" />
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name="Setting"
-                component={SettingScreen}
-                listeners={{ tabPress: handleTabPress }}
-                options={{
-                    headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name={'settings'}
-                            color={color}
-                            size={size}
-                        />
-                    ),
-                }}
-            />
-        </Tab.Navigator>
-    )
-};
+            </TouchableOpacity>
+          ),
+
+            // <Image
+            //   style={{ width: 26, height: 26 }}
+            //   source={require("../assets/Buttonicons/ic_login.png")}
+            // />
+   
+          tabBarLabelStyle: { display: "none" },
+          tabBarShowLabel: false,
+        }}
+      />
+      <Tab.Screen
+        name="Setting"
+        component={SettingScreen}
+        listeners={{ tabPress: onPress }}
+        options={{
+          headerShown: false,
+          tabBarButton: ({ accessibilityState, onPress }) => (
+            <TouchableOpacity
+              onPress={onPress}
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: accessibilityState.selected ? "#e7e5e4":"#d6d3d1", // Change colors accordingly
+              }}
+            >
+              <Feather name="settings" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+          tabBarLabelStyle: { display: "none" },
+          tabBarShowLabel: false,
+        }}
+      />
+    </Tab.Navigator>
+  );
+}

@@ -10,7 +10,7 @@ export async function registerUser(
 ) {
   try {
     const response = await fetch(
-      "http://54.252.176.246:8000/habital/v1/signup",
+      "http://3.27.94.77:8000/habital/v1/signup",
       {
         method: "POST",
         headers: {
@@ -43,7 +43,7 @@ export async function registerUser(
 export async function loginUser(id, password) {
   try {
     const response = await fetch(
-      "http://54.252.176.246:8000/habital/v1/login",
+      "http://3.27.94.77:8000/habital/v1/login",
       {
         method: "POST",
         headers: {
@@ -70,7 +70,7 @@ export async function loginUser(id, password) {
 export async function tokenResetPassword(password, passwordConfirm, code) {
   try {
     const response = await fetch(
-      "http://54.252.176.246:8000/habital/v1/users/resetPassword/" + code,
+      "http://3.27.94.77:8000/habital/v1/users/resetPassword/" + code,
       {
         method: "PATCH",
         headers: {
@@ -102,7 +102,7 @@ export async function tokenResetPassword(password, passwordConfirm, code) {
 export async function forgetSendEmail(email) {
   try {
     const response = await fetch(
-      "http://54.252.176.246:8000/habital/v1/users/forgotPassword",
+      "http://3.27.94.77:8000/habital/v1/users/forgotPassword",
       {
         method: "POST",
         headers: {
@@ -137,7 +137,7 @@ export async function resetPassword(
   //dummy success
   try {
     const response = await fetch(
-      "http://54.252.176.246:8000/habital/v1/users/${userId}",
+      "http://3.27.94.77:8000/habital/v1/users/${userId}",
       {
         method: "PATCH",
         headers: {
@@ -174,7 +174,7 @@ export async function resetProfile(userId, token, nickname, username) {
   // console.log(userId)
   try {
     const response = await fetch(
-      "http://54.252.176.246:8000/habital/v1/users/" + userId,
+      "http://3.27.94.77:8000/habital/v1/users/" + userId,
       {
         method: "PATCH",
         headers: {
@@ -240,14 +240,14 @@ export async function updateAvatar(token, userId, avatar) {
   formData.append("profileImage", file);
 
   try {
-    // const response = await fetch("http://54.252.176.246:8000/habital/v1/users/"+userId+"/profileImage", {
+    // const response = await fetch("http://3.27.94.77:8000/habital/v1/users/"+userId+"/profileImage", {
     const response = await fetch(
-      "http://localhost:8000/habital/v1/users/" + userId + "/profileImage",
+      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/profileImage",
       {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: formData,
       }
