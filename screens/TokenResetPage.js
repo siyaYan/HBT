@@ -159,7 +159,7 @@ const ResetPasswordScreen = ({ navigation }) => {
                 </Text>
               </VStack>
 
-              <VStack w="100%" space={4}>
+              <VStack w="100%" space={5}>
                 <FormControl isRequired isInvalid={!errors.token}>
                   <Input
                     size="lg"

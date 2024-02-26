@@ -70,8 +70,7 @@ const SettingScreen = ({ navigation }) => {
 
         <Box
           mt="5"
-          width="90%"
-          py="2"
+          width="90%"    
           px="2"
           alignItems="center"
           justifyContent="center"
@@ -96,12 +95,11 @@ const SettingScreen = ({ navigation }) => {
           
         </Box>
 
-        <Box safeArea w="90%" maxW="290">
-          <VStack space={1} alignItems="left">
+        <Box mt="10" w="90%" maxW="290">
+          <VStack  space={1} alignItems="left">
             <Text fontFamily={"Regular Semi Bold"} fontSize="2xl">
               System settings
               </Text>
-
 
             <Divider
               my="2"

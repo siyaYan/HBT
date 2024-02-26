@@ -194,7 +194,7 @@ const ResetPassword = ({ navigation }) => {
                   Reset password
                 </Text>
               </VStack>
-              <VStack w="100%" space={4}>
+              <VStack w="100%" space={5}>
                 <FormControl isRequired isInvalid={!errors.current}>
                   <Input
                   size="lg"

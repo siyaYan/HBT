@@ -334,25 +334,26 @@ const AccountSettingScreen = ({ navigation }) => {
               )}
             </Box>
           </Pressable>
-          <VStack space={8} mt="5">
+          <VStack space={3} mt="5">
             <FormControl isInvalid={errors.nickname}>
-              <Box flexDir="row" w="100%">
-                <FormControl.Label
+            <FormControl.Label
+                ml={1}
                   _text={{
-                    fontFamily: "Regular Bold",
+                    fontFamily: "Regular Semi Bold",
                     fontSize: "lg",
+                    color:"#191919"
                   }}
                 >
                   Nick name
                 </FormControl.Label>
+              <Box flexDir="row" w="100%">
                 <Input
                   borderColor="#49a579"
                   rounded="30"
                   fontFamily={"Regular Medium"}
                   size="lg"
-                  ml={2}
                   mr={3}
-                  w="60%"
+                  w="93%"
                   placeholder="Nickname"
                   value={formData.nickname}
                   onChangeText={validateNickname}
@@ -373,23 +374,24 @@ const AccountSettingScreen = ({ navigation }) => {
             </FormControl>
 
             <FormControl isInvalid={!errors.username}>
-              <Box flexDir="row" w="100%">
-                <FormControl.Label
+            <FormControl.Label
+                ml={1}
                   _text={{
-                    fontFamily: "Regular Bold",
+                    fontFamily: "Regular Semi Bold",
                     fontSize: "lg",
+                    color:"#191919"
                   }}
                 >
                   User name
                 </FormControl.Label>
+              <Box flexDir="row" w="100%">
                 <Input
                   borderColor="#49a579"
                   rounded="30"
                   fontFamily={"Regular Medium"}
                   size="lg"
-                  ml={2}
                   mr={3}
-                  w="60%"
+                  w="93%"
                   placeholder="Username"
                   value={formData.username}
                   onChangeText={validateUsername}
@@ -414,24 +416,25 @@ const AccountSettingScreen = ({ navigation }) => {
             </FormControl>
 
             <FormControl isInvalid={!errors.email}>
-              <Box flexDir="row" w="100%">
-                <FormControl.Label
-                  mr={10}
+            <FormControl.Label
+                ml={1}
                   _text={{
-                    fontFamily: "Regular Bold",
+                    fontFamily: "Regular Semi Bold",
                     fontSize: "lg",
+                    color:"#191919"
                   }}
                 >
                   Email
                 </FormControl.Label>
+              <Box flexDir="row" w="100%">
+              
                 <Input
                   borderColor="#49a579"
                   rounded="30"
                   fontFamily={"Regular Medium"}
                   size="lg"
-                  ml={2}
                   mr={3}
-                  w="60%"
+                  w="93%"
                   placeholder="Email"
                   value={formData.email}
                   onChangeText={validateEmail}
@@ -455,24 +458,26 @@ const AccountSettingScreen = ({ navigation }) => {
               </Box>
             </FormControl>
             {formData.send ? (
+              <FormControl>
+              <FormControl.Label
+              ml={1}
+                _text={{
+                  fontFamily: "Regular Semi Bold",
+                  fontSize: "lg",
+                  color:"#191919"
+                }}
+              >
+                Vertify
+              </FormControl.Label>
               <Box flexDir="row" w="100%" alignItems="center">
-                <FormControl.Label
-                  _text={{
-                    fontFamily: "Regular Bold",
-                    fontSize: "lg",
-                  }}
-                  mr={8}
-                >
-                  Vertify
-                </FormControl.Label>
+                 
                 <Input
                   borderColor="#49a579"
                   rounded="30"
                   fontFamily={"Regular Medium"}
                   size="lg"
-                  ml={2}
                   mr={3}
-                  w="60%"
+                  w="93%"
                   placeholder="Enter your email token"
                   value={formData.token}
                   onChangeText={(value) => {
@@ -490,6 +495,7 @@ const AccountSettingScreen = ({ navigation }) => {
                   onPress={saveEmail}
                 />
               </Box>
+              </FormControl>
             ) : (
               ""
             )}

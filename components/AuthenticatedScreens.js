@@ -2,10 +2,11 @@ import React, { useRef,useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SettingScreen from '../screens/SettingPage';
 import HomeScreen from '../screens/HomePage';
-
+import TestScreen from '../screens/AppHomePage';
 import { useData } from '../context/DataContext';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,21 +47,17 @@ export default function AuthenticatedScreens() {
                     ),
                 }}
             />
-            {/* <Tab.Screen
-                name="Account"
-                component={AccountScreen}
+            <Tab.Screen
+                name="link"
+                component={TestScreen}
                 listeners={{ tabPress: handleTabPress }}
                 options={{
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons
-                            name={'account'}
-                            color={color}
-                            size={size}
-                        />
+                        <Feather name="link" size={24} color="black" />
                     ),
                 }}
-            /> */}
+            />
             <Tab.Screen
                 name="Setting"
                 component={SettingScreen}

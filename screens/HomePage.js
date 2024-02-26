@@ -9,7 +9,7 @@ import Background from "../components/Background";
 // TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
-  console.log(userData, 'inHome');
+  // console.log(userData, 'inHome');
 
   const handleAvatarPress = () => {
     // Navigate to another screen when the Avatar is pressed
