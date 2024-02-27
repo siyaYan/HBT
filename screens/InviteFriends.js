@@ -24,7 +24,7 @@ const InviteScreen = ({ navigation }) => {
   const [errors, setErrors] = useState({
     userId: true,
   });
-  const [findUser, setFind] = useState({});
+  const [findUser, setFind] = useState({user:{profileImageUrl:''}});
 
   async function handleSubmit() {
     console.log(formData.userId);
@@ -89,7 +89,6 @@ const InviteScreen = ({ navigation }) => {
                 {userData.data.nickname}
               </Text>
             </Box>
-
             <Box w="100%" maxW="300" alignItems="center">
               <VStack space={5} alignItems="center" w={"100%"}>
                 <FormControl isInvalid={!errors.userId}>
@@ -146,36 +145,41 @@ const InviteScreen = ({ navigation }) => {
                 >
                   Search
                 </Button>
-
-                <Box w={"100%"} >
-                  <HStack w={"100%"} alignItems={"center"} justifyContent={"center"} space={5} backgroundColor={"light.100"}>
-                    {findUser.user.profileImageUrl ? (
-                      <Avatar
-                        bg="white"
-                        mb="1"
-                        size={"sm"}
-                        source={{ uri: findUser.user.profileImageUrl }}
-                      />
-                    ) : (
-                      <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                        <AntDesign name="user" size={20} color="black" />
-                      </Avatar>
-                    )}
-                    <Text fontFamily={"Regular"} fontSize="lg">
-                      {findUser.user.username}
-                    </Text>
-                    <Text fontFamily={"Regular"} fontSize="lg">
-                      {findUser.user.nickname}
-                    </Text>
-                    <Box>
-                    <Feather name="send" size={30} color="black" />
-                    <Text fontFamily={"Regular"} fontSize="xs">
-                      connect
-                    </Text>
-                  </Box>
-                  </HStack>
-                  
-                </Box>
+                {findUser.user.profileImageUrl ? (
+                  <Box w={"100%"}>
+                    <HStack
+                      w={"100%"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      space={5}
+                      backgroundColor={"light.100"}
+                    >
+                      {findUser.user.profileImageUrl ? (
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size={"sm"}
+                          source={{ uri: findUser.user.profileImageUrl }}
+                        />
+                      ) : (
+                        <Avatar bg="white" mb="1" size="md" borderWidth={2}>
+                          <AntDesign name="user" size={20} color="black" />
+                        </Avatar>
+                      )}
+                      <Text fontFamily={"Regular"} fontSize="lg">
+                        {findUser.user.username}
+                      </Text>
+                      <Text fontFamily={"Regular"} fontSize="lg">
+                        {findUser.user.nickname}
+                      </Text>
+                      <Box>
+                        <Feather name="send" size={30} color="black" />
+                        <Text fontFamily={"Regular"} fontSize="xs">
+                          connect
+                        </Text>
+                      </Box>
+                    </HStack>
+                  </Box>):''}
               </VStack>
             </Box>
           </VStack>

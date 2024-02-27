@@ -61,7 +61,7 @@ const AccountSettingScreen = ({ navigation }) => {
     nickname: userData.data.nickname,
     username: userData.data.username,
     email: userData.data.email,
-    token: "",
+    token: true,
     send: false,
   });
   const [errors, setErrors] = useState({
@@ -69,6 +69,7 @@ const AccountSettingScreen = ({ navigation }) => {
     username: true,
     confirmPassword: true,
     password: true,
+    token:true
   });
   const [showMessage, setShowMessage] = useState({
     username: {
@@ -460,7 +461,7 @@ const AccountSettingScreen = ({ navigation }) => {
               </Box>
             </FormControl>
             {formData.send ? (
-              <FormControl>
+              <FormControl isInvalid={!errors.token}>
               <FormControl.Label
               ml={1}
                 _text={{
@@ -469,10 +470,9 @@ const AccountSettingScreen = ({ navigation }) => {
                   color:"#191919"
                 }}
               >
-                Vertify
+                Verify
               </FormControl.Label>
               <Box flexDir="row" w="100%" alignItems="center">
-                 
                 <Input
                   borderColor="#49a579"
                   rounded="30"
@@ -496,6 +496,11 @@ const AccountSettingScreen = ({ navigation }) => {
                   p={0}
                   onPress={saveEmail}
                 />
+              </Box>
+              <Box ml={20}>
+                <FormControl.ErrorMessage>
+                  {!errors.token ? "Input token it not valid" : ""}
+                </FormControl.ErrorMessage>
               </Box>
               </FormControl>
             ) : (
