@@ -137,7 +137,7 @@ export async function resetPassword(
   //dummy success
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/${userId}",
+      "http://3.27.94.77:8000/habital/v1/users/"+ userId,
       {
         method: "PATCH",
         headers: {
@@ -224,7 +224,6 @@ export async function resetEmail(email, token) {
   // return 'failed';
 }
 
-//TODO: update avatar failed
 export async function updateAvatar(token, userId, avatar) {
   // const binaryData = await RNFS.readFile(avatar.uri, 'base64');
   // console.log(binaryData);
@@ -245,7 +244,7 @@ export async function updateAvatar(token, userId, avatar) {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: formData,
       }
@@ -261,5 +260,31 @@ export async function updateAvatar(token, userId, avatar) {
   } catch (error) {
     console.error("Unsuccessful in Update avatar:", error);
     Alert.alert("Unsuccessful", "Update avatar failed, Please try again later");
+  }
+}
+
+export async function findByUserId(token, userId) {
+  try {
+    const response = await fetch(
+      "http://3.27.94.77:8000/habital/v1/users/" + userId ,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+    // if (data.status == "success") {
+    //   Alert.alert("Success", "Avatar updated!");
+    // } else {
+    //   Alert.alert("Unsuccessful", data.message || "Update avatar unsuccessful");
+    // }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
   }
 }

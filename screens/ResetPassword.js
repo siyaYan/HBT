@@ -12,7 +12,7 @@ import {
   Text,
   KeyboardAvoidingView,
   ScrollView,
-  HStack
+  HStack,
 } from "native-base";
 import { resetPassword } from "../components/Endpoint"; // Import the mock function
 import { MaterialIcons } from "@expo/vector-icons";
@@ -151,7 +151,9 @@ const ResetPassword = ({ navigation }) => {
       formData.confirmPassword
     );
     // Handle success or error response
-    if (response == "failed") {
+    if (response.status == "success") {
+      navigation.navigate("LoginStack", { screen: "Login" });
+    } else {
       setErrors({
         ...errors,
         current: false,
@@ -197,7 +199,7 @@ const ResetPassword = ({ navigation }) => {
               <VStack w="100%" space={5}>
                 <FormControl isRequired isInvalid={!errors.current}>
                   <Input
-                  size="lg"
+                    size="lg"
                     value={formData.current}
                     placeholder="Enter your current password"
                     onChangeText={validateCurrent}
@@ -228,8 +230,12 @@ const ResetPassword = ({ navigation }) => {
                       </Pressable>
                     }
                   />
-                  <FormControl.ErrorMessage>
-                    {!errors.current ? "Current Password is not correct!" : "Please enter your current password"}
+                  <FormControl.ErrorMessage ml={2} mt={2}>
+                    <Text fontFamily={"Regular"} fontSize="sm">
+                      {!errors.current
+                        ? "Current Password is not correct!"
+                        : "Please enter your current password"}
+                    </Text>
                   </FormControl.ErrorMessage>
                 </FormControl>
                 <FormControl isRequired isInvalid={!errors.password}>
