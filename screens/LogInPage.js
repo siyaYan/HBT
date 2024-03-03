@@ -1,6 +1,7 @@
 import {
   Input,
   Icon,
+  IconButton,
   Checkbox,
   Pressable,
   Center,
@@ -8,10 +9,11 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "native-base";
-import { Image } from "react-native";
+// import { Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import Svg, { G, Path } from "react-native-svg";
+import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import {
   VStack,
@@ -23,6 +25,7 @@ import {
   Heading,
   Link,
   Text,
+  Image
 } from "native-base";
 // import ResetModal from "../components/ResetModal";
 import { Alert } from "react-native";
@@ -37,6 +40,27 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  FacebookAuthProvider,
+  signInWithCredential,
+} from "firebase/auth";
+import { LoginManager, AccessToken } from "react-native-fbsdk-next";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCUcdfsmB6eqkaUPQ0xH2ELm4mqA9MhHJ4",
+  authDomain: "habital-e1c8d.firebaseapp.com",
+  projectId: "habital-e1c8d",
+  storageBucket: "habital-e1c8d.appspot.com",
+  messagingSenderId: "720818502811",
+  appId: "1:720818502811:web:6516136f1df011ce289a3e",
+  measurementId: "G-EVZCE105VF",
+};
+
+// // Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
 // TODO: shaking the buttons
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
@@ -47,6 +71,7 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { userData, updateUserData } = useData();
+  const { user, setUser } = useState({ res: "" });
   const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
   const [errorT, setErrorT] = useState(false);
   useEffect(() => {
@@ -66,16 +91,18 @@ const LoginScreen = ({ navigation }) => {
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
-      // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-      //   // user cancelled the login flow
-      // } else if (error.code === statusCodes.IN_PROGRESS) {
-      //   // operation (e.g. sign in) is in progress already
-      // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-      //   // play services not available or outdated
-      // } else {
-      //   // some other error happened
-      // }
     }
+  };
+
+  const loginFb = async () => {
+    await LoginManager.logInWithPermissions(["public_profile", "email"]);
+    const data = await AccessToken.getCurrentAccessToken();
+    const facebookCredential = FacebookAuthProvider.credential(
+      data.accessToken
+    );
+    const auth = getAuth();
+    const res = await signInWithCredential(auth, facebookCredential);
+    console.log(res._tokenResponse);
   };
 
   const logout = () => {
@@ -116,9 +143,9 @@ const LoginScreen = ({ navigation }) => {
         updateUserData({
           token: response.token,
           data: response.data.user,
-          avatar:{
+          avatar: {
             uri: response.data.user.profileImageUrl,
-          }
+          },
         });
         navigation.navigate("MainStack", { screen: "Home" });
         // console.log(response.token);
@@ -255,39 +282,56 @@ const LoginScreen = ({ navigation }) => {
                     }}
                   >
                     <HStack
-                      space={5}
-                      justifyContent={"center"}
                       alignItems={"center"}
+                      // space={5}
                     >
-                      {/* <AntDesign name="google" size={24} color="#f9f8f2" /> */}
-                      <GoogleSigninButton
-                        size={GoogleSigninButton.Size.Icon}
-                        color={GoogleSigninButton.Color.Light}
-                        onPress={signIn}
-                      />
+                      {/* <img src="../assets/google_icon.png" alt="" /> */}
+                      <Image size={50} source={require("../assets/Buttonicons/google_icon.png")} alt='google icon'/>
                       <Text
-                        textAlign={"center"}
+                      textAlign={"center"}
                         fontFamily={"Regular Medium"}
                         fontSize={"lg"}
                         color={"#191919"}
                       >
                         Continue with Google
                       </Text>
+
+                      {/* <AntDesign name="google" size={24} color="#f9f8f2" /> */}
+                      {/* <GoogleSigninButton
+                        size={GoogleSigninButton.Size.Icon}
+                        color={GoogleSigninButton.Color.Light}
+                        onPress={signIn}
+                      /> */}
                     </HStack>
                   </Button>
-
+                      
                   <Button
+                    rounded={30}
+                    shadow="6"
                     size="lg"
-                    _text={{
-                      color: "#f9f8f2",
-                      fontFamily: "Regular Medium",
-                      fontSize: "lg",
+                    _pressed={{
+                      // below props will only be applied on button is pressed
+                      backgroundColor: "blue.600",
+                      _text: {
+                        color: "warmGray.50",
+                      },
                     }}
-                    onPress={() => signIn()}
+                    onPress={loginFb}
+                    backgroundColor="rgb(26,119,242)"
                   >
-                    Facebook
+                    <HStack space={3}>
+                      <FontAwesome name="facebook-f" size={26} color="white" />
+                      <Text
+                        textAlign={"center"}
+                        fontFamily={"Regular Medium"}
+                        fontSize={"lg"}
+                        color={"white"}
+                      >
+                        Continue with Facebook
+                      </Text>
+                    </HStack>
                   </Button>
-                  <Text textAlign="center">Or</Text>
+                  <Text fontFamily={"Regular Semi Bold"} fontSize={"lg"} textAlign="center">Or</Text>
 
                   <FormControl isRequired isInvalid={"id" in errors}>
                     <Input
@@ -462,7 +506,7 @@ const LoginScreen = ({ navigation }) => {
                 >
                   Sign in
                  </Button> */}
-                   <Pressable onPress={handleSubmit}>
+                  <Pressable onPress={handleSubmit}>
                     <Image
                       source={require("../assets/Buttonicons/ic_login.png")}
                       style={{ width: 80, height: 80 }}

@@ -24,6 +24,14 @@
             "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "893958152467067",
+          "clientToken": "2ee667263e6338bada5235617d191d05",
+          "displayName": "Habital"
+        }
       ]
     ],
     "assetBundlePatterns": [
