@@ -1,181 +1,381 @@
-import React, { useState } from 'react';
-import { Input, Icon, Pressable, Center, Heading, VStack, Box,FormControl, Button, Text } from 'native-base';
-import { tokenResetPassword } from '../components/Endpoint'; // Import the mock function
-import { Alert } from 'react-native';
+import React, { useState } from "react";
+import {
+  Input,
+  Icon,
+  Pressable,
+  Center,
+  Heading,
+  VStack,
+  Box,
+  FormControl,
+  Button,
+  Text,
+  HStack,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "native-base";
+import { tokenResetPassword } from "../components/Endpoint"; // Import the mock function
+import { Alert } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import Background from "../components/Background";
+import { Path } from "react-native-svg";
 
 const ResetPasswordScreen = ({ navigation }) => {
-
   const [formData, setData] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [errors, setErrors] = useState({
-    length: false,
-    letterAndNumber: false,
-    noSpaces: false,
-    specialChars: false,
-    token: false
+    email: true,
+    username: true,
+    confirmPassword: true,
+    password: true,
+    token: true,
   });
 
-  //for real time check effect
   const validatePassword = (text) => {
     setData({
       ...formData,
-      password: text
-    })
+      password: text,
+    });
     if (text) {
       setErrors({
+        ...errors,
         length: text.length >= 8 && text.length <= 20,
         letterAndNumber: /[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/.test(text),
         noSpaces: !/\s/.test(text),
         specialChars: /[!@#%&_?#=-]/.test(text),
+        password:
+          /^(?=.*[A-Za-z].*[0-9]|[0-9].*[A-Za-z])(?=\S{8,20})(?=.*[!@#%&_?#=-])/.test(
+            text
+          ),
       });
-      return errors.length && errors.letterAndNumber && errors.noSpaces && errors.specialChars;
+      return (
+        errors.length &&
+        errors.letterAndNumber &&
+        errors.noSpaces &&
+        errors.specialChars
+      );
+    } else {
+      setErrors({
+        ...errors,
+        password: false,
+      });
     }
   };
-
-  const validate = () => {
-    if (!formData.token) {
+  const validateConfirm = (text) => {
+    setData({
+      ...formData,
+      confirmPassword: text,
+    });
+    const res = text === formData.password;
+    if (text) {
       setErrors({
         ...errors,
-        token: true
-      })
-      console.log("no token")
-      return false;
-    } else {
-      setErrors({
-        ...errors,
-        token: false
-      })
-      console.log("have token")
-    }
-    if (formData.password !== formData.confirmPassword) {
-      console.log('Passwords do not match.');
-      setData({
-        ...formData,
-        confirmPassword: ''
+        confirmPassword: res,
       });
+    } else {
       setErrors({
         ...errors,
-        confirmPassword:true
-      })
-      return false;
-    } else {
-      console.log('Passwords match.');
+        confirmPassword: res,
+      });
     }
-    return true;
+    return res;
   };
 
   const handleSubmit = () => {
-    if (validatePassword(formData.password)) {
+    if (!formData.token) {
       setErrors({
         ...errors,
-        password:false
+        token: false,
       });
-      if (validate()) {
-        console.log('Submitted')
+      console.log("no token");
+      return false;
+    } else {
+      setErrors({
+        ...errors,
+        token: true,
+      });
+      console.log("have token");
+
+      const hasErrors = Object.values(errors).some((error) => error == false);
+      if (!hasErrors) {
+
         handlePasswordReset();
       }
-    } else {
-      console.log('Validation Password Failed');
-      setData({
-        ...formData,
-        password: '',
-      });
-      setErrors({
-        ...errors,
-        password:true
-      })
     }
-
   };
 
   const handlePasswordReset = async () => {
-
-      // Call the mock registration function
-      const response = await tokenResetPassword(formData.password, formData.confirmPassword,formData.token);
-      // Handle success or error response
-      if (response.token) {
-        navigation.navigate('LoginStack', { screen: 'Login'})
-        console.log(response.token);
-      }
+    // Call the mock registration function
+    const response = await tokenResetPassword(
+      formData.password,
+      formData.confirmPassword,
+      formData.token
+    );
+    // Handle success or error response
+    if (response.token) {
+      navigation.navigate("LoginStack", { screen: "Login" });
+      console.log(response.token);
+    } else {
+      setErrors({
+        ...errors,
+        token: false,
+      });
+    }
   };
 
   return (
-    <Center w="100%">
-      <Box safeArea py="8" w="90%" maxW="290">
-        <VStack space={1} alignItems="center">
-          <Heading size="lg" fontWeight="600" color="coolGray.800" _dark={{
-            color: "warmGray.50"
-          }}>
-            Reset Your Password
-          </Heading>
-          <Heading mt="3" Center _dark={{
-            color: "warmGray.200"
-          }} color="coolGray.600" fontWeight="medium" size="xs">
-            Enter a new password to reset!
-          </Heading>
-        </VStack>
-        <VStack mt="5">
-          <Center>
-            <FormControl isRequired isInvalid={errors.token===true}>
-              <FormControl.Label _text={{
-                bold: true
-              }}>Token</FormControl.Label>
-              <Input value={formData.token}
-                placeholder="Enter your reset password token"
-                onChangeText={value => setData({
-                  ...formData,
-                  token: value
-                })} />
-            </FormControl>
-            <FormControl isRequired isInvalid={errors.password===true}>
-              <FormControl.Label _text={{
-                bold: true
-              }}>Password</FormControl.Label>
-              <Input value={formData.password}
-                placeholder="Enter the new password"
-                onChangeText={validatePassword}
-                type={showPassword ? "text" : "password"}
-                InputRightElement={
-                  <Pressable onPress={() => setShowPassword(!showPassword)}>
-                    <Icon as={<MaterialIcons name={showPassword ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
-                  </Pressable>} />
-              <FormControl.HelperText>
-                <Text>{errors.length ? '✅' : '❌'} Between 8-20 characters</Text>
-                <Text>{errors.letterAndNumber ? '✅' : '❌'} Must include a letter and a number</Text>
-                <Text>{errors.noSpaces ? '✅' : '❌'} Cannot have any spaces</Text>
-                <Text>{errors.specialChars ? '✅' : '❌'} Special characters: !@#%&_?#=- </Text>
-                <Text>
-                </Text>
-              </FormControl.HelperText>
-            </FormControl>
-            <FormControl isRequired isInvalid={errors.confirmPassword===true}>
-              <FormControl.Label _text={{
-                bold: true
-              }}>Confirm Password</FormControl.Label>
-              <Input value={formData.confirmPassword}
-                placeholder="Confirm new password"
-                onChangeText={value => setData({
-                  ...formData,
-                  confirmPassword: value
-                })} type={showConfirm ? "text" : "password"}
-                InputRightElement={
-                  <Pressable onPress={() => setShowConfirm(!showConfirm)}>
-                    <Icon as={<MaterialIcons name={showConfirm ? "visibility" : "visibility-off"} />} size={5} mr="2" color="muted.400" />
-                  </Pressable>} />
-              {'confirmPassword' in errors ? <FormControl.ErrorMessage>Confirm Password is not correct!</FormControl.ErrorMessage> : <FormControl.HelperText>
-                Please confirm your password!
-              </FormControl.HelperText>}
-            </FormControl>
-            <Button w="100%" onPress={handleSubmit} mt="5" colorScheme="cyan">
-              Reset Password
-            </Button>
-          </Center>
-        </VStack>
-      </Box>
-    </Center>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <Center w="100%">
+        <ScrollView
+          w="100%"
+          h="100%"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flexGrow: 1, minHeight: "100%" }}
+        >
+          <Background />
+          <Box
+            alignItems="center"
+            alignSelf="center"
+            position="relative"
+            safeArea
+            h="100%"
+            w="80%"
+            maxW={320}
+          >
 
+            <VStack w="100%" h="100%" space={6}>
+              <VStack>
+                <Text
+                  mt={10}
+                  ml={2}
+                  fontSize="3xl"
+                  style={{ fontFamily: "Bold" }}
+                >
+                  Reset password
+                </Text>
+              </VStack>
+
+              <VStack w="100%" space={5}>
+                <FormControl isRequired isInvalid={!errors.token}>
+                  <Input
+                    size="lg"
+                    placeholder="Enter your 6 digit reset code"
+                    value={formData.token}
+                    onChangeText={(value) =>
+                      setData({
+                        ...formData,
+                        token: value,
+                      })
+                    }
+                  />
+                </FormControl>
+                <FormControl isRequired isInvalid={!errors.password}>
+                  <Input
+                    size="lg"
+                    value={formData.password}
+                    placeholder="Password"
+                    onChangeText={validatePassword}
+                    type={showPassword ? "text" : "password"}
+                    InputRightElement={
+                      <Pressable onPress={() => setShowPassword(!showPassword)}>
+                        {!showPassword ? (
+                          <Icon size="5" marginRight="3" viewBox="0 0 50 50">
+                            <Path
+                              class="b"
+                              fill="#191919"
+                              d="M18.45,31.51l-7.74-3.07c-.15,.38-.36,.92-.56,1.47-.48,1.31-.95,2.62-1.44,3.93-.36,.99-1.08,1.41-1.88,1.12-.8-.29-1.06-1.05-.69-2.08,.68-1.9,1.35-3.8,2.08-5.68,.21-.54,.09-.82-.32-1.18-1.6-1.38-2.93-2.99-3.99-4.81-.16-.27-.3-.54-.42-.83-.3-.76-.05-1.49,.59-1.79,.7-.33,1.35-.03,1.84,.66,1.03,1.44,1.99,2.98,3.24,4.22,3.28,3.24,7.36,4.9,11.89,5.48,4.99,.63,9.86,.25,14.49-1.87,3.67-1.69,6.61-4.2,8.53-7.81,.43-.8,1.15-1.04,1.88-.65,.69,.36,.91,1.06,.51,1.86-1.06,2.17-2.58,3.99-4.39,5.57-.41,.36-.51,.64-.31,1.17,.73,1.88,1.4,3.78,2.08,5.68,.34,.96,.08,1.76-.64,2.05-.84,.33-1.58-.09-1.96-1.11-.67-1.84-1.34-3.68-1.96-5.39l-7.76,3.09c.24,1.34,.52,2.86,.8,4.37,.12,.66,.27,1.32,.37,1.98,.14,.92-.28,1.56-1.07,1.68-.77,.12-1.46-.34-1.63-1.2-.36-1.88-.68-3.76-1.01-5.65-.05-.3-.12-.6-.19-.96-.75,.04-1.46,.12-2.18,.12-1.6,0-3.2-.02-4.8-.11-.51-.03-.67,.1-.75,.58-.33,2.01-.7,4.02-1.07,6.03-.13,.7-.6,1.17-1.27,1.14-.44-.02-.95-.35-1.25-.69-.2-.23-.16-.74-.1-1.11,.3-1.84,.65-3.66,.98-5.5,.05-.28,.08-.56,.1-.7Z"
+                            />
+                          </Icon>
+                        ) : (
+                          <Icon size="5" marginRight="3" viewBox="0 0 50 50">
+                            <Path
+                              class="b"
+                              fill="#191919"
+                              d="M48.85,26.84c-1.11-1.26-2.22-2.52-3.41-3.69-1.19-1.17-2.43-2.28-3.73-3.31-.02-.15,0-.32,.08-.53,.73-1.88,1.4-3.78,2.08-5.68,.37-1.03,.1-1.79-.69-2.08-.8-.29-1.52,.13-1.88,1.12-.55,1.49-.96,2.54-1.44,3.93-.23,.66-.44,1.18-.56,1.47-.02-.01-.04-.02-.06-.04-1.42-.95-2.91-1.82-4.49-2.56-1.01-.48-2.04-.89-3.09-1.24,.19-1.23,.79-4.35,.97-5.44,.06-.37,.1-.88-.1-1.11-.3-.34-.81-.67-1.25-.69-.21,0-.4,.03-.57,.11-.44,.22-.61,.73-.7,1.03-.21,.74-.62,2.69-1.08,5.37-1.29-.25-2.6-.4-3.95-.4-1.37,0-2.7,.16-4,.42-.31-1.75-.62-3.6-.96-5.37-.16-.86-.86-1.32-1.63-1.2-.3,.05-.55,.17-.73,.36-.36,.37-.36,.92-.33,1.33,.06,.93,.42,2.94,1.02,5.59-.91,.3-1.81,.66-2.7,1.07-1.79,.83-3.46,1.81-5.06,2.89-.38-1.38-1.17-4.09-1.82-5.5-.19-.41-.5-1.03-1.1-1.18-.26-.07-.55-.05-.86,.07-.72,.28-.99,1.09-.64,2.05,.68,1.9,1.35,3.8,2.08,5.68,.08,.21,.1,.37,.09,.52-2.58,2.02-4.93,4.34-7.09,6.9-.79,.94-.8,1.82,.02,2.74,1.14,1.28,2.28,2.56,3.51,3.76,2.99,2.92,6.3,5.41,10.05,7.26,2.92,1.44,5.98,2.39,9.25,2.55,3.65,.18,7.09-.67,10.37-2.21,5.72-2.68,10.39-6.71,14.42-11.51,.65-.78,.66-1.71-.02-2.47Zm-5.77,3.24c-3.03,2.97-6.34,5.56-10.21,7.35-2.89,1.34-5.9,2.1-9.11,1.84-2.9-.24-5.58-1.2-8.12-2.58-4.01-2.17-7.42-5.1-10.5-8.45-.04-.05-.08-.1-.15-.21,.89-.89,1.76-1.81,2.68-2.67,2.84-2.68,5.93-5,9.49-6.64,2.32-1.07,4.73-1.77,7.29-1.86,2.76-.1,5.37,.54,7.88,1.64,3.74,1.63,6.95,4.02,9.9,6.78,.85,.8,1.66,1.66,2.48,2.5,.09,.09,.17,.19,.28,.33-.65,.67-1.27,1.34-1.92,1.98Z"
+                            />
+                            <Path
+                              class="b"
+                              d="M25.1,20.61c-4.2-.02-7.57,3.29-7.59,7.45-.01,4.13,3.33,7.49,7.46,7.5,4.14,.01,7.5-3.32,7.51-7.45,0-4.11-3.31-7.49-7.38-7.5Zm-.09,11.23c-2.08,0-3.76-1.68-3.76-3.76,0-2.05,1.69-3.74,3.75-3.74s3.74,1.69,3.75,3.75c0,2.04-1.69,3.75-3.74,3.75Z"
+                            />
+                          </Icon>
+                        )}
+                      </Pressable>
+                    }
+                  />
+
+                  <FormControl.HelperText ml={3} mt={1}>
+                    <HStack space={2}>
+                      <Icon size="5" viewBox="0 0 50 50">
+                        {errors.length ? (
+                          <Path
+                            fill="#ff061e"
+                            d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                          />
+                        ) : (
+                          <Path
+                            fill="#606060"
+                            d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                          />
+                        )}
+                      </Icon>
+                      <Text fontFamily={"Regular"} fontSize="sm">
+                        Between 8-20 characters
+                      </Text>
+                    </HStack>
+                    <HStack space={2}>
+                      <Icon size="5" viewBox="0 0 50 50">
+                        {errors.letterAndNumber ? (
+                          <Path
+                            fill="#ff061e"
+                            d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                          />
+                        ) : (
+                          <Path
+                            fill="#606060"
+                            d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                          />
+                        )}
+                      </Icon>
+                      <Text fontFamily={"Regular"} fontSize="sm">
+                        Must include a letter and a number
+                      </Text>
+                    </HStack>
+                    <HStack space={2}>
+                      <Icon size="5" viewBox="0 0 50 50">
+                        {errors.noSpaces ? (
+                          <Path
+                            fill="#ff061e"
+                            d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                          />
+                        ) : (
+                          <Path
+                            fill="#606060"
+                            d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                          />
+                        )}
+                      </Icon>
+                      <Text fontFamily={"Regular"} fontSize="sm">
+                        No space is allowed
+                      </Text>
+                    </HStack>
+                    <HStack space={2}>
+                      <Icon size="5" viewBox="0 0 50 50">
+                        {errors.specialChars ? (
+                          <Path
+                            fill="#ff061e"
+                            d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                          />
+                        ) : (
+                          <Path
+                            fill="#606060"
+                            d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                          />
+                        )}
+                      </Icon>
+                      <Text fontFamily={"Regular"} fontSize="sm">
+                        At least one special case: !@#%&_?#=-{" "}
+                      </Text>
+                    </HStack>
+                  </FormControl.HelperText>
+                </FormControl>
+
+                <FormControl isRequired isInvalid={!errors.confirmPassword}>
+                  <Input
+                    size="lg"
+                    value={formData.confirmPassword}
+                    placeholder="Confirm Password"
+                    onChangeText={validateConfirm}
+                    type={showConfirm ? "text" : "password"}
+                    InputRightElement={
+                      <Pressable onPress={() => setShowConfirm(!showConfirm)}>
+                        {!showConfirm ? (
+                          <Icon size="5" marginRight="3" viewBox="0 0 50 50">
+                            <Path
+                              class="b"
+                              fill="#191919"
+                              d="M18.45,31.51l-7.74-3.07c-.15,.38-.36,.92-.56,1.47-.48,1.31-.95,2.62-1.44,3.93-.36,.99-1.08,1.41-1.88,1.12-.8-.29-1.06-1.05-.69-2.08,.68-1.9,1.35-3.8,2.08-5.68,.21-.54,.09-.82-.32-1.18-1.6-1.38-2.93-2.99-3.99-4.81-.16-.27-.3-.54-.42-.83-.3-.76-.05-1.49,.59-1.79,.7-.33,1.35-.03,1.84,.66,1.03,1.44,1.99,2.98,3.24,4.22,3.28,3.24,7.36,4.9,11.89,5.48,4.99,.63,9.86,.25,14.49-1.87,3.67-1.69,6.61-4.2,8.53-7.81,.43-.8,1.15-1.04,1.88-.65,.69,.36,.91,1.06,.51,1.86-1.06,2.17-2.58,3.99-4.39,5.57-.41,.36-.51,.64-.31,1.17,.73,1.88,1.4,3.78,2.08,5.68,.34,.96,.08,1.76-.64,2.05-.84,.33-1.58-.09-1.96-1.11-.67-1.84-1.34-3.68-1.96-5.39l-7.76,3.09c.24,1.34,.52,2.86,.8,4.37,.12,.66,.27,1.32,.37,1.98,.14,.92-.28,1.56-1.07,1.68-.77,.12-1.46-.34-1.63-1.2-.36-1.88-.68-3.76-1.01-5.65-.05-.3-.12-.6-.19-.96-.75,.04-1.46,.12-2.18,.12-1.6,0-3.2-.02-4.8-.11-.51-.03-.67,.1-.75,.58-.33,2.01-.7,4.02-1.07,6.03-.13,.7-.6,1.17-1.27,1.14-.44-.02-.95-.35-1.25-.69-.2-.23-.16-.74-.1-1.11,.3-1.84,.65-3.66,.98-5.5,.05-.28,.08-.56,.1-.7Z"
+                            />
+                          </Icon>
+                        ) : (
+                          <Icon size="5" marginRight="3" viewBox="0 0 50 50">
+                            <Path
+                              class="b"
+                              fill="#191919"
+                              d="M48.85,26.84c-1.11-1.26-2.22-2.52-3.41-3.69-1.19-1.17-2.43-2.28-3.73-3.31-.02-.15,0-.32,.08-.53,.73-1.88,1.4-3.78,2.08-5.68,.37-1.03,.1-1.79-.69-2.08-.8-.29-1.52,.13-1.88,1.12-.55,1.49-.96,2.54-1.44,3.93-.23,.66-.44,1.18-.56,1.47-.02-.01-.04-.02-.06-.04-1.42-.95-2.91-1.82-4.49-2.56-1.01-.48-2.04-.89-3.09-1.24,.19-1.23,.79-4.35,.97-5.44,.06-.37,.1-.88-.1-1.11-.3-.34-.81-.67-1.25-.69-.21,0-.4,.03-.57,.11-.44,.22-.61,.73-.7,1.03-.21,.74-.62,2.69-1.08,5.37-1.29-.25-2.6-.4-3.95-.4-1.37,0-2.7,.16-4,.42-.31-1.75-.62-3.6-.96-5.37-.16-.86-.86-1.32-1.63-1.2-.3,.05-.55,.17-.73,.36-.36,.37-.36,.92-.33,1.33,.06,.93,.42,2.94,1.02,5.59-.91,.3-1.81,.66-2.7,1.07-1.79,.83-3.46,1.81-5.06,2.89-.38-1.38-1.17-4.09-1.82-5.5-.19-.41-.5-1.03-1.1-1.18-.26-.07-.55-.05-.86,.07-.72,.28-.99,1.09-.64,2.05,.68,1.9,1.35,3.8,2.08,5.68,.08,.21,.1,.37,.09,.52-2.58,2.02-4.93,4.34-7.09,6.9-.79,.94-.8,1.82,.02,2.74,1.14,1.28,2.28,2.56,3.51,3.76,2.99,2.92,6.3,5.41,10.05,7.26,2.92,1.44,5.98,2.39,9.25,2.55,3.65,.18,7.09-.67,10.37-2.21,5.72-2.68,10.39-6.71,14.42-11.51,.65-.78,.66-1.71-.02-2.47Zm-5.77,3.24c-3.03,2.97-6.34,5.56-10.21,7.35-2.89,1.34-5.9,2.1-9.11,1.84-2.9-.24-5.58-1.2-8.12-2.58-4.01-2.17-7.42-5.1-10.5-8.45-.04-.05-.08-.1-.15-.21,.89-.89,1.76-1.81,2.68-2.67,2.84-2.68,5.93-5,9.49-6.64,2.32-1.07,4.73-1.77,7.29-1.86,2.76-.1,5.37,.54,7.88,1.64,3.74,1.63,6.95,4.02,9.9,6.78,.85,.8,1.66,1.66,2.48,2.5,.09,.09,.17,.19,.28,.33-.65,.67-1.27,1.34-1.92,1.98Z"
+                            />
+                            <Path
+                              class="b"
+                              d="M25.1,20.61c-4.2-.02-7.57,3.29-7.59,7.45-.01,4.13,3.33,7.49,7.46,7.5,4.14,.01,7.5-3.32,7.51-7.45,0-4.11-3.31-7.49-7.38-7.5Zm-.09,11.23c-2.08,0-3.76-1.68-3.76-3.76,0-2.05,1.69-3.74,3.75-3.74s3.74,1.69,3.75,3.75c0,2.04-1.69,3.75-3.74,3.75Z"
+                            />
+                          </Icon>
+                        )}
+                      </Pressable>
+                    }
+                  />
+                  <HStack>
+                    <Icon ml={3} mt={1} size="5" viewBox="0 0 50 50">
+                      {errors.confirmPassword && formData.confirmPassword ? (
+                        <Path
+                          fill="#ff061e"
+                          d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                        />
+                      ) : (
+                        <Path
+                          fill="#606060"
+                          d="M45.03,6.77c-.64-2.75-2.37-4.41-3.35-5.15-.61-.46-1.47-.35-1.93,.26-.46,.61-.35,1.47,.26,1.93,.39,.29,1.15,.98,1.73,2.04-1.77,.33-6.27,1.59-10.53,6.1-.51,.59-1.02,1.19-1.53,1.78-.98,1.14-1.71,2.24-2.26,3.21-1.49-.64-2.37-1.33-2.73-1.56-3.45-2.15-17.95,2.47-19.75,13.83-1.29,8.1,4.47,15.97,11.84,18.53,9.31,3.24,20.41-2.27,22.92-10.88,2.12-7.27-1.89-16.69-7.61-18.61-1.14-.38-2.12-.39-2.7-.38,4.9-8.38,11.61-9.82,13.04-10.04,.2,1.29-.04,2.4-.3,3.12-.26,.72,.11,1.51,.83,1.77,.11,.04,.21,.06,.32,.07,.62,.07,1.23-.29,1.45-.91,.41-1.15,.81-2.97,.31-5.11Z"
+                        />
+                      )}
+                    </Icon>
+
+                    {errors.confirmPassword ? (
+                      <FormControl.HelperText ml={2} mt={1}>
+                        <Text fontFamily={"Regular"} fontSize="sm">
+                          {formData.confirmPassword
+                            ? "Confirm Password"
+                            : "Please confirm your password"}
+                        </Text>
+                      </FormControl.HelperText>
+                    ) : (
+                      <FormControl.ErrorMessage ml={2} mt={2}>
+                        <Text fontFamily={"Regular"} fontSize="sm">
+                          Confirm password is not correct
+                        </Text>
+                      </FormControl.ErrorMessage>
+                    )}
+                  </HStack>
+                </FormControl>
+                <Button
+                  w="100%"
+                  onPress={handleSubmit}
+                  mt="5"
+                  width="100%"
+                  size="lg"
+                  bg="#49a579"
+                  _text={{
+                    color: "#f9f8f2",
+                    fontFamily: "Regular Medium",
+                    fontSize: "lg",
+                  }}
+                  _pressed={{
+                    // below props will only be applied on button is pressed
+                    bg: "emerald.600",
+                    _text: {
+                      color: "warmGray.50",
+                    },
+                  }}
+                >
+                  Reset
+                </Button>
+              </VStack>
+            </VStack>
+          </Box>
+        </ScrollView>
+      </Center>
+    </KeyboardAvoidingView>
   );
 };
 

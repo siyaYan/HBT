@@ -1,12 +1,15 @@
 
 import { Menu, Pressable, Box, ZStack } from 'native-base';
-
+import React, { useRef } from "react";
 import { AntDesign } from '@expo/vector-icons';
 
 
-export default OptionMenu = () => {
-    function inviteFriend(value) {
+export default OptionMenu = ({ navigation }) => {
+    // const navigationRef = useRef();
+    function inviteFriend() {
         console.log('invite friend')
+        // navigationRef.current?.navigate("Invite");
+        navigation.navigate("Invite");
     }
     return (<ZStack alignSelf='flex-end' mr='15%' mt='10%' >
         <Box alignItems="flex-start">

@@ -1,23 +1,8 @@
-    "plugins": [
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf",
-            "./assets/fonts/Montserrat_Alternates/MontserratAlternates-SemiBoldItalic.ttf",
-            "./assets/fonts/Source_Sans_3/SourceSans3-VariableFont_wght.ttf"
-          ]
-        }
-      ]
-    ]
+Notes for testing:
+the default image(1&5) in simulator have problems in uploading process.
 
-    "config": {
-        "usesNonExemptEncryption": false,
-        "infoPlist": {
-          "NSCameraUsageDescription": "We need access to your camera for taking pictures",
-          "NSPhotoLibraryUsageDescription": "We need access to your photo library to choose pictures"
-        }
-      },
+Cloud server:s
+http://54.252.176.246:8000/habital/v1
 Installation:
 1. git clone repository
 2. install brew
@@ -29,6 +14,8 @@ Installation:
 
 Usage:
 2. npm start
+Run Latest Build in Ios stimulator:
+eas build:run -p ios --latest
 
 Store keychain:expo secure store
 usestate do not update immediataly
