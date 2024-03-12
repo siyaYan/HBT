@@ -12,6 +12,7 @@ import {
   Divider,
   HStack,
   Image,
+  ScrollView
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
@@ -67,6 +68,18 @@ const NotificationScreen = ({ navigation }) => {
   const [history, setHistory] = useState([
     { title: "Hibit count", content: "your action was successfully." },
     { title: "Hibit count", content: "your action was successfully." },
+    {
+      profileImageUrl:
+        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
+      user: "Siya",
+      content: "reacted to your action item.",
+    },
+    {
+      profileImageUrl:
+        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
+      user: "Tom",
+      content: "reacted to your action item.",
+    },
     {
       profileImageUrl:
         "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
@@ -398,7 +411,9 @@ const NotificationScreen = ({ navigation }) => {
               <Text fontFamily={"Regular Semi Bold"} fontSize="2xl">
                 Last 30 days
               </Text>
-              <Box w={"90%"} alignSelf={"center"}>
+              <Box w={"93%"} h={"30%"} alignSelf={"center"}>
+              <ScrollView w={"100%"} h="100%">
+                <Box w="95%">
                 {history.map((item, index) => (
                   <HStack w={"100%"}
                   alignItems={"center"}
@@ -420,7 +435,10 @@ const NotificationScreen = ({ navigation }) => {
                   </HStack>
                 ))}
                 {/* :(<Text fontFamily={"Regular"} fontSize="2xl" textAlign={"center"}>No previous data</Text>)} */}
+                </Box>
+              </ScrollView>
               </Box>
+              
             </VStack>
           </Box>
         </Box>

@@ -202,27 +202,60 @@ export async function resetProfile(userId, token, nickname, username) {
   }
 }
 
-export async function resetSendEmail(email) {
-  //dummy success
-  // Alert.alert('Success', 'Send reset email successful');
-  console.log("send reset email success");
-  return "success";
-  //dummy failed
-  // Alert.alert('Failed', 'Non valid email address!');
-  // console.log('Non valid email address!');
-  // return 'failed';
+export async function resetSendEmail(token, userId, email) {
+
+  try {
+    // const response = await fetch("http://3.27.94.77:8000/habital/v1/users/"+userId+"/profileImage", {
+    const response = await fetch(
+      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/requestEmailChange",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          newEmail: email,
+        }),
+      }
+    );
+    const data = await response.json();
+    console.log(data)
+    if (data.status == "success") {
+      Alert.alert("Token send", "Please verify your email");
+    } else {
+      Alert.alert("Unsuccessful", data.message || "Sned token unsuccessful");
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in sending token", error);
+    Alert.alert("Unsuccessful", "can not send token, Please try again later");
+  }
 }
 
-export async function resetEmail(email, token) {
-  //dummy success
-  // "email": "abcd1234@gmail.com",
-  Alert.alert("Success", "Reset email successful");
-  console.log("reset email success");
-  return "success";
-  //dummy failed
-  // Alert.alert('Failed', 'wrong email reset token!');
-  // console.log('wrong email reset token!');
-  // return 'failed';
+export async function resetEmail(token, userId, resetToken) {
+  try {
+    const response = await fetch(
+      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/verifyEmailChange/"+ resetToken,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    const data = await response.json();
+    console.log(data)
+    if (data.status == "success") {
+      Alert.alert("Success", "email reset successful");
+    } else {
+      Alert.alert("Unsuccessful", data.message || "email reset unsuccessful");
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in email reset", error);
+    Alert.alert("Unsuccessful", "can not reset email , Please try again later");
+  }
 }
 
 export async function updateAvatar(token, userId, avatar) {

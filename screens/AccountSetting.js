@@ -256,9 +256,9 @@ const AccountSettingScreen = ({ navigation }) => {
   }
 
   async function saveEmail() {
-    const response = await resetEmail(formData.email, formData.token);
+    const response = await resetEmail(userData.token, userData.data.email, formData.token);
     // Handle success or error response
-    if (response == "failed") {
+    if (response.status != "success") {
       setData({
         ...formData,
         token: "",
@@ -270,9 +270,9 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   }
   async function sendToken() {
-    const response = await resetSendEmail(formData.email);
+    const response = await resetSendEmail(userData.token, userData.data.email, formData.email);
     // Handle success or error response
-    if (response == "failed") {
+    if (response.status != "success") {
       setData({
         ...formData,
         email: "",

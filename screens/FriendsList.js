@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import {
   Box,
   Heading,
@@ -12,6 +12,7 @@ import {
   Divider,
   HStack,
   Image,
+  ScrollView 
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
@@ -144,7 +145,7 @@ const FriendsScreen = ({ navigation }) => {
               alt="received"
             />
             <Box
-            mt={3}
+              mt={3}
               h="15%"
               w={"90%"}
               alignSelf={"center"}
@@ -232,35 +233,35 @@ const FriendsScreen = ({ navigation }) => {
                         {received[1].nickname}
                       </Text>
                       <HStack space="3">
-                      <Button
-                        size={"7"}
-                        bg="#f9f8f2"
-                        _pressed={{
-                          bg: "#a8a29e",
-                        }}
-                        onPress={() => acceptFriend(2)}
-                      >
-                        <AntDesign
-                          name="checksquareo"
-                          size={30}
-                          color="black"
-                        />
-                      </Button>
-                      <Button
-                        size={"7"}
-                        bg="#f9f8f2"
-                        _pressed={{
-                          bg: "#a8a29e",
-                        }}
-                        onPress={() => rejectFriend(2)}
-                      >
-                        <AntDesign
-                          name="closesquareo"
-                          size={30}
-                          color="black"
-                        />
-                      </Button>
-                    </HStack>
+                        <Button
+                          size={"7"}
+                          bg="#f9f8f2"
+                          _pressed={{
+                            bg: "#a8a29e",
+                          }}
+                          onPress={() => acceptFriend(2)}
+                        >
+                          <AntDesign
+                            name="checksquareo"
+                            size={30}
+                            color="black"
+                          />
+                        </Button>
+                        <Button
+                          size={"7"}
+                          bg="#f9f8f2"
+                          _pressed={{
+                            bg: "#a8a29e",
+                          }}
+                          onPress={() => rejectFriend(2)}
+                        >
+                          <AntDesign
+                            name="closesquareo"
+                            size={30}
+                            color="black"
+                          />
+                        </Button>
+                      </HStack>
                     </HStack>
                   ) : (
                     ""
@@ -296,7 +297,7 @@ const FriendsScreen = ({ navigation }) => {
               alt="sent"
             />
             <Box
-            mt={3}
+              mt={3}
               h="15%"
               w={"90%"}
               alignSelf={"center"}
@@ -409,55 +410,58 @@ const FriendsScreen = ({ navigation }) => {
               source={require("../assets/Buttonicons/UsersThree.png")}
               alt="friends"
             />
-
-            <Box w={"90%"} alignSelf={"center"}>
-              {friends.map((item, index) => (
-                <HStack
-                  w={"100%"}
-                  alignItems={"center"}
-                  justifyContent={"space-between"}
-                  m={1}
-                >
-                  {item.profileImageUrl ? (
-                    <Avatar
-                      bg="white"
-                      mb="1"
-                      size={"md"}
-                      source={{ uri: item.profileImageUrl }}
-                    />
-                  ) : (
-                    <FontAwesome name="check" size={24} color="black" />
-                  )}
-                  <Text fontFamily={"Regular"} fontSize="lg">
-                    {item.user ? item.user : item.title}
-                  </Text>
-                  <Text fontFamily={"Regular"} fontSize="lg">
-                    {item.content}
-                  </Text>
-                  <Button
-                    size={"7"}
-                    bg="#f9f8f2"
-                    _pressed={{
-                      bg: "#a8a29e",
-                    }}
-                    onPress={() => deleteCurrent("friends", index + 1)}
+              <Box w={"93%"} h={"45%"} alignSelf={"center"}>
+              <ScrollView w={"100%"} h="100%">
+                <Box w={"95%"}>
+                {friends.map((item, index) => (
+                  <HStack
+                    w={"100%"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                    m={1}
                   >
-                    <AntDesign name="closesquareo" size={30} color="black" />
-                  </Button>
-                </HStack>
-              ))}
-              {friends.length == 0 ? (
-                <Text
-                  fontFamily={"Regular"}
-                  fontSize="2xl"
-                  textAlign={"center"}
-                >
-                  No friends data
-                </Text>
-              ) : (
-                ""
-              )}
-            </Box>
+                    {item.profileImageUrl ? (
+                      <Avatar
+                        bg="white"
+                        mb="1"
+                        size={"md"}
+                        source={{ uri: item.profileImageUrl }}
+                      />
+                    ) : (
+                      <FontAwesome name="check" size={24} color="black" />
+                    )}
+                    <Text fontFamily={"Regular"} fontSize="md">
+                      {item.user ? item.user : item.title}
+                    </Text>
+                    <Text fontFamily={"Regular"} fontSize="md">
+                      {item.content}
+                    </Text>
+                    <Button
+                      size={"7"}
+                      bg="#f9f8f2"
+                      _pressed={{
+                        bg: "#a8a29e",
+                      }}
+                      onPress={() => deleteCurrent("friends", index + 1)}
+                    >
+                      <AntDesign name="closesquareo" size={30} color="black" />
+                    </Button>
+                  </HStack>
+                ))}
+                {friends.length == 0 ? (
+                  <Text
+                    fontFamily={"Regular"}
+                    fontSize="2xl"
+                    textAlign={"center"}
+                  >
+                    No friends data
+                  </Text>
+                ) : (
+                  ""
+                )}
+                </Box>
+                </ScrollView>
+              </Box>
           </VStack>
         </Box>
       </Flex>
