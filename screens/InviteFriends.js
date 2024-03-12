@@ -45,25 +45,6 @@ const InviteScreen = ({ navigation }) => {
         user: "",
       });
     }
-    // if (submitValidation()) {
-    //   const response = await loginUser(formData.id, formData.password);
-    //   if (response.token) {
-    //     if (remember) {
-    //       await saveCredentials(formData.id, formData.password);
-    //     }
-    //     updateUserData({
-    //       token: response.token,
-    //       data: response.data.user,
-    //       avatar:{
-    //         uri: response.data.user.profileImageUrl,
-    //       }
-    //     });
-    //     navigation.navigate("MainStack", { screen: "Home" });
-    //     // console.log(response.token);
-    //   } else {
-    //     console.log("login failed");
-    //   }
-    // }
   }
 
   return (
@@ -158,7 +139,7 @@ const InviteScreen = ({ navigation }) => {
                         <Avatar
                           bg="white"
                           mb="1"
-                          size={"sm"}
+                          size={"md"}
                           source={{ uri: findUser.user.profileImageUrl }}
                         />
                       ) : (

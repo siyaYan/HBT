@@ -137,7 +137,7 @@ export async function resetPassword(
   //dummy success
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/"+ userId,
+      "http://3.27.94.77:8000/habital/v1/users/"+ userId +"/password",
       {
         method: "PATCH",
         headers: {
@@ -145,8 +145,9 @@ export async function resetPassword(
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          password: newPassword,
-          passwordConfirm: passwordConfirm,
+          currentPassword:currentPassword,
+          newPassword: newPassword,
+          newPasswordConfirm: passwordConfirm,
         }),
       }
     );
@@ -157,7 +158,7 @@ export async function resetPassword(
     } else {
       Alert.alert(
         "Unsuccessful",
-        data.message || "Reset password unsuccessful"
+        data.message || "Your current password is not right"
       );
     }
     return data; // Make sure you return the data here
