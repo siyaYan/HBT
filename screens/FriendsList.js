@@ -22,6 +22,12 @@ import { FontAwesome } from "@expo/vector-icons";
 
 // TODO: change the layout to match the new ios version
 const FriendsScreen = ({ navigation }) => {
+  useEffect(() => {
+    // Fetch or update avatar dynamically
+    // userData=useData().useData
+    console.log(userData, 'Friendslist');
+  }, [userData]);
+
   const { userData, updateUserData } = useData();
   const [received, setReceived] = useState([
     {
@@ -419,6 +425,8 @@ const FriendsScreen = ({ navigation }) => {
                     alignItems={"center"}
                     justifyContent={"space-between"}
                     m={1}
+                    key={index} 
+                    item={item}
                   >
                     {item.profileImageUrl ? (
                       <Avatar

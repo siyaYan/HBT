@@ -23,7 +23,11 @@ import Background from "../components/Background";
 
 const SettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
-  console.log(userData, "inSetting");
+  useEffect(() => {
+    // Fetch or update avatar dynamically
+    // userData=useData().useData
+    console.log(userData, "inSetting");
+  }, [userData]);
 
   const handleAvatarPress = () => {
     // Navigate to another screen when the Avatar is pressed
@@ -56,11 +60,6 @@ const SettingScreen = ({ navigation }) => {
       // Error clearing the credentials
     }
   };
-  useEffect(() => {
-    // Fetch or update avatar dynamically
-    // userData=useData().useData
-    console.log(userData, "inHome");
-  }, [userData]);
 
   return (
     <NativeBaseProvider>
@@ -125,7 +124,7 @@ const SettingScreen = ({ navigation }) => {
                       <Ionicons name="settings-sharp" size={8} color="black" />
                     </Avatar.Badge>
                   </Avatar>
-                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">Account setting</Text>
+                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">Account settings</Text>
                 </HStack>
               </Button>
             </Box>

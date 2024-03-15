@@ -184,7 +184,7 @@ export async function resetProfile(userId, token, nickname, username) {
         },
         body: JSON.stringify({
           nickname: nickname,
-          username: username,
+          username: username
         }),
       }
     );
@@ -220,11 +220,11 @@ export async function resetSendEmail(token, userId, email) {
       }
     );
     const data = await response.json();
-    console.log(data)
+    // console.log(data)
     if (data.status == "success") {
-      Alert.alert("Token send", "Please verify your email");
+      Alert.alert("Code sent", "Please check your email");
     } else {
-      Alert.alert("Unsuccessful", data.message || "Sned token unsuccessful");
+      Alert.alert("Unsuccessful", data.message || "send email code unseccuess");
     }
     return data; // Make sure you return the data here
   } catch (error) {
@@ -245,11 +245,11 @@ export async function resetEmail(token, userId, resetToken) {
       }
     );
     const data = await response.json();
-    console.log(data)
+    // console.log(data)
     if (data.status == "success") {
-      Alert.alert("Success", "email reset successful");
+      Alert.alert("Success", "Email updated");
     } else {
-      Alert.alert("Unsuccessful", data.message || "email reset unsuccessful");
+      Alert.alert("Unsuccessful",  data.message || "Code is invalid or has expired" );
     }
     return data; // Make sure you return the data here
   } catch (error) {

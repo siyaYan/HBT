@@ -39,6 +39,12 @@ const AccountSettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [inputChange, setInputChange] =useState({
+    nick :false,
+    user:false,
+    email:false
+  }
+  )
 
   useEffect(() => {
     (async () => {
@@ -69,7 +75,7 @@ const AccountSettingScreen = ({ navigation }) => {
     username: true,
     confirmPassword: true,
     password: true,
-    token:true
+    token: true,
   });
   const [showMessage, setShowMessage] = useState({
     username: {
@@ -86,10 +92,14 @@ const AccountSettingScreen = ({ navigation }) => {
     const result = await ImagePicker.launchImageLibraryAsync();
     if (!result.canceled) {
       setSelectedImage(result);
-      console.log("Captured Image Result:", result);
+      // console.log("Captured Image Result:", result);
+      const response = await updateAvatar(
+        userData.token,
+        userData.data.email,
+        result.assets[0]
+      );
       updateUserData({
-        token: userData.token,
-        data: userData.data,
+        ...userData,
         avatar: result.assets[0],
       });
       handleUploadImage();
@@ -99,41 +109,48 @@ const AccountSettingScreen = ({ navigation }) => {
 
   const handleTakePicture = async () => {
     const result = await ImagePicker.launchCameraAsync();
-
-    if (!result.canceled) {
-      setSelectedImage(result);
-      console.log("Take Image Result:", result);
-      updateUserData({
-        token: userData.token,
-        data: userData.data,
-        avatar: result.assets[0],
-      });
-      // console.log('Take Image Result:', result);
-      handleUploadImage();
-    }
-    // console.log(selectedImage)
-  };
-
-  const handleUploadImage = async () => {
-    // Implement image upload to backend here
-    // You can use the 'selectedImage' state to get the image data
-    const response = await updateAvatar(
-      userData.token,
-      userData.data.email,
-      userData.avatar
-    );
-    if (response.data) {
-      // console.log(response.data, "got");
-      const newData = userData.data;
-      newData.profileImageUrl = response.data.profileImageUrl;
-      updateUserData({
-        ...userData,
-        data: newData,
-      });
+    try {
+      if (!result.canceled) {
+        setSelectedImage(result);
+        const response = await updateAvatar(
+          userData.token,
+          userData.data.email,
+          result.assets[0]
+        );
+        updateUserData({
+          ...userData,
+          avatar: result.assets[0],
+        });
+      }
+    } catch (e) {
+      console.log(e.message);
     }
   };
+
+  // const handleUploadImage = async () => {
+  //   // Implement image upload to backend here
+  //   // You can use the 'selectedImage' state to get the image data
+  //   const response = await updateAvatar(
+  //     userData.token,
+  //     userData.data.email,
+  //     userData.avatar
+  //   );
+  //   if (response.data) {
+  //     // console.log(response.data, "got");
+  //     const newData = userData.data;
+  //     newData.profileImageUrl = response.data.profileImageUrl;
+  //     updateUserData({
+  //       ...userData,
+  //       data: newData,
+  //     });
+  //   }
+  // };
 
   const validateEmail = (text) => {
+    setInputChange({
+      ...inputChange,
+      email:true
+    })
     setData({
       ...formData,
       email: text,
@@ -150,6 +167,10 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   };
   const validateUsername = (text) => {
+    setInputChange({
+      ...inputChange,
+      user:true
+    })
     setData({
       ...formData,
       username: text,
@@ -191,6 +212,10 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   };
   const validateNickname = (text) => {
+    setInputChange({
+      ...inputChange,
+      nick:true
+    })
     setData({
       ...formData,
       nickname: text,
@@ -205,58 +230,68 @@ const AccountSettingScreen = ({ navigation }) => {
     } else {
       setErrors({
         ...errors,
-        nickname: "nick name can not be empty.",
+        nickname: "Nickname can not be empty.",
       });
       return false;
     }
   };
   async function saveNickName() {
-    // Alert.alert('Success', 'Reset Profile successful');
-    // console.log('reset profile success');
-    const response = await resetProfile(
-      userData.data.email,
-      userData.token,
-      formData.nickname,
-      userData.data.username
-    );
-    // console.log(response)
-    if (response.status == "success") {
-      updateUserData({
-        data: response.data.user,
-        avatar: {
-          uri:response.data.user.profileImageUrl}
-      });
-    } else {
-      setData({
-        ...formData,
-        nickname: "",
-      });
+    if(inputChange.nick){
+      const response = await resetProfile(
+        userData.data.email,
+        userData.token,
+        formData.nickname,
+        userData.data.username
+      );
+      // console.log(response)
+      if (response.status == "success") {
+        updateUserData({
+          data: response.data.user,
+          avatar: {
+            uri: response.data.user.profileImageUrl,
+          },
+        });
+      } else {
+        setData({
+          ...formData,
+          nickname: "",
+        });
+      }
     }
+
   }
   async function saveUsername() {
-    const response = await resetProfile(
-      userData.data.email,
-      userData.token,
-      userData.data.nickname,
-      formData.username
-    );
-    // console.log(response)
-    if (response.status == "success") {
-      updateUserData({
-        data: response.data.user,
-        avatar: {
-          uri:response.data.user.profileImageUrl}
-      });
-    } else {
-      setData({
-        ...formData,
-        username: "",
-      });
+    if(inputChange.user){
+      const response = await resetProfile(
+        userData.data.email,
+        userData.token,
+        userData.data.nickname,
+        formData.username
+      );
+      // console.log(response)
+      if (response.status == "success") {
+        updateUserData({
+          data: response.data.user,
+          avatar: {
+            uri: response.data.user.profileImageUrl,
+          },
+        });
+      } else {
+        setData({
+          ...formData,
+          username: "",
+        });
+      }
     }
+
   }
 
   async function saveEmail() {
-    const response = await resetEmail(userData.token, userData.data.email, formData.token);
+    const response = await resetEmail(
+      userData.token,
+      userData.data.email,
+      formData.token
+    );
     // Handle success or error response
     if (response.status != "success") {
       setData({
@@ -267,27 +302,43 @@ const AccountSettingScreen = ({ navigation }) => {
         ...errors,
         token: "Reset token invalid",
       });
+    } else {
+      await updateUserData({
+        ...userData,
+        data: response.data.user,
+        avatar:{
+          uri:response.data.user.profileImageUrl,
+        } 
+      });
+      console.log(userData);
     }
   }
+
   async function sendToken() {
-    const response = await resetSendEmail(userData.token, userData.data.email, formData.email);
-    // Handle success or error response
-    if (response.status != "success") {
-      setData({
-        ...formData,
-        email: "",
-        send: false,
-      });
-      setErrors({
-        ...errors,
-        email: "Email address invalid",
-      });
-    } else {
-      setData({
-        ...formData,
-        send: true,
-      });
+    if(inputChange.email){
+      const response = await resetSendEmail(
+        userData.token,
+        userData.data.email,
+        formData.email
+      );
+      // Handle success or error response
+      if (response.status != "success") {
+        setData({
+          ...formData,
+          send: false,
+        });
+        setErrors({
+          ...errors,
+          email: "Email address invalid",
+        });
+      } else {
+        setData({
+          ...formData,
+          send: true,
+        });
+      }
     }
+
   }
 
   const goResetPassword = () => {
@@ -339,16 +390,16 @@ const AccountSettingScreen = ({ navigation }) => {
           </Pressable>
           <VStack space={3} mt="5">
             <FormControl isInvalid={errors.nickname}>
-            <FormControl.Label
+              <FormControl.Label
                 ml={1}
-                  _text={{
-                    fontFamily: "Regular Semi Bold",
-                    fontSize: "lg",
-                    color:"#191919"
-                  }}
-                >
-                  Nick name
-                </FormControl.Label>
+                _text={{
+                  fontFamily: "Regular Semi Bold",
+                  fontSize: "lg",
+                  color: "#191919",
+                }}
+              >
+                Nickname
+              </FormControl.Label>
               <Box flexDir="row" w="100%">
                 <Input
                   borderColor="#49a579"
@@ -363,13 +414,13 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <IconButton
                   icon={
-                    <Ionicons name="save-outline" size={30} color="black" />
+                    <Ionicons name="save-outline" size={30} color={inputChange.nick?"black":"grey"} />
                   }
                   p={0}
                   onPress={saveNickName}
                 />
               </Box>
-              <Box ml={20}>
+              <Box ml={1}>
                 <FormControl.ErrorMessage>
                   {errors.nickname ? errors.nickname : ""}
                 </FormControl.ErrorMessage>
@@ -377,16 +428,16 @@ const AccountSettingScreen = ({ navigation }) => {
             </FormControl>
 
             <FormControl isInvalid={!errors.username}>
-            <FormControl.Label
+              <FormControl.Label
                 ml={1}
-                  _text={{
-                    fontFamily: "Regular Semi Bold",
-                    fontSize: "lg",
-                    color:"#191919"
-                  }}
-                >
-                  User name
-                </FormControl.Label>
+                _text={{
+                  fontFamily: "Regular Semi Bold",
+                  fontSize: "lg",
+                  color: "#191919",
+                }}
+              >
+                Username
+              </FormControl.Label>
               <Box flexDir="row" w="100%">
                 <Input
                   borderColor="#49a579"
@@ -401,13 +452,13 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <IconButton
                   icon={
-                    <Ionicons name="save-outline" size={30} color="black" />
+                    <Ionicons name="save-outline" size={30} color={inputChange.user?"black":"grey"} />
                   }
                   p={0}
                   onPress={saveUsername}
                 />
               </Box>
-              <Box ml={20}>
+              <Box ml={1}>
                 <FormControl.ErrorMessage>
                   {Object.values(showMessage.username).some(
                     (value) => value === false
@@ -419,18 +470,17 @@ const AccountSettingScreen = ({ navigation }) => {
             </FormControl>
 
             <FormControl isInvalid={!errors.email}>
-            <FormControl.Label
+              <FormControl.Label
                 ml={1}
-                  _text={{
-                    fontFamily: "Regular Semi Bold",
-                    fontSize: "lg",
-                    color:"#191919"
-                  }}
-                >
-                  Email
-                </FormControl.Label>
+                _text={{
+                  fontFamily: "Regular Semi Bold",
+                  fontSize: "lg",
+                  color: "#191919",
+                }}
+              >
+                Email
+              </FormControl.Label>
               <Box flexDir="row" w="100%">
-              
                 <Input
                   borderColor="#49a579"
                   rounded="30"
@@ -447,14 +497,14 @@ const AccountSettingScreen = ({ navigation }) => {
                     <MaterialCommunityIcons
                       name="email-search-outline"
                       size={30}
-                      color="black"
+                      color={inputChange.email?"black":"grey"}
                     />
                   }
                   p={0}
                   onPress={sendToken}
                 />
               </Box>
-              <Box ml={20}>
+              <Box ml={1}>
                 <FormControl.ErrorMessage>
                   {!errors.email ? "Email address is not valid" : ""}
                 </FormControl.ErrorMessage>
@@ -462,46 +512,46 @@ const AccountSettingScreen = ({ navigation }) => {
             </FormControl>
             {formData.send ? (
               <FormControl isInvalid={!errors.token}>
-              <FormControl.Label
-              ml={1}
-                _text={{
-                  fontFamily: "Regular Semi Bold",
-                  fontSize: "lg",
-                  color:"#191919"
-                }}
-              >
-                Verify
-              </FormControl.Label>
-              <Box flexDir="row" w="100%" alignItems="center">
-                <Input
-                  borderColor="#49a579"
-                  rounded="30"
-                  fontFamily={"Regular Medium"}
-                  size="lg"
-                  mr={3}
-                  w="93%"
-                  placeholder="Enter your email token"
-                  value={formData.token}
-                  onChangeText={(value) => {
-                    setData({
-                      ...formData,
-                      token: value,
-                    });
+                <FormControl.Label
+                  ml={1}
+                  _text={{
+                    fontFamily: "Regular Semi Bold",
+                    fontSize: "lg",
+                    color: "#191919",
                   }}
-                />
-                <IconButton
-                  icon={
-                    <Ionicons name="save-outline" size={30} color="black" />
-                  }
-                  p={0}
-                  onPress={saveEmail}
-                />
-              </Box>
-              <Box ml={20}>
-                <FormControl.ErrorMessage>
-                  {!errors.token ? "Input token it not valid" : ""}
-                </FormControl.ErrorMessage>
-              </Box>
+                >
+                  Verification code
+                </FormControl.Label>
+                <Box flexDir="row" w="100%" alignItems="center">
+                  <Input
+                    borderColor="#49a579"
+                    rounded="30"
+                    fontFamily={"Regular Medium"}
+                    size="lg"
+                    mr={3}
+                    w="93%"
+                    placeholder="Enter the code"
+                    value={formData.token}
+                    onChangeText={(value) => {
+                      setData({
+                        ...formData,
+                        token: value,
+                      });
+                    }}
+                  />
+                  <IconButton
+                    icon={
+                      <Ionicons name="save-outline" size={30} color="black" />
+                    }
+                    p={0}
+                    onPress={saveEmail}
+                  />
+                </Box>
+                <Box ml={1}>
+                  <FormControl.ErrorMessage>
+                    {!errors.token ? "Input token it not valid" : ""}
+                  </FormControl.ErrorMessage>
+                </Box>
               </FormControl>
             ) : (
               ""

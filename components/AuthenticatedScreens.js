@@ -16,6 +16,11 @@ const Tab = createBottomTabNavigator();
 export default function AuthenticatedScreens() {
   const navigationRef = useRef();
   const { userData, updateUserData } = useData();
+  useEffect(() => {
+    // Fetch or update avatar dynamically
+    // userData=useData().useData
+    console.log(userData.notes, "tab-----");
+  }, [userData]);
   const onPress = (value) => {
     if (value.target.includes("Home")) {
       navigationRef.current?.navigate("Home");
@@ -135,7 +140,7 @@ export default function AuthenticatedScreens() {
               <MaterialCommunityIcons
               name="fruit-cherries"
               size={32}
-              color="black"
+              color={userData.notes?"red":"#191919"}
             />
             </TouchableOpacity>
           ),
