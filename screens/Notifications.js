@@ -148,6 +148,9 @@ const NotificationScreen = ({ navigation }) => {
     if (item == "received") {
       console.log("delete all received notificate");
       setReceived({});
+    } else if (item == "history") {
+      console.log("delete all history notificate");
+      setHistory({});
     } else {
       console.log("delete all system notificate");
       setNotificates({});
@@ -164,34 +167,37 @@ const NotificationScreen = ({ navigation }) => {
         <Box safeArea w="90%" alignItems="center">
           <Box mt="5" w="95%">
             <VStack space={1} alignItems="left">
-            {sent.length?(
-              <Box>
+              {sent.length ? (
+                <Box>
+                  <Image
+                    size={30}
+                    source={require("../assets/Buttonicons/PaperPlaneRight.png")}
+                    alt="sent"
+                  />
+                  <Badge // bg="red.400"
+                    colorScheme="danger"
+                    rounded="full"
+                    mt={-8}
+                    mr={-3}
+                    px={1}
+                    py={0}
+                    zIndex={1}
+                    variant="solid"
+                    alignSelf="flex-end"
+                    _text={{
+                      fontSize: 12,
+                    }}
+                  >
+                    {sent.length}
+                  </Badge>
+                </Box>
+              ) : (
                 <Image
                   size={30}
                   source={require("../assets/Buttonicons/PaperPlaneRight.png")}
                   alt="sent"
                 />
-                <Badge // bg="red.400"
-                  colorScheme="danger"
-                  rounded="full"
-                  mt={-8}
-                  mr={-3}
-                  px={1}
-                  py={0}
-                  zIndex={1}
-                  variant="solid"
-                  alignSelf="flex-end"
-                  _text={{
-                    fontSize: 12,
-                  }}
-                >
-                  {sent.length}
-                </Badge>
-              </Box>):(<Image
-                  size={30}
-                  source={require("../assets/Buttonicons/PaperPlaneRight.png")}
-                  alt="sent"
-                />)}
+              )}
 
               <Box mt="2" h="10%" w={"90%"} alignSelf={"center"}>
                 {sent.length > 0 ? (
@@ -245,8 +251,7 @@ const NotificationScreen = ({ navigation }) => {
               </Box>
 
               <Divider
-                marginTop={"0"}
-                marginBottom="0"
+                marginBottom="2"
                 _light={{
                   bg: "muted.800",
                 }}
@@ -258,37 +263,38 @@ const NotificationScreen = ({ navigation }) => {
               />
 
               <HStack w={"100%"} justifyContent={"space-between"}>
-              {received.length?
-                (
-                <Box>
-                <Image
-                  size={30}
-                  source={require("../assets/Buttonicons/PaperPlaneTilt.png")}
-                  alt="received"
-                />
-                <Badge // bg="red.400"
-                  colorScheme="danger"
-                  rounded="full"
-                  mt={-8}
-                  mr={-3}
-                  px={1}
-                  py={0}
-                  zIndex={1}
-                  variant="solid"
-                  alignSelf="flex-end"
-                  _text={{
-                    fontSize: 12,
-                  }}
-                >
-                  {received.length}
-                </Badge>
-                </Box>
-                ):(<Image
-                  size={30}
-                  source={require("../assets/Buttonicons/PaperPlaneTilt.png")}
-                  alt="received"
-                />)}
-                
+                {received.length ? (
+                  <Box>
+                    <Image
+                      size={30}
+                      source={require("../assets/Buttonicons/PaperPlaneTilt.png")}
+                      alt="received"
+                    />
+                    <Badge // bg="red.400"
+                      colorScheme="danger"
+                      rounded="full"
+                      mt={-8}
+                      mr={-3}
+                      px={1}
+                      py={0}
+                      zIndex={1}
+                      variant="solid"
+                      alignSelf="flex-end"
+                      _text={{
+                        fontSize: 12,
+                      }}
+                    >
+                      {received.length}
+                    </Badge>
+                  </Box>
+                ) : (
+                  <Image
+                    size={30}
+                    source={require("../assets/Buttonicons/PaperPlaneTilt.png")}
+                    alt="received"
+                  />
+                )}
+
                 <AntDesign
                   name="checkcircleo"
                   size={30}
@@ -350,7 +356,7 @@ const NotificationScreen = ({ navigation }) => {
               </Box>
 
               <Divider
-                my="0"
+                mb="2"
                 _light={{
                   bg: "muted.800",
                 }}
@@ -362,35 +368,37 @@ const NotificationScreen = ({ navigation }) => {
               />
 
               <HStack w={"100%"} justifyContent={"space-between"}>
-              {notificates.length?(
-                <Box>
+                {notificates.length ? (
+                  <Box>
+                    <Image
+                      size={30}
+                      source={require("../assets/Buttonicons/MegaphoneSimple.png")}
+                      alt="notificate"
+                    />
+                    <Badge // bg="red.400"
+                      colorScheme="danger"
+                      rounded="full"
+                      mt={-8}
+                      mr={-3}
+                      px={1}
+                      py={0}
+                      zIndex={1}
+                      variant="solid"
+                      alignSelf="flex-end"
+                      _text={{
+                        fontSize: 12,
+                      }}
+                    >
+                      {notificates.length}
+                    </Badge>
+                  </Box>
+                ) : (
                   <Image
                     size={30}
                     source={require("../assets/Buttonicons/MegaphoneSimple.png")}
                     alt="notificate"
                   />
-                  <Badge // bg="red.400"
-                    colorScheme="danger"
-                    rounded="full"
-                    mt={-8}
-                    mr={-3}
-                    px={1}
-                    py={0}
-                    zIndex={1}
-                    variant="solid"
-                    alignSelf="flex-end"
-                    _text={{
-                      fontSize: 12,
-                    }}
-                  >
-                    {notificates.length}
-                  </Badge>
-                </Box>
-                ):(<Image
-                  size={30}
-                  source={require("../assets/Buttonicons/MegaphoneSimple.png")}
-                  alt="notificate"
-                />)}
+                )}
                 <AntDesign
                   name="checkcircleo"
                   size={30}
@@ -486,7 +494,7 @@ const NotificationScreen = ({ navigation }) => {
               </Box>
 
               <Divider
-                margin="3"
+                marginb="2"
                 _light={{
                   bg: "muted.800",
                 }}
@@ -496,11 +504,20 @@ const NotificationScreen = ({ navigation }) => {
                 alignSelf={"center"}
                 w="90%"
               />
-              <Text fontFamily={"Regular Semi Bold"} fontSize="2xl">
-                Last 30 days
-              </Text>
+              <HStack w={"100%"} justifyContent={"space-between"}>
+                <Text fontFamily={"Regular Semi Bold"} fontSize="2xl">
+                  Last 30 days
+                </Text>
+                <AntDesign
+                  name="checkcircleo"
+                  size={30}
+                  color="black"
+                  onPress={() => deleteAll("history")}
+                />
+              </HStack>
               <Box w={"93%"} h={"30%"} alignSelf={"center"}>
                 <ScrollView w={"100%"} h="100%">
+                  {history.length>0?(
                   <Box w="95%">
                     {history.map((item, index) => (
                       <HStack
@@ -529,8 +546,9 @@ const NotificationScreen = ({ navigation }) => {
                         </Text>
                       </HStack>
                     ))}
-                    {/* :(<Text fontFamily={"Regular"} fontSize="2xl" textAlign={"center"}>No previous data</Text>)} */}
+
                   </Box>
+                  ):(<Text marginTop={"20%"} fontFamily={"Regular"} fontSize="2xl" textAlign={"center"}>No previous data</Text>)}
                 </ScrollView>
               </Box>
             </VStack>
