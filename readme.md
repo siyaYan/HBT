@@ -2,7 +2,8 @@ Notes for testing:
 the default image(1&5) in simulator have problems in uploading process.
 
 Cloud server:s
-http://54.252.176.246:8000/habital/v1
+<!-- http://54.252.176.246:8000/habital/v1 -->
+http://3.27.94.77:8000/habital/v1/
 Installation:
 1. git clone repository
 2. install brew

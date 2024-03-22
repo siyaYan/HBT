@@ -70,7 +70,7 @@ export async function loginUser(id, password) {
 export async function tokenResetPassword(password, passwordConfirm, code) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/resetPassword/" + code,
+      "http://3.27.94.77:8000/habital/v1/users/reset-password/" + code,
       {
         method: "PATCH",
         headers: {
@@ -102,7 +102,7 @@ export async function tokenResetPassword(password, passwordConfirm, code) {
 export async function forgetSendEmail(email) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/forgotPassword",
+      "http://3.27.94.77:8000/habital/v1/users/forgot-password",
       {
         method: "POST",
         headers: {
@@ -207,7 +207,7 @@ export async function resetSendEmail(token, userId, email) {
   try {
     // const response = await fetch("http://3.27.94.77:8000/habital/v1/users/"+userId+"/profileImage", {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/requestEmailChange",
+      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/request-email-change",
       {
         method: "POST",
         headers: {
@@ -236,7 +236,7 @@ export async function resetSendEmail(token, userId, email) {
 export async function resetEmail(token, userId, resetToken) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/verifyEmailChange/"+ resetToken,
+      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/verify-email-change/"+ resetToken,
       {
         method: "PATCH",
         headers: {
@@ -273,7 +273,7 @@ export async function updateAvatar(token, userId, avatar) {
   try {
     // const response = await fetch("http://3.27.94.77:8000/habital/v1/users/"+userId+"/profileImage", {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/profileImage",
+      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/profile-image",
       {
         method: "POST",
         headers: {
