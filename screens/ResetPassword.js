@@ -92,43 +92,15 @@ const ResetPassword = ({ navigation }) => {
       ...formData,
       current: text,
     });
-    if (text == current) {
-      setErrors({
-        current: true,
-      });
-    } else {
-      setErrors({
-        current: false,
-      });
-    }
-    // bcrypt
-    //   .compare(userData.data.password, text)
-    //   .then((result) => {
-    //     console.log(userData.data.password,text,result)
-    //     if (result) {
-    //       console.log("Current Password is correct");
-    //     } else {
-    //       console.log("Current Password is incorrect");
-    //       setErrors({
-    //         ...errors,
-    //         current: false,
-    //       });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setErrors({
-    //       ...errors,
-    //       current: false,
-    //     });
-    //     console.error("Error comparing passwords:", error);
+    // if (text == current) {
+    //   setErrors({
+    //     current: true,
     //   });
-    // bcrypt.hash(text,12,(err, hash) => {
-    //   if (err) {
-    //     console.error('Error hashing password:', err);
-    //   } else {
-    //     console.log('Hashed Password:', hash);
-    //   }
-    // });
+    // } else {
+    //   setErrors({
+    //     current: false,
+    //   });
+    // }
   };
 
   const handleSubmit = () => {
@@ -158,7 +130,7 @@ const ResetPassword = ({ navigation }) => {
         ...errors,
         current: false,
       });
-      console.log("current password wrong");
+      console.log(response);
       return false;
     }
   };

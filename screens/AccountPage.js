@@ -24,7 +24,6 @@ import { updateAvatar } from "../components/Endpoint";
 
 const AccountScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
-  // console.log(userData, 'inAccount');
   const [selectedImage, setSelectedImage] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclose();
 
@@ -58,15 +57,15 @@ const AccountScreen = ({ navigation }) => {
           ...userData,
           avatar: result.assets[0],
         });
-        if (response.data) {
-          // console.log(response.data,"got!!")
-          const newData = userData.data;
-          newData.profileImageUrl = response.data.profileImageUrl;
-          updateUserData({
-            ...userData,
-            data: newData,
-          });
-        }
+        // if (response.data) {
+        //   // console.log(response.data,"got!!")
+        //   const newData = userData.data;
+        //   newData.profileImageUrl = response.data.profileImageUrl;
+        //   updateUserData({
+        //     ...userData,
+        //     data: newData,
+        //   });
+        // }
       }
     } catch (e) {
       console.log(e.message);
@@ -88,14 +87,6 @@ const AccountScreen = ({ navigation }) => {
           ...userData,
           avatar: result.assets[0],
         });
-        if (response.data) {
-          const newData = userData.data;
-          newData.profileImageUrl = response.data.profileImageUrl;
-          updateUserData({
-            ...userData,
-            data: newData,
-          });
-        }
       }
     } catch (e) {
       console.log(e.message);

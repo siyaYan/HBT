@@ -1,25 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Box, Heading, IconButton,Text, Pressable, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
+import { useFocusEffect } from '@react-navigation/native';
 
 // TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
-  // console.log(userData, 'inHome');
-
-  const handleAvatarPress = () => {
-    // Navigate to another screen when the Avatar is pressed
-    navigation.navigate('AccountStack', { screen: 'Account' });
-  };
   useEffect(() => {
     // Fetch or update avatar dynamically
     // userData=useData().useData
     console.log(userData, 'inHome');
   }, [userData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // This code runs when the tab comes into focus
+      console.log('Tab is in focus, userInfo:', userData);
+
+      // You can also trigger any action that depends on the latest context here
+
+      return () => {
+        // Optional: This code runs when the tab goes out of focus
+        // Useful for cleanup actions
+      };
+    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  );
+
+  const handleAvatarPress = () => {
+    // Navigate to another screen when the Avatar is pressed
+    navigation.navigate('AccountStack', { screen: 'Account' });
+  };
+
 
   return (
     <NativeBaseProvider>
