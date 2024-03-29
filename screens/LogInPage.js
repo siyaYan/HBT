@@ -509,7 +509,7 @@ const LoginScreen = ({ navigation }) => {
                  </Button> */}
                   <Pressable onPress={handleSubmit}>
                     <Image
-                      source={require("../assets/Buttonicons/ic_login.png")}
+                      source={require("../assets/cherryLogin.png")}
                       style={{ width: 80, height: 80 }}
                       alt="image"
                     />

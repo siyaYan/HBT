@@ -18,7 +18,7 @@ import {
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
-import Background from "../components/Background";
+import Background2 from "../components/Background2";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -162,7 +162,7 @@ const NotificationScreen = ({ navigation }) => {
   };
   return (
     <NativeBaseProvider>
-      <Background />
+      <Background2 />
       <Flex direction="column" alignItems="center">
         <Box safeArea w="90%" alignItems="center">
           <Box mt="5" w="95%">

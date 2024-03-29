@@ -19,7 +19,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import { Ionicons } from "@expo/vector-icons";
-import Background from "../components/Background";
+import Background2 from "../components/Background2";
 
 const SettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
@@ -63,7 +63,7 @@ const SettingScreen = ({ navigation }) => {
 
   return (
     <NativeBaseProvider>
-      <Background />
+      <Background2 />
       <Flex direction="column" alignItems="center">
         <OptionMenu navigation={navigation}/>
 

@@ -18,7 +18,7 @@ import {
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
-import Background from "../components/Background";
+import Background2 from "../components/Background2";
 import { FontAwesome } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -160,7 +160,7 @@ const FriendsScreen = ({ navigation }) => {
   }
   return (
     <NativeBaseProvider>
-      <Background />
+      <Background2 />
       <Flex direction="column" alignItems="center">
         <OptionMenu navigation={navigation} />
         <Box mt="9" w="85%">
