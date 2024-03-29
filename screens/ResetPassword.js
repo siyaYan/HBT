@@ -24,7 +24,6 @@ import { Path } from "react-native-svg";
 const ResetPassword = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const current = "123";
-
   const [formData, setData] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -42,6 +41,7 @@ const ResetPassword = ({ navigation }) => {
       ...formData,
       password: text,
     });
+    const res = text === formData.confirmPassword;
     if (text) {
       setErrors({
         ...errors,
@@ -53,6 +53,7 @@ const ResetPassword = ({ navigation }) => {
           /^(?=.*[A-Za-z].*[0-9]|[0-9].*[A-Za-z])(?=\S{8,20})(?=.*[!@#%&_?#=-])/.test(
             text
           ),
+          confirmPassword: res,
       });
       return (
         errors.length &&
@@ -73,6 +74,7 @@ const ResetPassword = ({ navigation }) => {
       confirmPassword: text,
     });
     const res = text === formData.password;
+    console.log(res);
     if (text) {
       setErrors({
         ...errors,
@@ -91,6 +93,10 @@ const ResetPassword = ({ navigation }) => {
     setData({
       ...formData,
       current: text,
+    });
+    setErrors({
+      ...errors,
+      current: true,
     });
     // if (text == current) {
     //   setErrors({

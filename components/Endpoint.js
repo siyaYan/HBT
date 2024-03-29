@@ -286,9 +286,9 @@ export async function updateAvatar(token, userId, avatar) {
     const data = await response.json();
     console.log(data, "update avatar");
     if (data.status == "Successful operation") {
-      Alert.alert("Success", "Avatar updated!");
+      // Alert.alert("Success", "Avatar updated!");
     } else {
-      Alert.alert("Unsuccessful", data.message || "Update avatar unsuccessful");
+      Alert.alert("Unsuccessful", "Oh no! Something went wrong");
     }
     return data; // Make sure you return the data here
   } catch (error) {

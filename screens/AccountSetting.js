@@ -167,10 +167,19 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   };
   const validateUsername = (text) => {
-    setInputChange({
-      ...inputChange,
-      user:true
-    })
+
+    if(text==userData.data.username){
+      setInputChange({
+        ...inputChange,
+        user:false
+      })
+    }else{
+      setInputChange({
+        ...inputChange,
+        user:true
+      })
+    }
+
     setData({
       ...formData,
       username: text,
@@ -388,7 +397,7 @@ const AccountSettingScreen = ({ navigation }) => {
               )}
             </Box>
           </Pressable>
-          <VStack space={3} mt="5">
+          <VStack space={3} mt="5" style={{justifyContent: 'center'}} >
             <FormControl isInvalid={errors.nickname}>
               <FormControl.Label
                 ml={1}
@@ -571,25 +580,30 @@ const AccountSettingScreen = ({ navigation }) => {
             <Button
               onPress={goResetPassword}
               rounded="30"
-              shadow="6"
+              // shadow="6"
               mt="5"
-              width="100%"
+              width="110%"
               size="lg"
-              bg="#49a579"
+              style={{
+                borderWidth: 1, // This sets the width of the border
+                borderColor: '#49a579', // This sets the color of the border
+              }}
+              // bg="#f5f5f5"
+              backgroundColor={"rgba(255,255,255,0.2)"}
               _text={{
-                color: "#f9f8f2",
-                fontFamily: "Regular Medium",
+                color: "#191919",
+                fontFamily: "Regular Semi Bold",
                 fontSize: "lg",
               }}
               _pressed={{
                 // below props will only be applied on button is pressed
-                bg: "emerald.600",
-                _text: {
-                  color: "warmGray.50",
-                },
+                bg: "lightgrey",
+                // _text: {
+                //   color: "warmGray.50",
+                // },
               }}
             >
-              Change your password
+              🗝  Change your password
             </Button>
           </VStack>
         </Box>
