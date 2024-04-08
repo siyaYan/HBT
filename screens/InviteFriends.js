@@ -51,7 +51,7 @@ const InviteScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems="center">
-        <Box safeArea py="2" w="100%" maxW="300">
+        <Box safeArea py="2" w="100%" maxW="320">
           <VStack space={3} alignItems="center">
             <Box py="5" alignSelf={"flex-end"}>
               {userData.avatar.uri ? (

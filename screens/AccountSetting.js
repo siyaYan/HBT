@@ -359,7 +359,7 @@ const AccountSettingScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Center w="100%">
         <Background />
-        <Box w="100%" maxW="290">
+        <Box w="80%" h="100%" maxW="320">
           <Pressable onPress={onOpen}>
             <Box py="5" alignItems="center" justifyContent="center">
               {selectedImage ? (
@@ -397,7 +397,8 @@ const AccountSettingScreen = ({ navigation }) => {
               )}
             </Box>
           </Pressable>
-          <VStack space={3} mt="5" style={{justifyContent: 'center'}} >
+          <VStack space={3} mt="10" style={{justifyContent: 'center'}} >
+
             <FormControl isInvalid={errors.nickname}>
               <FormControl.Label
                 ml={1}
@@ -565,31 +566,19 @@ const AccountSettingScreen = ({ navigation }) => {
             ) : (
               ""
             )}
-            {/* <Box flexDir="row" w="100%" alignItems="center">
-                        <Text mr={8}>Vertify</Text>
-                        <Input ml={2} mr={3} w="60%" placeholder="Enter your email token" value={formData.token} onChangeText={(value)=>{
-                            setData({
-                                ...formData,
-                                token:value
-                            })
-                        }} />
-                        <IconButton icon={<Ionicons name="save-outline" size={24} color="black" />}
-                                p={0} onPress={saveEmail} />
-                    </Box> */}
-
             <Button
               onPress={goResetPassword}
               rounded="30"
-              // shadow="6"
+              // shadow="1"
               mt="5"
-              width="110%"
+              width="100%"
               size="lg"
               style={{
                 borderWidth: 1, // This sets the width of the border
                 borderColor: '#49a579', // This sets the color of the border
               }}
               // bg="#f5f5f5"
-              backgroundColor={"rgba(255,255,255,0.2)"}
+              backgroundColor={"rgba(250,250,250,0.2)"}
               _text={{
                 color: "#191919",
                 fontFamily: "Regular Semi Bold",
@@ -597,7 +586,7 @@ const AccountSettingScreen = ({ navigation }) => {
               }}
               _pressed={{
                 // below props will only be applied on button is pressed
-                bg: "lightgrey",
+                bg: "#e5f5e5",
                 // _text: {
                 //   color: "warmGray.50",
                 // },
