@@ -1,10 +1,20 @@
 Notes for testing:
 the default image(1&5) in simulator have problems in uploading process.
 
-Cloud server:s
+Cloud server:
 <!-- http://54.252.176.246:8000/habital/v1 -->
 http://3.27.94.77:8000/habital/v1/
-Installation:
+
+Local TestAccount:
+Siya@test.com
+Test123!
+id:6613e28c03848ee9067f413f
+
+test123@123.com
+Test123!
+id:65dc7dcd91426f354687df0f
+
+- Installation:
 1. git clone repository
 2. install brew
    - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
