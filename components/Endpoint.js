@@ -11,6 +11,7 @@ export async function registerUser(
   try {
     const response = await fetch(
       "http://3.27.94.77:8000/habital/v1/signup",
+      // 'http://localhost:8000/habital/v1/signup',
       {
         method: "POST",
         headers: {
@@ -43,7 +44,8 @@ export async function registerUser(
 export async function loginUser(id, password) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/login",
+      'http://localhost:8000/habital/v1/login',
+      // "http://3.27.94.77:8000/habital/v1/login",
       {
         method: "POST",
         headers: {

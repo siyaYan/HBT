@@ -1,8 +1,8 @@
 Notes for testing:
 the default image(1&5) in simulator have problems in uploading process.
 
+'http://localhost:8000/habital/v1/',
 Cloud server:
-<!-- http://54.252.176.246:8000/habital/v1 -->
 http://3.27.94.77:8000/habital/v1/
 
 Local TestAccount:
@@ -13,6 +13,10 @@ id:6613e28c03848ee9067f413f
 test123@123.com
 Test123!
 id:65dc7dcd91426f354687df0f
+
+Siyayan1222@gmail.com
+Test123!
+id:656c7e11ee620cef3279d358
 
 - Installation:
 1. git clone repository
