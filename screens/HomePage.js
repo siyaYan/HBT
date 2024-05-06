@@ -10,23 +10,10 @@ import { useFocusEffect } from '@react-navigation/native';
 // TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
-  useEffect(() => {
-    // Fetch or update avatar dynamically
-    // userData=useData().useData
-    console.log(userData, 'inHome');
-  }, [userData]);
-
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
       console.log('Tab is in focus, userInfo:', userData);
-
-      // You can also trigger any action that depends on the latest context here
-
-      return () => {
-        // Optional: This code runs when the tab goes out of focus
-        // Useful for cleanup actions
-      };
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
 
@@ -43,7 +30,6 @@ const HomeScreen = ({ navigation }) => {
         <OptionMenu navigation={navigation} />
         <Pressable onPress={handleAvatarPress}>
           <Box py='5' px='2' alignItems="center" justifyContent="center">
-
             {userData.avatar.uri ?
               (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.avatar.uri}} />) : (
                 <Avatar bg='white' mb='1' size="md" borderWidth={2}>

@@ -18,7 +18,6 @@ import { resetPassword } from "../components/Endpoint"; // Import the mock funct
 import { MaterialIcons } from "@expo/vector-icons";
 import Background from "../components/Background";
 import { useData } from "../context/DataContext";
-import bcrypt from "bcryptjs";
 import { Path } from "react-native-svg";
 
 const ResetPassword = ({ navigation }) => {

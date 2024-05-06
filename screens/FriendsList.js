@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Heading,
@@ -23,15 +23,12 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { getFriends, deleteFriendById,deleteFriends } from "../components/Endpoint";
+import { useFocusEffect } from '@react-navigation/native';
 
 // TODO: change the layout to match the new ios version
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
-  useEffect(() => {
-    // Fetch or update avatar dynamically
-    // userData=useData().useData
-    console.log(userData, "Friendslist");
-  }, [userData]);
   const { userData, updateUserData } = useData();
   const [deleted, setDelete] = useState(0);
   const [received, setReceived] = useState([
@@ -62,62 +59,45 @@ const FriendsScreen = ({ navigation }) => {
       nickname: "viewrrr",
     },
   ]);
-  const [friends, setFriends] = useState([
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Siya",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Tom",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Siya1",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Tom1",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Siya2",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Tom2",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Siya",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Tom",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Siya1",
-      content: "reacted to your action item.",
-    },
-  ]);
+  const [friends, setFriends] = useState([]);
+  // Call the mock registration function
+  useFocusEffect(
+    useCallback(() => {
+      // This code runs when the tab comes into focus
+      console.log('Tab is in focus, userInfo:', userData);
+
+      updateFriendList();
+    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  );
+  const updateFriendList = async()=>{
+    const response = await getFriends(userData.token, userData.data.email);
+    // Handle success or error response
+    if(!response){
+      console.log('get friends failed')
+    }
+    if (response.status == "success") {
+      // console.log('get friends success:',response.data);
+      let newFriends=[]
+      console.log(response)
+      response.users.map((user)=>{
+        const newFriend={
+          _id:'',
+          email:user.email,
+          profileImageUrl:user.profileImageUrl,
+          username:user.username,
+          nickname:user.nickname
+        }
+        newFriends.push(newFriend)
+      })
+      response.data.map((data,index)=>{
+        newFriends[index]._id=data._id
+      })
+      setFriends(newFriends)
+      console.log('friends:',friends)
+    } else {
+      console.error('get friends failed:',response.message);
+    }
+  }
   const rejectFriend = (i) => {
     console.log("reject Friend,delete current notificate");
     setReceived((currentReceived) => [
@@ -132,6 +112,30 @@ const FriendsScreen = ({ navigation }) => {
       ...currentReceived.slice(i),
     ]);
   };
+  const deleteAllFriends = async() =>{
+    const response = await deleteFriends(userData.token);
+    if(!response){
+      console.log('delete friends failed')
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log('delete friends success:',response);
+    } else {
+      console.error('delete friends failed:',response.message);
+    }
+  }
+  const deleteFriendByID = async(index) =>{
+    const response = await deleteFriendById(userData.token, friends[index]._id);
+    if(!response){
+      console.log('delete friends failed')
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log('delete friends success:',response);
+    } else {
+      console.error('delete friends failed:',response.message);
+    }
+  }
   const deleteCurrent = (item, i) => {
     if (item == "sent") {
       console.log("delete current item");
@@ -148,16 +152,20 @@ const FriendsScreen = ({ navigation }) => {
           ...currentFriends.slice(0, deleted - 1),
           ...currentFriends.slice(deleted),
         ]);
+        deleteFriendByID(deleted-1);
       } else {
         console.log("delete all friends");
         setFriends({});
+        deleteAllFriends();
+        
       }
     }
   };
-  const deleteOption =(i)=>{
-    setDelete(i)
-    setShowModal(true)
-  }
+  const deleteOption = (i) => {
+    setDelete(i);
+    setShowModal(true);
+  };
+
   return (
     <NativeBaseProvider>
       <Background2 />
@@ -408,7 +416,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="friends"
               />
               <FontAwesome5
-                onPress={()=>deleteOption(-1)}
+                onPress={() => deleteOption(-1)}
                 name="unlink"
                 size={24}
                 color="black"
@@ -419,7 +427,7 @@ const FriendsScreen = ({ navigation }) => {
                 <Modal.Header>Unlink the friend(s)?</Modal.Header>
                 <Modal.Footer>
                   <Button.Group justifyContent={"space-between"}>
-                  <Button
+                    <Button
                       onPress={() => {
                         deleteCurrent("friend");
                       }}
@@ -427,14 +435,13 @@ const FriendsScreen = ({ navigation }) => {
                       Ok
                     </Button>
                     <Button
-                    colorScheme="secondary"
+                      colorScheme="secondary"
                       onPress={() => {
                         setShowModal(false);
                       }}
                     >
                       Cancel
                     </Button>
-                    
                   </Button.Group>
                 </Modal.Footer>
               </Modal.Content>
@@ -463,13 +470,13 @@ const FriendsScreen = ({ navigation }) => {
                           <FontAwesome name="check" size={24} color="black" />
                         )}
                         <Text fontFamily={"Regular"} fontSize="md">
-                          {item.user ? item.user : item.title}
+                          {item.username}
                         </Text>
                         <Text fontFamily={"Regular"} fontSize="md">
-                          {item.content}
+                          {item.nickname}
                         </Text>
                         <Foundation
-                          onPress={()=>deleteOption(index + 1)}
+                          onPress={() => deleteOption(index + 1)}
                           name="unlink"
                           size={24}
                           color="black"

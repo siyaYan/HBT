@@ -318,6 +318,69 @@ export async function findByUserId(token, userId) {
     // } else {
     //   Alert.alert("Unsuccessful", data.message || "Update avatar unsuccessful");
     // }
+  }catch (e) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+export async function getFriends(token, userId) {
+  try {
+    const response = await fetch(
+      'http://3.27.94.77:8000/habital/v1/friend-requests/getAllFriends',
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+export async function deleteFriends(token) {
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/friend-requests/deleteAllFriends`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+export async function deleteFriendById(token,friendRequestId) {
+  console.log(friendRequestId)
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}/deleteFriend`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);

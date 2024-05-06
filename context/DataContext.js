@@ -32,7 +32,7 @@ export const DataProvider = ({ children }) => {
     const saveData = async () => {
       try {
         await AsyncStorage.setItem('userData', JSON.stringify(userData));
-        console.log(userData,'???')
+        console.log('FirstGetData:',userData)
       } catch (error) {
         console.error('Error saving user data:', error);
       }
