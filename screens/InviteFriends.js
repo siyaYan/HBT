@@ -54,7 +54,7 @@ const InviteScreen = ({ navigation }) => {
         <Box safeArea py="2" w="100%" maxW="320">
           <VStack space={3} alignItems="center">
             <Box py="5" alignSelf={"flex-end"}>
-              {userData.avatar.uri ? (
+              {userData.avatar&&userData.avatar.uri ? (
                 <Avatar
                   bg="white"
                   mb="1"

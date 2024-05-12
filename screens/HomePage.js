@@ -30,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
         <OptionMenu navigation={navigation} />
         <Pressable onPress={handleAvatarPress}>
           <Box py='5' px='2' alignItems="center" justifyContent="center">
-            {userData.avatar.uri ?
+            {userData.avatar&&userData.avatar.uri ?
               (<Avatar bg='white' mb='1' size="md" source={{ uri: userData.avatar.uri}} />) : (
                 <Avatar bg='white' mb='1' size="md" borderWidth={2}>
                   <AntDesign name="user" size={30} color="black" />
@@ -66,9 +66,9 @@ const HomeScreen = ({ navigation }) => {
           >
             Login
           </Button>: 
-            <Text fontFamily={'Bold'} fontSize={"3xl"} style={{ marginTop:'50%',}} >Home Page</Text>
+            <Text fontFamily={'Bold'} fontSize={"3xl"} style={{ marginTop:'50%',}} >Home Page1</Text>
           }
-        </Box >
+        </Box>
       </Flex>
 
     </NativeBaseProvider>
