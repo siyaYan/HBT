@@ -75,7 +75,7 @@ const SettingScreen = ({ navigation }) => {
           justifyContent="center"
         >
           <Pressable onPress={handleAvatarPress}>
-            {userData.avatar&&userData.avatar.uri ? (
+            {userData.avatar.uri ? (
               <Avatar
                 bg="white"
                 mb="1"
