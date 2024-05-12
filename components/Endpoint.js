@@ -324,7 +324,7 @@ export async function findByUserId(token, userId) {
   }
 }
 
-export async function getFriends(token, userId) {
+export async function getFriends(token) {
   try {
     const response = await fetch(
       'http://3.27.94.77:8000/habital/v1/friend-requests/getAllFriends',
@@ -344,7 +344,71 @@ export async function getFriends(token, userId) {
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
-
+export async function getSendRequest(token) {
+  try {
+    const response = await fetch(
+      
+      'http://3.27.94.77:8000/habital/v1/friend-requests/sender',
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+export async function getReceivedRequest(token, userId) {
+  try {
+    const response = await fetch(
+      'http://3.27.94.77:8000/habital/v1/friend-requests/receiver',
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+export async function reactReceivedRequest(token, friendRequestId, react) {
+  console.log(friendRequestId,react)
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ // Stringify the body object
+          status: `${react}` // Assuming 'react' is a variable containing the status to update
+        })
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
 export async function deleteFriends(token) {
   try {
     const response = await fetch(
@@ -365,8 +429,7 @@ export async function deleteFriends(token) {
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
-
-export async function deleteFriendById(token,friendRequestId) {
+export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
   console.log(friendRequestId)
   try {
     const response = await fetch(

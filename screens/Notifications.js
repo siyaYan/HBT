@@ -453,12 +453,12 @@ const NotificationScreen = ({ navigation }) => {
                 <Text mt={"1"} fontFamily={"Regular Semi Bold"} fontSize="2xl">
                   Last 30 days
                 </Text>
-                <AntDesign
+                {/* <AntDesign
                   name="checkcircleo"
                   size={30}
                   color="black"
                   onPress={() => deleteAll("history")}
-                />
+                /> */}
               </HStack>
 
               <Box w={"96%"} h={"40%"} alignSelf={"center"}>

@@ -23,42 +23,16 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { getFriends, deleteFriendById,deleteFriends } from "../components/Endpoint";
+import { getFriends, deleteFriendOrWithdrawRequestById, deleteFriends, getSendRequest, getReceivedRequest,reactReceivedRequest } from "../components/Endpoint";
 import { useFocusEffect } from '@react-navigation/native';
 
 // TODO: change the layout to match the new ios version
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
-  const { userData, updateUserData } = useData();
+  const {userData, updateUserData } = useData();
   const [deleted, setDelete] = useState(0);
-  const [received, setReceived] = useState([
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      username: "siya_received",
-      nickname: "Dancer1",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      username: "Tom_received",
-      nickname: "ZOOOO",
-    },
-  ]);
-  const [sent, setSent] = useState([
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      username: "Jo_sent",
-      nickname: "Lover11",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      username: "Dan_sent",
-      nickname: "viewrrr",
-    },
-  ]);
+  const [received, setReceived] = useState([]);
+  const [sent, setSent] = useState([]);
   const [friends, setFriends] = useState([]);
   // Call the mock registration function
   useFocusEffect(
@@ -67,10 +41,12 @@ const FriendsScreen = ({ navigation }) => {
       console.log('Tab is in focus, userInfo:', userData);
 
       updateFriendList();
+      updateSendRequest();
+      updateReceivedRequest();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
   const updateFriendList = async()=>{
-    const response = await getFriends(userData.token, userData.data.email);
+    const response = await getFriends(userData.token);
     // Handle success or error response
     if(!response){
       console.log('get friends failed')
@@ -98,12 +74,72 @@ const FriendsScreen = ({ navigation }) => {
       console.error('get friends failed:',response.message);
     }
   }
+  const updateSendRequest = async()=>{
+    const response = await getSendRequest(userData.token);
+    // Handle success or error response
+    if(!response){
+      console.log('get send friends request failed')
+    }
+    if (response.status == "success") {
+      // console.log('get friends success:',response.data);
+      let sendFriends=[]
+      console.log(response)
+      response.users.map((user)=>{
+        const newFriend={
+          _id:'',
+          email:user.email,
+          profileImageUrl:user.profileImageUrl,
+          username:user.username,
+          nickname:user.nickname
+        }
+        sendFriends.push(newFriend)
+      })
+      response.data.map((data,index)=>{
+        sendFriends[index]._id=data._id
+      })
+      setSent(sendFriends)
+      console.log('send request:',sent)
+    } else {
+      console.error('get send friend request failed:',response.message);
+    }
+  }
+  const updateReceivedRequest = async()=>{
+    const response = await getReceivedRequest(userData.token);
+    // Handle success or error response
+    if(!response){
+      console.log('get received friends failed')
+    }
+    if (response.status == "success") {
+      // console.log('get friends success:',response.data);
+      let receivedFriends=[]
+      console.log(response)
+      response.users.map((user)=>{
+        const newFriend={
+          _id:'',
+          email:user.email,
+          profileImageUrl:user.profileImageUrl,
+          username:user.username,
+          nickname:user.nickname
+        }
+        receivedFriends.push(newFriend)
+      })
+      response.data.map((data,index)=>{
+        receivedFriends[index]._id=data._id
+      })
+      setReceived(receivedFriends)
+      console.log('received requests:',received)
+    } else {
+      console.error('get reeived friend requests failed:',response.message);
+    }
+  }
   const rejectFriend = (i) => {
     console.log("reject Friend,delete current notificate");
     setReceived((currentReceived) => [
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
+    const id=received[i-1]._id
+    reactRequest(id,"R")
   };
   const acceptFriend = (i) => {
     console.log("accept Friend,delete current notificate");
@@ -111,7 +147,21 @@ const FriendsScreen = ({ navigation }) => {
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
+    const id=received[i-1]._id
+    reactRequest(id,"A")
   };
+  const reactRequest = async(id, react) =>{
+    const response = await reactReceivedRequest(userData.token, id, react);
+    if(!response){
+      console.log('react request failed')
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log('react request success:',response);
+    } else {
+      console.error('react request failed:',response.message);
+    }
+  }
   const deleteAllFriends = async() =>{
     const response = await deleteFriends(userData.token);
     if(!response){
@@ -124,8 +174,8 @@ const FriendsScreen = ({ navigation }) => {
       console.error('delete friends failed:',response.message);
     }
   }
-  const deleteFriendByID = async(index) =>{
-    const response = await deleteFriendById(userData.token, friends[index]._id);
+  const deleteFriendOrRequestByID = async(id) =>{
+    const response = await deleteFriendOrWithdrawRequestById(userData.token, id);
     if(!response){
       console.log('delete friends failed')
     }
@@ -143,6 +193,8 @@ const FriendsScreen = ({ navigation }) => {
         ...currentSent.slice(0, i - 1),
         ...currentSent.slice(i),
       ]);
+      const id=sent[i-1]._id
+      deleteFriendOrRequestByID(id);
     }
     if (item === "friend") {
       setShowModal(false);
@@ -152,12 +204,12 @@ const FriendsScreen = ({ navigation }) => {
           ...currentFriends.slice(0, deleted - 1),
           ...currentFriends.slice(deleted),
         ]);
-        deleteFriendByID(deleted-1);
+        const id=friends[deleted-1]._id
+        deleteFriendOrRequestByID(id);
       } else {
         console.log("delete all friends");
         setFriends({});
         deleteAllFriends();
-        
       }
     }
   };
