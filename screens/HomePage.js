@@ -25,6 +25,10 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('RoundStack', { screen: 'RoundConfig' });
   };
 
+  const roundInfo = () => {
+    navigation.navigate('RoundStack',{screen:'RoundInfo'})
+  };
+
 
   return (
     <NativeBaseProvider>
@@ -43,38 +47,9 @@ const HomeScreen = ({ navigation }) => {
                   </Text>
           </Box>
         </Pressable>
-        {/* <Box safeArea w="100%" maxW="300" alignItems="center">
-          {!userData ? <Button
-            mt="2"
-            width="100%"
-            size="lg"
-            rounded="30"
-            shadow="6"
-            bg="#49a579"
-            _text={{
-              color: "#f9f8f2",
-              fontFamily: "Regular Medium",
-              fontSize: "lg",
-            }}
-            _pressed={{
-              // below props will only be applied on button is pressed
-              bg: "emerald.600",
-              _text: {
-                color: "warmGray.50",
-              },
-            }}
-            onPress={() => {
-              navigation.navigate("LoginStack", { screen: "Login" });
-            }}
-          >
-            Login
-          </Button>: 
-            <Text fontFamily={'Bold'} fontSize={"3xl"} style={{ marginTop:'50%',}} >Home Page1</Text>
-          }
-        </Box> */}
         <Button
               // onPress={()=>navigation.navigate('RoundConfig')}
-              onPress={startRound}
+              onPress={roundInfo}
               rounded="30"
               // shadow="1"
               mt="5"
@@ -98,7 +73,7 @@ const HomeScreen = ({ navigation }) => {
                 // },
               }}
             >
-              Round invitation
+              Round info dummy
             </Button>
         {/* Linda Sprint 4 */}
         <Button

@@ -97,8 +97,8 @@ export default function AppContainer() {
         <Stack.Screen name="MainStack" component={AuthenticatedScreens} />
         <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
         <Stack.Screen name="AccountStack" component={AccountStackNavigator} />
-        <Stack.Screen name="RoundStack" component={RoundStackNavigator} />
-
+        <Stack.Screen name="RoundStack" component={RoundStackNavigator} 
+          />
       </Stack.Navigator>
     </NavigationContainer>
   );
