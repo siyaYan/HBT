@@ -41,7 +41,7 @@ const SettingScreen = ({ navigation }) => {
 
   const deleteCredentials = async () => {
     try {
-      await SecureStore.deleteItemAsync("userCredentials");
+      await SecureStore.deleteItemAsync("userData");
       updateUserData({
         token: "",
         data: "",

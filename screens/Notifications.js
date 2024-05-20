@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Box,
   Heading,
@@ -21,156 +21,262 @@ import { useData } from "../context/DataContext";
 import Background2 from "../components/Background2";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
+import {
+  getNotifiableFriendRequests,
+  getNotificationHistory,
+  getNotifiableNotification,
+  clearNotificationById,
+  clearAllNotifications,
+  reactReceivedRequest,
+  clearFriendRequestById,
+  clearAllFriendRequests
+} from "../components/Endpoint";
 
 // TODO: change the layout to match the new ios version
 const NotificationScreen = ({ navigation }) => {
-  useEffect(() => {
-    // Fetch or update avatar dynamically
-    // userData=useData().useData
-    let noteNum = Object.keys(notificates).length;
-    if (noteNum > 0) {
-      console.log("Notification-------------------------", noteNum);
-    }
-    // console.log(userData, "Notification");
-    updateUserData({
-      ...userData,
-      notes: noteNum,
-    });
-  }, [userData]);
+  useFocusEffect(
+    useCallback(() => {
+      // This code runs when the tab comes into focus
+      console.log("Tab is in focus, userInfo:", userData);
+      // userData=useData().useData
+      let noteNum =
+        Object.keys(notificates).length +
+        Object.keys(friendRequest).length
+      if (noteNum > 0) {
+        console.log("Notification num-------------------------", noteNum);
+      }
 
+      updateUserData({
+        ...userData,
+        notes: noteNum,
+      });
+      updateNotifiableFriendRequest();
+      updateNotification();
+      updateNotificationHistory();
+    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  );
   const { userData, updateUserData } = useData();
-  const [received, setReceived] = useState([
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      username: "siya_received",
-      nickname: "Dancer1",
-      status: "linked",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      username: "Tom_received",
-      nickname: "ZOOOO",
-      status: "unlink",
-    },
-  ]);
-  const [sent, setSent] = useState([
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      username: "Jo_sent",
-      nickname: "Lover11",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      username: "Dan_sent",
-      nickname: "viewrrr",
-    },
-  ]);
-  const [notificates, setNotificates] = useState([
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Siya",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Tom",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Dan",
-      content: "reacted to your action item.",
-    },
-  ]);
-  const [history, setHistory] = useState([
-    { title: "Hibit count", content: "your action was successfully." },
-    { title: "Hibit count", content: "your action was successfully." },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Siya",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Tom",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Siya",
-      content: "reacted to your action item.",
-    },
-    {
-      profileImageUrl:
-        "https://habital-image.s3.ap-southeast-2.amazonaws.com/profiles/656c7e11ee620cef3279d358.jpeg",
-      user: "Tom",
-      content: "reacted to your action item.",
-    },
-  ]);
+  // combination of sent & received
+  const [friendRequest, setFriendRequest] = useState([]);
+  const [notificates, setNotificates] = useState([]);
+  const [history, setHistory] = useState([]);
+  const updateNotifiableFriendRequest = async () => {
+    const response = await getNotifiableFriendRequests(userData.token);
+
+    // Handle success or error response
+    if (!response) {
+      console.log("get NotifiableFriendRequests failed");
+    }
+    if (response.status == "success") {
+      // console.log('get friends success:',response.data);
+      let friendrequests = [];
+      response.users.map((user, index) => {
+        const item = {
+          friendRequestId: response.data[index]._id,
+          status: response.data[index].status == "A" ? "linked" : "unlink",
+          profileImageUrl: user.profileImageUrl,
+          username: user.username,
+          nickname: user.nickname,
+          requestRole: response.data[index].requestRole,
+        };
+        friendrequests[index]=item;
+      });
+      setFriendRequest(friendrequests);
+      console.log("NotifiableFriendRequests:", friendrequests);
+    } else {
+      console.error("get NotifiableFriendRequests failed:", response.message);
+    }
+  };
+  //the latest is on the top
+  const updateNotification = async () => {
+    const response = await getNotifiableNotification(
+      userData.token,
+      userData.data.email
+    );
+
+    // Handle success or error response
+    if (!response) {
+      console.log("get NotifiableNotifications failed");
+    }
+    if (response.status == "success") {
+      // console.log('get friends success:',response.data);
+      let Notification = [];
+      // console.log('notification',response)
+      response.data.map((item, index) => {
+        const notificationContent = {
+          id: item._id,
+          profileImageUrl: response.senders[index].profileImageUrl,
+          user: response.senders[index].nickname || response.senders[index],
+          content: item.content,
+        };
+        Notification[index] = notificationContent;
+      });
+      setNotificates(Notification);
+
+      console.log("NotifiableNotifications:", Notification);
+    } else {
+      console.error("get NotifiableNotifications failed:", response.message);
+    }
+  };
+  const updateNotificationHistory = async () => {
+    const response = await getNotificationHistory(
+      userData.token,
+      userData.data.email
+    );
+    // Handle success or error response
+    if (!response) {
+      console.log("get NotificationHistory failed");
+    }
+    if (response.status == "success") {
+      let Historys = [];
+      response.data.map((item, index) => {
+        if (response.senders[index].profileImageUrl) {
+          const historyContent = {
+            id: item._id,
+            profileImageUrl: response.senders[index].profileImageUrl,
+            user: response.senders[index].nickname,
+            content: item.content,
+          };
+          Historys[index] = historyContent;
+        } else {
+          const historyContent = {
+            id: item._id,
+            title: response.senders[index],
+            content: item.content,
+          };
+          Historys[index] = historyContent;
+        }
+      });
+      setHistory(Historys);
+      console.log("NotificationHistory:", Historys);
+    } else {
+      console.error("get NotificationHistory failed:", response.message);
+    }
+  };
+
+  const clearNotification = async (id) => {
+    const response = await clearNotificationById(
+      userData.token,
+      userData.data.email,
+      id
+    );
+    if (!response) {
+      console.log("clear notification failed");
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log("clear notification success:", response);
+    } else {
+      console.error("clear notification failed:", response.message);
+    }
+  };
+
+  const clearAllNotification = async () => {
+    const response = await clearAllNotifications(
+      userData.token,
+      userData.data.email
+    );
+    if (!response) {
+      console.log("clear all notification failed");
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log("clear all notifications success:", response);
+    } else {
+      console.error("clear all notifications failed:", response.message);
+    }
+  };
+
+  const clearAllFriendRequest = async () => {
+    const response = await clearAllFriendRequests(userData.token)
+    if(!response){
+      console.log('clear all notification failed')
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log('clear all notifications success:',response);
+    } else {
+      console.error('clear all notifications failed:',response.message);
+    }
+  };
+
+  const clearFriendRequest = async (id) => {
+    const response = await clearFriendRequestById(
+      userData.token,
+      id
+    );
+    if (!response) {
+      console.log("clear notification failed");
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log("clear notification success:", response);
+    } else {
+      console.error("clear notification failed:", response.message);
+    }
+  };
+
+  const reactRequest = async(id, react) =>{
+    const response = await reactReceivedRequest(userData.token, id, react);
+    if(!response){
+      console.log('react request failed')
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log('react request success:',response);
+    } else {
+      console.error('react request failed:',response.message);
+    }
+  }
+
   const rejectFriend = (i) => {
     console.log("reject Friend,delete current notificate");
-    setSent((currentSent) => [
-      ...currentSent.slice(0, i - 1),
-      ...currentSent.slice(i),
+    setFriendRequest((currentReceived) => [
+      ...currentReceived.slice(0, i),
+      ...currentReceived.slice(i+1),
     ]);
-    // setSent((currentSent) => currentSent.slice(1));
+    reactRequest(friendRequest[i].friendRequestId,"R")
   };
   const acceptFriend = (i) => {
     console.log("accept Friend,delete current notificate");
-    setSent((currentSent) => [
-      ...currentSent.slice(0, i - 1),
-      ...currentSent.slice(i),
+    setFriendRequest((currentReceived) => [
+      ...currentReceived.slice(0, i),
+      ...currentReceived.slice(i+1),
     ]);
+    reactRequest(friendRequest[i].friendRequestId,"A")
   };
-  const deleteCurrent = (item, i) => {
+  const clearCurrent = (item, i) => {
     if (item == "received") {
-      console.log("delete current received notificate");
-      setReceived((currentReceived) => [
-        ...currentReceived.slice(0, i - 1),
-        ...currentReceived.slice(i),
+      console.log("clear current received notificate");
+      clearFriendRequest(friendRequest[i].friendRequestId)
+      setFriendRequest((currentReceived) => [
+        ...currentReceived.slice(0, i),
+        ...currentReceived.slice(i+1),
       ]);
+      
     }
     if (item === "notificates") {
-      console.log("delete current system notificate");
-      if (Object.keys(notificates).length == 1) {
-        updateUserData({
-          ...userData,
-          notes: 0,
-        });
-      }
+      console.log("clear current selected notificate");
+      clearNotification(notificates[i].id);
       setNotificates((currentNotificates) => [
-        ...currentNotificates.slice(0, i - 1),
-        ...currentNotificates.slice(i),
+        ...currentNotificates.slice(0, i),
+        ...currentNotificates.slice(i + 1),
       ]);
     }
   };
-  const deleteAll = (item) => {
-    if (item == "received") {
-      console.log("delete all received notificate");
-      setReceived({});
-      setSent({});
-    } else if (item == "history") {
-      console.log("delete all history notificate");
-      setHistory({});
+  const clearAll = (item) => {
+    if (item == "friendrequests") {
+      console.log("clear all friendrequests");
+      clearAllFriendRequest();
+      setFriendRequest({});
     } else {
-      console.log("delete all system notificate");
+      console.log("Clear all notifiable notificates");
+      clearAllNotification();
       setNotificates({});
-      updateUserData({
-        ...userData,
-        notes: 0,
-      });
     }
   };
+
   return (
     <NativeBaseProvider>
       <Background2 />
@@ -179,7 +285,7 @@ const NotificationScreen = ({ navigation }) => {
           <Box mt="5" w="95%">
             <VStack space={1} alignItems="left">
               <HStack w={"100%"} justifyContent={"space-between"}>
-                {received.length || sent.length ? (
+                {friendRequest.length > 0 ? (
                   <Box>
                     <Image
                       size={30}
@@ -200,14 +306,14 @@ const NotificationScreen = ({ navigation }) => {
                         fontSize: 12,
                       }}
                     >
-                      {received.length + sent.length}
+                      {friendRequest.length}
                     </Badge>
                   </Box>
                 ) : (
                   <Image
                     size={30}
                     source={require("../assets/Buttonicons/Users.png")}
-                    alt="received"
+                    alt="friendrequests"
                   />
                 )}
 
@@ -215,7 +321,7 @@ const NotificationScreen = ({ navigation }) => {
                   name="checkcircleo"
                   size={30}
                   color="black"
-                  onPress={() => deleteAll("received")}
+                  onPress={() => clearAll("friendrequests")}
                 />
                 {/* <AntDesign name="delete" size={30} color="black" /> */}
               </HStack>
@@ -226,103 +332,130 @@ const NotificationScreen = ({ navigation }) => {
                 justifyContent={"center"}
               >
                 <ScrollView w={"100%"}>
-                  {sent.length>0||received.length>0 ? (
-                    <Box mt={'2'} w={"95%"} alignSelf={"center"}>
-                  {sent.map((item, index) => (
-                    <Box mt={'2'} w={"100%"} alignSelf={"center"}>
-                      <HStack
-                        w={"100%"}
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                      >
-                        {item.profileImageUrl ? (
-                          <Avatar
-                            bg="white"
-                            mb="1"
-                            size={"md"}
-                            source={{ uri: item.profileImageUrl }}
-                          />
-                        ) : (
-                          <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                            <AntDesign name="user" size={20} color="black" />
-                          </Avatar>
-                        )}
-                        <Text fontFamily={"Regular"} fontSize="lg">
-                          {item.username}
-                        </Text>
-                        <Text fontFamily={"Regular"} fontSize="lg">
-                          {item.nickname}
-                        </Text>
-                        <HStack space="3">
-                          <AntDesign
-                            onPress={() => acceptFriend(index)}
-                            name="checksquareo"
-                            size={30}
-                            color="black"
-                          />
-                          <AntDesign
-                            onPress={() => rejectFriend(index)}
-                            name="closesquareo"
-                            size={30}
-                            color="black"
-                          />
-                        </HStack>
-                      </HStack>
-                    </Box>
-                  ))}
-
-                 {received.map((item, index) => (
-                    <Box mt={'2'}  w={"100%"} alignSelf={"center"}>
-                      <HStack
-                        w={"100%"}
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                      >
-                        {item.profileImageUrl ? (
-                          <Avatar
-                            bg="white"
-                            mb="1"
-                            size={"md"}
-                            source={{ uri: item.profileImageUrl }}
-                          />
-                        ) : (
-                          <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                            <AntDesign name="user" size={20} color="black" />
-                          </Avatar>
-                        )}
-
-                        <Text fontFamily={"Regular"} fontSize="lg">
-                          {item.username}
-                        </Text>
-                        <Text fontFamily={"Regular"} fontSize="lg">
-                          {item.nickname}
-                        </Text>
-                        <HStack space="3">
-                          {item.status == "linked" ? (
-                            <AntDesign name="link" size={28} color="black" />
+                  {friendRequest.length > 0 ? (
+                    <Box mt={"2"} w={"95%"} alignSelf={"center"}>
+                      {friendRequest.map((item, index) => 
+                        // (item.requestRole == "sent"?item.username:'qqq')
+                          (item.requestRole == "received" ? (
+                            <Box mt={"2"} w={"100%"} alignSelf={"center"}>
+                              <HStack
+                                w={"100%"}
+                                alignItems={"center"}
+                                justifyContent={"space-between"}
+                              >
+                                {item.profileImageUrl ? (
+                                  <Avatar
+                                    bg="white"
+                                    mb="1"
+                                    size={"md"}
+                                    source={{ uri: item.profileImageUrl }}
+                                  />
+                                ) : (
+                                  <Avatar
+                                    bg="white"
+                                    mb="1"
+                                    size="md"
+                                    borderWidth={2}
+                                  >
+                                    <AntDesign
+                                      name="user"
+                                      size={20}
+                                      color="black"
+                                    />
+                                  </Avatar>
+                                )}
+                                <Text fontFamily={"Regular"} fontSize="lg">
+                                  {item.username}
+                                </Text>
+                                <Text fontFamily={"Regular"} fontSize="lg">
+                                  {item.nickname}
+                                </Text>
+                                <HStack space="3">
+                                  <AntDesign
+                                    onPress={() => acceptFriend(index)}
+                                    name="checksquareo"
+                                    size={30}
+                                    color="black"
+                                  />
+                                  <AntDesign
+                                    onPress={() => rejectFriend(index)}
+                                    name="closesquareo"
+                                    size={30}
+                                    color="black"
+                                  />
+                                </HStack>
+                              </HStack>
+                            </Box>
                           ) : (
-                            ""
-                          )}
-                          <MaterialIcons
-                            onPress={() => deleteCurrent("received", index)}
-                            name="delete-outline"
-                            size={30}
-                            color="#191919"
-                          />
-                        </HStack>
-                      </HStack>
+                            <Box mt={"2"} w={"100%"} alignSelf={"center"}>
+                              <HStack
+                                w={"100%"}
+                                alignItems={"center"}
+                                justifyContent={"space-between"}
+                              >
+                                {item.profileImageUrl ? (
+                                  <Avatar
+                                    bg="white"
+                                    mb="1"
+                                    size={"md"}
+                                    source={{ uri: item.profileImageUrl }}
+                                  />
+                                ) : (
+                                  <Avatar
+                                    bg="white"
+                                    mb="1"
+                                    size="md"
+                                    borderWidth={2}
+                                  >
+                                    <AntDesign
+                                      name="user"
+                                      size={20}
+                                      color="black"
+                                    />
+                                  </Avatar>
+                                )}
+
+                                <Text fontFamily={"Regular"} fontSize="lg">
+                                  {item.username}
+                                </Text>
+                                <Text fontFamily={"Regular"} fontSize="lg">
+                                  {item.nickname}
+                                </Text>
+                                <HStack space="3">
+                                  {item.status == "linked" ? (
+                                    <AntDesign
+                                      name="link"
+                                      size={28}
+                                      color="black"
+                                    />
+                                  ) : (
+                                    ""
+                                  )}
+                                  <MaterialIcons
+                                    onPress={() =>
+                                      clearCurrent("received", index)
+                                    }
+                                    name="delete-outline"
+                                    size={30}
+                                    color="#191919"
+                                  />
+                                </HStack>
+                              </HStack>
+                            </Box>
+                          ))
+                        
+                      )}
                     </Box>
-                  ))}
-                  </Box>
-                  ):(
-                  <Text
-                    fontFamily={"Regular"}
-                    fontSize="2xl"
-                    textAlign={"center"}
-                    margin={'12'}
-                  >
-                    You are all caught up :D
-                  </Text>)}
+                  ) : (
+                    <Text
+                      fontFamily={"Regular"}
+                      fontSize="2xl"
+                      textAlign={"center"}
+                      margin={"12"}
+                    >
+                      You are all caught up :D
+                    </Text>
+                  )}
                 </ScrollView>
               </Box>
 
@@ -374,7 +507,7 @@ const NotificationScreen = ({ navigation }) => {
                   name="checkcircleo"
                   size={30}
                   color="black"
-                  onPress={() => deleteAll("notification")}
+                  onPress={() => clearAll("notification")}
                 />
                 {/* <AntDesign name="delete" size={30} color="black" /> */}
               </HStack>
@@ -416,7 +549,7 @@ const NotificationScreen = ({ navigation }) => {
                             {item.content}
                           </Text>
                           <AntDesign
-                            onPress={() => deleteCurrent("notificates", index)}
+                            onPress={() => clearCurrent("notificates", index)}
                             name="closesquareo"
                             size={30}
                             color="black"
@@ -429,7 +562,7 @@ const NotificationScreen = ({ navigation }) => {
                       fontFamily={"Regular"}
                       fontSize="2xl"
                       textAlign={"center"}
-                      margin={'10'}
+                      margin={"10"}
                     >
                       You are all caught up :D
                     </Text>
@@ -453,12 +586,6 @@ const NotificationScreen = ({ navigation }) => {
                 <Text mt={"1"} fontFamily={"Regular Semi Bold"} fontSize="2xl">
                   Last 30 days
                 </Text>
-                {/* <AntDesign
-                  name="checkcircleo"
-                  size={30}
-                  color="black"
-                  onPress={() => deleteAll("history")}
-                /> */}
               </HStack>
 
               <Box w={"96%"} h={"40%"} alignSelf={"center"}>

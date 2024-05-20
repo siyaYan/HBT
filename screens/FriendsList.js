@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState,  useCallback } from "react";
 import {
   Box,
   Heading,
@@ -34,7 +34,7 @@ const FriendsScreen = ({ navigation }) => {
   const [received, setReceived] = useState([]);
   const [sent, setSent] = useState([]);
   const [friends, setFriends] = useState([]);
-  // Call the mock registration function
+
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
@@ -79,28 +79,32 @@ const FriendsScreen = ({ navigation }) => {
     // Handle success or error response
     if(!response){
       console.log('get send friends request failed')
+      setSent({})
     }
     if (response.status == "success") {
       // console.log('get friends success:',response.data);
       let sendFriends=[]
       console.log(response)
-      response.users.map((user)=>{
-        const newFriend={
-          _id:'',
-          email:user.email,
-          profileImageUrl:user.profileImageUrl,
-          username:user.username,
-          nickname:user.nickname
-        }
-        sendFriends.push(newFriend)
-      })
-      response.data.map((data,index)=>{
-        sendFriends[index]._id=data._id
-      })
+      const pendingRes=response.data.filter((item) => (item.status == 'P'))
+      // const pendingRes=response.users
+      if(pendingRes.length > 0) {
+        pendingRes.map((data, index)=>{
+          const newFriend={
+            _id:data._id,
+            email:response.users[index].email,
+            profileImageUrl:response.users[index].profileImageUrl,
+            username:response.users[index].username,
+            nickname:response.users[index].nickname
+          }
+          sendFriends.push(newFriend)
+        })
+      }
       setSent(sendFriends)
       console.log('send request:',sent)
     } else {
-      console.error('get send friend request failed:',response.message);
+      // console.error('get send friend request failed:',response.message);
+      console.log('get send friends request failed')
+      setSent({})
     }
   }
   const updateReceivedRequest = async()=>{
@@ -108,28 +112,32 @@ const FriendsScreen = ({ navigation }) => {
     // Handle success or error response
     if(!response){
       console.log('get received friends failed')
+      setReceived({})
     }
     if (response.status == "success") {
       // console.log('get friends success:',response.data);
       let receivedFriends=[]
       console.log(response)
-      response.users.map((user)=>{
-        const newFriend={
-          _id:'',
-          email:user.email,
-          profileImageUrl:user.profileImageUrl,
-          username:user.username,
-          nickname:user.nickname
-        }
-        receivedFriends.push(newFriend)
-      })
-      response.data.map((data,index)=>{
-        receivedFriends[index]._id=data._id
-      })
+      const pendingRes=response.data.filter((item) => (item.status == 'P'))
+      // const pendingRes=response.users
+      if(pendingRes.length > 0) {
+        pendingRes.map((data, index)=>{
+          const newFriend={
+            _id:data._id,
+            email:response.users[index].email,
+            profileImageUrl:response.users[index].profileImageUrl,
+            username:response.users[index].username,
+            nickname:response.users[index].nickname
+          }
+          receivedFriends.push(newFriend)
+        })
+      }
       setReceived(receivedFriends)
       console.log('received requests:',received)
     } else {
-      console.error('get reeived friend requests failed:',response.message);
+      // console.error('get received friend requests failed:',response.message);
+      console.log('get received friends failed')
+      setReceived({})
     }
   }
   const rejectFriend = (i) => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Center,
   Box,
@@ -10,33 +10,54 @@ import {
   FormControl,
   Flex,
   Input,
+  Pressable,
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
-import { findByUserId } from "../components/Endpoint";
+import {
+  connectByUserId,
+  findByUserId,
+  getFriends,
+} from "../components/Endpoint";
 import Background from "../components/Background";
 import { Feather } from "@expo/vector-icons";
 
 const InviteScreen = ({ navigation }) => {
+  useEffect(() => {
+    console.log(userData, "invite page");
+  }, [userData]);
   const { userData, updateUserData } = useData();
   const [formData, setData] = useState({});
   const [errors, setErrors] = useState({
     userId: true,
   });
-  const [findUser, setFind] = useState({user:{profileImageUrl:''}});
+  const [findUser, setFind] = useState({ user: { profileImageUrl: "" } });
+  const [linked, setLink]= useState(false)
 
-  async function handleSubmit() {
-    console.log(formData.userId);
+  const handleSearch = async () => {
+    // console.log(formData.userId);
     const response = await findByUserId(userData.token, formData.userId);
+    const friendsRes = await getFriends(userData.token);
     if (response.status === "success") {
-      // console.log('find!!!!')
+      console.log("find!!!!");
       setErrors({
         userId: true,
       });
       setFind({
         user: response.data.user,
       });
+      if (friendsRes.users.length > 0) {
+        const res = friendsRes.users.filter(
+          (user) => user.email == formData.userId.toLowerCase()
+        );
+        // console.log('res',res)
+        if (res.length > 0) {
+          setLink(true)
+        }else{
+          setLink(false)
+        }
+      }
     } else {
       setErrors({
         userId: false,
@@ -45,7 +66,21 @@ const InviteScreen = ({ navigation }) => {
         user: "",
       });
     }
-  }
+  };
+  const handleConnect = async () => {
+    // console.log("connect", findUser);
+    // console.log(userData.data._id, findUser.user._id);
+    const response = await connectByUserId(
+      userData.token,
+      userData.data._id,
+      findUser.user._id
+    );
+    if (response.status === "success") {
+      console.log("connect!!");
+    } else {
+      console.log("fail!!");
+    }
+  };
 
   return (
     <NativeBaseProvider>
@@ -54,7 +89,7 @@ const InviteScreen = ({ navigation }) => {
         <Box safeArea py="2" w="100%" maxW="320">
           <VStack space={3} alignItems="center">
             <Box py="5" alignSelf={"flex-end"}>
-              {userData.avatar&&userData.avatar.uri ? (
+              {userData.avatar && userData.avatar.uri ? (
                 <Avatar
                   bg="white"
                   mb="1"
@@ -81,7 +116,7 @@ const InviteScreen = ({ navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Find a friend
+                    Find a friend By Email
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -104,28 +139,36 @@ const InviteScreen = ({ navigation }) => {
                   </FormControl.ErrorMessage>
                 </FormControl>
 
-                <Button
-                  onPress={handleSubmit}
-                  rounded="30"
-                  shadow="6"
-                  width="100%"
-                  size="lg"
-                  bg="#49a579"
-                  _text={{
-                    color: "#f9f8f2",
-                    fontFamily: "Regular Medium",
-                    fontSize: "lg",
-                  }}
-                  _pressed={{
-                    // below props will only be applied on button is pressed
-                    bg: "emerald.600",
-                    _text: {
-                      color: "warmGray.50",
-                    },
-                  }}
-                >
-                  Search
-                </Button>
+                {formData.userId &&
+                formData.userId.toLowerCase() == userData.data.email ? (
+                  <Text fontFamily={"Regular"} fontSize="lg">
+                    This is YOU!
+                  </Text>
+                ) : (
+                  <Button
+                    onPress={handleSearch}
+                    rounded="30"
+                    shadow="6"
+                    width="100%"
+                    size="lg"
+                    bg="#49a579"
+                    _text={{
+                      color: "#f9f8f2",
+                      fontFamily: "Regular Medium",
+                      fontSize: "lg",
+                    }}
+                    _pressed={{
+                      // below props will only be applied on button is pressed
+                      bg: "emerald.600",
+                      _text: {
+                        color: "warmGray.50",
+                      },
+                    }}
+                  >
+                    Search
+                  </Button>
+                )}
+
                 {findUser.user.profileImageUrl ? (
                   <Box w={"100%"}>
                     <HStack
@@ -154,13 +197,31 @@ const InviteScreen = ({ navigation }) => {
                         {findUser.user.nickname}
                       </Text>
                       <Box>
-                        <Feather name="send" size={30} color="black" />
-                        <Text fontFamily={"Regular"} fontSize="xs">
-                          connect
-                        </Text>
+                        {linked ? (
+                          <Pressable>
+                            <AntDesign
+                                  name="link"
+                                  size={30}
+                                  color="black"
+                                />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              linked
+                            </Text>
+                          </Pressable>
+                        ) : (
+                          <Pressable onPress={handleConnect}>
+                            <Feather name="send" size={30} color="black" />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              connect
+                            </Text>
+                          </Pressable>
+                        )}
                       </Box>
                     </HStack>
-                  </Box>):''}
+                  </Box>
+                ) : (
+                  ""
+                )}
               </VStack>
             </Box>
           </VStack>
