@@ -394,6 +394,33 @@ export async function getSendRequest(token) {
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
+
+export async function getRelationByUserId(token, senderId, receiverId) {
+  try {
+    const response = await fetch(
+      'http://3.27.94.77:8000/habital/v1/friend-requests',
+      // 'http://localhost:8000/habital/v1/friend-requests',
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          senderId: senderId,
+          receiverId: receiverId,
+        }),
+      }
+    );
+    // console.log(response)
+    const data = await response.json();
+    // console.log(data);
+    return data
+  }catch (e) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
 export async function getReceivedRequest(token) {
   try {
     const response = await fetch(

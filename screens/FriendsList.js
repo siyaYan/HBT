@@ -96,7 +96,7 @@ const FriendsScreen = ({ navigation }) => {
             username:response.users[index].username,
             nickname:response.users[index].nickname
           }
-          sendFriends.push(newFriend)
+          sendFriends[index]=newFriend
         })
       }
       setSent(sendFriends)
