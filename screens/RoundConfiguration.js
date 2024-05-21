@@ -10,13 +10,14 @@ import {
   FormControl,
   Button,
   Box,
+  Text
 } from "native-base";
-import {
-  updateRound
-} from "../components/Endpoint";
 import Background from "../components/Background";
+// import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker'
 
 
+const RoundConfigurationScreen = ({ navigation }) => {
 // Define your style constant here
 const textStyle = {
   ml: "1", // This will apply margin left
@@ -26,15 +27,29 @@ const textStyle = {
     color: "#191919" // Font color
   }
 };
-
-const RoundConfigurationScreen = ({ navigation }) => {
-
   // Initialize state with dummy data
   const [roundName, setRoundName] = useState('Championship Qualifiers');
   const [level, setLevel] = useState('Intermediate');
   const [startDate, setStartDate] = useState('2024-01-15');
   const [maxCapacity, setMaxCapacity] = useState('100');
   const [allowOthers, setAllowOthers] = useState(true);
+
+  // Date picker
+  //TODO
+  // const [date, setDate] = useState(new Date());
+  // const [show, setShow] = useState(false);
+
+  // const onChange = (event, selectedDate) => {
+  //     const currentDate = selectedDate || date;
+  //     setShow(Platform.OS === 'ios'); // Only keep the picker open on iOS
+  //     setDate(currentDate);
+  // };
+
+  // const showDatePicker = () => {
+  //     setShow(true);
+  // };
+  const [date, setDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
 /*----------------------------------------------------------------*/
 // Wait for Backend to setup Round Info
 /*----------------------------------------------------------------*/
@@ -65,6 +80,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
   return (
     <NativeBaseProvider>
       <Center w="100%">
+      {/* <OptionMenu navigation={navigation} /> */}
         <Background />
         <Box w="80%" h="100%" maxW="320">
       <VStack space={3} mt="10" style={{justifyContent: 'center'}} >
@@ -81,6 +97,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
             onChangeText={setRoundName}
           />
         </FormControl>
+        
         <FormControl>
           <FormControl.Label  ml={1}
                 _text={{
@@ -134,6 +151,47 @@ const RoundConfigurationScreen = ({ navigation }) => {
             onChangeText={text => setAllowOthers(text.toLowerCase() === 'true')}
           />
         </FormControl>
+        {/* Date picker */}
+        <Box>
+        <Button title="Open" onPress={() => setOpen(true)} />
+      <DatePicker
+        modal
+        open={open}
+        date={date}
+        onConfirm={(date) => {
+          setOpen(false)
+          setDate(date)
+        }}
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
+       <Button title="Open" onPress={() => setOpen(true)} />
+      <DatePicker
+        modal
+        open={open}
+        date={date}
+        onConfirm={(date) => {
+          setOpen(false)
+          setDate(date)
+        }}
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
+        {/* <DateTimePicker value={new Date()} />
+        <Button title="Show Date Picker" onPress={showDatePicker} />
+            {show && (
+                <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="spinner" // This is typical for iOS, but you can also use 'default'
+                    onChange={onChange}
+                />
+            )}
+
+      <Text fontSize="md" p="4">Selected Date: {date.toDateString()}</Text> */}
+    </Box>
         <Button onPress={handleUpdate} mt={5}>Update Round</Button>
       </VStack>
     </Box>

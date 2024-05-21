@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, FlatList, Text, Button, VStack } from 'native-base';
+import { Box, FlatList, Text, Button, VStack,NativeBaseProvider,Center } from 'native-base';
+import Background from "../components/Background";
 
-const RoundInviteFriendsScreen = () => {
+const RoundInviteFriendsScreen = ({ navigation }) => {
  // Dummy list of friends
  const friends = [
     { id: '1', name: 'John Doe' },
@@ -10,9 +11,16 @@ const RoundInviteFriendsScreen = () => {
     { id: '4', name: 'Michael Brown' }
     // Add more friends as needed
   ];
+  // Navigate to Global add friend page
+  const addFriend = () => {
+    navigation.navigate('RoundStack', { screen: 'RoundConfig' });
+  };
 
   return (
-    <Box flex={1} p={5}>
+    <NativeBaseProvider>
+    {/* <Center w="100%"> */}
+      <Background />
+      <Box flex={1} p={5}>
       <VStack space={4} flex={1}>
         <FlatList
           data={friends}
@@ -25,8 +33,7 @@ const RoundInviteFriendsScreen = () => {
           showsVerticalScrollIndicator={true}
         />
         <Button
-        //   onPress={() => navigation.navigate("Invite")} // Make sure this is correctly set up in your navigator
-        //TODO
+        onPress={addFriend}
           position="absolute"
           bottom="5"
           width="90%"
@@ -37,6 +44,9 @@ const RoundInviteFriendsScreen = () => {
         </Button>
       </VStack>
     </Box>
+      {/* </Center> */}
+    </NativeBaseProvider>
+    
   );
 };
 
