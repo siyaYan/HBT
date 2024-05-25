@@ -7,16 +7,15 @@ import {
   FormControl,
   Button,
   Box,
-  View
+  View,
 } from "native-base";
 import { useState, useEffect } from "react";
 import Background from "../components/Background";
 import { Switch } from 'react-native-elements';
 import DropDownPicker from 'react-native-dropdown-picker';
-
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// import DatePicker from 'react-native-date-picker'
-
+import enUS from '@ant-design/react-native/lib/locale-provider/en_US'
+import { DatePicker, List, Provider } from '@ant-design/react-native'
+import RoundDatePicker from './RoundDatePicker';
 
 const RoundConfigurationScreen = ({ navigation }) => {
   // Define your style constant here
@@ -32,7 +31,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
   // Initialize state with dummy data
   const [roundName, setRoundName] = useState('Championship Qualifiers');
   const [level, setLevel] = useState('Intermediate');
-  const [startDate, setStartDate] = useState('2024-01-15');
+  const [startDate, setStartDate] = useState(new Date('2024-01-15'));
   const [maxCapacity, setMaxCapacity] = useState('100');
   const [allowOthers, setAllowOthers] = useState(true);
   // Toggle button
@@ -49,46 +48,13 @@ const RoundConfigurationScreen = ({ navigation }) => {
       {label: '35', value: '35'},
       {label: '66', value: '66'}
   ]);
-  const dropDownContainer = {
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    marginTop: 2,
-};
   // Date picker
-  //TODO
-  // const [date, setDate] = useState(new Date());
-  // const [show, setShow] = useState(false);
+  const [selectedDate, setSelectedDate] = useState();  // Renamed from value to selectedDate
 
-  // const onChange = (event, selectedDate) => {
-  //     const currentDate = selectedDate || date;
-  //     setShow(Platform.OS === 'ios'); // Only keep the picker open on iOS
-  //     setDate(currentDate);
-  // };
-
-  // const showDatePicker = () => {
-  //     setShow(true);
-  // };
-  // const [date, setDate] = useState(new Date())
-  // const [open, setOpen] = useState(false)
-/*----------------------------------------------------------------*/
-// Wait for Backend to setup Round Info
-/*----------------------------------------------------------------*/
-  // Function to handle form submission 
-  // const handleUpdate = async () => {
-  //   const id = "roundId"; // Assume you have a way to get the round ID, perhaps passed via navigation or context
-
-  //   // Call the update API
-  //   const result = await updateRound(id, roundName, level, startDate, parseInt(maxCapacity, 10), allowOthers);
-  //   if (result.status === 'success') {
-  //     Alert.alert('Success', 'Round updated successfully');
-  //     // Optionally navigate back or to another screen
-  //     navigation.goBack(); // or navigation.navigate('SomeOtherScreen');
-  //   } else {
-  //     Alert.alert('Error', result.message || 'Failed to update round');
-  //   }
-  // };
+  const onChangeStartDate = (newDate) => {
+    setSelectedDate(newDate);  // Renamed from setValue to setSelectedDate
+  };
+  
   const handleUpdate = async () => {
     // This would be your API call normally
     console.log("Updating round with:", { roundName, level, startDate, maxCapacity, allowOthers });
@@ -145,12 +111,22 @@ const RoundConfigurationScreen = ({ navigation }) => {
                   fontSize: "lg",
                   color: "#191919",
                 }}>Start Date</FormControl.Label>
-          <Input 
-            placeholder="Enter Start Date"
-            value={startDate}
-            onChangeText={setStartDate}
-          />
         </FormControl>
+       {/* Date picker */}
+       {/* <RoundDatePicker /> */}
+       <Provider locale={enUS}>
+      <List>
+        <DatePicker
+          value={selectedDate}  // Use selectedDate here
+          minDate={new Date(2015, 7, 6)}
+          maxDate={new Date(2026, 11, 3)}
+          onChange={onChangeStartDate}
+          format="YYYY-MM-DD"
+        >
+          <List.Item arrow="horizontal">Select Date</List.Item>
+        </DatePicker>
+      </List>
+    </Provider>
         <FormControl>
           <FormControl.Label ml={1}
                 _text={{
@@ -183,47 +159,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
             onChangeText={text => setAllowOthers(text.toLowerCase() === 'true')}
           /> */}
         </FormControl>
-        {/* Date picker */}
-        {/* <Box> */}
-        {/* <Button title="Open" onPress={() => setOpen(true)} /> */}
-      {/* <DatePicker
-        modal
-        open={open}
-        date={date}
-        onConfirm={(date) => {
-          setOpen(false)
-          setDate(date)
-        }}
-        onCancel={() => {
-          setOpen(false)
-        }}
-      /> */}
-       {/* <Button title="Open" onPress={() => setOpen(true)} /> */}
-      {/* <DatePicker
-        modal
-        open={open}
-        date={date}
-        onConfirm={(date) => {
-          setOpen(false)
-          setDate(date)
-        }}
-        onCancel={() => {
-          setOpen(false)
-        }}
-      /> */}
-        {/* <DateTimePicker value={new Date()} />
-        <Button title="Show Date Picker" onPress={showDatePicker} />
-            {show && (
-                <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="spinner" // This is typical for iOS, but you can also use 'default'
-                    onChange={onChange}
-                />
-            )}
-
-      <Text fontSize="md" p="4">Selected Date: {date.toDateString()}</Text> */}
-    {/* </Box> */}
+   
         <Button onPress={handleUpdate} mt={5}>Update Round</Button>
       </VStack>
     </Box>
