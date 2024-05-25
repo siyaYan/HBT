@@ -145,8 +145,7 @@ const LoginScreen = ({ navigation }) => {
           data: response.data.user,
           avatar: {
             uri: response.data.user.profileImageUrl,
-          },
-          notes:1
+          }
         });
         navigation.navigate("MainStack", { screen: "Home" });
         // console.log(response.token);

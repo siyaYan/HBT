@@ -6,15 +6,19 @@ import { useData } from '../context/DataContext';
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
 import { useFocusEffect } from '@react-navigation/native';
+import {
+  getNoteUpdate
+} from "../components/Endpoint";
 
 // TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation }) => {
-  const { userData, updateUserData } = useData();
+  const { userData, updateUserData, note, updateNotes } = useData();
+
   useFocusEffect(
     useCallback(() => {
-      // This code runs when the tab comes into focus
-      console.log('Tab is in focus, userInfo:', userData);
-    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+      // This code runs when the tab comes into focus & userdata changed
+      updateNote()
+    }, [userData])
   );
 
   const handleAvatarPress = () => {
@@ -22,6 +26,12 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('AccountStack', { screen: 'Account' });
   };
 
+  const  updateNote = async ()=>{
+    const res=await getNoteUpdate(userData.token,userData.data.email)
+    if(res>0){
+      updateNotes(res)
+    }
+ }
 
   return (
     <NativeBaseProvider>

@@ -30,37 +30,31 @@ import {
   clearAllNotifications,
   reactReceivedRequest,
   clearFriendRequestById,
-  clearAllFriendRequests
+  clearAllFriendRequests,
+  getNoteUpdate
 } from "../components/Endpoint";
 
 // TODO: change the layout to match the new ios version
 const NotificationScreen = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
-      // This code runs when the tab comes into focus
-      console.log("Tab is in focus, userInfo:", userData);
-      // userData=useData().useData
-      let noteNum =
-        Object.keys(notificates).length +
-        Object.keys(friendRequest).length
-      if (noteNum > 0) {
-        console.log("Notification num-------------------------", noteNum);
-      }
-
-      updateUserData({
-        ...userData,
-        notes: noteNum,
-      });
       updateNotifiableFriendRequest();
       updateNotification();
       updateNotificationHistory();
+      updateNote()
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
-  const { userData, updateUserData } = useData();
+  const { userData, updateUserData,note,updateNotes } = useData();
   // combination of sent & received
   const [friendRequest, setFriendRequest] = useState([]);
   const [notificates, setNotificates] = useState([]);
   const [history, setHistory] = useState([]);
+  const updateNote = async ()=>{
+    const res=await getNoteUpdate(userData.token,userData.data.email)
+    if(res>0){
+      updateNotes(res)
+    }
+ }
   const updateNotifiableFriendRequest = async () => {
     const response = await getNotifiableFriendRequests(userData.token);
 
@@ -83,7 +77,7 @@ const NotificationScreen = ({ navigation }) => {
         friendrequests[index]=item;
       });
       setFriendRequest(friendrequests);
-      console.log("NotifiableFriendRequests:", friendrequests);
+      // console.log("NotifiableFriendRequests:", friendrequests);
     } else {
       console.error("get NotifiableFriendRequests failed:", response.message);
     }
@@ -114,7 +108,7 @@ const NotificationScreen = ({ navigation }) => {
       });
       setNotificates(Notification);
 
-      console.log("NotifiableNotifications:", Notification);
+      // console.log("NotifiableNotifications:", Notification);
     } else {
       console.error("get NotifiableNotifications failed:", response.message);
     }
@@ -149,7 +143,7 @@ const NotificationScreen = ({ navigation }) => {
         }
       });
       setHistory(Historys);
-      console.log("NotificationHistory:", Historys);
+      // console.log("NotificationHistory:", Historys);
     } else {
       console.error("get NotificationHistory failed:", response.message);
     }
@@ -182,6 +176,7 @@ const NotificationScreen = ({ navigation }) => {
     }
     // Handle success or error response
     if (response.status == "success") {
+      updateNotes(friendRequest.length)
       console.log("clear all notifications success:", response);
     } else {
       console.error("clear all notifications failed:", response.message);
@@ -195,6 +190,7 @@ const NotificationScreen = ({ navigation }) => {
     }
     // Handle success or error response
     if (response.status == "success") {
+      updateNotes(notificates.length)
       console.log('clear all notifications success:',response);
     } else {
       console.error('clear all notifications failed:',response.message);
@@ -342,6 +338,7 @@ const NotificationScreen = ({ navigation }) => {
                                 w={"100%"}
                                 alignItems={"center"}
                                 justifyContent={"space-between"}
+                                key={index}
                               >
                                 {item.profileImageUrl ? (
                                   <Avatar
@@ -392,6 +389,7 @@ const NotificationScreen = ({ navigation }) => {
                                 w={"100%"}
                                 alignItems={"center"}
                                 justifyContent={"space-between"}
+                                key={index}
                               >
                                 {item.profileImageUrl ? (
                                   <Avatar

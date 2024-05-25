@@ -16,19 +16,15 @@ import Background from "../components/Background";
 
 const AppHomeScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
-  console.log(userData, "inApp");
-  // const avatar=route.params;
-  // console.log(avatar);
-
   const handleAvatarPress = () => {
     // Navigate to another screen when the Avatar is pressed
     navigation.navigate("MainStack", { screen: "Account" });
   };
-  useEffect(() => {
-    // Fetch or update avatar dynamically
-    // userData=useData().useData
-    console.log(userData, "inHome");
-  }, [userData]);
+  // useEffect(() => {
+  //   // Fetch or update avatar dynamically
+  //   // userData=useData().useData
+  //   console.log(userData, "inHome");
+  // }, [userData]);
 
   return (
     <NativeBaseProvider>

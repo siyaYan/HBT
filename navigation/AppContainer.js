@@ -39,9 +39,9 @@ export default function AppContainer() {
       if (storedCredentials) {
         // Use credentials to log in the user automatically
         // Implement your login logic here using the retrieved credentials
-        console.log(
-          "Credentials successfully loaded for user " + storedCredentials
-        );
+        // console.log(
+        //   "Credentials successfully loaded for user " + storedCredentials
+        // );
         const response = await loginUser(
           storedCredentials.id,
           storedCredentials.password
