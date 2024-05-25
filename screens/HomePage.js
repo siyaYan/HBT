@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Box, Heading, IconButton,Text, Pressable, Button, NativeBaseProvider, Flex } from 'native-base';
+import { Box, Heading, IconButton,Text, Pressable, Button, NativeBaseProvider, Flex, View } from 'native-base';
 import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
@@ -20,10 +20,17 @@ const HomeScreen = ({ navigation }) => {
       updateNote()
     }, [userData])
   );
-
   const handleAvatarPress = () => {
     // Navigate to another screen when the Avatar is pressed
     navigation.navigate('AccountStack', { screen: 'Account' });
+  };
+  const startRound = () => {
+    // Navigate to round configuration when pressed
+    navigation.navigate('RoundStack', { screen: 'RoundConfig' });
+  };
+
+  const roundInfo = () => {
+    navigation.navigate('RoundStack',{screen:'RoundInfo'})
   };
 
   const  updateNote = async ()=>{
@@ -50,36 +57,65 @@ const HomeScreen = ({ navigation }) => {
                   </Text>
           </Box>
         </Pressable>
-        <Box safeArea w="100%" maxW="300" alignItems="center">
-          {!userData ? <Button
-            mt="2"
-            width="100%"
-            size="lg"
-            rounded="30"
-            shadow="6"
-            bg="#49a579"
-            _text={{
-              color: "#f9f8f2",
-              fontFamily: "Regular Medium",
-              fontSize: "lg",
-            }}
-            _pressed={{
-              // below props will only be applied on button is pressed
-              bg: "emerald.600",
-              _text: {
-                color: "warmGray.50",
-              },
-            }}
-            onPress={() => {
-              navigation.navigate("LoginStack", { screen: "Login" });
-            }}
-          >
-            Login
-          </Button>: 
-            <Text fontFamily={'Bold'} fontSize={"3xl"} style={{ marginTop:'50%',}} >Home Page1</Text>
-          }
-        </Box>
-      </Flex>
+        <Button
+              // onPress={()=>navigation.navigate('RoundConfig')}
+              onPress={roundInfo}
+              rounded="30"
+              // shadow="1"
+              mt="5"
+              width="80%"
+              size="lg"
+              style={{
+                borderWidth: 1, // This sets the width of the border
+                borderColor: '#49a579', // This sets the color of the border
+              }}
+              backgroundColor={"rgba(250,250,250,0.2)"}
+              _text={{
+                color: "#191919",
+                fontFamily: "Regular Semi Bold",
+                fontSize: "lg",
+              }}
+              _pressed={{
+                // below props will only be applied on button is pressed
+                bg: "#e5f5e5",
+                // _text: {
+                //   color: "warmGray.50",
+                // },
+              }}
+            >
+              Round info dummy
+            </Button>
+        {/* Linda Sprint 4 */}
+        <Button
+              // onPress={()=>navigation.navigate('RoundConfig')}
+              onPress={startRound}
+              rounded="30"
+              // shadow="1"
+              mt="5"
+              width="80%"
+              size="lg"
+              style={{
+                borderWidth: 1, // This sets the width of the border
+                borderColor: '#49a579', // This sets the color of the border
+              }}
+              backgroundColor={"rgba(250,250,250,0.2)"}
+              _text={{
+                color: "#191919",
+                fontFamily: "Regular Semi Bold",
+                fontSize: "lg",
+              }}
+              _pressed={{
+                // below props will only be applied on button is pressed
+                bg: "#e5f5e5",
+                // _text: {
+                //   color: "warmGray.50",
+                // },
+              }}
+            >
+              Start a round
+            </Button>
+            
+        </Flex>
 
     </NativeBaseProvider>
   );
