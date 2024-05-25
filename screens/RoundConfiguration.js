@@ -115,10 +115,10 @@ const RoundConfigurationScreen = ({ navigation }) => {
        {/* Date picker */}
        {/* <RoundDatePicker /> */}
        <Provider locale={enUS}>
-      <List>
+     <List>
         <DatePicker
           value={selectedDate}  // Use selectedDate here
-          minDate={new Date(2015, 7, 6)}
+          minDate={new Date()}
           maxDate={new Date(2026, 11, 3)}
           onChange={onChangeStartDate}
           format="YYYY-MM-DD"
