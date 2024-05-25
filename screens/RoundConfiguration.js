@@ -3,37 +3,59 @@ import {
   Input,
   Center,
   NativeBaseProvider,
-} from "native-base";
-import { useState, useEffect } from "react";
-import {
   VStack,
   FormControl,
   Button,
   Box,
-  Text
+  View
 } from "native-base";
+import { useState, useEffect } from "react";
 import Background from "../components/Background";
+import { Switch } from 'react-native-elements';
+import DropDownPicker from 'react-native-dropdown-picker';
+
 // import DateTimePicker from '@react-native-community/datetimepicker';
-import DatePicker from 'react-native-date-picker'
+// import DatePicker from 'react-native-date-picker'
 
 
 const RoundConfigurationScreen = ({ navigation }) => {
-// Define your style constant here
-const textStyle = {
-  ml: "1", // This will apply margin left
-  _text: {
-    fontFamily: "Regular Semi Bold", // Your font family
-    fontSize: "lg", // 'lg' is a size token from NativeBase, make sure it's defined in your theme
-    color: "#191919" // Font color
-  }
-};
+  // Define your style constant here
+  const textStyle = {
+    ml: "1", // This will apply margin left
+    _text: {
+      fontFamily: "Regular Semi Bold", // Your font family
+      fontSize: "lg", // 'lg' is a size token from NativeBase, make sure it's defined in your theme
+      color: "#191919" // Font color
+    }
+  };
+
   // Initialize state with dummy data
   const [roundName, setRoundName] = useState('Championship Qualifiers');
   const [level, setLevel] = useState('Intermediate');
   const [startDate, setStartDate] = useState('2024-01-15');
   const [maxCapacity, setMaxCapacity] = useState('100');
   const [allowOthers, setAllowOthers] = useState(true);
+  // Toggle button
+  const [isEnabled, setIsEnabled] = useState(false);
 
+    const toggleSwitch = () => {
+        setIsEnabled(previousState => !previousState);
+    };
+  //Drop down list
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+      {label: '21', value: '21'},
+      {label: '35', value: '35'},
+      {label: '66', value: '66'}
+  ]);
+  const dropDownContainer = {
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    marginTop: 2,
+};
   // Date picker
   //TODO
   // const [date, setDate] = useState(new Date());
@@ -48,8 +70,8 @@ const textStyle = {
   // const showDatePicker = () => {
   //     setShow(true);
   // };
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
+  // const [date, setDate] = useState(new Date())
+  // const [open, setOpen] = useState(false)
 /*----------------------------------------------------------------*/
 // Wait for Backend to setup Round Info
 /*----------------------------------------------------------------*/
@@ -105,12 +127,17 @@ const textStyle = {
                   fontSize: "lg",
                   color: "#191919",
                 }}>Level</FormControl.Label>
-          <Input 
-            placeholder="Enter Level"
-            value={level}
-            onChangeText={setLevel}
-          />
         </FormControl>
+                {/* // Dropdown list */} 
+                <DropDownPicker 
+                // dropDownContainerStyle={dropDownContainer}
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+            />
         <FormControl>
           <FormControl.Label  ml={1}
                 _text={{
@@ -144,17 +171,22 @@ const textStyle = {
                   fontFamily: "Regular Semi Bold",
                   fontSize: "lg",
                   color: "#191919",
-                }}>Allow Others</FormControl.Label>
-          <Input 
+                }}>Allow others to invite friends</FormControl.Label>
+          <Switch
+            value={isEnabled}
+            onValueChange={toggleSwitch}
+            color={isEnabled ? 'green' : 'gray'}
+          />
+          {/* <Input 
             placeholder="Enter true or false"
             value={allowOthers.toString()}
             onChangeText={text => setAllowOthers(text.toLowerCase() === 'true')}
-          />
+          /> */}
         </FormControl>
         {/* Date picker */}
-        <Box>
-        <Button title="Open" onPress={() => setOpen(true)} />
-      <DatePicker
+        {/* <Box> */}
+        {/* <Button title="Open" onPress={() => setOpen(true)} /> */}
+      {/* <DatePicker
         modal
         open={open}
         date={date}
@@ -165,9 +197,9 @@ const textStyle = {
         onCancel={() => {
           setOpen(false)
         }}
-      />
-       <Button title="Open" onPress={() => setOpen(true)} />
-      <DatePicker
+      /> */}
+       {/* <Button title="Open" onPress={() => setOpen(true)} /> */}
+      {/* <DatePicker
         modal
         open={open}
         date={date}
@@ -178,7 +210,7 @@ const textStyle = {
         onCancel={() => {
           setOpen(false)
         }}
-      />
+      /> */}
         {/* <DateTimePicker value={new Date()} />
         <Button title="Show Date Picker" onPress={showDatePicker} />
             {show && (
@@ -191,7 +223,7 @@ const textStyle = {
             )}
 
       <Text fontSize="md" p="4">Selected Date: {date.toDateString()}</Text> */}
-    </Box>
+    {/* </Box> */}
         <Button onPress={handleUpdate} mt={5}>Update Round</Button>
       </VStack>
     </Box>
