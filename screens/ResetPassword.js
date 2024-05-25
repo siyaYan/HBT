@@ -52,7 +52,7 @@ const ResetPassword = ({ navigation }) => {
           /^(?=.*[A-Za-z].*[0-9]|[0-9].*[A-Za-z])(?=\S{8,20})(?=.*[!@#%&_?#=-])/.test(
             text
           ),
-          confirmPassword: res,
+        confirmPassword: res,
       });
       return (
         errors.length &&
