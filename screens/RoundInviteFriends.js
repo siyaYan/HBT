@@ -13,7 +13,7 @@ const RoundInviteFriendsScreen = ({ navigation }) => {
   ];
   // Navigate to Global add friend page
   const addFriend = () => {
-    navigation.navigate('RoundStack', { screen: 'RoundConfig' });
+    navigation.navigate('Invite');
   };
 
   return (

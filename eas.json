@@ -1,7 +1,4 @@
 {
-  "cli": {
-    "version": ">= 5.9.3"
-  },
   "build": {
     "development-simulator": {
       "developmentClient": true,
@@ -9,32 +6,6 @@
       "ios": {
         "simulator": true
       }
-    },
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "android": {
-        "gradleCommand": ":app:assembleDebug"
-      },
-      "ios": {
-        "buildConfiguration": "Debug",
-        "simulator": true
-
-      },
-      "channel": "development"
-    },
-    "preview": {
-      "distribution": "internal",
-      "channel": "preview",
-      "ios": {
-        "simulator": true
-      }
-    },
-    "production": {
-      "channel": "production"
     }
-  },
-  "submit": {
-    "production": {}
   }
 }
