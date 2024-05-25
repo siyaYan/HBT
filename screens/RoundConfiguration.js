@@ -7,7 +7,7 @@ import {
   FormControl,
   Button,
   Box,
-  View,
+  View,Text,ZStack,Menu,Pressable,
 } from "native-base";
 import { useState, useEffect } from "react";
 import Background from "../components/Background";
@@ -16,8 +16,39 @@ import DropDownPicker from "react-native-dropdown-picker";
 import enUS from "@ant-design/react-native/lib/locale-provider/en_US";
 import { DatePicker, List, Provider } from "@ant-design/react-native";
 import RoundDatePicker from "./RoundDatePicker";
+import DateTimePicker from "react-native-ui-datepicker";
+import dayjs from "dayjs";
+import HoverEffectComponent from './Test.js';
+import { AntDesign } from "@expo/vector-icons";
 
 const RoundConfigurationScreen = ({ navigation }) => {
+  const minDaysFromNow = new Date(); // Start with today's date
+  minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
+  // Date picker antd version
+  // const [selectedDate, setSelectedDate] = useState(); // Renamed from value to selectedDate
+
+  // const onChangeStartDate = (newDate) => {
+  //   setSelectedDate(newDate); // Renamed from setValue to setSelectedDate
+  // };
+  //Date picker react native ui version
+  // const [date, setDate] = useState(dayjs());
+  const [startDate, setDate] = useState(dayjs());
+  const [show, setShow] = useState(false);
+  const [dateText, setDateText] = useState('');
+
+  const onChangeStartDate = (event, selectedDate) => {
+    if (selectedDate) {
+        setDate(selectedDate);
+        setDateText(selectedDate.toLocaleDateString());
+        setShow(false);
+    } else {
+        setShow(Platform.OS === 'ios');
+    }
+  };
+
+  const showDatePicker = () => {
+    setShow(true);
+  };
   // Define your style constant here
   const textStyle = {
     ml: "1", // This will apply margin left
@@ -31,8 +62,8 @@ const RoundConfigurationScreen = ({ navigation }) => {
   // Initialize state with dummy data
   const [roundName, setRoundName] = useState("Championship Qualifiers");
   const [level, setLevel] = useState("Intermediate");
-  const [startDate, setStartDate] = useState(new Date("2024-01-15"));
-  const [maxCapacity, setMaxCapacity] = useState("100");
+  // const [startDate, setStartDate] = useState(new Date("2024-01-15"));
+  const [maxCapacity, setMaxCapacity] = useState("10");
   const [allowOthers, setAllowOthers] = useState(true);
   // Toggle button
   const [isEnabled, setIsEnabled] = useState(false);
@@ -48,12 +79,6 @@ const RoundConfigurationScreen = ({ navigation }) => {
     { label: "35", value: "35" },
     { label: "66", value: "66" },
   ]);
-  // Date picker
-  const [selectedDate, setSelectedDate] = useState(); // Renamed from value to selectedDate
-
-  const onChangeStartDate = (newDate) => {
-    setSelectedDate(newDate); // Renamed from setValue to setSelectedDate
-  };
 
   const handleUpdate = async () => {
     // This would be your API call normally
@@ -76,6 +101,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
       <Center w="100%">
         {/* <OptionMenu navigation={navigation} /> */}
         <Background />
+        <HoverEffectComponent />
         <Box w="80%" h="100%" maxW="320">
           <VStack space={3} mt="10" style={{ justifyContent: "center" }}>
             <FormControl>
@@ -131,8 +157,47 @@ const RoundConfigurationScreen = ({ navigation }) => {
               </FormControl.Label>
             </FormControl>
             {/* Date picker */}
-            {/* <RoundDatePicker /> */}
-            <Provider locale={enUS}>
+            {/* <View>
+              <Button onPress={showDatePicker} title="Show Date Picker" />
+              {show && (
+                <DateTimePicker
+                  mode="single"
+                  date={date}
+                  onChange={(params) => setDate(params.date)}
+                />
+              )}
+            </View> */}
+            
+    <View style={{ padding: 20 }}>
+    <ZStack alignSelf="flex-end" mr="15%" mt="10%">
+      <Box alignItems="flex-start">
+        <Menu
+          shadow={2}
+          mr="20"
+          w="280"
+          trigger={(triggerProps) => {
+            return (
+              <Pressable accessibilityLabel="Options menu" {...triggerProps}>
+                <AntDesign name="calendar" size={24} color="black" />
+              </Pressable>
+            );
+          }}
+        >
+          <DateTimePicker
+            mode="single"
+            date={startDate}
+            minDate={minDaysFromNow}
+            onChange={(params) => setDate(params.date)}
+          />
+          {/* <Menu.Item px='0' onPress={inviteFriend}><AntDesign name="adduser" size={24} color="black" />Add a friend</Menu.Item> */}
+          {/* <Menu.Item px="0">Test</Menu.Item>
+          <Menu.Item px="0">Test</Menu.Item> */}
+        </Menu>
+      </Box>
+    </ZStack>
+    </View>
+
+            {/* <Provider locale={enUS}>
               <List>
                 <DatePicker
                   value={selectedDate} // Use selectedDate here
@@ -144,7 +209,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
                   <List.Item arrow="horizontal">Select Date</List.Item>
                 </DatePicker>
               </List>
-            </Provider>
+            </Provider> */}
             <FormControl>
               <FormControl.Label
                 ml={1}
