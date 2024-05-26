@@ -7,7 +7,12 @@ import {
   FormControl,
   Button,
   Box,
-  View,Text,ZStack,Menu,Pressable,
+  View,
+  Text,
+  ZStack,
+  Menu,
+  Pressable,
+  HStack,
 } from "native-base";
 import { useState, useEffect } from "react";
 import Background from "../components/Background";
@@ -18,7 +23,7 @@ import { DatePicker, List, Provider } from "@ant-design/react-native";
 import RoundDatePicker from "./RoundDatePicker";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
-import HoverEffectComponent from './Test.js';
+import HoverEffectComponent from "./Test.js";
 import { AntDesign } from "@expo/vector-icons";
 
 const RoundConfigurationScreen = ({ navigation }) => {
@@ -34,15 +39,15 @@ const RoundConfigurationScreen = ({ navigation }) => {
   // const [date, setDate] = useState(dayjs());
   const [startDate, setDate] = useState(dayjs());
   const [show, setShow] = useState(false);
-  const [dateText, setDateText] = useState('');
+  const [dateText, setDateText] = useState("");
 
   const onChangeStartDate = (event, selectedDate) => {
     if (selectedDate) {
-        setDate(selectedDate);
-        setDateText(selectedDate.toLocaleDateString());
-        setShow(false);
+      setDate(selectedDate);
+      setDateText(selectedDate.toLocaleDateString());
+      setShow(false);
     } else {
-        setShow(Platform.OS === 'ios');
+      setShow(Platform.OS === "ios");
     }
   };
 
@@ -144,72 +149,52 @@ const RoundConfigurationScreen = ({ navigation }) => {
               setValue={setValue}
               setItems={setItems}
             />
-            <FormControl>
-              <FormControl.Label
-                ml={1}
-                _text={{
-                  fontFamily: "Regular Semi Bold",
-                  fontSize: "lg",
-                  color: "#191919",
-                }}
-              >
-                Start Date
-              </FormControl.Label>
-            </FormControl>
-            {/* Date picker */}
-            {/* <View>
-              <Button onPress={showDatePicker} title="Show Date Picker" />
-              {show && (
-                <DateTimePicker
-                  mode="single"
-                  date={date}
-                  onChange={(params) => setDate(params.date)}
-                />
-              )}
-            </View> */}
             
-    <View style={{ padding: 20 }}>
-    <ZStack alignSelf="flex-end" mr="15%" mt="10%">
-      <Box alignItems="flex-start">
-        <Menu
-          shadow={2}
-          mr="20"
-          w="280"
-          trigger={(triggerProps) => {
-            return (
-              <Pressable accessibilityLabel="Options menu" {...triggerProps}>
-                <AntDesign name="calendar" size={24} color="black" />
-              </Pressable>
-            );
-          }}
-        >
-          <DateTimePicker
-            mode="single"
-            date={startDate}
-            minDate={minDaysFromNow}
-            onChange={(params) => setDate(params.date)}
-          />
-          {/* <Menu.Item px='0' onPress={inviteFriend}><AntDesign name="adduser" size={24} color="black" />Add a friend</Menu.Item> */}
-          {/* <Menu.Item px="0">Test</Menu.Item>
-          <Menu.Item px="0">Test</Menu.Item> */}
-        </Menu>
-      </Box>
-    </ZStack>
-    </View>
-
-            {/* <Provider locale={enUS}>
-              <List>
-                <DatePicker
-                  value={selectedDate} // Use selectedDate here
-                  minDate={new Date()}
-                  maxDate={new Date(2026, 11, 3)}
-                  onChange={onChangeStartDate}
-                  format="YYYY-MM-DD"
-                >
-                  <List.Item arrow="horizontal">Select Date</List.Item>
-                </DatePicker>
-              </List>
-            </Provider> */}
+            <FormControl>
+  <HStack space={2} alignItems="center" justifyContent="space-between">
+    <FormControl.Label
+      ml={1}
+      _text={{
+        fontFamily: "Regular Semi Bold",
+        fontSize: "lg",
+        color: "#191919",
+      }}
+    >
+      Start Date
+    </FormControl.Label>
+    <View style={{ padding: 20 ,alignSelf: 'flex-end'}}>
+                <ZStack alignSelf="flex-end" mr="15%" mt="10%">
+                  <Box alignSelf="flex-end">
+                    <Menu
+                      mr="10"
+                      w="280"
+                      trigger={(triggerProps) => {
+                        return (
+                          <Pressable
+                            accessibilityLabel="Date picker"
+                            {...triggerProps}
+                          >
+                            <AntDesign
+                              name="calendar"
+                              size={24}
+                              color="black"
+                            />
+                          </Pressable>
+                        );
+                      }}
+                    >
+                      <DateTimePicker
+                        mode="single"
+                        date={startDate}
+                        minDate={minDaysFromNow}
+                        onChange={(params) => setDate(params.date)}
+                      />
+                    </Menu>
+                  </Box>
+                </ZStack>
+              </View>
+  </HStack>
+</FormControl>
             <FormControl>
               <FormControl.Label
                 ml={1}
