@@ -18,6 +18,7 @@ const HomeScreen = ({ navigation }) => {
     useCallback(() => {
       // This code runs when the tab comes into focus & userdata changed
       updateNote()
+      console.log(userData)
     }, [userData])
   );
 

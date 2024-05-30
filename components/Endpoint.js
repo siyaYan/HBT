@@ -298,7 +298,7 @@ export async function updateAvatar(token, userId, avatar) {
   }
 }
 
-export async function findByUserId(token, userId) {
+export async function findByUserIdAndUsername(token, userId) {
   try {
     const response = await fetch(
       "http://3.27.94.77:8000/habital/v1/users/" + userId ,

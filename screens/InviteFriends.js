@@ -17,7 +17,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import {
   connectByUserId,
-  findByUserId,
+  findByUserIdAndUsername,
   getFriends,
   getRelationByUserId,
 } from "../components/Endpoint";
@@ -38,7 +38,10 @@ const InviteScreen = ({ navigation }) => {
   const [pend, setPend] = useState(false);
 
   const handleSearch = async () => {
-    const response = await findByUserId(userData.token, formData.userId);
+    const response = await findByUserIdAndUsername(
+      userData.token,
+      formData.userId
+    );
     // const friendsRes = await getFriends(userData.token);
     if (response.status === "success") {
       // console.log("find!!!!");
@@ -135,7 +138,7 @@ const InviteScreen = ({ navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Find a friend By Email
+                    Find a friend By Email/Username
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -159,7 +162,8 @@ const InviteScreen = ({ navigation }) => {
                 </FormControl>
 
                 {formData.userId &&
-                formData.userId.toLowerCase() == userData.data.email ? (
+                (formData.userId.toLowerCase() == userData.data.email ||
+                  formData.userId == userData.data.username) ? (
                   <Text fontFamily={"Regular"} fontSize="lg">
                     This is YOU!
                   </Text>
@@ -188,7 +192,8 @@ const InviteScreen = ({ navigation }) => {
                   </Button>
                 )}
 
-                {findUser.user.profileImageUrl ? (
+                {findUser.user.profileImageUrl && !(formData.userId.toLowerCase() == userData.data.email ||
+                  formData.userId == userData.data.username) ? (
                   <Box w={"100%"}>
                     <HStack
                       w={"100%"}
@@ -223,18 +228,20 @@ const InviteScreen = ({ navigation }) => {
                               linked
                             </Text>
                           </Pressable>
-                        ) : ( pend ?(<Pressable>
-                          <Feather name="send" size={30} color="grey" />
-                          <Text fontFamily={"Regular"} fontSize="xs">
-                            pending
-                          </Text>
-                        </Pressable>):(<Pressable onPress={handleConnect}>
-                          <Feather name="send" size={30} color="black" />
-                          <Text fontFamily={"Regular"} fontSize="xs">
-                            connect
-                          </Text>
-                        </Pressable>)
-                          
+                        ) : pend ? (
+                          <Pressable>
+                            <Feather name="send" size={30} color="grey" />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              pending
+                            </Text>
+                          </Pressable>
+                        ) : (
+                          <Pressable onPress={handleConnect}>
+                            <Feather name="send" size={30} color="black" />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              connect
+                            </Text>
+                          </Pressable>
                         )}
                       </Box>
                     </HStack>
