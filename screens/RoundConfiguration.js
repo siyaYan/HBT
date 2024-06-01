@@ -37,13 +37,13 @@ const RoundConfigurationScreen = ({ navigation }) => {
   //Date picker react native ui version
   // const [date, setDate] = useState(dayjs());
   // const [startDate, setDate] = useState(dayjs());
-  const [startDate, setDate]= useState(new Date());
+  const [startDate, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const [dateText, setDateText] = useState("");
 
   const onChangeStartDate = (event, selectedDate) => {
     setDate(selectedDate || startDate);
-        setShow(false);
+    setShow(false);
   };
 
   const showDatePicker = () => {
@@ -64,7 +64,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
   const [level, setLevel] = useState("Intermediate");
   // const [startDate, setStartDate] = useState(new Date("2024-01-15"));
   const [maxCapacity, setMaxCapacity] = useState("10");
-  const [allowOthers, setAllowOthers] = useState(true);
+  const [allowOthers, setAllowOthers] = useState(false);
   // Toggle button
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -143,13 +143,14 @@ const RoundConfigurationScreen = ({ navigation }) => {
               setValue={setValue}
               setItems={setItems}
             />
-{/* Start Date */}
+            {/* Start Date */}
             <FormControl>
               <HStack
                 space={2}
                 alignItems="center"
                 justifyContent="space-between"
               >
+              <VStack>
                 <FormControl.Label
                   ml={1}
                   _text={{
@@ -160,21 +161,24 @@ const RoundConfigurationScreen = ({ navigation }) => {
                 >
                   Start Date
                 </FormControl.Label>
-                
+                <Text>{startDate.toString()}</Text>
+                </VStack>
+
                 <View style={{ padding: 20, alignSelf: "flex-end" }}>
                   <ZStack alignSelf="flex-end" mr="15%" mt="10%">
                     <Box alignSelf="flex-end">
                       <Menu
-                        mr="10"
+                        mt="-50%"
+                        // mr="10"
                         w="280"
                         trigger={(triggerProps) => {
                           return (
                             <Pressable
                               accessibilityLabel="Date picker"
                               {...triggerProps}
-      //                         onPress={() => {
-      //   console.log("Calendar icon pressed. Start Date is:", startDate); // Replace this with your actual function to show date picker
-      // }}
+                              //                         onPress={() => {
+                              //   console.log("Calendar icon pressed. Start Date is:", startDate); // Replace this with your actual function to show date picker
+                              // }}
                             >
                               <AntDesign
                                 name="calendar"
@@ -190,14 +194,18 @@ const RoundConfigurationScreen = ({ navigation }) => {
                           date={startDate}
                           minDate={minDaysFromNow}
                           // onChange={(params) => setDate(params.date)}
-                          onChange={(params) => {setDate(params.date);console.log("Calendar icon pressed. Start Date is:", startDate)}}
+                          onChange={(params) => {
+                            setDate(params.date);
+                            console.log(
+                              "Calendar icon pressed. Start Date is:",
+                              startDate
+                            );
+                          }}
                         />
-                        {/* <Text>{startDate}</Text> */}
                       </Menu>
                     </Box>
                   </ZStack>
                 </View>
-                
               </HStack>
             </FormControl>
             <FormControl>
