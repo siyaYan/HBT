@@ -28,19 +28,24 @@ import { updateRound } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 
 const RoundConfigurationScreen = ({ navigation }) => {
+  // validation
+  const [isInvalid, setIsInvalid] = useState({
+    roundName: false,
+    level: false,
+    maxCapacity: false,
+    isAllowed: false,
+  });
+  // Initialization
   const { userData } = useData();
 
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
-
   const [startDate, setDate] = useState(new Date());
-
-  // Initialize state with dummy data
-  const [roundName, setRoundName] = useState("Championship Qualifiers");
+  const [roundName, setRoundName] = useState(null);
   const [level, setLevel] = useState();
-  // const [startDate, setStartDate] = useState(new Date("2024-01-15"));
   const [maxCapacity, setMaxCapacity] = useState("10");
   const [allowOthers, setAllowOthers] = useState(false);
+
   // Toggle button
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -67,6 +72,26 @@ const RoundConfigurationScreen = ({ navigation }) => {
     };
     updateRound(roundData, userData.token);
   };
+  const handleUpload = () => {
+    let newIsInvalid = { ...isInvalid };
+
+    if (!level) {
+      newIsInvalid.level = true;
+    } else {
+      newIsInvalid.level = false;
+    }
+
+    setIsInvalid(newIsInvalid);
+
+    const isAnyInvalid = Object.values(newIsInvalid).some((value) => value);
+    if (isAnyInvalid) {
+      return;
+    }
+
+    // Proceed with upload or other actions
+    // console.log('Selected level:', level);
+    handleUpdateRound();
+  };
 
   return (
     <NativeBaseProvider>
@@ -75,7 +100,8 @@ const RoundConfigurationScreen = ({ navigation }) => {
         <Background />
         <Box w="80%" h="100%" maxW="320">
           <VStack space={3} mt="10" style={{ justifyContent: "center" }}>
-            <FormControl>
+          {/* Round Name */}
+            <FormControl isInvalid={isInvalid.roundName}>
               <FormControl.Label
                 ml={1}
                 _text={{
@@ -92,8 +118,8 @@ const RoundConfigurationScreen = ({ navigation }) => {
                 onChangeText={setRoundName}
               />
             </FormControl>
-
-            <FormControl>
+            {/* Level */}
+            <FormControl isInvalid={isInvalid.level}>
               <FormControl.Label
                 ml={1}
                 _text={{
@@ -119,6 +145,13 @@ const RoundConfigurationScreen = ({ navigation }) => {
               }}
               setItems={setItems}
             />
+            {isInvalid && (
+              <FormControl isInvalid={isInvalid.level}>
+                <FormControl.ErrorMessage>
+                  This field is required
+                </FormControl.ErrorMessage>
+              </FormControl>
+            )}
             {/* Start Date */}
             <FormControl>
               <HStack
@@ -190,6 +223,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
                 </View>
               </HStack>
             </FormControl>
+            {/* Maximum Capacity */}
             <FormControl>
               <FormControl.Label
                 ml={1}
@@ -228,7 +262,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
 
             <Button
               onPress={() => {
-                handleUpdateRound();
+                handleUpload();
                 // console.log("Calendar icon pressed. info:", startDate,level,roundName,allowOthers,userData.data._id);
               }}
               mt={5}
@@ -244,5 +278,4 @@ const RoundConfigurationScreen = ({ navigation }) => {
 
 export default RoundConfigurationScreen;
 
-//TODO: 1. validation on Level
 //TODO: 2. Round name placeholder rather than default value
