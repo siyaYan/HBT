@@ -24,44 +24,16 @@ import RoundDatePicker from "./RoundDatePicker";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { AntDesign } from "@expo/vector-icons";
-import { useData } from '../context/DataContext';
-
+import { updateRound } from "../components/Endpoint";
+import { useData } from "../context/DataContext";
 
 const RoundConfigurationScreen = ({ navigation }) => {
-  const { userData, updateUserData } = useData();
+  const { userData } = useData();
 
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
-  // Date picker antd version
-  // const [selectedDate, setSelectedDate] = useState(); // Renamed from value to selectedDate
 
-  // const onChangeStartDate = (newDate) => {
-  //   setSelectedDate(newDate); // Renamed from setValue to setSelectedDate
-  // };
-  //Date picker react native ui version
-  // const [date, setDate] = useState(dayjs());
-  // const [startDate, setDate] = useState(dayjs());
   const [startDate, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
-  const [dateText, setDateText] = useState("");
-
-  const onChangeStartDate = (event, selectedDate) => {
-    setDate(selectedDate || startDate);
-    setShow(false);
-  };
-
-  const showDatePicker = () => {
-    setShow(true);
-  };
-  // Define your style constant here
-  const textStyle = {
-    ml: "1", // This will apply margin left
-    _text: {
-      fontFamily: "Regular Semi Bold", // Your font family
-      fontSize: "lg", // 'lg' is a size token from NativeBase, make sure it's defined in your theme
-      color: "#191919", // Font color
-    },
-  };
 
   // Initialize state with dummy data
   const [roundName, setRoundName] = useState("Championship Qualifiers");
@@ -86,34 +58,14 @@ const RoundConfigurationScreen = ({ navigation }) => {
 
   const handleUpdateRound = () => {
     const roundData = {
-      userId:userData.data._id,
-      name:roundName,
+      userId: userData.data._id,
+      name: roundName,
       level,
       startDate,
       maxCapacity: parseInt(maxCapacity, 10),
-      allowOthers
+      allowOthers,
     };
-    fetch('http://3.27.94.77:8000/habital/v1/Round/post_round_create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(roundData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(`HTTP error ${response.status}: ${text}`);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    updateRound(roundData, userData.token);
   };
 
   return (
@@ -160,11 +112,11 @@ const RoundConfigurationScreen = ({ navigation }) => {
               value={value}
               items={items}
               setOpen={setOpen}
-          setValue={(callback) => {
-          setValue(callback);
-          const newValue = callback(value);
-          setLevel(newValue);
-        }}
+              setValue={(callback) => {
+                setValue(callback);
+                const newValue = callback(value);
+                setLevel(newValue);
+              }}
               setItems={setItems}
             />
             {/* Start Date */}
@@ -174,18 +126,24 @@ const RoundConfigurationScreen = ({ navigation }) => {
                 alignItems="center"
                 justifyContent="space-between"
               >
-              <VStack>
-                <FormControl.Label
-                  ml={1}
-                  _text={{
-                    fontFamily: "Regular Semi Bold",
-                    fontSize: "lg",
-                    color: "#191919",
-                  }}
-                >
-                  Start Date
-                </FormControl.Label>
-                <Text>{startDate.toString()}</Text>
+                <VStack>
+                  <FormControl.Label
+                    ml={1}
+                    _text={{
+                      fontFamily: "Regular Semi Bold",
+                      fontSize: "lg",
+                      color: "#191919",
+                    }}
+                  >
+                    Start Date
+                  </FormControl.Label>
+                  <Text>
+                    {startDate.toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </Text>
                 </VStack>
 
                 <View style={{ padding: 20, alignSelf: "flex-end" }}>
@@ -219,7 +177,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
                           minDate={minDaysFromNow}
                           // onChange={(params) => setDate(params.date)}
                           onChange={(params) => {
-                            setDate(params.date);
+                            setDate(new Date(params.date));
                             console.log(
                               "Calendar icon pressed. Start Date is:",
                               startDate
@@ -269,14 +227,14 @@ const RoundConfigurationScreen = ({ navigation }) => {
             </FormControl>
 
             <Button
-  onPress={() => {
-    handleUpdateRound();
-    console.log("Calendar icon pressed. info:", startDate,level,roundName,allowOthers,userData.data._id);
-  }}
-  mt={5}
->
-  Update Round
-</Button>
+              onPress={() => {
+                handleUpdateRound();
+                // console.log("Calendar icon pressed. info:", startDate,level,roundName,allowOthers,userData.data._id);
+              }}
+              mt={5}
+            >
+              Update Round
+            </Button>
           </VStack>
         </Box>
       </Center>
@@ -285,3 +243,6 @@ const RoundConfigurationScreen = ({ navigation }) => {
 };
 
 export default RoundConfigurationScreen;
+
+//TODO: 1. validation on Level
+//TODO: 2. Round name placeholder rather than default value
