@@ -24,8 +24,12 @@ import RoundDatePicker from "./RoundDatePicker";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { AntDesign } from "@expo/vector-icons";
+import { useData } from '../context/DataContext';
+
 
 const RoundConfigurationScreen = ({ navigation }) => {
+  const { userData, updateUserData } = useData();
+
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
   // Date picker antd version
@@ -61,7 +65,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
 
   // Initialize state with dummy data
   const [roundName, setRoundName] = useState("Championship Qualifiers");
-  const [level, setLevel] = useState("Intermediate");
+  const [level, setLevel] = useState();
   // const [startDate, setStartDate] = useState(new Date("2024-01-15"));
   const [maxCapacity, setMaxCapacity] = useState("10");
   const [allowOthers, setAllowOthers] = useState(false);
@@ -80,20 +84,36 @@ const RoundConfigurationScreen = ({ navigation }) => {
     { label: "66", value: "66" },
   ]);
 
-  const handleUpdate = async () => {
-    // This would be your API call normally
-    console.log("Updating round with:", {
-      roundName,
+  const handleUpdateRound = () => {
+    const roundData = {
+      userId:userData.data._id,
+      name:roundName,
       level,
       startDate,
-      maxCapacity,
-      allowOthers,
-    });
-    // Mock response simulation
-    setTimeout(() => {
-      alert("Round updated successfully!");
-      navigation.goBack(); // Simulate navigation on success
-    }, 1000);
+      maxCapacity: parseInt(maxCapacity, 10),
+      allowOthers
+    };
+    fetch('http://3.27.94.77:8000/habital/v1/Round/post_round_create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(roundData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(`HTTP error ${response.status}: ${text}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
   return (
@@ -140,7 +160,11 @@ const RoundConfigurationScreen = ({ navigation }) => {
               value={value}
               items={items}
               setOpen={setOpen}
-              setValue={setValue}
+          setValue={(callback) => {
+          setValue(callback);
+          const newValue = callback(value);
+          setLevel(newValue);
+        }}
               setItems={setItems}
             />
             {/* Start Date */}
@@ -244,9 +268,15 @@ const RoundConfigurationScreen = ({ navigation }) => {
               />
             </FormControl>
 
-            <Button onPress={handleUpdate} mt={5}>
-              Update Round
-            </Button>
+            <Button
+  onPress={() => {
+    handleUpdateRound();
+    console.log("Calendar icon pressed. info:", startDate,level,roundName,allowOthers,userData.data._id);
+  }}
+  mt={5}
+>
+  Update Round
+</Button>
           </VStack>
         </Box>
       </Center>

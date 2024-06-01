@@ -51,6 +51,9 @@ export default function AppContainer() {
           updateUserData({
             data: response.data.user,
             token: response.token,
+            avatar: {
+              uri: response.data.user.profileImageUrl,
+            },
           });
           // console.log(userData);
           setIsAuthenticated(true);
