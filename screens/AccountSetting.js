@@ -85,7 +85,7 @@ const AccountSettingScreen = ({ navigation }) => {
     },
     password: false,
     confirmPassword: "Please confirm your password.",
-    textProp: "Input your username start with charactor.",
+    textProp: "Input your username start with character.",
   });
 
   const handleChooseImage = async () => {

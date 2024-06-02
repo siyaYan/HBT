@@ -99,7 +99,6 @@ const ResetPasswordScreen = ({ navigation }) => {
 
       const hasErrors = Object.values(errors).some((error) => error == false);
       if (!hasErrors) {
-
         handlePasswordReset();
       }
     }
@@ -146,7 +145,6 @@ const ResetPasswordScreen = ({ navigation }) => {
             w="80%"
             maxW={320}
           >
-
             <VStack w="100%" h="100%" space={6}>
               <VStack>
                 <Text

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 import {
   Center,
   Pressable,
@@ -65,24 +65,22 @@ const SettingScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Background2 />
       <Flex direction="column" alignItems="center">
-        <OptionMenu navigation={navigation}/>
+        <OptionMenu navigation={navigation} />
 
         <Box
           mt="5"
-          width="90%"    
+          width="90%"
           px="2"
           alignItems="center"
           justifyContent="center"
         >
           <Pressable onPress={handleAvatarPress}>
-            {userData.avatar&&userData.avatar.uri ? (
+            {userData.avatar && userData.avatar.uri ? (
               <Avatar
                 bg="white"
                 mb="1"
                 size="md"
-
-                source={{ uri:userData.avatar.uri }}
-
+                source={{ uri: userData.avatar.uri }}
               />
             ) : (
               <Avatar size="md" bg="white" borderWidth={2}>
@@ -90,15 +88,16 @@ const SettingScreen = ({ navigation }) => {
               </Avatar>
             )}
           </Pressable>
-          <Text fontFamily={"Regular"} fontSize="lg">{userData.data.nickname}</Text>
-          
+          <Text fontFamily={"Regular"} fontSize="lg">
+            {userData.data.nickname}
+          </Text>
         </Box>
 
         <Box mt="10" w="90%" maxW="290">
-          <VStack  space={1} alignItems="left">
+          <VStack space={1} alignItems="left">
             <Text fontFamily={"Regular Semi Bold"} fontSize="2xl">
               System settings
-              </Text>
+            </Text>
 
             <Divider
               my="2"
@@ -124,7 +123,9 @@ const SettingScreen = ({ navigation }) => {
                       <Ionicons name="settings-sharp" size={8} color="black" />
                     </Avatar.Badge>
                   </Avatar>
-                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">Account settings</Text>
+                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
+                    Account settings
+                  </Text>
                 </HStack>
               </Button>
             </Box>
@@ -143,7 +144,9 @@ const SettingScreen = ({ navigation }) => {
               <Button onPress={logout} size="md" p={0} variant="unstyled">
                 <HStack>
                   <AntDesign name="logout" size={24} color="black" />
-                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">Log out</Text>
+                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
+                    Log out
+                  </Text>
                 </HStack>
               </Button>
             </Box>
@@ -159,7 +162,6 @@ const SettingScreen = ({ navigation }) => {
             />
           </VStack>
         </Box>
-
       </Flex>
     </NativeBaseProvider>
   );
