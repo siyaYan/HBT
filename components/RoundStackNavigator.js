@@ -36,9 +36,9 @@ export default function RoundStackNavigator({ navigation }) {
       <Stack.Screen
         name="RoundInfo"
         component={RoundInfoScreen}
-        options={{
+        options={({ navigation }) =>({
           headerBackTitleVisible: false,
-          title: "",
+          // title: navigation.params,
           headerStyle: {
             backgroundColor: "rgba(255,255,255,0)",
           },
@@ -52,7 +52,7 @@ export default function RoundStackNavigator({ navigation }) {
               }}
             />
           ),
-        }}
+        })}
       />
       <Stack.Screen
         name="RoundInviteFriend"

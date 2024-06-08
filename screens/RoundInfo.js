@@ -13,14 +13,9 @@ import {
 import Background from "../components/Background";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const RoundInfoScreen = ({ navigation }) => {
-  // Dummy data for the round info and friends list
-  const roundData = {
-    roundName: "Champions League",
-    level: "Advanced",
-    startDate: "2024-04-01",
-    endDate: "2024-04-30",
-  };
+const RoundInfoScreen = ({ route, navigation }) => {
+  const roundData = route.params.round;
+  console.log('Tab is in focus, roundinfo:', roundData);
 
   const friendsList = [
     { id: "1", name: "John Doe" },
@@ -79,6 +74,7 @@ const RoundInfoScreen = ({ navigation }) => {
         </VStack>
       </Box>
     </NativeBaseProvider>
+    
   );
 };
 

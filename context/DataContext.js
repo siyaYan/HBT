@@ -9,9 +9,10 @@ export const useData = () => {
 };
 
 export const DataProvider = ({ children }) => {
+  {/* User Info */}
   const [userData, setUserData] = useState({ data: '', token: '' });
 
-  // Load data from AsyncStorage on component mount
+  // Load user data from AsyncStorage on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -47,9 +48,31 @@ export const DataProvider = ({ children }) => {
   const updateUserData = (newUserData) => {
     setUserData((prevUserData) => ({ ...prevUserData, ...newUserData }));
   };
+{/* Round Info */}
+  const [rounds,setRounds] = useState([]);
+
+  // Function to fetch round information
+  const fetchRounds = async () => {
+    try {
+      // Replace this with your actual fetch call
+      // const response = await fetch('API_ENDPOINT_FOR_ROUNDS');
+    //   const data = await response.json();
+    //   setRounds(data);
+    // } catch (error) {
+    //   console.error('Error fetching round information:', error);
+    // Simulate fetching data from an API
+    const dummyRounds = [
+      { id: 1, roundName: 'Round 1', level: '21', startDate: '2024-05-14T17:00:00Z', maxCapacity: 20, allowOthers: true, status:'active',endDate: '2024-06-14T17:00:00Z'},
+      // { id: 2, name: 'Round 2', level: '35', startDate: '2024-08-14T17:00:00Z', maxCapacity: 15, allowOthers: false, status:'pending' },
+    ];
+    setRounds(dummyRounds);
+  } catch (error) {
+    console.error('Error fetching round information:', error);
+    }
+  };  
 
   return (
-    <DataContext.Provider value={{ userData, updateUserData }}>
+    <DataContext.Provider value={{ userData, updateUserData, rounds, fetchRounds }}>
       {children}
     </DataContext.Provider>
   );
