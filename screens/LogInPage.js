@@ -114,7 +114,7 @@ const LoginScreen = ({ navigation }) => {
   const saveCredentials = async (id, password) => {
     try {
       await SecureStore.setItemAsync(
-        "userCredentials",
+        "userData",
         JSON.stringify({ id, password })
       );
     } catch (error) {

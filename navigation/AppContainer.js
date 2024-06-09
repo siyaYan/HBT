@@ -69,7 +69,7 @@ export default function AppContainer() {
     };
     setTimeout(() => {
       checkCredentials();
-    }, 500);
+    }, 1500);
   }, [isAuthenticated]);
 
   return (
