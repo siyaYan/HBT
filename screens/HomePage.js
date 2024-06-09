@@ -1,23 +1,21 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet , View} from "react-native";
-import { Box, Heading, IconButton, Text, Pressable, Button, NativeBaseProvider, Flex } from 'native-base';
+import { Box, Heading, IconButton,   Icon, Text, Pressable, Button, NativeBaseProvider, Flex , useDisclose, Actionsheet} from 'native-base';
 import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
 import { useFocusEffect } from '@react-navigation/native';
-import LottieView from 'lottie-react-native'
 import {
   getNoteUpdate
 } from "../components/Endpoint";
+import * as ImagePicker from "expo-image-picker";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 // TODO: change the layout to match the new ios version
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
   const { userData, updateUserData, note, updateNotes } = useData();
-    const animation = useRef(null);
-
-
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus & userdata changed
@@ -25,6 +23,7 @@ const HomeScreen = ({ navigation }) => {
       console.log(userData)
     }, [userData])
   );
+
   const handleAvatarPress = () => {
     // Navigate to another screen when the Avatar is pressed
     navigation.navigate('AccountStack', { screen: 'Account' });
@@ -38,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('RoundStack',{screen:'RoundInfo'})
   };
 
-  const  updateNote = async ()=>{
+  const updateNote = async ()=>{
     const res=await getNoteUpdate(userData.token,userData.data.email)
     if(res>0){
       updateNotes(res)
@@ -48,7 +47,6 @@ const HomeScreen = ({ navigation }) => {
   return (
     <NativeBaseProvider>
       <Background />
-
       <Flex direction="column" alignItems='center'>
         <OptionMenu navigation={navigation} />
         <Pressable onPress={handleAvatarPress}>
@@ -119,27 +117,6 @@ const HomeScreen = ({ navigation }) => {
             >
               Start a round
             </Button>
-            {/* <View >
-      <LottieView
-        autoPlay
-        ref={animation}
-        style={{
-          width: 200,
-          height: 200,
-          backgroundColor: '#eee',
-        }}
-        source={require("../assets/Splash.json")}
-      />
-      <View >
-        <Button
-          title="Restart Animation"
-          onPress={() => {
-            animation.current?.reset();
-            animation.current?.play();
-          }}
-        />
-      </View>
-    </View> */}
         </Flex>
     </NativeBaseProvider>
   );

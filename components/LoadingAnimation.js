@@ -4,7 +4,6 @@ import LottieView from 'lottie-react-native';
 
 export default function LoadingAnimation() {
   const animation = useRef(null);
-
   return (
     <View style={styles.animationContainer}>
       <LottieView

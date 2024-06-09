@@ -4,8 +4,7 @@ import {
   Box,
   Button,
 } from "native-base";
-const Background = () => {
-
+const Background = ({navigation}) => {
   const windowWidth = useWindowDimensions().width;
   const imageHeight = windowWidth * 1.78;
     return(

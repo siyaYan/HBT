@@ -29,8 +29,10 @@ const getCredentials = async () => {
   }
 };
 
+export const navigationRef = React.createRef();
+
 export default function AppContainer() {
-  const navigationRef = useRef();
+  // const navigationRef = useRef();
   const { userData, updateUserData } = useData();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
