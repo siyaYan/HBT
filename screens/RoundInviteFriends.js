@@ -10,6 +10,10 @@ import {
 } from "native-base";
 import Background from "../components/Background";
 
+// functions:
+// 1. add global friends into this round
+// 2. remove round friends
+
 const RoundInviteFriendsScreen = ({ navigation }) => {
   // Dummy list of friends
   const friends = [

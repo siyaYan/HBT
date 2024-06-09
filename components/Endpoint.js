@@ -636,7 +636,7 @@ export async function clearFriendRequestById(token, friendRequestId) {
 }
 
 // Chapter 4 Round Configuration
-export async function updateRound(roundData,token) {
+export async function createRound(roundData,token) {
   fetch('http://3.27.94.77:8000/habital/v1/round/create', {
       method: 'POST',
       headers: {
@@ -682,6 +682,29 @@ export async function getRoundInfo(token,userId) {
   //   { id: 2, name: 'Round 2', level: '35', startDate: '2024-08-14T17:00:00Z', maxCapacity: 15, allowOthers: false, status:'pending' },
   // ];
   // return dummyRounds;
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+// Chapter 4: Function to update round information
+
+export async function updateRoundInfo(token,roundId) {
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/round/${roundId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log("updateRoundInfo",data);
+    return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");

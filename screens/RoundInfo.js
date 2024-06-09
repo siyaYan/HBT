@@ -17,6 +17,9 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const roundData = route.params.round;
   console.log('roundinfo page round data:', roundData);
 
+  // roundData.roundFriends
+  // Read only
+  // Feature: send notification again
   const friendsList = [
     { id: "1", name: "John Doe" },
     { id: "2", name: "Jane Smith" },

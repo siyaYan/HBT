@@ -26,10 +26,10 @@ import RoundDatePicker from "./RoundDatePicker";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { AntDesign } from "@expo/vector-icons";
-import { updateRound } from "../components/Endpoint";
+import { createRound,updateRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
-
-const RoundConfigurationScreen = ({ route,navigation }) => {
+import {updateRoundData } from "../context/RoundContext"
+const RoundConfigurationScreen = ({ route, navigation }) => {
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -41,18 +41,24 @@ const RoundConfigurationScreen = ({ route,navigation }) => {
   const { userData } = useData();
   const emptyState = route.params.emptyState;
   const roundData = route.params.roundData;
-  console.log('roundconfig page round data:', roundData);
-  console.log('roundconfig page empty:', emptyState);
-
-
+  // console.log('roundconfig page round data:', roundData);
+  // console.log('roundconfig page empty:', emptyState);
 
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
-  const [startDate, setDate] = useState(emptyState?new Date():new Date(roundData.startDate));
-  const [roundName, setRoundName] = useState(emptyState?null:roundData.name);
-  const [level, setLevel] = useState(emptyState?null:roundData.level);
-  const [maxCapacity, setMaxCapacity] = useState(emptyState?"5":roundData.maximum.toString());
-  const [allowOthers, setAllowOthers] = useState(emptyState?true:roundData.isAllowedInvite);
+  const [startDate, setDate] = useState(
+    emptyState ? new Date() : new Date(roundData.startDate)
+  );
+  const [roundName, setRoundName] = useState(
+    emptyState ? null : roundData.name
+  );
+  const [level, setLevel] = useState(emptyState ? null : roundData.level);
+  const [maxCapacity, setMaxCapacity] = useState(
+    emptyState ? "5" : roundData.maximum.toString()
+  );
+  const [allowOthers, setAllowOthers] = useState(
+    emptyState ? true : roundData.isAllowedInvite
+  );
 
   // Toggle button
   // const [allowOthers, setAllowOthers] = useState(false);
@@ -70,7 +76,7 @@ const RoundConfigurationScreen = ({ route,navigation }) => {
   ]);
 
   const handleUpdateRound = () => {
-    const roundData = {
+    const newRoundData = {
       userId: userData.data._id,
       name: roundName,
       level,
@@ -78,22 +84,28 @@ const RoundConfigurationScreen = ({ route,navigation }) => {
       maxCapacity: parseInt(maxCapacity, 10),
       allowOthers,
     };
-    updateRound(roundData, userData.token);
+    {
+      emptyState
+        ? (
+          createRound(newRoundData, userData.token)
+        )
+        : updateRoundInfo(userData.token,roundData._id);
+    }
   };
   const handleValidateUpload = () => {
     let newIsInvalid = { ...isInvalid };
-// Validate level
+    // Validate level
     if (!level) {
       newIsInvalid.level = true;
     } else {
       newIsInvalid.level = false;
     }
     // Validate roundName
-  if (!roundName) {
-    newIsInvalid.roundName = true;
-  } else {
-    newIsInvalid.roundName = false;
-  }
+    if (!roundName) {
+      newIsInvalid.roundName = true;
+    } else {
+      newIsInvalid.roundName = false;
+    }
 
     setIsInvalid(newIsInvalid);
 
@@ -162,14 +174,14 @@ const RoundConfigurationScreen = ({ route,navigation }) => {
                     mr={3}
                     w="93%"
                     placeholder="Enter Round Name"
-                    value = {roundName}
+                    value={roundName}
                     onChangeText={setRoundName}
                   />
                   {isInvalid.roundName && (
-    <FormControl.ErrorMessage>
-      Round Name is required.
-    </FormControl.ErrorMessage>
-  )}
+                    <FormControl.ErrorMessage>
+                      Round Name is required.
+                    </FormControl.ErrorMessage>
+                  )}
                 </FormControl>
                 {/* Level */}
                 <FormControl isInvalid={isInvalid.level}>
@@ -223,12 +235,14 @@ const RoundConfigurationScreen = ({ route,navigation }) => {
                       >
                         Start Date
                       </FormControl.Label>
-                      <Text  ml={1}
+                      <Text
+                        ml={1}
                         _text={{
                           fontFamily: "Regular Semi Bold",
                           fontSize: "lg",
                           color: "#191919",
-                        }}>
+                        }}
+                      >
                         {startDate.toLocaleDateString(undefined, {
                           year: "numeric",
                           month: "short",
