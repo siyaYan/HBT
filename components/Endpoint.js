@@ -502,6 +502,46 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
   }
 }
 
+
+// Chapter 4 Round Configuration
+
+export async function updateRound(id, roundName, level, startDate, maxCapacity, allowOthers) {
+  try {
+    const response = await fetch(
+      "http://3.27.94.77:8000/habital/v1/updateRound", // Adjust the endpoint as needed @Linda to follow up with Backend
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id, // assuming there's an identifier for the round
+          roundName, 
+          level, 
+          startDate, 
+          maxCapacity, 
+          allowOthers
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (data.status == "success") {
+      // Optionally, handle success, e.g., navigating to a different screen or showing a success message
+      Alert.alert('Success', 'Round updated successfully');
+    } else {
+      // Handle unsuccessful update
+      Alert.alert("Unsuccessful", data.message || "Update failed");
+    }
+    return data; // Return the data to handle it based on the function call
+  } catch (error) {
+    console.error("Unsuccessful in updateRound:", error);
+    Alert.alert("Unsuccessful", "Update failed. Please try again later");
+    // Handling the error, you may decide to re-throw it or return null/error object
+    return { status: "error", error };
+  }
+}
+
 export async function getNotifiableFriendRequests(token) {
   try {
     const response = await fetch(
