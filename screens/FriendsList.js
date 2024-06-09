@@ -1,4 +1,4 @@
-import { useState,  useCallback } from "react";
+import { useState,  useCallback, useEffect } from "react";
 import {
   Box,
   Heading,
@@ -23,13 +23,13 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { getFriends, deleteFriendOrWithdrawRequestById, deleteFriends, getSendRequest, getReceivedRequest,reactReceivedRequest } from "../components/Endpoint";
+import { getFriends, deleteFriendOrWithdrawRequestById, deleteFriends, getSendRequest, getReceivedRequest,reactReceivedRequest, getNoteUpdate} from "../components/Endpoint";
 import { useFocusEffect } from '@react-navigation/native';
 
 // TODO: change the layout to match the new ios version
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
-  const {userData, updateUserData } = useData();
+  const {userData, updateUserData , note,updateNotes} = useData();
   const [deleted, setDelete] = useState(0);
   const [received, setReceived] = useState([]);
   const [sent, setSent] = useState([]);
@@ -38,13 +38,25 @@ const FriendsScreen = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
-      console.log('Tab is in focus, userInfo:', userData);
-
+      // console.log('Tab is in focus, userInfo:', userData);
       updateFriendList();
       updateSendRequest();
       updateReceivedRequest();
+      updateNote()
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
+  //   useEffect(() => {
+  //   // Fetch or update avatar dynamically
+  //   updateNote()
+  //   console.log('This is friendlist :',note );
+  // }, [note]);
+
+  const updateNote = async ()=>{
+    const res=await getNoteUpdate(userData.token,userData.data.email)
+    if(res>0){
+      updateNotes(res)
+    }
+ }
   const updateFriendList = async()=>{
     const response = await getFriends(userData.token);
     // Handle success or error response
@@ -54,7 +66,6 @@ const FriendsScreen = ({ navigation }) => {
     if (response.status == "success") {
       // console.log('get friends success:',response.data);
       let newFriends=[]
-      console.log(response)
       response.users.map((user)=>{
         const newFriend={
           _id:'',
@@ -69,7 +80,7 @@ const FriendsScreen = ({ navigation }) => {
         newFriends[index]._id=data._id
       })
       setFriends(newFriends)
-      console.log('friends:',friends)
+      // console.log('friends:',friends)
     } else {
       console.error('get friends failed:',response.message);
     }
@@ -84,7 +95,6 @@ const FriendsScreen = ({ navigation }) => {
     if (response.status == "success") {
       // console.log('get friends success:',response.data);
       let sendFriends=[]
-      console.log(response)
       const pendingRes=response.data.filter((item) => (item.status == 'P'))
       // const pendingRes=response.users
       if(pendingRes.length > 0) {
@@ -96,11 +106,11 @@ const FriendsScreen = ({ navigation }) => {
             username:response.users[index].username,
             nickname:response.users[index].nickname
           }
-          sendFriends.push(newFriend)
+          sendFriends[index]=newFriend
         })
       }
       setSent(sendFriends)
-      console.log('send request:',sent)
+      // console.log('send request:',sent)
     } else {
       // console.error('get send friend request failed:',response.message);
       console.log('get send friends request failed')
@@ -117,7 +127,6 @@ const FriendsScreen = ({ navigation }) => {
     if (response.status == "success") {
       // console.log('get friends success:',response.data);
       let receivedFriends=[]
-      console.log(response)
       const pendingRes=response.data.filter((item) => (item.status == 'P'))
       // const pendingRes=response.users
       if(pendingRes.length > 0) {
@@ -133,7 +142,7 @@ const FriendsScreen = ({ navigation }) => {
         })
       }
       setReceived(receivedFriends)
-      console.log('received requests:',received)
+      // console.log('received requests:',received)
     } else {
       // console.error('get received friend requests failed:',response.message);
       console.log('get received friends failed')

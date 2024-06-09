@@ -1,6 +1,6 @@
 // Mock API functions for testing without a backend
 import { Alert } from "react-native";
-import RNFS from "react-native-fs";
+
 export async function registerUser(
   username,
   nickname,
@@ -32,7 +32,6 @@ export async function registerUser(
       Alert.alert("Success", "Please check your email inbox");
     } else {
       Alert.alert("Oh,No!", data.message || "Registration unsuccessful");
-      console.log(data.message);
     }
     return data; // Make sure you return the data here
   } catch (error) {
@@ -174,7 +173,7 @@ export async function resetPassword(
 }
 
 export async function resetProfile(userId, token, nickname, username) {
-  // console.log(userId)
+  // // console.log(userId)
   try {
     const response = await fetch(
       "http://3.27.94.77:8000/habital/v1/users/" + userId,
@@ -222,7 +221,7 @@ export async function resetSendEmail(token, userId, email) {
       }
     );
     const data = await response.json();
-    // console.log(data)
+    // // console.log(data)
     if (data.status == "success") {
       Alert.alert("Code sent", "Please check your email");
     } else {
@@ -247,7 +246,7 @@ export async function resetEmail(token, userId, resetToken) {
       }
     );
     const data = await response.json();
-    // console.log(data)
+    // // console.log(data)
     if (data.status == "success") {
       Alert.alert("Success", "Email updated");
     } else {
@@ -262,7 +261,7 @@ export async function resetEmail(token, userId, resetToken) {
 
 export async function updateAvatar(token, userId, avatar) {
   // const binaryData = await RNFS.readFile(avatar.uri, 'base64');
-  // console.log(binaryData);
+  // // console.log(binaryData);
   const file = {
     uri: avatar.uri, // Local file URI
     type: "image/jpeg", // MIME type of the image
@@ -286,7 +285,7 @@ export async function updateAvatar(token, userId, avatar) {
       }
     );
     const data = await response.json();
-    console.log(data, "update avatar");
+
     if (data.status == "Successful operation") {
       // Alert.alert("Success", "Avatar updated!");
     } else {
@@ -299,7 +298,7 @@ export async function updateAvatar(token, userId, avatar) {
   }
 }
 
-export async function findByUserId(token, userId) {
+export async function findByUserIdAndUsername(token, userId) {
   try {
     const response = await fetch(
       "http://3.27.94.77:8000/habital/v1/users/" + userId ,
@@ -313,7 +312,6 @@ export async function findByUserId(token, userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
     return data
   }catch (e) {
     console.error("Unsuccessful in connect server:", error);
@@ -337,14 +335,14 @@ export async function connectByUserId(token, senderId, receiverId) {
         }),
       }
     );
-    console.log(response)
+
     const data = await response.json();
-    console.log(data);
+
     if (data.status == "success") {
       Alert.alert("Success", "Send link request to this friend!");
     } else {
       Alert.alert("Oh,No!", data.message || "Failed to connect!");
-      console.log(data.message);
+
     }
     return data
   }catch (e) {
@@ -366,7 +364,6 @@ export async function getFriends(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -387,9 +384,35 @@ export async function getSendRequest(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+export async function getRelationByUserId(token, senderId, receiverId) {
+  try {
+    const response = await fetch(
+      'http://3.27.94.77:8000/habital/v1/friend-requests',
+      // 'http://localhost:8000/habital/v1/friend-requests',
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          senderId: senderId,
+          receiverId: receiverId,
+        }),
+      }
+    );
+    // // console.log(response)
+    const data = await response.json();
+    // // console.log(data);
+    return data
+  }catch (e) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
@@ -408,7 +431,7 @@ export async function getReceivedRequest(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -416,7 +439,6 @@ export async function getReceivedRequest(token) {
   }
 }
 export async function reactReceivedRequest(token, friendRequestId, react) {
-  console.log(friendRequestId,react)
   try {
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}`,
@@ -432,7 +454,7 @@ export async function reactReceivedRequest(token, friendRequestId, react) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -452,7 +474,7 @@ export async function deleteFriends(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -460,7 +482,6 @@ export async function deleteFriends(token) {
   }
 }
 export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
-  console.log(friendRequestId)
   try {
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}/deleteFriend`,
@@ -473,7 +494,7 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -523,7 +544,7 @@ export async function getNotifiableFriendRequests(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -545,7 +566,7 @@ export async function getNotifiableNotification(token, userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -567,7 +588,7 @@ export async function getNotificationHistory(token, userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -589,7 +610,7 @@ export async function clearNotificationById(token, userId, notificationId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -611,7 +632,7 @@ export async function clearAllNotifications(token, userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -633,7 +654,7 @@ export async function clearAllFriendRequests(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -655,10 +676,49 @@ export async function clearFriendRequestById(token, friendRequestId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
+
+export async function getNoteUpdate(token, userId){
+  let res=0;
+  const response1 = await fetch(
+    'http://3.27.94.77:8000/habital/v1/friend-requests/notifiable',
+    // 'http://localhost:8000/habital/v1/friend-requests/notifiable',
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  const response2 = await fetch(
+    `http://3.27.94.77:8000/habital/v1/notifications/${userId}/notifiable`,
+    // `http://localhost:8000/habital/v1/notifications/${userId}/notifiable`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if(response1){
+    const data1 = await response1.json();
+    res=res+data1.data.length;
+    // console.log('get friends:',data1.data.length);
+  }
+  if(response2){
+    const data2 = await response2.json();
+    res=res+data2.data.length;
+    // console.log('get notificates:',data2.data.length)
+  }
+  // console.log(res)
+  return res
+}
+

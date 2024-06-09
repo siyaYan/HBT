@@ -17,8 +17,9 @@ import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import {
   connectByUserId,
-  findByUserId,
+  findByUserIdAndUsername,
   getFriends,
+  getRelationByUserId,
 } from "../components/Endpoint";
 import Background from "../components/Background";
 import { Feather } from "@expo/vector-icons";
@@ -33,31 +34,52 @@ const InviteScreen = ({ navigation }) => {
     userId: true,
   });
   const [findUser, setFind] = useState({ user: { profileImageUrl: "" } });
-  const [linked, setLink]= useState(false)
+  const [linked, setLink] = useState(false);
+  const [pend, setPend] = useState(false);
 
   const handleSearch = async () => {
-    // console.log(formData.userId);
-    const response = await findByUserId(userData.token, formData.userId);
-    const friendsRes = await getFriends(userData.token);
+    const response = await findByUserIdAndUsername(
+      userData.token,
+      formData.userId
+    );
+    // const friendsRes = await getFriends(userData.token);
     if (response.status === "success") {
-      console.log("find!!!!");
+      // console.log("find!!!!");
       setErrors({
         userId: true,
       });
       setFind({
         user: response.data.user,
       });
-      if (friendsRes.users.length > 0) {
-        const res = friendsRes.users.filter(
-          (user) => user.email == formData.userId.toLowerCase()
-        );
-        // console.log('res',res)
-        if (res.length > 0) {
-          setLink(true)
-        }else{
-          setLink(false)
-        }
+      //     console.log(  response.data.user._id,
+      // userData.data._id);
+      const res = await getRelationByUserId(
+        userData.token,
+        response.data.user._id,
+        userData.data._id
+      );
+      console.log(res.result);
+      if (res.result == "A") {
+        setLink(true);
+        setPend(false);
+      } else if (res.result == "P") {
+        setLink(false);
+        setPend(true);
+      } else {
+        setLink(false);
+        setPend(false);
       }
+      // if (friendsRes.users.length > 0) {
+      //   const res = friendsRes.users.filter(
+      //     (user) => user.email == formData.userId.toLowerCase()
+      //   );
+      //   // console.log('res',res)
+      //   if (res.length > 0) {
+      //     setLink(true)
+      //   }else{
+      //     setLink(false)
+      //   }
+      // }
     } else {
       setErrors({
         userId: false,
@@ -116,7 +138,7 @@ const InviteScreen = ({ navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Find a friend By Email
+                    Find a friend By Email/Username
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -140,7 +162,8 @@ const InviteScreen = ({ navigation }) => {
                 </FormControl>
 
                 {formData.userId &&
-                formData.userId.toLowerCase() == userData.data.email ? (
+                (formData.userId.toLowerCase() == userData.data.email ||
+                  formData.userId == userData.data.username) ? (
                   <Text fontFamily={"Regular"} fontSize="lg">
                     This is YOU!
                   </Text>
@@ -169,7 +192,8 @@ const InviteScreen = ({ navigation }) => {
                   </Button>
                 )}
 
-                {findUser.user.profileImageUrl ? (
+                {findUser.user.profileImageUrl && !(formData.userId.toLowerCase() == userData.data.email ||
+                  formData.userId == userData.data.username) ? (
                   <Box w={"100%"}>
                     <HStack
                       w={"100%"}
@@ -199,13 +223,16 @@ const InviteScreen = ({ navigation }) => {
                       <Box>
                         {linked ? (
                           <Pressable>
-                            <AntDesign
-                                  name="link"
-                                  size={30}
-                                  color="black"
-                                />
+                            <AntDesign name="link" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
                               linked
+                            </Text>
+                          </Pressable>
+                        ) : pend ? (
+                          <Pressable>
+                            <Feather name="send" size={30} color="grey" />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              pending
                             </Text>
                           </Pressable>
                         ) : (
