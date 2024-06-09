@@ -12,6 +12,7 @@ import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
 import InviteScreen from "../screens/InviteFriends";
 import SplashAnimationScreen from "../components/SplashAnimation";
+import LoadingAnimationScreen from "../components/LoadingAnimation";
 import { IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 

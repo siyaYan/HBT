@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { StyleSheet , View} from "react-native";
 import { Box, Heading, IconButton, Text, Pressable, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
@@ -119,27 +118,6 @@ const HomeScreen = ({ navigation }) => {
             >
               Start a round
             </Button>
-            {/* <View >
-      <LottieView
-        autoPlay
-        ref={animation}
-        style={{
-          width: 200,
-          height: 200,
-          backgroundColor: '#eee',
-        }}
-        source={require("../assets/Splash.json")}
-      />
-      <View >
-        <Button
-          title="Restart Animation"
-          onPress={() => {
-            animation.current?.reset();
-            animation.current?.play();
-          }}
-        />
-      </View>
-    </View> */}
         </Flex>
     </NativeBaseProvider>
   );
