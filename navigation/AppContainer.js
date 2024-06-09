@@ -11,6 +11,7 @@ import { loginUser } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
 import InviteScreen from "../screens/InviteFriends";
+import SplashAnimationScreen from "../components/SplashAnimation";
 import { IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -62,16 +63,18 @@ export default function AppContainer() {
         navigationRef.current?.navigate("Home");
       }
     };
-
-    checkCredentials();
+    setTimeout(() => {
+      checkCredentials();
+    }, 500);
   }, [isAuthenticated]);
 
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Splash"
         screenOptions={{ headerShown: false, headerBackTitleVisible: false }}
       >
+        <Stack.Screen name="Splash" component={SplashAnimationScreen} />
         <Stack.Screen name="Home" component={AppHomeScreen} />
         <Stack.Screen
           name="Invite"
