@@ -17,7 +17,7 @@ const Stack = createStackNavigator();
 
 const getCredentials = async () => {
   try {
-    const credentials = await SecureStore.getItemAsync("userCredentials");
+    const credentials = await SecureStore.getItemAsync("userData");
     if (credentials) {
       return JSON.parse(credentials);
     }
@@ -35,7 +35,8 @@ export default function AppContainer() {
   useEffect(() => {
     const checkCredentials = async () => {
       const storedCredentials = await getCredentials();
-      // console.log("in app");
+      console.log("in app",storedCredentials);
+
       if (storedCredentials) {
         // Use credentials to log in the user automatically
         // Implement your login logic here using the retrieved credentials
