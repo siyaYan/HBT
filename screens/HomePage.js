@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
-import { Box, Heading, IconButton,Text, Pressable, Button, NativeBaseProvider, Flex, View } from 'native-base';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { StyleSheet , View} from "react-native";
+import { Box, Heading, IconButton, Text, Pressable, Button, NativeBaseProvider, Flex } from 'native-base';
 import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
 import { useData } from '../context/DataContext';
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
 import { useFocusEffect } from '@react-navigation/native';
+import LottieView from 'lottie-react-native'
 import {
   getNoteUpdate
 } from "../components/Endpoint";
@@ -13,6 +15,8 @@ import {
 // TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation }) => {
   const { userData, updateUserData, note, updateNotes } = useData();
+    const animation = useRef(null);
+
 
   useFocusEffect(
     useCallback(() => {
@@ -44,6 +48,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <NativeBaseProvider>
       <Background />
+
       <Flex direction="column" alignItems='center'>
         <OptionMenu navigation={navigation} />
         <Pressable onPress={handleAvatarPress}>
@@ -86,7 +91,6 @@ const HomeScreen = ({ navigation }) => {
             >
               Round info dummy
             </Button>
-        {/* Linda Sprint 4 */}
         <Button
               // onPress={()=>navigation.navigate('RoundConfig')}
               onPress={startRound}
@@ -115,9 +119,28 @@ const HomeScreen = ({ navigation }) => {
             >
               Start a round
             </Button>
-            
+            {/* <View >
+      <LottieView
+        autoPlay
+        ref={animation}
+        style={{
+          width: 200,
+          height: 200,
+          backgroundColor: '#eee',
+        }}
+        source={require("../assets/Splash.json")}
+      />
+      <View >
+        <Button
+          title="Restart Animation"
+          onPress={() => {
+            animation.current?.reset();
+            animation.current?.play();
+          }}
+        />
+      </View>
+    </View> */}
         </Flex>
-
     </NativeBaseProvider>
   );
 };
