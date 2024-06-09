@@ -7,12 +7,13 @@ import LoginStackNavigator from "../components/LoginStackNavigator";
 import AccountStackNavigator from "../components/AccountStackNavigator";
 import RoundStackNavigator from "../components/RoundStackNavigator";
 import * as SecureStore from "expo-secure-store";
-import { loginUser } from "../components/Endpoint";
+import { loginUser,getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
 import InviteScreen from "../screens/InviteFriends";
 import { IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
+import { useRound } from "../context/RoundContext";
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,8 @@ const getCredentials = async () => {
 export default function AppContainer() {
   const navigationRef = useRef();
   const { userData, updateUserData } = useData();
+  const { roundData, updateRoundData } = useRound();
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -47,7 +50,11 @@ export default function AppContainer() {
           storedCredentials.id,
           storedCredentials.password
         );
+        console.log('response',response);
+
         if (response.token) {
+          const roundInfo = await getRoundInfo(response.token, response.data.user._id);
+
           updateUserData({
             data: response.data.user,
             token: response.token,
@@ -55,6 +62,8 @@ export default function AppContainer() {
               uri: response.data.user.profileImageUrl,
             },
           });
+          updateRoundData(roundInfo)
+
           // console.log(userData);
           setIsAuthenticated(true);
           navigationRef.current?.navigate("MainStack", { screen: "Home" });

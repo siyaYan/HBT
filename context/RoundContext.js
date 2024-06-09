@@ -12,41 +12,46 @@ export const RoundProvider = ({ children }) => {
   const [roundData, setRoundData] = useState([]);
 
   // Load round data from AsyncStorage and fetch from endpoint on component mount
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const savedRoundData = await AsyncStorage.getItem('roundData');
-        if (savedRoundData) {
-          setRoundData(JSON.parse(savedRoundData));
-        } else {
-          const fetchedRoundData = await getRoundInfo();
-          setRoundData(fetchedRoundData);
-          await AsyncStorage.setItem('roundData', JSON.stringify(fetchedRoundData));
-        }
-      } catch (error) {
-        console.error('Error loading round data:', error);
-      }
-    };
+//   useEffect(() => {
+//     const loadData = async () => {
+//       try {
+//         const savedRoundData = await AsyncStorage.getItem('roundData');
+//         if (savedRoundData) {
+//           setRoundData(JSON.parse(savedRoundData));
+//         } else {
+//           const fetchedRoundData = await getRoundInfo();
+//           setRoundData(fetchedRoundData);
+//           await AsyncStorage.setItem('roundData', JSON.stringify(fetchedRoundData));
+//         }
+//       } catch (error) {
+//         console.error('Error loading round data:', error);
+//       }
+//     };
 
-    loadData();
-  }, []);
+//     loadData();
+//   }, []);
 
   // Save round data to AsyncStorage whenever roundData changes
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        await AsyncStorage.setItem('roundData', JSON.stringify(roundData));
-      } catch (error) {
-        console.error('Error saving round data:', error);
-      }
-    };
+//   useEffect(() => {
+//     const saveData = async () => {
+//       try {
+//         await AsyncStorage.setItem('roundData', JSON.stringify(roundData));
+//       } catch (error) {
+//         console.error('Error saving round data:', error);
+//       }
+//     };
 
-    saveData();
-  }, [roundData]);
+//     saveData();
+//   }, [roundData]);
+
+  const updateRoundData = (newRoundData) => {
+    setRoundData((prevRoundData) => ({ ...prevRoundData, ...newRoundData }));
+  };
 
   return (
-    <RoundContext.Provider value={{ roundData, setRoundData }}>
+    <RoundContext.Provider value={{ roundData, updateRoundData }}>
       {children}
     </RoundContext.Provider>
   );
 };
+export default RoundContext;

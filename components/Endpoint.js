@@ -675,7 +675,7 @@ export async function getRoundInfo(token,userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    console.log("getRoundInfo",data);
     return data; // Make sure you return the data here
       // const dummyRounds = [
   //   { id: 1, roundName: 'Round 1', level: '21', startDate: '2024-05-14T17:00:00Z', maxCapacity: 20, allowOthers: true, status:'active',endDate: '2024-06-14T17:00:00Z'},
