@@ -481,34 +481,6 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
   }
 }
 
-
-// Chapter 4 Round Configuration
-
-export async function updateRound(roundData,token) {
-  fetch('http://3.27.94.77:8000/habital/v1/round/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(roundData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(`HTTP error ${response.status}: ${text}`);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-}
-
 export async function getNotifiableFriendRequests(token) {
   try {
     const response = await fetch(
@@ -657,6 +629,59 @@ export async function clearFriendRequestById(token, friendRequestId) {
     const data = await response.json();
     console.log(data);
     return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+// Chapter 4 Round Configuration
+export async function updateRound(roundData,token) {
+  fetch('http://3.27.94.77:8000/habital/v1/round/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(roundData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(`HTTP error ${response.status}: ${text}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+}
+
+// Chapter 4: Function to get round information
+export async function getRoundInfo(token,userId) {
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/round/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+    return data; // Make sure you return the data here
+      // const dummyRounds = [
+  //   { id: 1, roundName: 'Round 1', level: '21', startDate: '2024-05-14T17:00:00Z', maxCapacity: 20, allowOthers: true, status:'active',endDate: '2024-06-14T17:00:00Z'},
+  //   { id: 2, name: 'Round 2', level: '35', startDate: '2024-08-14T17:00:00Z', maxCapacity: 15, allowOthers: false, status:'pending' },
+  // ];
+  // return dummyRounds;
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");

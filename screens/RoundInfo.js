@@ -41,7 +41,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
         <VStack space={4}>
           <HStack>
             <Heading size="lg" color="coolGray.800">
-              {roundData.roundName}
+              {roundData.name}
             </Heading>
             {/* Edit round, which leads to Round Config page */}
             <Box alignItems="center" justifyContent="center">
