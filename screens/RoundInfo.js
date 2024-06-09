@@ -15,7 +15,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const roundData = route.params.round;
-  console.log('Tab is in focus, roundinfo:', roundData);
+  console.log('roundinfo page round data:', roundData);
 
   const friendsList = [
     { id: "1", name: "John Doe" },
@@ -30,7 +30,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   };
   // Navigate to Round Config page
   const goRoundConfig = () => {
-    navigation.navigate("RoundStack", { screen: "RoundConfig" });
+    navigation.navigate("RoundStack", { screen: "RoundConfig",params: { emptyState: false ,roundData:roundData }});
   };
 
   return (

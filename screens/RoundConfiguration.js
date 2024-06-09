@@ -29,7 +29,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { updateRound } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 
-const RoundConfigurationScreen = ({ navigation }) => {
+const RoundConfigurationScreen = ({ route,navigation }) => {
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -39,20 +39,26 @@ const RoundConfigurationScreen = ({ navigation }) => {
   });
   // Initialization
   const { userData } = useData();
+  const emptyState = route.params.emptyState;
+  const roundData = route.params.roundData;
+  console.log('roundconfig page round data:', roundData);
+  console.log('roundconfig page empty:', emptyState);
+
+
 
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
-  const [startDate, setDate] = useState(new Date());
-  const [roundName, setRoundName] = useState(null);
-  const [level, setLevel] = useState();
-  const [maxCapacity, setMaxCapacity] = useState("10");
-  const [allowOthers, setAllowOthers] = useState(false);
+  const [startDate, setDate] = useState(emptyState?new Date():new Date(roundData.startDate));
+  const [roundName, setRoundName] = useState(emptyState?null:roundData.name);
+  const [level, setLevel] = useState(emptyState?null:roundData.level);
+  const [maxCapacity, setMaxCapacity] = useState(emptyState?"5":roundData.maximum.toString());
+  const [allowOthers, setAllowOthers] = useState(emptyState?true:roundData.isAllowedInvite);
 
   // Toggle button
-  const [isEnabled, setIsEnabled] = useState(false);
+  // const [allowOthers, setAllowOthers] = useState(false);
 
   const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState);
+    setAllowOthers((previousState) => !previousState);
   };
   //Drop down list
   const [open, setOpen] = useState(false);
@@ -156,7 +162,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
                     mr={3}
                     w="93%"
                     placeholder="Enter Round Name"
-                    value={roundName}
+                    value = {roundName}
                     onChangeText={setRoundName}
                   />
                   {isInvalid.roundName && (
@@ -182,7 +188,7 @@ const RoundConfigurationScreen = ({ navigation }) => {
                 <DropDownPicker
                   // dropDownContainerStyle={dropDownContainer}
                   open={open}
-                  value={value}
+                  value={level}
                   items={items}
                   setOpen={setOpen}
                   setValue={(callback) => {
@@ -312,9 +318,9 @@ const RoundConfigurationScreen = ({ navigation }) => {
                     Allow others to invite friends
                   </FormControl.Label>
                   <Switch
-                    value={isEnabled}
+                    value={allowOthers}
                     onValueChange={toggleSwitch}
-                    color={isEnabled ? "green" : "gray"}
+                    color={allowOthers ? "green" : "gray"}
                   />
                 </FormControl>
 
