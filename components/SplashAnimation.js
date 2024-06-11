@@ -9,8 +9,7 @@ const SplashAnimationScreen = ({ navigation }) => {
       <LottieView
         autoPlay
         style={{
-          width: 250,
-          height: 250,
+          height:150,
           backgroundColor: 'transparent',
         }}
         source={require("../assets/Animations/Splash.json")}
