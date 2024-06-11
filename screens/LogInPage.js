@@ -504,7 +504,7 @@ const LoginScreen = ({ navigation }) => {
                     color: "#f9f8f2",
                   }}
                 >
-                  Sign ni
+                  Sign in
                  </Button> */}
                   <Pressable onPress={handleSubmit}>
                     <Image
