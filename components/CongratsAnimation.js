@@ -2,24 +2,24 @@ import React, { useRef, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
 
-const SplashAnimationScreen = ({ navigation }) => {
+const CongratsAnimation = ({ navigation }) => {
   return (
     // <NativeBaseProvider>
-    <View style={stylesSplash.animationContainer}>
+    <View style={stylesCongrats.animationContainer}>
       <LottieView
         autoPlay
         style={{
           height: 150,
           backgroundColor: "transparent",
         }}
-        source={require("../assets/Animations/Splash.json")}
+        source={require("../assets/Animations/Congratualtions.json")}
       />
     </View>
     // </NativeBaseProvider>
   );
 };
 
-const stylesSplash = StyleSheet.create({
+const stylesCongrats = StyleSheet.create({
   animationContainer: {
     backgroundColor: "#6666ff",
     alignItems: "center",
@@ -28,4 +28,4 @@ const stylesSplash = StyleSheet.create({
   },
 });
 
-export default SplashAnimationScreen;
+export default CongratsAnimation;
