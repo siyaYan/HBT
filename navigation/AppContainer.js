@@ -6,6 +6,7 @@ import AuthenticatedScreens from "../components/AuthenticatedScreens";
 import LoginStackNavigator from "../components/LoginStackNavigator";
 import AccountStackNavigator from "../components/AccountStackNavigator";
 import RoundStackNavigator from "../components/RoundStackNavigator";
+import ForumStackNavigator from "../components/ForumStackNavigator";
 import * as SecureStore from "expo-secure-store";
 import { loginUser } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
@@ -107,7 +108,7 @@ export default function AppContainer() {
         <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
         <Stack.Screen name="AccountStack" component={AccountStackNavigator} />
         <Stack.Screen name="RoundStack"  component={RoundStackNavigator} />
-
+        <Stack.Screen name="ForumStack"  component={ForumStackNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

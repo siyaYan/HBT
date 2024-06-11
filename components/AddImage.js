@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import React, { useRef } from "react";
 
-const AddImage = ({ isOpen, onOpen, onClose}) => {
+const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   useEffect(() => {
     (async () => {
@@ -25,16 +25,10 @@ const AddImage = ({ isOpen, onOpen, onClose}) => {
     const result = await ImagePicker.launchImageLibraryAsync();
     try {
       if (!result.canceled) {
-        setSelectedImage(result);
-        const response = await updateAvatar(
-          userData.token,
-          userData.data.email,
-          result.assets[0]
-        );
-        updateUserData({
-          ...userData,
-          avatar: result.assets[0],
-        });
+        const res=result.assets[0].uri
+        setSelectedImage(res);
+        onClose()
+        navigation.navigate("ForumStack", {screen: "ForumDraft", params: {res }});
       }
     } catch (e) {
       console.log(e.message);
@@ -47,15 +41,7 @@ const AddImage = ({ isOpen, onOpen, onClose}) => {
     try {
       if (!result.canceled) {
         setSelectedImage(result);
-        const response = await updateAvatar(
-          userData.token,
-          userData.data.email,
-          result.assets[0]
-        );
-        updateUserData({
-          ...userData,
-          avatar: result.assets[0],
-        });
+
       }
     } catch (e) {
       console.log(e.message);

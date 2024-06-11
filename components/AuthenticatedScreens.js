@@ -19,7 +19,7 @@ import { useDisclose } from "native-base";
 const Tab = createBottomTabNavigator();
 const DummyScreen = () => null;
 
-export default function AuthenticatedScreens() {
+export default function AuthenticatedScreens({navigation}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();
   const { isOpen, onOpen, onClose } = useDisclose();
@@ -39,7 +39,7 @@ export default function AuthenticatedScreens() {
     <View style={{ flex: 1 }}>
       {isModalVisible && (
         <View style={styles.modalContainer}>
-          <AddImage isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+          <AddImage isOpen={isOpen} onOpen={onOpen} onClose={onClose} navigation={navigation}/>
         </View>
       )}
 
