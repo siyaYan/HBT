@@ -28,8 +28,10 @@ import dayjs from "dayjs";
 import { AntDesign } from "@expo/vector-icons";
 import { createRound,updateRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
-import {updateRoundData } from "../context/RoundContext"
+import {useRound } from "../context/RoundContext"
+
 const RoundConfigurationScreen = ({ route, navigation }) => {
+  const {updateRoundData} = useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -41,7 +43,8 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const { userData } = useData();
   const emptyState = route.params.emptyState;
   const roundData = route.params.roundData;
-  // console.log('roundconfig page round data:', roundData);
+  const roundId = roundData._id;
+  console.log('roundconfig page round data:', roundData);
   // console.log('roundconfig page empty:', emptyState);
 
   const minDaysFromNow = new Date(); // Start with today's date
@@ -76,20 +79,35 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   ]);
 
   const handleUpdateRound = () => {
-    const newRoundData = {
-      userId: userData.data._id,
-      name: roundName,
-      level,
-      startDate,
-      maxCapacity: parseInt(maxCapacity, 10),
-      allowOthers,
-    };
-    {
-      emptyState
-        ? (
-          createRound(newRoundData, userData.token)
-        )
-        : updateRoundInfo(userData.token,roundData._id);
+    if (emptyState) {
+      const newRoundData = {
+        userId: userData.data._id,
+        name: roundName,
+        level:level,
+        startDate:startDate,
+        maxCapacity: maxCapacity,
+        isAllowedInvite:allowOthers,
+      };
+      createRound(newRoundData, userData.token);
+      console.log("create round",newRoundData);
+    } else {
+      console.log("route",route.params)
+      const newRoundData = {
+        _id: roundId,
+        userId: userData.data._id,
+        name: roundName,
+        level:level,
+        startDate:startDate,
+        maxCapacity: maxCapacity,
+        isAllowedInvite:allowOthers,
+      };
+      const response = updateRoundInfo(userData.token, newRoundData);
+      // updateRoundData(newRoundData);
+      // console.log("Update round",newRoundData);
+      if (response.status == "success") {
+
+      console.log("response",response.data)
+      updateRoundData(response.data)}
     }
   };
   const handleValidateUpload = () => {
@@ -114,8 +132,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       return;
     }
 
-    // Proceed with upload or other actions
-    // console.log('Selected level:', level);
     handleUpdateRound();
   };
 
@@ -143,16 +159,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         >
           <Center w="90%" h="100%">
             <VStack w="100%" h="100%" space={6}>
-              {/*<VStack>
-                <Text
-                  mt={10}
-                  ml={2}
-                  fontSize="3xl"
-                  style={{ fontFamily: "Bold" }}
-                >
-                  Create a round
-                </Text>
-              </VStack> */}
               <VStack w="100%" space={6}>
                 {/* Round Name */}
                 <FormControl isInvalid={isInvalid.roundName}>
@@ -359,7 +365,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
             </VStack>
           </Center>
         </Box>
-        {/* </ScrollView> */}
       </Center>
     </KeyboardAvoidingView>
   );

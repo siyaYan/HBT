@@ -1,6 +1,7 @@
 // Mock API functions for testing without a backend
 import { Alert } from "react-native";
 import RNFS from "react-native-fs";
+
 export async function registerUser(
   username,
   nickname,
@@ -34,6 +35,7 @@ export async function registerUser(
       Alert.alert("Oh,No!", data.message || "Registration unsuccessful");
       console.log(data.message);
     }
+
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in register user:", error);
@@ -689,24 +691,44 @@ export async function getRoundInfo(token,userId) {
 }
 
 // Chapter 4: Function to update round information
-
-export async function updateRoundInfo(token,roundId) {
+export async function updateRoundInfo(token, newRoundData) {
   try {
+    // console.log("round id",newRoundData._id)
+
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round/${roundId}`,
+      `http://3.27.94.77:8000/habital/v1/round/${newRoundData._id}`,
       {
         method: "PATCH",
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({
+          "name": newRoundData.name,
+          "maximum": newRoundData.maximum,//wrong number
+          "level":newRoundData.level,
+          "startDate":newRoundData.startDate.toISOString(),
+          "updatedAt":new Date().toISOString(),
+          "isAllowedInvite": newRoundData.isAllowedInvite
+        }),
       }
     );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+    }
+
     const data = await response.json();
-    console.log("updateRoundInfo",data);
+    if (data.status === "success") {
+      Alert.alert("Success", "Update this round");
+    } else {
+      Alert.alert("Unsuccessful", data.message || "Update round unsuccessful");
+    }
+    console.log("Patch endpoint", data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Cannot connect to server");
   }
 }
