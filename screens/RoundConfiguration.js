@@ -26,12 +26,12 @@ import RoundDatePicker from "./RoundDatePicker";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { AntDesign } from "@expo/vector-icons";
-import { createRound,updateRoundInfo } from "../components/Endpoint";
+import { createRound, updateRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
-import {useRound } from "../context/RoundContext"
+import { useRound } from "../context/RoundContext";
 
 const RoundConfigurationScreen = ({ route, navigation }) => {
-  const {updateRoundData} = useRound();
+  const { roundContext, updateRoundData } = useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -43,8 +43,8 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const { userData } = useData();
   const emptyState = route.params.emptyState;
   const roundData = route.params.roundData;
-  const roundId = roundData._id;
-  console.log('roundconfig page round data:', roundData);
+  const roundId = emptyState ? null:roundData._id;
+  // console.log('roundconfig page round data:', roundData);
   // console.log('roundconfig page empty:', emptyState);
 
   const minDaysFromNow = new Date(); // Start with today's date
@@ -56,9 +56,12 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     emptyState ? null : roundData.name
   );
   const [level, setLevel] = useState(emptyState ? null : roundData.level);
-  const [maxCapacity, setMaxCapacity] = useState(
-    emptyState ? "5" : roundData.maximum.toString()
-  );
+  const [maxCapacity, setMaxCapacity] = useState(() => {
+    if (emptyState) {
+      return "5";
+    }
+    return roundData.maximum != null ? roundData.maximum.toString() : "5";
+  });
   const [allowOthers, setAllowOthers] = useState(
     emptyState ? true : roundData.isAllowedInvite
   );
@@ -77,37 +80,42 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     { label: "35", value: "35" },
     { label: "66", value: "66" },
   ]);
-
-  const handleUpdateRound = () => {
+  // Update round info to RoundContext and DB
+  async function handleUpdateRound (){
     if (emptyState) {
       const newRoundData = {
         userId: userData.data._id,
         name: roundName,
-        level:level,
-        startDate:startDate,
+        level: level,
+        startDate: startDate,
         maxCapacity: maxCapacity,
-        isAllowedInvite:allowOthers,
+        isAllowedInvite: allowOthers,
       };
       createRound(newRoundData, userData.token);
-      console.log("create round",newRoundData);
+      console.log("create round", newRoundData);
     } else {
-      console.log("route",route.params)
+      console.log("route", route.params);
       const newRoundData = {
         _id: roundId,
         userId: userData.data._id,
         name: roundName,
-        level:level,
-        startDate:startDate,
+        level: level,
+        startDate: startDate,
         maxCapacity: maxCapacity,
-        isAllowedInvite:allowOthers,
+        isAllowedInvite: allowOthers,
       };
-      const response = updateRoundInfo(userData.token, newRoundData);
+      console.log("new round data", newRoundData);
+      const response = await updateRoundInfo(userData.token, newRoundData);
+      console.log("response", response.status);
       // updateRoundData(newRoundData);
       // console.log("Update round",newRoundData);
       if (response.status == "success") {
-
-      console.log("response",response.data)
-      updateRoundData(response.data)}
+        console.log("response", response.data);
+        // updateRoundData(response.data)
+        updateRoundData(
+          response.data,
+        );
+      }
     }
   };
   const handleValidateUpload = () => {

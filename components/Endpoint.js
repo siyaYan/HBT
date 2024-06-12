@@ -694,7 +694,7 @@ export async function getRoundInfo(token,userId) {
 export async function updateRoundInfo(token, newRoundData) {
   try {
     // console.log("round id",newRoundData._id)
-
+    console.log("Pass to Endpoint",newRoundData)
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/round/${newRoundData._id}`,
       {
@@ -705,7 +705,7 @@ export async function updateRoundInfo(token, newRoundData) {
         },
         body: JSON.stringify({
           "name": newRoundData.name,
-          "maximum": newRoundData.maximum,//wrong number
+          "maximum": parseInt(newRoundData.maxCapacity, 10),
           "level":newRoundData.level,
           "startDate":newRoundData.startDate.toISOString(),
           "updatedAt":new Date().toISOString(),

@@ -82,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
           </Box>
         </Pressable>
         {/* Linda Sprint 4 */}
-        {roundData.data.length < 2 && (
+        {(!roundData.data||roundData?.data?.length < 2) && (
           <Button
             // onPress={()=>navigation.navigate('RoundConfig')}
             onPress={startRound}
@@ -114,7 +114,7 @@ const HomeScreen = ({ navigation }) => {
         )}
         
       </Flex>
-      {roundData.data.map((round, index) => (
+      {roundData?.data?.map((round, index) => (
           <View key={round._id} style={{ margin: 10 }}>
             <Button
               // onPress={()=>navigation.navigate('RoundConfig')}

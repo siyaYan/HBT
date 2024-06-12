@@ -44,9 +44,13 @@ export const RoundProvider = ({ children }) => {
 //     saveData();
 //   }, [roundData]);
 
-  const updateRoundData = (newRoundData) => {
-    setRoundData((prevRoundData) => ({ ...prevRoundData, ...newRoundData }));
-  };
+const updateRoundData = (updatedRound) => {
+  setRoundData((prevRoundData) => 
+    prevRoundData.map((round) => 
+      round._id === updatedRound._id ? { ...round, ...updatedRound } : round
+    )
+  );
+};
 
   return (
     <RoundContext.Provider value={{ roundData, updateRoundData }}>
