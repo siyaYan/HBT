@@ -12,10 +12,25 @@ import {
 } from "native-base";
 import Background from "../components/Background";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useRound } from "../context/RoundContext";
 
 const RoundInfoScreen = ({ route, navigation }) => {
-  const roundData = route.params.round;
-  console.log('roundinfo page round data:', roundData);
+  const { roundId } = route.params|| {}; // Safe access to route params
+  console.log("round info page round id",roundId)
+
+
+  if (!roundId) {
+    console.error("roundId is not defined");
+    navigation.goBack(); // Navigate back if roundId is not available
+    return null; // Render nothing while navigating back
+  }
+  
+  const { roundData } = useRound();
+  console.log("round context",roundData);
+
+  
+  const round = roundData.data.find((r) => r._id === roundId);
+  console.log('roundinfo page round data:', round);
 
   // roundData.roundFriends
   // Read only
@@ -33,7 +48,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   };
   // Navigate to Round Config page
   const goRoundConfig = () => {
-    navigation.navigate("RoundStack", { screen: "RoundConfig",params: { emptyState: false ,roundData:roundData }});
+    navigation.navigate("RoundStack", { screen: "RoundConfig",params: { emptyState: false ,roundId:roundId }});
   };
 
   return (
@@ -44,7 +59,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
         <VStack space={4}>
           <HStack>
             <Heading size="lg" color="coolGray.800">
-              {roundData.name}
+              {round.name}
             </Heading>
             {/* Edit round, which leads to Round Config page */}
             <Box alignItems="center" justifyContent="center">
@@ -53,9 +68,9 @@ const RoundInfoScreen = ({ route, navigation }) => {
               </Button>
             </Box>
           </HStack>
-          <Text fontSize="md">Level: {roundData.level}</Text>
-          <Text fontSize="md">Start Date: {roundData.startDate}</Text>
-          <Text fontSize="md">End Date: {roundData.endDate}</Text>
+          <Text fontSize="md">Level: {round.level}</Text>
+          <Text fontSize="md">Start Date: {round.startDate}</Text>
+          <Text fontSize="md">End Date: {round.endDate}</Text>
           <Divider my="2" />
 
           {/* Friend list dummy data */}

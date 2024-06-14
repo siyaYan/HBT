@@ -15,7 +15,7 @@ export default function RoundStackNavigator({ navigation }) {
       <Stack.Screen
         name="RoundConfig"
         component={RoundConfigurationScreen}
-        options={{
+        options={({navigation})=>({
           headerBackTitleVisible: false,
           title: "",
           headerStyle: {
@@ -31,7 +31,7 @@ export default function RoundStackNavigator({ navigation }) {
               }}
             />
           ),
-        }}
+        })}
       />
       <Stack.Screen
         name="RoundInfo"

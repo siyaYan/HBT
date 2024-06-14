@@ -24,7 +24,7 @@ import { useRound } from "../context/RoundContext";
 const HomeScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const { roundData, updateRoundData } = useRound();
-  console.log("rounddata", roundData.data);
+  console.log("rounddata", roundData);
   useFocusEffect(
     useCallback(() => {
       console.log(roundData);
@@ -49,12 +49,13 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
-  const handleRoundPress = (round) => {
+  const handleRoundPress = (roundId) => {
     // console.log('function, roundinfo:', round);
     navigation.navigate("RoundStack", {
       screen: "RoundInfo",
-      params: { round: round },
+      params: { roundId }
     });
+    console.log("home page roundId",roundId);
   };
 
   return (
@@ -122,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
               title={"Round ${index+1}"}
               onPress={() => {
                 // console.log("Roundinfo on homepage:", round),
-                handleRoundPress(round);
+                handleRoundPress(round._id);
               }}
               // onPress={() => {handleRoundPress(round)}}
               rounded="30"

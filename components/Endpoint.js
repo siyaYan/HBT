@@ -33,7 +33,7 @@ export async function registerUser(
       Alert.alert("Success", "Please check your email inbox");
     } else {
       Alert.alert("Oh,No!", data.message || "Registration unsuccessful");
-      console.log(data.message);
+      // console.log(data.message);
     }
 
     return data; // Make sure you return the data here
@@ -288,7 +288,7 @@ export async function updateAvatar(token, userId, avatar) {
       }
     );
     const data = await response.json();
-    console.log(data, "update avatar");
+    // console.log(data, "update avatar");
     if (data.status == "Successful operation") {
       // Alert.alert("Success", "Avatar updated!");
     } else {
@@ -315,7 +315,7 @@ export async function findByUserId(token, userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data
   }catch (e) {
     console.error("Unsuccessful in connect server:", error);
@@ -339,14 +339,14 @@ export async function connectByUserId(token, senderId, receiverId) {
         }),
       }
     );
-    console.log(response)
+    // console.log(response)
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     if (data.status == "success") {
       Alert.alert("Success", "Send link request to this friend!");
     } else {
       Alert.alert("Oh,No!", data.message || "Failed to connect!");
-      console.log(data.message);
+      // console.log(data.message);
     }
     return data
   }catch (e) {
@@ -368,7 +368,7 @@ export async function getFriends(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -389,7 +389,7 @@ export async function getSendRequest(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -410,7 +410,7 @@ export async function getReceivedRequest(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -418,7 +418,7 @@ export async function getReceivedRequest(token) {
   }
 }
 export async function reactReceivedRequest(token, friendRequestId, react) {
-  console.log(friendRequestId,react)
+  // console.log(friendRequestId,react)
   try {
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}`,
@@ -434,7 +434,7 @@ export async function reactReceivedRequest(token, friendRequestId, react) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -454,7 +454,7 @@ export async function deleteFriends(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -462,7 +462,7 @@ export async function deleteFriends(token) {
   }
 }
 export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
-  console.log(friendRequestId)
+  // console.log(friendRequestId)
   try {
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}/deleteFriend`,
@@ -475,7 +475,7 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -497,7 +497,7 @@ export async function getNotifiableFriendRequests(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -519,7 +519,7 @@ export async function getNotifiableNotification(token, userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -541,7 +541,7 @@ export async function getNotificationHistory(token, userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -563,7 +563,7 @@ export async function clearNotificationById(token, userId, notificationId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -585,7 +585,7 @@ export async function clearAllNotifications(token, userId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -607,7 +607,7 @@ export async function clearAllFriendRequests(token) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -629,7 +629,7 @@ export async function clearFriendRequestById(token, friendRequestId) {
       }
     );
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);

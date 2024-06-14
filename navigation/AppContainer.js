@@ -32,7 +32,7 @@ const getCredentials = async () => {
 export default function AppContainer() {
   const navigationRef = useRef();
   const { userData, updateUserData } = useData();
-  const { roundData, updateRoundData } = useRound();
+  const { roundData, updateRounds } = useRound();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -62,7 +62,8 @@ export default function AppContainer() {
               uri: response.data.user.profileImageUrl,
             },
           });
-          updateRoundData(roundInfo)
+          updateRounds(roundInfo)
+          console.log("saved Cren rounddata",roundData)
 
           // console.log(userData);
           setIsAuthenticated(true);

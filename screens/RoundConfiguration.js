@@ -31,7 +31,7 @@ import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 
 const RoundConfigurationScreen = ({ route, navigation }) => {
-  const { roundContext, updateRoundData } = useRound();
+  const { roundData, updateRoundData } = useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -42,28 +42,32 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   // Initialization
   const { userData } = useData();
   const emptyState = route.params.emptyState;
-  const roundData = route.params.roundData;
-  const roundId = emptyState ? null:roundData._id;
+  //TODO: change it to RoundContext with index
+  // const roundData = route.params.roundData; 
+  const roundId = route.params.roundId;
+  console.log("round config roundId",roundId);
+  const round = roundData.data.find((r) => r._id === roundId);
+  
   // console.log('roundconfig page round data:', roundData);
   // console.log('roundconfig page empty:', emptyState);
-
+console.log("round config round data",round)
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
   const [startDate, setDate] = useState(
-    emptyState ? new Date() : new Date(roundData.startDate)
+    emptyState ? new Date() : new Date(round.startDate)
   );
   const [roundName, setRoundName] = useState(
-    emptyState ? null : roundData.name
+    emptyState ? null : round.name
   );
-  const [level, setLevel] = useState(emptyState ? null : roundData.level);
+  const [level, setLevel] = useState(emptyState ? null : round.level);
   const [maxCapacity, setMaxCapacity] = useState(() => {
     if (emptyState) {
       return "5";
     }
-    return roundData.maximum != null ? roundData.maximum.toString() : "5";
+    return round.maximum != null ? round.maximum.toString() : "5";
   });
   const [allowOthers, setAllowOthers] = useState(
-    emptyState ? true : roundData.isAllowedInvite
+    emptyState ? true : round.isAllowedInvite
   );
 
   // Toggle button
@@ -113,7 +117,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         console.log("response", response.data);
         // updateRoundData(response.data)
         updateRoundData(
-          response.data,
+          response.data
         );
       }
     }

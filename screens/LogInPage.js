@@ -72,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { userData, updateUserData } = useData();
-  const { roundData, updateRoundData } = useRound();
+  const { roundData, updateRounds } = useRound();
   const { user, setUser } = useState({ res: "" });
   const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
   const [errorT, setErrorT] = useState(false);
@@ -138,7 +138,9 @@ const LoginScreen = ({ navigation }) => {
     });
     if (submitValidation()) {
       const response = await loginUser(formData.id, formData.password);
-      const roundInfo = await getRoundInfo(formData.token,formData.user._id);
+      console.log("response",response)
+      const roundInfo = await getRoundInfo(response.token,response.data.user._id);
+      console.log("login",roundInfo)
       if (response.token) {
         if (remember) {
           await saveCredentials(formData.id, formData.password);
@@ -151,7 +153,8 @@ const LoginScreen = ({ navigation }) => {
           },
           notes:1
         });
-        updateRoundData(roundInfo)
+        updateRounds(roundInfo)
+        console.log("round context",roundData)
         navigation.navigate("MainStack", { screen: "Home" });
         // console.log(response.token);
       } else {

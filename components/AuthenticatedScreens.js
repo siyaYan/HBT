@@ -19,7 +19,7 @@ export default function AuthenticatedScreens() {
   useEffect(() => {
     // Fetch or update avatar dynamically
     // userData=useData().useData
-    console.log(userData.notes, "tab-----");
+    // console.log(userData.notes, "tab-----");
   }, [userData]);
   const onPress = (value) => {
     if (value.target.includes("Home")) {
@@ -35,7 +35,7 @@ export default function AuthenticatedScreens() {
       navigationRef.current?.navigate("Notifications");
     }
     if (value.target.includes("Canmera")) {
-      console.log("Canmera");
+      // console.log("Canmera");
     }
   };
 
