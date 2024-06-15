@@ -51,6 +51,10 @@ const RoundInfoScreen = ({ route, navigation }) => {
     navigation.navigate("RoundStack", { screen: "RoundConfig",params: { emptyState: false ,roundId:roundId }});
   };
 
+  const levelInt = parseInt(round.level, 10);
+  const startDate = new Date(round.startDate);
+  const endDate = new Date(startDate.getTime() + levelInt * 24 * 60 * 60 * 1000); // Convert days to milliseconds
+
   return (
     <NativeBaseProvider>
       {/* <Center w="100%"> */}
@@ -69,8 +73,16 @@ const RoundInfoScreen = ({ route, navigation }) => {
             </Box>
           </HStack>
           <Text fontSize="md">Level: {round.level}</Text>
-          <Text fontSize="md">Start Date: {round.startDate}</Text>
-          <Text fontSize="md">End Date: {round.endDate}</Text>
+          <Text fontSize="md">Start Date: {new Date(round.startDate).toLocaleDateString(undefined, {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+})}</Text>
+          <Text fontSize="md">End Date: {endDate.toLocaleDateString(undefined, {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+})}</Text>
           <Divider my="2" />
 
           {/* Friend list dummy data */}

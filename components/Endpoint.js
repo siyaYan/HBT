@@ -638,29 +638,59 @@ export async function clearFriendRequestById(token, friendRequestId) {
 }
 
 // Chapter 4 Round Configuration
-export async function createRound(roundData,token) {
-  fetch('http://3.27.94.77:8000/habital/v1/round/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(roundData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(`HTTP error ${response.status}: ${text}`);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+// export async function createRound(roundData,token) {
+//   fetch('http://3.27.94.77:8000/habital/v1/round/create', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify(roundData),
+//     })
+//       .then((response) => {
+//         if (!response.ok) {
+//           return response.text().then(text => {
+//             throw new Error(`HTTP error ${response.status}: ${text}`);
+//           });
+//         }
+//         return response.json;
+//       })
+//       .then((data) => {
+//         console.log('Success:', data);
+//       })
+//       .catch((error) => {
+//         console.error('Error:', error);
+//       });
+// }
+
+export async function createRound(roundData, token) {
+  try {
+    const response = await fetch(
+      'http://3.27.94.77:8000/habital/v1/round/create',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(roundData),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('Success:', data);
+    return data;
+  } catch (error) {
+    console.error('Unsuccessful in createRound:', error);
+    Alert.alert('Unsuccessful', 'Round creation failed. Please try again later');
+    // Handle error appropriately, maybe return an error status or rethrow the error.
+    return { status: 'fail', message: error.message };
+  }
 }
 
 // Chapter 4: Function to get round information

@@ -13,25 +13,22 @@ import {
   Menu,
   Pressable,
   HStack,
-  ScrollView,
   KeyboardAvoidingView,
 } from "native-base";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback  } from "react";
 import Background from "../components/Background";
 import { Switch } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker";
-import enUS from "@ant-design/react-native/lib/locale-provider/en_US";
-import { DatePicker, List, Provider } from "@ant-design/react-native";
-import RoundDatePicker from "./RoundDatePicker";
 import DateTimePicker from "react-native-ui-datepicker";
-import dayjs from "dayjs";
 import { AntDesign } from "@expo/vector-icons";
 import { createRound, updateRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 
+
 const RoundConfigurationScreen = ({ route, navigation }) => {
-  const { roundData, updateRoundData } = useRound();
+  
+  const { roundData, updateRoundData,insertRoundData } = useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -49,12 +46,12 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const round = roundData.data.find((r) => r._id === roundId);
   
   // console.log('roundconfig page round data:', roundData);
-  // console.log('roundconfig page empty:', emptyState);
+  console.log('roundconfig page empty:', emptyState);
 console.log("round config round data",round)
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
   const [startDate, setDate] = useState(
-    emptyState ? new Date() : new Date(round.startDate)
+    emptyState ? minDaysFromNow : new Date(round.startDate)
   );
   const [roundName, setRoundName] = useState(
     emptyState ? null : round.name
@@ -85,7 +82,12 @@ console.log("round config round data",round)
     { label: "66", value: "66" },
   ]);
   // Update round info to RoundContext and DB
-  async function handleUpdateRound (){
+  useEffect(() => {
+    console.log("roundData updated", roundData);
+  }, [roundData]);
+
+  // async function handleUpdateRound (){
+    const handleUpdateRound = async () => {
     if (emptyState) {
       const newRoundData = {
         userId: userData.data._id,
@@ -95,8 +97,24 @@ console.log("round config round data",round)
         maxCapacity: maxCapacity,
         isAllowedInvite: allowOthers,
       };
-      createRound(newRoundData, userData.token);
       console.log("create round", newRoundData);
+      const response =await createRound(newRoundData, userData.token);
+      console.log("create round response status",response.status);
+      console.log("create round response data",response.data);
+      console.log("create round response",response)
+      // updateRoundData(
+      //   response.data
+      // );
+      // if (response.status == "success") {
+      //   console.log("response", response.data);
+      //   // updateRoundData(response.data)
+        
+      // }
+      insertRoundData(
+        response.data
+      );
+      console.log("after creation",roundData);
+
     } else {
       console.log("route", route.params);
       const newRoundData = {

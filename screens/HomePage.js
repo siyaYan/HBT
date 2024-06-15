@@ -27,11 +27,13 @@ const HomeScreen = ({ navigation }) => {
   console.log("rounddata", roundData);
   useFocusEffect(
     useCallback(() => {
-      console.log(roundData);
+      console.log("call back",roundData);
       // This code runs when the tab comes into focus
       // console.log('Tab is in focus, userInfo:', userData);
     }, [userData, roundData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
+  console.log("rounddata after callback", roundData);
+
   const handleAvatarPress = () => {
     // Navigate to another screen when the Avatar is pressed
     navigation.navigate("AccountStack", { screen: "Account" });
@@ -47,6 +49,7 @@ const HomeScreen = ({ navigation }) => {
       screen: "RoundConfig",
       params: { emptyState: true }
     });
+    console.log("Home page",roundData);
   };
 
   const handleRoundPress = (roundId) => {
