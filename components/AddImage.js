@@ -25,7 +25,12 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
     const result = await ImagePicker.launchImageLibraryAsync();
     try {
       if (!result.canceled) {
-        const res=result.assets[0].uri
+        const res={
+          uri:result.assets[0].uri,
+          type: result.assets[0].type,
+          name: result.assets[0].fileName, 
+        }
+        // console.log(res)
         setSelectedImage(res);
         onClose()
         navigation.navigate("ForumStack", {screen: "ForumDraft", params: {res }});

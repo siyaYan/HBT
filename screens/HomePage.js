@@ -117,6 +117,32 @@ const HomeScreen = ({ navigation, route }) => {
             >
               Start a round
             </Button>
+            <Button
+              onPress={()=>{navigation.navigate('ForumStack', { screen: 'ForumPage' })}}
+              rounded="30"
+              mt="5"
+              width="80%"
+              size="lg"
+              style={{
+                borderWidth: 1, // This sets the width of the border
+                borderColor: '#49a579', // This sets the color of the border
+              }}
+              backgroundColor={"rgba(250,250,250,0.2)"}
+              _text={{
+                color: "#191919",
+                fontFamily: "Regular Semi Bold",
+                fontSize: "lg",
+              }}
+              _pressed={{
+                // below props will only be applied on button is pressed
+                bg: "#e5f5e5",
+                _text: {
+                  color: "warmGray.50",
+                },
+              }}
+            >
+              Check Forum
+            </Button>
         </Flex>
     </NativeBaseProvider>
   );

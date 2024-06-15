@@ -502,34 +502,6 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
   }
 }
 
-
-// Chapter 4 Round Configuration
-
-export async function updateRound(roundData,token) {
-  fetch('http://3.27.94.77:8000/habital/v1/round/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(roundData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(`HTTP error ${response.status}: ${text}`);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-}
-
 export async function getNotifiableFriendRequests(token) {
   try {
     const response = await fetch(
@@ -722,3 +694,104 @@ export async function getNoteUpdate(token, userId){
   return res
 }
 
+// Chapter 4 Round Configuration
+export async function updateRound(roundData,token) {
+  fetch('http://3.27.94.77:8000/habital/v1/round/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(roundData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(`HTTP error ${response.status}: ${text}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+}
+
+export async function addPost(id,post,token) {
+  const formData = new FormData();
+  formData.append("image", post.image);
+  formData.append("text", post.text);
+  try {
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/add/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    })
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(`HTTP error ${response.status}: ${text}`);
+      });
+    }
+    const data= await response.json();
+
+    if (data.status == "success") {
+      Alert.alert("Success", "Post message successfully");
+    } else {
+      Alert.alert(
+        "Unsuccessful",
+        data.message || "Post message failed"
+      );
+    }
+    return data
+    
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
+
+export async function getForum(id,token) {
+  try {
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/get/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(`HTTP error ${response.status}: ${text}`);
+      });
+    }
+    const data= await response.json();
+
+    // if (data.status == "success") {
+    //   Alert.alert("Success", "get messages successfully");
+    // } else {
+    //   Alert.alert(
+    //     "Unsuccessful",
+    //     data.message || "get messages failed"
+    //   );
+    // }
+    return data
+    
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
