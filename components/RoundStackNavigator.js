@@ -6,6 +6,7 @@ import RoundConfigurationScreen from "../screens/RoundConfiguration";
 import RoundInfoScreen from "../screens/RoundInfo";
 import RoundInviteFriendsScreen from "../screens/RoundInviteFriends";
 import InviteScreen from "../screens/InviteFriends";
+import RoundHabit from "../screens/RoundHabit";
 
 const Stack = createStackNavigator();
 
@@ -78,6 +79,28 @@ export default function RoundStackNavigator({ navigation }) {
       <Stack.Screen
         name="GlobalAddFriend"
         component={InviteScreen}
+        options={{
+          headerBackTitleVisible: false,
+          title: "",
+          headerStyle: {
+            backgroundColor: "rgba(255,255,255,0)",
+          },
+          headerLeft: () => (
+            <IconButton
+              ml={3}
+              marginY={0}
+              icon={<Ionicons name="arrow-back" size={28} color="black" />}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          ),
+        }}
+      />
+      {/* Round Habit */}
+       <Stack.Screen
+        name="RoundHabit"
+        component={RoundHabit}
         options={{
           headerBackTitleVisible: false,
           title: "",

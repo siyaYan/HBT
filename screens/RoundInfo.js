@@ -44,8 +44,13 @@ const RoundInfoScreen = ({ route, navigation }) => {
 
   // Navigate to invite friend page
   const inviteFriend = () => {
-    navigation.navigate("RoundStack", { screen: "RoundInviteFriend" });
+    navigation.navigate("RoundStack", { screen: "RoundInviteFriend" ,params: { roundId:roundId }});
   };
+
+  const goHabit =() => {
+    navigation.navigate("RoundStack", { screen: "RoundHabit" ,params: { roundId:roundId }});
+
+  }
   // Navigate to Round Config page
   const goRoundConfig = () => {
     navigation.navigate("RoundStack", { screen: "RoundConfig",params: { emptyState: false ,roundId:roundId }});
@@ -98,9 +103,43 @@ const RoundInfoScreen = ({ route, navigation }) => {
               </Text>
             )}
           />
-          <Button onPress={inviteFriend} mt="5">
+          
+          {/* <Button onPress={inviteFriend} mt="5">
             Invite Friend
-          </Button>
+          </Button> */}
+          <Button
+                  onPress={() => {
+                    inviteFriend();
+                    // console.log("Calendar icon pressed. info:", startDate,level,roundName,allowOthers,userData.data._id);
+                  }}
+                  mt="5"
+                  width="100%"
+                  size="lg"
+                  bg="#49a579"
+                  _text={{
+                    color: "#f9f8f2",
+                    fontFamily: "Regular Medium",
+                    fontSize: "lg",
+                  }}
+                >
+                  Invite friend
+                </Button>
+                <Button
+                  onPress={() => {
+                    goHabit();
+                  }}
+                  mt="5"
+                  width="100%"
+                  size="lg"
+                  bg="#49a579"
+                  _text={{
+                    color: "#f9f8f2",
+                    fontFamily: "Regular Medium",
+                    fontSize: "lg",
+                  }}
+                >
+                  My habit
+                </Button>
         </VStack>
       </Box>
     </NativeBaseProvider>

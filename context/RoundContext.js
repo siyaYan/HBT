@@ -33,6 +33,7 @@ export const RoundProvider = ({ children }) => {
     loadData();
   }, []);
 
+  // insert new round
   const insertRoundData = (newRound) => {
     setRoundData((prevRoundData) => {
       if (prevRoundData && prevRoundData.data) {
@@ -44,7 +45,7 @@ export const RoundProvider = ({ children }) => {
       }
     });
   };
-
+// update existing round
   const updateRoundData = (updatedRound) => {
     // console.log("Updating round data with", updatedRound);
   
@@ -62,6 +63,12 @@ export const RoundProvider = ({ children }) => {
       }
     });
   };
+  //add new to the round friend list (existing round)
+  const updateRoundFriendList = (newFriendList) => {
+
+
+
+  }
 
 // Update the entire roundData array
 const updateRounds = (newRounds) => {
@@ -70,7 +77,7 @@ const updateRounds = (newRounds) => {
 };
 
   return (
-    <RoundContext.Provider value={{ roundData, updateRoundData,updateRounds,insertRoundData }}>
+    <RoundContext.Provider value={{ roundData, updateRoundData,updateRounds,insertRoundData,updateRoundFriendList }}>
       {children}
     </RoundContext.Provider>
   );
