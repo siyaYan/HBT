@@ -46,17 +46,36 @@ export const RoundProvider = ({ children }) => {
   //   saveData();
   // }, [roundData]);
 
-const updateRoundData = (updatedRound) => {
-  console.log("Updating round data with", updatedRound);
-  setRoundData((prevRoundData) => 
-    prevRoundData.map((round) => 
-      round._id === updatedRound._id ? { ...round, ...updatedRound } : round
-    )
-  );
-};
+  const updateRoundData = (updatedRound) => {
+    console.log("Updating round data with", updatedRound);
+  
+    setRoundData((prevRoundData) => {
+      if (prevRoundData && prevRoundData.data) {
+        console.log("round context previous Round Data", prevRoundData.data);
+        const updatedData = prevRoundData.data.map((round) =>
+          round._id === updatedRound._id ? { ...round, ...updatedRound } : round
+        );
+        return { ...prevRoundData, data: updatedData };
+      } else {
+        console.error("Previous round data is undefined or does not contain data property");
+        return prevRoundData; // Let's see if this will happen, I highly doubt this. As we hide the button from showing if there is no round.
+      }
+    });
+  };
 
+// const updateRoundData = (updatedRound) => {
+//   console.log("Updating round data with", updatedRound);
+
+//   setRoundData((prevRoundData) => {
+//     console.log("round context previous Round Data", prevRoundData);
+//     return prevRoundData.data.map((round) => 
+//       round._id === updatedRound._id ? { ...round, ...updatedRound } : round
+//     );
+//   });
+// };
 // Update the entire roundData array
 const updateRounds = (newRounds) => {
+  console.log("round context",newRounds);
   setRoundData(newRounds);
 };
 
