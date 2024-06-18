@@ -16,13 +16,12 @@ import {
   Modal,
 } from "native-base";
 import { updateRoundFriendList } from "../components/Endpoint";
-
 import { Avatar } from "native-base";
 import { Foundation, Feather } from "@expo/vector-icons";
 import Background from "../components/Background";
 import { getFriends } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
-import { useState, useCallback } from "react";
+import { useState, useCallback,useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRound } from "../context/RoundContext";
 
@@ -38,6 +37,12 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   const round = roundData.data.find((r) => r._id === roundId);
   console.log("Round Friend List", round.roundFriends);
 
+  useEffect(() => {
+    console.log('friends updated:', friends);
+    console.log('round data updated:', roundData)
+    console.log("round data friend list: ",round.roundFriends)
+  }, [friends,roundData]);
+
   // TODO: duplicate functions with FriendsList
   // Global friends
   useFocusEffect(
@@ -48,6 +53,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       getGlobalFriendList();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
+ 
   const getGlobalFriendList = async () => {
     const response = await getFriends(userData.token);
     // Handle success or error response
@@ -56,6 +62,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
     }
     if (response.status == "success") {
       // console.log('get friends success:',response.data);
+      //TODO round/id/friendlist/add, add a single friend into the round
       let newFriends = [];
       console.log("end point get friends response:", response);
       response.users.map((user) => {
@@ -72,7 +79,8 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
         newFriends[index]._id = data._id;
       });
       setFriends(newFriends);
-      console.log("friends:", friends);
+      console.log("newfriends:", newFriends);
+      console.log("friends: ",friends)
     } else {
       console.error("get friends failed:", response.message);
     }

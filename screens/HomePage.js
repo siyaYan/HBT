@@ -27,7 +27,7 @@ const HomeScreen = ({ navigation }) => {
   console.log("rounddata", roundData);
   useFocusEffect(
     useCallback(() => {
-      console.log("call back",roundData);
+      console.log("call back", roundData);
       // This code runs when the tab comes into focus
       // console.log('Tab is in focus, userInfo:', userData);
     }, [userData, roundData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
@@ -47,18 +47,18 @@ const HomeScreen = ({ navigation }) => {
     // Navigate to round configuration when pressed
     navigation.navigate("RoundStack", {
       screen: "RoundConfig",
-      params: { emptyState: true }
+      params: { emptyState: true },
     });
-    console.log("Home page",roundData);
+    console.log("Home page", roundData);
   };
 
   const handleRoundPress = (roundId) => {
     // console.log('function, roundinfo:', round);
     navigation.navigate("RoundStack", {
       screen: "RoundInfo",
-      params: { roundId }
+      params: { roundId },
     });
-    console.log("home page roundId",roundId);
+    console.log("home page roundId", roundId);
   };
 
   return (
@@ -85,10 +85,44 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </Box>
         </Pressable>
-        {/* Linda Sprint 4 */}
-        {(!roundData.data||roundData?.data?.length < 2) && (
+      </Flex>
+      {/* Linda Sprint 4 Show round/s*/}
+
+      <Flex direction="column" alignItems="center">
+        {roundData?.data?.map((round, index) => (
+          //<View key={round._id} >
           <Button
-            // onPress={()=>navigation.navigate('RoundConfig')}
+            key={index}
+            title={"Round ${index+1}"}
+            onPress={() => {
+              handleRoundPress(round._id);
+            }}
+            rounded="30"
+            // shadow="1"
+            mt="5"
+            width="80%"
+            size="lg"
+            style={{
+              borderWidth: 1, // This sets the width of the border
+              borderColor: "#49a579", // This sets the color of the border
+            }}
+            backgroundColor={round.status === "P" ? "rgba(102, 102, 255, 1)" : (round.status === "R" ? "rgba(102, 102, 255, 1)" : ((round.status === "A" ? "rgba(73, 165, 121, 1)":(round.status === "C" ? "rgba(249, 248, 242, 1)":"rgba(250,250,250,0.2)"))))}
+            _text={{
+              color: "#FFFFFF",
+              fontFamily: "Regular Semi Bold",
+              fontSize: "lg",
+            }}
+            _pressed={{
+              bg: "rgba(102, 102, 255, 1)",
+            }}
+          >
+            {round.name}
+          </Button>
+          // </View>
+        ))}
+        {/* Linda Sprint 4 Start a round*/}
+        {(!roundData.data || roundData?.data?.length < 2) && (
+          <Button
             onPress={startRound}
             rounded="30"
             // shadow="1"
@@ -106,62 +140,15 @@ const HomeScreen = ({ navigation }) => {
               fontSize: "lg",
             }}
             _pressed={{
-              // below props will only be applied on button is pressed
               bg: "#e5f5e5",
-              // _text: {
-              //   color: "warmGray.50",
-              // },
             }}
           >
-            Start a round
+            {roundData?.data?.length === 1
+              ? "Plan the next round"
+              : "Start a round"}
           </Button>
         )}
-        
       </Flex>
-      {roundData?.data?.map((round, index) => (
-          <View key={round._id} style={{ margin: 10 }}>
-            <Button
-              // onPress={()=>navigation.navigate('RoundConfig')}
-              key={index}
-              title={"Round ${index+1}"}
-              onPress={() => {
-                // console.log("Roundinfo on homepage:", round),
-                handleRoundPress(round._id);
-              }}
-              // onPress={() => {handleRoundPress(round)}}
-              rounded="30"
-              // shadow="1"
-              mt="5"
-              width="80%"
-              size="lg"
-              style={{
-                borderWidth: 1, // This sets the width of the border
-                borderColor: "#49a579", // This sets the color of the border
-              }}
-              backgroundColor={"rgba(250,250,250,0.2)"}
-              _text={{
-                color: "#191919",
-                fontFamily: "Regular Semi Bold",
-                fontSize: "lg",
-              }}
-              _pressed={{
-                // below props will only be applied on button is pressed
-                bg: "#e5f5e5",
-                // _text: {
-                //   color: "warmGray.50",
-                // },
-              }}
-            >
-              {round.name}
-            </Button>
-          </View>
-        ))}
-      <View></View>
-
-      <ScrollView>
-        {/* <Text>{roundData.data.length}</Text> */}
-       
-      </ScrollView>
     </NativeBaseProvider>
   );
 };

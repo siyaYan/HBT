@@ -50,6 +50,8 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 console.log("round config round data",round)
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
+  const dataPickerMin = new Date();
+  dataPickerMin.setDate(minDaysFromNow.getDate()-1);
   const [startDate, setDate] = useState(
     emptyState ? minDaysFromNow : new Date(round.startDate)
   );
@@ -59,9 +61,9 @@ console.log("round config round data",round)
   const [level, setLevel] = useState(emptyState ? null : round.level);
   const [maxCapacity, setMaxCapacity] = useState(() => {
     if (emptyState) {
-      return "5";
+      return "10";
     }
-    return round.maximum != null ? round.maximum.toString() : "5";
+    return round.maximum != null ? round.maximum.toString() : "10";
   });
   const [allowOthers, setAllowOthers] = useState(
     emptyState ? true : round.isAllowedInvite
@@ -315,7 +317,8 @@ console.log("round config round data",round)
                             <DateTimePicker
                               mode="single"
                               date={startDate}
-                              minDate={minDaysFromNow}
+                              // minDate={minDaysFromNow}
+                              minDate={dataPickerMin}
                               // onChange={(params) => setDate(params.date)}
                               onChange={(params) => {
                                 setDate(new Date(params.date));
