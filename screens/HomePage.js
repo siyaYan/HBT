@@ -9,19 +9,28 @@ import {
   Flex,
   View,
   ScrollView,
+  Avatar,
+  Fab,
+  Icon,
 } from "native-base";
-import { Pressable } from "react-native";
-import { Avatar } from "native-base";
+import { Pressable, StyleSheet, SafeAreaView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRound } from "../context/RoundContext";
+import AnimatedEnvelope from "./AnimatedEnvelope.js";
+// import EnvelopeButton from "./EnvelopeButton.js";
 
 // TODO: change the layout to match the new ios version @Siya
 
 const HomeScreen = ({ navigation }) => {
+  const handlePress = () => {
+    console.log("Envelope pressed!");
+  };
+  const today = new Date();
+
   const { userData, updateUserData } = useData();
   const { roundData, updateRoundData } = useRound();
   console.log("rounddata", roundData);
@@ -89,37 +98,139 @@ const HomeScreen = ({ navigation }) => {
       {/* Linda Sprint 4 Show round/s*/}
 
       <Flex direction="column" alignItems="center">
-        {roundData?.data?.map((round, index) => (
+        {/* // Fab component, a box with a button
+      {roundData?.data?.map((round, index) => (
           //<View key={round._id} >
-          <Button
-            key={index}
-            title={"Round ${index+1}"}
-            onPress={() => {
-              handleRoundPress(round._id);
-            }}
-            rounded="30"
-            // shadow="1"
-            mt="5"
-            width="80%"
-            size="lg"
+          <Box key={index} 
+          // height="100" w="200" 
+          width="80%"
+          height ="100"
+          shadow="2" rounded="lg"
+           bg={
+              round.status === "P"
+                ? "rgba(102, 102, 255, 1)"
+                : round.status === "R"
+                ? "rgba(102, 102, 255, 1)"
+                : round.status === "A"
+                ? "rgba(73, 165, 121, 1)"
+                : round.status === "C"
+                ? "rgba(249, 248, 242, 1)"
+                : "rgba(250,250,250,0.2)"
+            }
             style={{
-              borderWidth: 1, // This sets the width of the border
-              borderColor: "#49a579", // This sets the color of the border
-            }}
-            backgroundColor={round.status === "P" ? "rgba(102, 102, 255, 1)" : (round.status === "R" ? "rgba(102, 102, 255, 1)" : ((round.status === "A" ? "rgba(73, 165, 121, 1)":(round.status === "C" ? "rgba(249, 248, 242, 1)":"rgba(250,250,250,0.2)"))))}
+    borderWidth: 1,
+    borderColor: "#49a579",
+    alignItems: "center", // Center items horizontally
+    justifyContent: "center", // Center items vertically
+  }}
             _text={{
               color: "#FFFFFF",
               fontFamily: "Regular Semi Bold",
               fontSize: "lg",
             }}
-            _pressed={{
-              bg: "rgba(102, 102, 255, 1)",
-            }}
-          >
+            >
             {round.name}
-          </Button>
-          // </View>
-        ))}
+            <Fab onPress={() => {
+              handleRoundPress(round._id);
+            }}
+            renderInPortal={false} shadow={2} size="sm" icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />} />
+            </Box>
+          ))} */}
+        {roundData?.data?.map((round, index) => {
+          //<View key={round._id} >
+          const startDate = new Date(round.startDate);
+          const timeDifference = startDate - today;
+          const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+          const prefix = timeDifference > 0 ? "D-" : "D+";
+          const formattedDifference = `${prefix}${Math.abs(
+            daysDifference
+          )} days`;
+
+          return (
+            // <View>
+            <Button
+              key={index}
+              title={"Round ${index+1}"}
+              onPress={() => {
+                handleRoundPress(round._id);
+              }}
+              rounded="30"
+              // shadow="1"
+              mt="5"
+              width="80%"
+              height="100"
+              size="lg"
+              style={{
+                borderWidth: 1, // This sets the width of the border
+                borderColor: "#49a579", // This sets the color of the border
+              }}
+              backgroundColor={
+                round.status === "P"
+                  ? "#606060"
+                  : round.status === "R"
+                  ? "#666ff"
+                  : round.status === "A"
+                  ? "#49a579"
+                  : round.status === "F"
+                  ? "#f9f8f2"
+                  : "rgba(250,250,250,0.2)"
+              }
+              // _text={{
+              //   color: "#FFFFFF",
+              //   fontFamily: "Regular Semi Bold",
+              //   fontSize: "lg",
+              // }}
+              _pressed={{
+                bg:
+                  round.status === "P"
+                    ? "#252525"
+                    : round.status === "R"
+                    ? "#323280"
+                    : round.status === "A"
+                    ? "173225"
+                    : round.status === "F"
+                    ? "C0C0C0"
+                    : "rgba(0, 0, 0, 0)", // default is transparent
+              }}
+            >
+              <Text
+                style={{
+                  color: "#FFFFFF",
+                  fontFamily: "Regular Semi Bold",
+                  fontSize: 20, // Use a number for fontSize instead of "lg"
+                }}
+              >
+                {round.name}
+              </Text>
+              {(round.status === "P" || "R") && (
+                <Text
+                  style={{
+                    color: "#FFFFFF",
+                    fontFamily: "Regular Semi Bold",
+                    fontSize: 20, // Use a number for fontSize instead of "lg"
+                  }}
+                >
+                  {formattedDifference} (
+                  {startDate.toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                  )
+                </Text>
+              )}
+              {/* {round.name}
+    {round.status === "P" && formattedDifference}
+    {round.status === "P" && startDate.toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+            })} */}
+            </Button>
+            // </View>
+          );
+        })}
         {/* Linda Sprint 4 Start a round*/}
         {(!roundData.data || roundData?.data?.length < 2) && (
           <Button
@@ -148,9 +259,28 @@ const HomeScreen = ({ navigation }) => {
               : "Start a round"}
           </Button>
         )}
+        <AnimatedEnvelope
+          onPress={handlePress}
+          // message="You have a new message"
+        />
       </Flex>
+      {/* <View>
+        {" "}
+        <EnvelopeButton />
+      </View> */}
+      {/* <SafeAreaView style={styles.container}>
+    </SafeAreaView> */}
     </NativeBaseProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+});
 
 export default HomeScreen;
