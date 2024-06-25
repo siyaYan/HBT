@@ -1,34 +1,32 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   Box,
-  Heading,
-  IconButton,
   Text,
   Button,
   NativeBaseProvider,
   Flex,
   View,
-  ScrollView,
   Avatar,
-  Fab,
-  Icon,
+  Modal,
 } from "native-base";
-import { Pressable, StyleSheet, SafeAreaView } from "react-native";
+import { Pressable, StyleSheet, TouchableOpacity,Dimensions } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRound } from "../context/RoundContext";
-import AnimatedEnvelope from "./AnimatedEnvelope.js";
-// import EnvelopeButton from "./EnvelopeButton.js";
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 // TODO: change the layout to match the new ios version @Siya
 
 const HomeScreen = ({ navigation }) => {
-  const handlePress = () => {
-    console.log("Envelope pressed!");
-  };
+  
   const today = new Date();
 
   const { userData, updateUserData } = useData();
@@ -69,6 +67,39 @@ const HomeScreen = ({ navigation }) => {
     });
     console.log("home page roundId", roundId);
   };
+
+  // Animated Envelope
+  const [isOpened, setIsOpened] = useState(false);
+
+  const handlePress = () => {
+    setIsOpened(true);
+    console.log("isOpened", isOpened);
+  };
+
+  const handleClose = () => {
+    setIsOpened(false);
+    console.log("isOpened", isOpened);
+  };
+
+  const animation = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: withSpring(animation.value) }],
+    };
+  });
+
+  const triggerAnimation = () => {
+    animation.value = 0; // Reset to initial position
+    animation.value = withSpring(10, { stiffness: 300, damping: 5 }); // Shaking effect
+  };
+
+  useEffect(() => {
+    triggerAnimation();
+  }, []);
+
+    // Get screen dimensions
+    const { width, height } = Dimensions.get("window");
 
   return (
     <NativeBaseProvider>
@@ -259,17 +290,20 @@ const HomeScreen = ({ navigation }) => {
               : "Start a round"}
           </Button>
         )}
-        <AnimatedEnvelope
-          onPress={handlePress}
-          // message="You have a new message"
-        />
       </Flex>
-      {/* <View>
-        {" "}
-        <EnvelopeButton />
-      </View> */}
-      {/* <SafeAreaView style={styles.container}>
-    </SafeAreaView> */}
+      {/* Round Notification Animation */}
+      {/* <AnimatedEnvelope></AnimatedEnvelope> */}
+      <View style={styles.envelopeContainer}>
+        <TouchableOpacity onPress={handlePress}>
+          <Icon name="envelope" size={50} color="#666" />
+        </TouchableOpacity>
+        <Modal isOpen={isOpened} onClose={handleClose} animationType="slide">
+        <View style={[styles.modalContent, { width: width*1}]}>
+            <Text>This is the popup content</Text>
+            <Button onPress={handleClose}>Close</Button>
+          </View>
+        </Modal>
+      </View>
     </NativeBaseProvider>
   );
 };
@@ -280,6 +314,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
+  },
+  envelopeContainer: {
+    alignItems: "center",
+  },
+  modalContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10, // Optional: Add border radius for a more polished look
   },
 });
 
