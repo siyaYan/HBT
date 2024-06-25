@@ -14,8 +14,9 @@ import {
   Pressable,
   HStack,
   KeyboardAvoidingView,
+  Modal,
 } from "native-base";
-import { useState, useEffect, useCallback  } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Background from "../components/Background";
 import { Switch } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -24,11 +25,10 @@ import { AntDesign } from "@expo/vector-icons";
 import { createRound, updateRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
-
+import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 
 const RoundConfigurationScreen = ({ route, navigation }) => {
-  
-  const { roundData, updateRoundData,insertRoundData } = useRound();
+  const { roundData, updateRoundData, insertRoundData } = useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -40,24 +40,22 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const { userData } = useData();
   const emptyState = route.params.emptyState;
   //TODO: change it to RoundContext with index
-  // const roundData = route.params.roundData; 
+  // const roundData = route.params.roundData;
   const roundId = route.params.roundId;
-  console.log("round config roundId",roundId);
+  console.log("round config roundId", roundId);
   const round = roundData.data.find((r) => r._id === roundId);
-  
+
   // console.log('roundconfig page round data:', roundData);
-  console.log('roundconfig page empty:', emptyState);
-console.log("round config round data",round)
+  console.log("roundconfig page empty:", emptyState);
+  console.log("round config round data", round);
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
   const dataPickerMin = new Date();
-  dataPickerMin.setDate(minDaysFromNow.getDate()-1);
+  dataPickerMin.setDate(minDaysFromNow.getDate() - 1);
   const [startDate, setDate] = useState(
     emptyState ? minDaysFromNow : new Date(round.startDate)
   );
-  const [roundName, setRoundName] = useState(
-    emptyState ? null : round.name
-  );
+  const [roundName, setRoundName] = useState(emptyState ? null : round.name);
   const [level, setLevel] = useState(emptyState ? null : round.level);
   const [maxCapacity, setMaxCapacity] = useState(() => {
     if (emptyState) {
@@ -89,7 +87,7 @@ console.log("round config round data",round)
   }, [roundData]);
 
   // async function handleUpdateRound (){
-    const handleUpdateRound = async () => {
+  const handleUpdateRound = async () => {
     if (emptyState) {
       const newRoundData = {
         userId: userData.data._id,
@@ -100,23 +98,20 @@ console.log("round config round data",round)
         isAllowedInvite: allowOthers,
       };
       console.log("create round", newRoundData);
-      const response =await createRound(newRoundData, userData.token);
-      console.log("create round response status",response.status);
-      console.log("create round response data",response.data);
-      console.log("create round response",response)
+      const response = await createRound(newRoundData, userData.token);
+      console.log("create round response status", response.status);
+      console.log("create round response data", response.data);
+      console.log("create round response", response);
       // updateRoundData(
       //   response.data
       // );
       // if (response.status == "success") {
       //   console.log("response", response.data);
       //   // updateRoundData(response.data)
-        
-      // }
-      insertRoundData(
-        response.data
-      );
-      console.log("after creation",roundData);
 
+      // }
+      insertRoundData(response.data);
+      console.log("after creation", roundData);
     } else {
       console.log("route", route.params);
       const newRoundData = {
@@ -136,9 +131,7 @@ console.log("round config round data",round)
       if (response.status == "success") {
         console.log("response", response.data);
         // updateRoundData(response.data)
-        updateRoundData(
-          response.data
-        );
+        updateRoundData(response.data);
       }
     }
   };
@@ -166,6 +159,25 @@ console.log("round config round data",round)
 
     handleUpdateRound();
   };
+  // Delete round
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const handleDeleteRound = () => {
+    setModalVisible(true);
+    console.log("modal", isModalVisible);
+  };
+
+  const handleConfirmDelete = () => {
+    setModalVisible(false);
+    //TODO: delete the round in the backend
+  };
+
+  const handleCancelDelete = () => {
+    setModalVisible(false);
+  };
+  useEffect(() => {
+    // Effect code
+  }, [isModalVisible]);
 
   return (
     <KeyboardAvoidingView
@@ -394,6 +406,71 @@ console.log("round config round data",round)
                 >
                   Update Round
                 </Button>
+                <Button
+                  onPress={() => {
+                    handleDeleteRound();
+                  }}
+                  mt="5"
+                  width="100%"
+                  size="lg"
+                  // bg="#ff061e"
+                  // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
+                  backgroundColor={"rgba(250,250,250,0.2)"}
+                  _pressed={{
+              bg: "#ff061e",
+            }}
+                  _text={{
+                    color: "#f9f8f2",
+                    fontFamily: "Regular Medium",
+                    fontSize: "lg",
+                  }}
+                >
+                  Delete Round
+                </Button>
+                <Modal
+                  isOpen={isModalVisible}
+                  onClose={handleCancelDelete}
+                  animationPreset="fade"
+                >
+                  <Modal.Content maxWidth="400px">
+                    <Modal.CloseButton />
+                    <Modal.Header>
+                      <Text fontFamily={"Regular Medium"} fontSize="xl">
+                        Delete Round
+                      </Text>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <Text>Are you sure?
+                      
+                      It will delete everything including posts, scores, that can be your important memories.</Text>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button.Group space={2}>
+                        <Button rounded={30}
+                                shadow="7"
+                                width="50%"
+                                size={"md"}
+                                _text={{
+                                  color: "#f9f8f2",
+                                }}
+                                colorScheme="blueGray"
+                               onPress={handleCancelDelete}>
+                          Cancel
+                        </Button>
+                        <Button
+                        rounded={30}
+                                shadow="7"
+                                width="50%"
+                                size={"md"}
+                          colorScheme="danger"
+                          onPress={handleConfirmDelete}
+                        >
+                          Delete
+                        </Button>
+                      </Button.Group>
+                    </Modal.Footer>
+                  </Modal.Content>
+                </Modal>
               </VStack>
             </VStack>
           </Center>
@@ -404,3 +481,14 @@ console.log("round config round data",round)
 };
 
 export default RoundConfigurationScreen;
+
+const styles = StyleSheet.create({
+  modalContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10, // Optional: Add border radius for a more polished look
+  },
+});

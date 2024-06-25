@@ -41,7 +41,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
     { id: "3", name: "William Johnson" },
     // Add more friends as needed
   ];
-
   // Navigate to invite friend page
   const inviteFriend = () => {
     navigation.navigate("RoundStack", { screen: "RoundInviteFriend" ,params: { roundId:roundId }});
