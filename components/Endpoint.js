@@ -323,6 +323,7 @@ export async function connectByUserId(token, senderId, receiverId) {
   try {
     const response = await fetch(
       'http://3.27.94.77:8000/habital/v1/friend-requests',
+      // 'http://localhost:8000/habital/v1/friend-requests',
       {
         method: "POST",
         headers: {
@@ -337,7 +338,7 @@ export async function connectByUserId(token, senderId, receiverId) {
     );
 
     const data = await response.json();
-
+    console.log(data)
     if (data.status == "success") {
       Alert.alert("Success", "Send link request to this friend!");
     } else {
@@ -501,8 +502,6 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
-
-
 // Chapter 4 Round Configuration
 
 export async function updateRound(roundData,token) {

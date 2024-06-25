@@ -11,7 +11,8 @@ export default OptionMenu = ({ navigation }) => {
         // navigationRef.current?.navigate("Invite");
         navigation.navigate("Invite");
     }
-    return (<ZStack alignSelf='flex-end' mr='15%' mt='10%' >
+    //layout of OptionMenu ('+') mt = margin top
+    return (<ZStack alignSelf='flex-end' mr='20%' mt='16%' >
         <Box alignItems="flex-start">
             <Menu shadow={2} mr='2' w="140" trigger={triggerProps => {
                 return <Pressable accessibilityLabel="Options menu" {...triggerProps}>

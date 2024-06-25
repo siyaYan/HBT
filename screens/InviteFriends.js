@@ -10,7 +10,7 @@ import {
   FormControl,
   Flex,
   Input,
-  Pressable,
+  Pressable
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
@@ -20,9 +20,11 @@ import {
   findByUserIdAndUsername,
   getFriends,
   getRelationByUserId,
+  deleteFriendOrWithdrawRequestById
 } from "../components/Endpoint";
 import Background from "../components/Background";
 import { Feather } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
 const InviteScreen = ({ navigation }) => {
   useEffect(() => {
@@ -49,7 +51,7 @@ const InviteScreen = ({ navigation }) => {
         userId: true,
       });
       setFind({
-        user: response.data.user,
+        user: response.data.user
       });
       //     console.log(  response.data.user._id,
       // userData.data._id);
@@ -64,7 +66,7 @@ const InviteScreen = ({ navigation }) => {
         setPend(false);
       } else if (res.result == "P") {
         setLink(false);
-        setPend(true);
+        setPend(res);
       } else {
         setLink(false);
         setPend(false);
@@ -103,14 +105,25 @@ const InviteScreen = ({ navigation }) => {
       console.log("fail!!");
     }
   };
+  const handleCancel = async () => {
+    // console.log("connect", findUser);
+    // console.log(userData.data._id, findUser.user._id);
+      console.log("delete current item");
+      // const id=sent[i-1]._id
+      const id=pend.data._id
+      // console.log(pend.data._id)
+      deleteFriendOrWithdrawRequestById(userData.token, id);
+      handleSearch()
+  };
 
   return (
     <NativeBaseProvider>
       <Background />
+
       <Flex direction="column" alignItems="center">
         <Box safeArea py="2" w="100%" maxW="320">
           <VStack space={3} alignItems="center">
-            <Box py="5" alignSelf={"flex-end"}>
+            <Box py="5" alignSelf={"center"}>
               {userData.avatar && userData.avatar.uri ? (
                 <Avatar
                   bg="white"
@@ -192,8 +205,11 @@ const InviteScreen = ({ navigation }) => {
                   </Button>
                 )}
 
-                {findUser.user.profileImageUrl && !(formData.userId.toLowerCase() == userData.data.email ||
-                  formData.userId == userData.data.username) ? (
+                {findUser.user.profileImageUrl &&
+                !(
+                  formData.userId.toLowerCase() == userData.data.email ||
+                  formData.userId == userData.data.username
+                ) ? (
                   <Box w={"100%"}>
                     <HStack
                       w={"100%"}
@@ -228,11 +244,19 @@ const InviteScreen = ({ navigation }) => {
                               linked
                             </Text>
                           </Pressable>
-                        ) : pend ? (
-                          <Pressable>
-                            <Feather name="send" size={30} color="grey" />
+                        ) : pend!=false ? (
+                          <Pressable onPress={handleCancel}>
+                            {/* <Feather name="cancel" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
-                              pending
+                              cancel
+                            </Text> */}
+                            <Entypo
+                              name="back-in-time"
+                              size={30}
+                              color="black"
+                            />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              cancel
                             </Text>
                           </Pressable>
                         ) : (
