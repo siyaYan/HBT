@@ -104,6 +104,7 @@ const InviteScreen = ({ navigation }) => {
     } else {
       console.log("fail!!");
     }
+    handleSearch()
   };
   const handleCancel = async () => {
     // console.log("connect", findUser);
@@ -216,7 +217,8 @@ const InviteScreen = ({ navigation }) => {
                       alignItems={"center"}
                       justifyContent={"center"}
                       space={5}
-                      backgroundColor={"light.100"}
+                      backgroundColor={"rgba(73,165,121,0.2)"}
+                      paddingY={2}
                     >
                       {findUser.user.profileImageUrl ? (
                         <Avatar
@@ -238,7 +240,7 @@ const InviteScreen = ({ navigation }) => {
                       </Text>
                       <Box>
                         {linked ? (
-                          <Pressable>
+                          <Pressable onPress={()=>{navigation.navigate('MyCircle')}}>
                             <AntDesign name="link" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
                               linked

@@ -1,4 +1,4 @@
-import { useState,  useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Box,
   Heading,
@@ -23,13 +23,21 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { getFriends, deleteFriendOrWithdrawRequestById, deleteFriends, getSendRequest, getReceivedRequest,reactReceivedRequest, getNoteUpdate} from "../components/Endpoint";
-import { useFocusEffect } from '@react-navigation/native';
+import {
+  getFriends,
+  deleteFriendOrWithdrawRequestById,
+  deleteFriends,
+  getSendRequest,
+  getReceivedRequest,
+  reactReceivedRequest,
+  getNoteUpdate,
+} from "../components/Endpoint";
+import { useFocusEffect } from "@react-navigation/native";
 
 // TODO: change the layout to match the new ios version
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
-  const {userData, updateUserData , note,updateNotes} = useData();
+  const { userData, updateUserData, note, updateNotes } = useData();
   const [deleted, setDelete] = useState(0);
   const [received, setReceived] = useState([]);
   const [sent, setSent] = useState([]);
@@ -42,7 +50,7 @@ const FriendsScreen = ({ navigation }) => {
       updateFriendList();
       updateSendRequest();
       updateReceivedRequest();
-      updateNote()
+      updateNote();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
   //   useEffect(() => {
@@ -51,112 +59,114 @@ const FriendsScreen = ({ navigation }) => {
   //   console.log('This is friendlist :',note );
   // }, [note]);
 
-  const updateNote = async ()=>{
-    const res=await getNoteUpdate(userData.token,userData.data.email)
-    if(res>0){
-      updateNotes(res)
+  const updateNote = async () => {
+    const res = await getNoteUpdate(userData.token, userData.data.email);
+    if (res > 0) {
+      updateNotes(res);
     }
- }
-  const updateFriendList = async()=>{
+  };
+  const updateFriendList = async () => {
     const response = await getFriends(userData.token);
     // Handle success or error response
-    if(!response){
-      console.log('get friends failed')
+    if (!response) {
+      console.log("get friends failed");
     }
     if (response.status == "success") {
-      // console.log('get friends success:',response.data);
-      let newFriends=[]
-      response.users.map((user)=>{
-        const newFriend={
-          _id:'',
-          email:user.email,
-          profileImageUrl:user.profileImageUrl,
-          username:user.username,
-          nickname:user.nickname
-        }
-        newFriends.push(newFriend)
-      })
-      response.data.map((data,index)=>{
-        newFriends[index]._id=data._id
-      })
-      setFriends(newFriends)
-      // console.log('friends:',friends)
+      let newFriends = [];
+      response.users.map((user) => {
+        const newFriend = {
+          _id: "",
+          email: user.email,
+          profileImageUrl: user.profileImageUrl,
+          username: user.username,
+          nickname: user.nickname,
+        };
+        newFriends.push(newFriend);
+      });
+      response.data.map((data, index) => {
+        newFriends[index]._id = data._id;
+      });
+      // console.log('new friends:',newFriends)
+      // const reversedFriends = newFriends.slice().reverse();
+      // console.log('reversed friends:',reversedFriends)
+      setFriends(newFriends);
     } else {
-      console.error('get friends failed:',response.message);
+      console.error("get friends failed:", response.message);
     }
-  }
-  const updateSendRequest = async()=>{
+  };
+  const updateSendRequest = async () => {
     const response = await getSendRequest(userData.token);
     // Handle success or error response
-    if(!response){
-      console.log('get send friends request failed')
-      setSent({})
+    if (!response) {
+      console.log("get send friends request failed");
+      setSent({});
     }
     if (response.status == "success") {
       // console.log('get friends success:',response.data);
-      let sendFriends=[]
-      const pendingRes=response.data.filter((item) => (item.status == 'P'))
+      let sendFriends = [];
+      const pendingRes = response.data.filter((item) => item.status == "P");
       // const pendingRes=response.users
-      if(pendingRes.length > 0) {
-        pendingRes.map((data, index)=>{
-          const newFriend={
-            _id:data._id,
-            email:response.users[index].email,
-            profileImageUrl:response.users[index].profileImageUrl,
-            username:response.users[index].username,
-            nickname:response.users[index].nickname
-          }
-          sendFriends[index]=newFriend
-        })
+      if (pendingRes.length > 0) {
+        pendingRes.map((data, index) => {
+          const newFriend = {
+            _id: data._id,
+            email: response.users[index].email,
+            profileImageUrl: response.users[index].profileImageUrl,
+            username: response.users[index].username,
+            nickname: response.users[index].nickname,
+          };
+          sendFriends[index] = newFriend;
+        });
       }
-      setSent(sendFriends)
+      setSent(sendFriends);
       // console.log('send request:',sent)
     } else {
       // console.error('get send friend request failed:',response.message);
-      console.log('get send friends request failed')
-      setSent({})
+      console.log("get send friends request failed");
+      setSent({});
     }
-  }
-  const updateReceivedRequest = async()=>{
+  };
+  const updateReceivedRequest = async () => {
     const response = await getReceivedRequest(userData.token);
     // Handle success or error response
-    if(!response){
-      console.log('get received friends failed')
-      setReceived({})
+    if (!response) {
+      console.log("get received friends failed");
+      setReceived({});
     }
     if (response.status == "success") {
       // console.log('get friends success:',response.data);
-      let receivedFriends=[]
-      const pendingRes=response.data.filter((item) => (item.status == 'P'))
+      let receivedFriends = [];
+      const pendingRes = response.data.filter((item) => item.status == "P");
       // const pendingRes=response.users
-      if(pendingRes.length > 0) {
-        pendingRes.map((data, index)=>{
-          const newFriend={
-            _id:data._id,
-            email:response.users[index].email,
-            profileImageUrl:response.users[index].profileImageUrl,
-            username:response.users[index].username,
-            nickname:response.users[index].nickname
-          }
-          receivedFriends.push(newFriend)
-        })
+      if (pendingRes.length > 0) {
+        pendingRes.map((data, index) => {
+          const newFriend = {
+            _id: data._id,
+            email: response.users[index].email,
+            profileImageUrl: response.users[index].profileImageUrl,
+            username: response.users[index].username,
+            nickname: response.users[index].nickname,
+          };
+          receivedFriends.push(newFriend);
+        });
       }
-      setReceived(receivedFriends)
+      const reversedFriends = receivedFriends.slice().reverse();
+      setReceived(reversedFriends);
       // console.log('received requests:',received)
     } else {
       // console.error('get received friend requests failed:',response.message);
-      console.log('get received friends failed')
-      setReceived({})
+      console.log("get received friends failed");
+      setReceived({});
     }
-  }
+  };
   const rejectFriend = (i) => {
     console.log("reject Friend,delete current notificate");
     setReceived((currentReceived) => [
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
-    const id=received[i-1]._id
-    reactRequest(id,"R")
+    const id = received[i - 1]._id;
+    reactRequest(id, "R");
   };
   const acceptFriend = (i) => {
     console.log("accept Friend,delete current notificate");
@@ -164,45 +174,48 @@ const FriendsScreen = ({ navigation }) => {
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
-    const id=received[i-1]._id
-    reactRequest(id,"A")
+    const id = received[i - 1]._id;
+    reactRequest(id, "A");
   };
-  const reactRequest = async(id, react) =>{
+  const reactRequest = async (id, react) => {
     const response = await reactReceivedRequest(userData.token, id, react);
-    if(!response){
-      console.log('react request failed')
+    if (!response) {
+      console.log("react request failed");
     }
     // Handle success or error response
     if (response.status == "success") {
-      console.log('react request success:',response);
+      console.log("react request success:", response);
     } else {
-      console.error('react request failed:',response.message);
+      console.error("react request failed:", response.message);
     }
-  }
-  const deleteAllFriends = async() =>{
+  };
+  const deleteAllFriends = async () => {
     const response = await deleteFriends(userData.token);
-    if(!response){
-      console.log('delete friends failed')
+    if (!response) {
+      console.log("delete friends failed");
     }
     // Handle success or error response
     if (response.status == "success") {
-      console.log('delete friends success:',response);
+      console.log("delete friends success:", response);
     } else {
-      console.error('delete friends failed:',response.message);
+      console.error("delete friends failed:", response.message);
     }
-  }
-  const deleteFriendOrRequestByID = async(id) =>{
-    const response = await deleteFriendOrWithdrawRequestById(userData.token, id);
-    if(!response){
-      console.log('delete friends failed')
+  };
+  const deleteFriendOrRequestByID = async (id) => {
+    const response = await deleteFriendOrWithdrawRequestById(
+      userData.token,
+      id
+    );
+    if (!response) {
+      console.log("delete friends failed");
     }
     // Handle success or error response
     if (response.status == "success") {
-      console.log('delete friends success:',response);
+      console.log("delete friends success:", response);
     } else {
-      console.error('delete friends failed:',response.message);
+      console.error("delete friends failed:", response.message);
     }
-  }
+  };
   const deleteCurrent = (item, i) => {
     if (item == "sent") {
       console.log("delete current item");
@@ -210,7 +223,7 @@ const FriendsScreen = ({ navigation }) => {
         ...currentSent.slice(0, i - 1),
         ...currentSent.slice(i),
       ]);
-      const id=sent[i-1]._id
+      const id = sent[i - 1]._id;
       deleteFriendOrRequestByID(id);
     }
     if (item === "friend") {
@@ -221,7 +234,7 @@ const FriendsScreen = ({ navigation }) => {
           ...currentFriends.slice(0, deleted - 1),
           ...currentFriends.slice(deleted),
         ]);
-        const id=friends[deleted-1]._id
+        const id = friends[deleted - 1]._id;
         deleteFriendOrRequestByID(id);
       } else {
         console.log("delete all friends");
@@ -242,11 +255,16 @@ const FriendsScreen = ({ navigation }) => {
         <OptionMenu navigation={navigation} />
         <Box mt="9" w="85%">
           <VStack space={1} alignItems="left">
-            <Image
-              size={30}
-              source={require("../assets/Buttonicons/PaperPlaneRight.png")}
-              alt="received"
-            />
+            <HStack>
+              <Image
+                size={30}
+                source={require("../assets/Buttonicons/PaperPlaneRight.png")}
+                alt="received"
+              />
+              <Text fontFamily={"Regular"} fontSize="lg">
+                {received.length}
+              </Text>
+            </HStack>
             <Box
               mt={3}
               h="15%"
@@ -361,12 +379,16 @@ const FriendsScreen = ({ navigation }) => {
               alignSelf={"center"}
               w="90%"
             />
-
-            <Image
-              size={30}
-              source={require("../assets/Buttonicons/PaperPlaneTilt.png")}
-              alt="sent"
-            />
+            <HStack>
+              <Image
+                size={30}
+                source={require("../assets/Buttonicons/PaperPlaneTilt.png")}
+                alt="sent"
+              />
+              <Text fontFamily={"Regular"} fontSize="lg">
+                {sent.length}
+              </Text>
+            </HStack>
             <Box
               mt={3}
               h="15%"
@@ -479,11 +501,16 @@ const FriendsScreen = ({ navigation }) => {
               alignItems={"center"}
               justifyContent={"space-between"}
             >
-              <Image
-                size={30}
-                source={require("../assets/Buttonicons/UsersThree.png")}
-                alt="friends"
-              />
+              <HStack>
+                <Image
+                  size={30}
+                  source={require("../assets/Buttonicons/UsersThree.png")}
+                  alt="friends"
+                />
+                <Text fontFamily={"Regular"} fontSize="lg">
+                  {friends.length}
+                </Text>
+              </HStack>
               <FontAwesome5
                 onPress={() => deleteOption(-1)}
                 name="unlink"

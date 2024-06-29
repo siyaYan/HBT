@@ -39,8 +39,8 @@ export default function AuthenticatedScreens() {
     if (value.target.includes("Home")) {
       navigationRef.current?.navigate("Home");
     }
-    if (value.target.includes("Friends")) {
-      navigationRef.current?.navigate("Friends");
+    if (value.target.includes("MyCircle")) {
+      navigationRef.current?.navigate("MyCircle");
     }
     if (value.target.includes("Setting")) {
       navigationRef.current?.navigate("Setting");
@@ -48,8 +48,8 @@ export default function AuthenticatedScreens() {
     if (value.target.includes("Notifications")) {
       navigationRef.current?.navigate("Notifications");
     }
-    if (value.target.includes("Canmera")) {
-      // console.log("Canmera");
+    if (value.target.includes("Upload")) {
+      // console.log("Upload");
     }
   };
 
@@ -82,7 +82,7 @@ export default function AuthenticatedScreens() {
         }}
       />
       <Tab.Screen
-        name="Friends"
+        name="MyCircle"
         component={FriendsScreen}
         listeners={{ tabPress: onPress }}
         options={{
@@ -109,7 +109,7 @@ export default function AuthenticatedScreens() {
         }}
       />
       <Tab.Screen
-        name="Canmera"
+        name="Upload"
         component={HomeScreen}
         listeners={{ tabPress: onPress }}
         options={{
