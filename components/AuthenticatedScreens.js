@@ -25,7 +25,7 @@ export default function AuthenticatedScreens({navigation}) {
   const { isOpen, onOpen, onClose } = useDisclose();
   
   const onPress = (value) => {
-    if (value.target.includes("Plus")) {
+    if (value.target.includes("Upload")) {
       setIsModalVisible(true);
       onOpen()
       // navigationRef.current?.navigate("Home");
@@ -107,7 +107,7 @@ export default function AuthenticatedScreens({navigation}) {
           }}
         />
         <Tab.Screen
-          name="Plus"
+          name="Upload"
           component={HomeScreen}
           listeners={{
             tabPress: (e) => {
