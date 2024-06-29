@@ -52,7 +52,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   }
   // Navigate to Round Config page
   const goRoundConfig = () => {
-    navigation.navigate("RoundStack", { screen: "RoundConfig",params: { emptyState: false ,roundId:roundId }});
+    navigation.navigate("RoundStack", { screen: "RoundConfig",params: { emptyState: false ,roundId:roundId, source:"info" }});
   };
 
   const levelInt = parseInt(round.level, 10);

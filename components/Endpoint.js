@@ -638,30 +638,6 @@ export async function clearFriendRequestById(token, friendRequestId) {
 }
 
 // Chapter 4 Round Configuration
-// export async function createRound(roundData,token) {
-//   fetch('http://3.27.94.77:8000/habital/v1/round/create', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify(roundData),
-//     })
-//       .then((response) => {
-//         if (!response.ok) {
-//           return response.text().then(text => {
-//             throw new Error(`HTTP error ${response.status}: ${text}`);
-//           });
-//         }
-//         return response.json;
-//       })
-//       .then((data) => {
-//         console.log('Success:', data);
-//       })
-//       .catch((error) => {
-//         console.error('Error:', error);
-//       });
-// }
 
 export async function createRound(roundData, token) {
   try {
@@ -766,19 +742,18 @@ export async function updateRoundInfo(token, newRoundData) {
 // Chapter 4: Function to update round friend list
 export async function updateRoundFriendList(token, roundId, newFriendList) {
   try {
-    // console.log("round id",newRoundData._id)
-    console.log("Pass to Endpoint round Id",roundId);
-    console.log("Pass to Endpoint new friend",newFriendList);
+    // console.log("Pass to Endpoint round Id",roundId);
+    // console.log("Pass to Endpoint new friend",newFriendList);
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round/${roundId}`,
+      `http://3.27.94.77:8000/habital/v1/round/${roundId}/friendlist/add`,
       {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          "roundFriends": newFriendList
+          newFriendList
         }),
       }
     );
@@ -799,5 +774,27 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "Cannot connect to server");
+  }
+}
+
+// Chapter 4 Delete a round
+export async function deleteRound(token, roundId) {
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/round/${roundId}`,
+      {
+        method: "DELETE",
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+      }
+    );
+    const data = await response.json();
+    // console.log(data);
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
   }
 }

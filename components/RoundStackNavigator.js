@@ -13,49 +13,7 @@ const Stack = createStackNavigator();
 export default function RoundStackNavigator({ navigation }) {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="RoundConfig"
-        component={RoundConfigurationScreen}
-        options={({navigation})=>({
-          headerBackTitleVisible: false,
-          title: "",
-          headerStyle: {
-            backgroundColor: "rgba(255,255,255,0)",
-          },
-          headerLeft: () => (
-            <IconButton
-              ml={3}
-              marginY={0}
-              icon={<Ionicons name="arrow-back" size={28} color="black" />}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          ),
-        })}
-      />
-      <Stack.Screen
-        name="RoundInfo"
-        component={RoundInfoScreen}
-        options={({ navigation }) =>({
-          headerBackTitleVisible: false,
-          // title: navigation.params,
-          headerStyle: {
-            backgroundColor: "rgba(255,255,255,0)",
-          },
-          headerLeft: () => (
-            <IconButton
-              ml={3}
-              marginY={0}
-              icon={<Ionicons name="arrow-back" size={28} color="black" />}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          ),
-        })}
-      />
-      <Stack.Screen
+    <Stack.Screen
         name="RoundInviteFriend"
         component={RoundInviteFriendsScreen}
         options={{
@@ -119,6 +77,49 @@ export default function RoundStackNavigator({ navigation }) {
           ),
         }}
       />
+      <Stack.Screen
+        name="RoundConfig"
+        component={RoundConfigurationScreen}
+        options={({navigation})=>({
+          headerBackTitleVisible: false,
+          title: "",
+          headerStyle: {
+            backgroundColor: "rgba(255,255,255,0)",
+          },
+          headerLeft: () => (
+            <IconButton
+              ml={3}
+              marginY={0}
+              icon={<Ionicons name="arrow-back" size={28} color="black" />}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="RoundInfo"
+        component={RoundInfoScreen}
+        options={({ navigation }) =>({
+          headerBackTitleVisible: false,
+          // title: navigation.params,
+          headerStyle: {
+            backgroundColor: "rgba(255,255,255,0)",
+          },
+          headerLeft: () => (
+            <IconButton
+              ml={3}
+              marginY={0}
+              icon={<Ionicons name="arrow-back" size={28} color="black" />}
+              onPress={() => {
+                navigation.goBack();
+              }}
+            />
+          ),
+        })}
+      />
+      
     </Stack.Navigator>
   );
 }

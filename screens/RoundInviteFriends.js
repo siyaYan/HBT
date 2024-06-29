@@ -21,7 +21,7 @@ import { Foundation, Feather } from "@expo/vector-icons";
 import Background from "../components/Background";
 import { getFriends } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
-import { useState, useCallback,useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRound } from "../context/RoundContext";
 
@@ -38,10 +38,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   console.log("Round Friend List", round.roundFriends);
 
   useEffect(() => {
-    console.log('friends updated:', friends);
-    console.log('round data updated:', roundData)
-    console.log("round data friend list: ",round.roundFriends)
-  }, [friends,roundData]);
+    console.log("friends updated:", friends);
+    console.log("round data updated:", roundData);
+    console.log("round data friend list: ", round.roundFriends);
+  }, [friends, roundData]);
 
   // TODO: duplicate functions with FriendsList
   // Global friends
@@ -53,7 +53,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       getGlobalFriendList();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
- 
+
   const getGlobalFriendList = async () => {
     const response = await getFriends(userData.token);
     // Handle success or error response
@@ -80,7 +80,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       });
       setFriends(newFriends);
       console.log("newfriends:", newFriends);
-      console.log("friends: ",friends)
+      console.log("friends: ", friends);
     } else {
       console.error("get friends failed:", response.message);
     }
@@ -89,32 +89,36 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   // Round friends
   // update round info friend list
 
-  const handleInviteFriendToRound = async (newFriendId) => {
+  const handleInviteFriendToRound = async (newFriend) => {
     // 1. update database
     // 1.1 check existing friends
-    console.log("new friend id", newFriendId);
-    const newRoundFriendList = round.roundFriends.map((friend) => {
-      return friend._id ; // Adjust the object structure if needed
-    });
+    console.log("new friend", newFriend);
+    // const newRoundFriendList = round.roundFriends.map((friend) => {
+    //   return {
+    //     habit: friend.habit,
+    //     id: friend.id,
+    //     nickname: friend.nickname,
+    //     status: friend.status,
+    //     username: friend.username,
+    //   };
+    // });
 
-    // 1.2 add new friend
-    newRoundFriendList.push(newFriendId);
+    // // 1.2 add new friend
+    // newRoundFriendList.push(newFriend);
 
-    const response = await updateRoundFriendList(
-      userData.token,
-      roundId,
-      newRoundFriendList
-    );
-    console.log("newRoundFriendList", newRoundFriendList);
+    const response = await updateRoundFriendList(userData.token, roundId, newFriend);
+
+    // console.log("newRoundFriendList", newRoundFriendList);
+    console.log("update friend response",response);
     if (response.status === "success") {
       console.log("connect!!");
     } else {
       console.log("fail!!");
     }
-     // 2. update roundContext
-     // TODO
-    updateRoundData()
-    console.log("Round Friend List", round.roundFriends);
+    // 2. update roundContext
+    // TODO
+    // updateRoundData();
+    // console.log("Round Friend List", round.roundFriends);
   };
   // // Dummy list of friends
   // const friends = [
@@ -173,7 +177,14 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                     <Pressable
                       onPress={() => {
                         console.log("item", item);
-                        handleInviteFriendToRound(item._id);
+                        const newFriend = {
+                          habit: "",
+                          id: item._id,
+                          nickname: item.nickname,
+                          status: "P",
+                          username: item.username,
+                        };
+                        handleInviteFriendToRound(newFriend);
                       }}
                     >
                       <Feather name="send" size={30} color="black" />

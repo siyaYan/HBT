@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-const RoundHabit = () => {
+
+const RoundHabit= ({ route, navigation }) => {
   const [text, setText] = useState('');
 
   return (

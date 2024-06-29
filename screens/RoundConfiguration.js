@@ -22,7 +22,11 @@ import { Switch } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "react-native-ui-datepicker";
 import { AntDesign } from "@expo/vector-icons";
-import { createRound, updateRoundInfo } from "../components/Endpoint";
+import {
+  createRound,
+  updateRoundInfo,
+  deleteRound,
+} from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
@@ -39,11 +43,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   // Initialization
   const { userData } = useData();
   const emptyState = route.params.emptyState;
+  const source = route.params.source;
   //TODO: change it to RoundContext with index
   // const roundData = route.params.roundData;
   const roundId = route.params.roundId;
   console.log("round config roundId", roundId);
   const round = roundData.data.find((r) => r._id === roundId);
+  const ButtonUpdateRound = source === "home" ? "Create round" : "Update round";
 
   // console.log('roundconfig page round data:', roundData);
   console.log("roundconfig page empty:", emptyState);
@@ -86,6 +92,25 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     console.log("roundData updated", roundData);
   }, [roundData]);
 
+  const validateMaxCapacity = (text) => {
+    // Allow the state to be updated immediately
+    setMaxCapacity(text);
+
+    // Convert the text to a number and validate
+    const value = parseInt(text, 10);
+    if (isNaN(value) || value < 2 || value > 50) {
+      setIsInvalid({
+        ...isInvalid,
+        maxCapacity: "Cannot be less than 2 or greater than 50.",
+      });
+    } else {
+      setIsInvalid({
+        ...isInvalid,
+        maxCapacity: false,
+      });
+    }
+  };
+
   // async function handleUpdateRound (){
   const handleUpdateRound = async () => {
     if (emptyState) {
@@ -102,14 +127,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       console.log("create round response status", response.status);
       console.log("create round response data", response.data);
       console.log("create round response", response);
-      // updateRoundData(
-      //   response.data
-      // );
-      // if (response.status == "success") {
-      //   console.log("response", response.data);
-      //   // updateRoundData(response.data)
-
-      // }
       insertRoundData(response.data);
       console.log("after creation", roundData);
     } else {
@@ -167,9 +184,19 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     console.log("modal", isModalVisible);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     setModalVisible(false);
-    //TODO: delete the round in the backend
+
+    try {
+      console.log("delete round token", userData.token);
+      console.log("delete round id", roundId);
+      const response = await deleteRound(userData.token, roundId);
+      console.log(response);
+      // navigation.goBack();
+      navigation.navigate("MainStack", { screen: "Home" })// Navigate back to Home Screen once delete the round
+    } catch (error) {
+      // Alert.alert("Unsuccessful", "Cannot connect to server");
+    }
   };
 
   const handleCancelDelete = () => {
@@ -347,7 +374,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   </HStack>
                 </FormControl>
                 {/* Maximum Capacity */}
-                <FormControl>
+                <FormControl isInvalid={isInvalid.maxCapacity}>
                   <FormControl.Label
                     ml={1}
                     _text={{
@@ -356,21 +383,26 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Maximum Capacity
+                    Max Capacity
                   </FormControl.Label>
                   <Input
-                    placeholder="Enter Max Capacity"
-                    keyboardType="numeric"
-                    value={maxCapacity}
-                    onChangeText={setMaxCapacity}
                     borderColor="#49a579"
                     rounded="30"
                     fontFamily={"Regular Medium"}
                     size="lg"
                     mr={3}
                     w="93%"
+                    placeholder="Enter Max Capacity"
+                    value={maxCapacity}
+                    onChangeText={validateMaxCapacity}
                   />
+                  {isInvalid.maxCapacity && (
+                    <FormControl.ErrorMessage>
+                      Max Capacity must be between 2 and 50.
+                    </FormControl.ErrorMessage>
+                  )}
                 </FormControl>
+                {/* Allow others to invite friends */}
                 <FormControl>
                   <FormControl.Label
                     ml={1}
@@ -404,8 +436,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     fontSize: "lg",
                   }}
                 >
-                  Update Round
+                  {ButtonUpdateRound}
                 </Button>
+                {source === "info" &&
                 <Button
                   onPress={() => {
                     handleDeleteRound();
@@ -417,8 +450,8 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
                   backgroundColor={"rgba(250,250,250,0.2)"}
                   _pressed={{
-              bg: "#ff061e",
-            }}
+                    bg: "#ff061e",
+                  }}
                   _text={{
                     color: "#f9f8f2",
                     fontFamily: "Regular Medium",
@@ -426,7 +459,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   }}
                 >
                   Delete Round
-                </Button>
+                </Button>}
                 <Modal
                   isOpen={isModalVisible}
                   onClose={handleCancelDelete}
@@ -440,33 +473,36 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       </Text>
                     </Modal.Header>
                     <Modal.Body>
-                      <Text>Are you sure?
-                      
-                      It will delete everything including posts, scores, that can be your important memories.</Text>
+                      <Text>
+                        Are you sure? It will delete everything including posts,
+                        scores, that can be your important memories.
+                      </Text>
                     </Modal.Body>
                     <Modal.Footer>
                       <Button.Group space={2}>
-                        <Button rounded={30}
-                                shadow="7"
-                                width="50%"
-                                size={"md"}
-                                _text={{
-                                  color: "#f9f8f2",
-                                }}
-                                colorScheme="blueGray"
-                               onPress={handleCancelDelete}>
+                        <Button
+                          rounded={30}
+                          shadow="7"
+                          width="50%"
+                          size={"md"}
+                          _text={{
+                            color: "#f9f8f2",
+                          }}
+                          colorScheme="blueGray"
+                          onPress={handleCancelDelete}
+                        >
                           Cancel
                         </Button>
-                        <Button
-                        rounded={30}
-                                shadow="7"
-                                width="50%"
-                                size={"md"}
+                         <Button
+                          rounded={30}
+                          shadow="7"
+                          width="50%"
+                          size={"md"}
                           colorScheme="danger"
                           onPress={handleConfirmDelete}
                         >
                           Delete
-                        </Button>
+                        </Button>    
                       </Button.Group>
                     </Modal.Footer>
                   </Modal.Content>

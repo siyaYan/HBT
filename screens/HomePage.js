@@ -54,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
     // Navigate to round configuration when pressed
     navigation.navigate("RoundStack", {
       screen: "RoundConfig",
-      params: { emptyState: true },
+      params: { emptyState: true,source:"home"  },
     });
     console.log("Home page", roundData);
   };
