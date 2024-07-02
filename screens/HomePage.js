@@ -13,8 +13,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-// TODO: change the layout to match the new ios version
-const HomeScreen = ({ navigation, route }) => {
+const HomeScreen = ({ navigation }) => {
   const { userData, updateUserData, note, updateNotes } = useData();
   useFocusEffect(
     useCallback(() => {

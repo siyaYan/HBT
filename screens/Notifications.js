@@ -34,7 +34,6 @@ import {
   getNoteUpdate
 } from "../components/Endpoint";
 
-// TODO: change the layout to match the new ios version
 const NotificationScreen = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
@@ -51,9 +50,9 @@ const NotificationScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
   const updateNote = async ()=>{
     const res=await getNoteUpdate(userData.token,userData.data.email)
-    if(res>0){
+    // if(res>0){
       updateNotes(res)
-    }
+    // }
  }
   const updateNotifiableFriendRequest = async () => {
     const response = await getNotifiableFriendRequests(userData.token);

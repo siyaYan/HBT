@@ -323,6 +323,7 @@ export async function connectByUserId(token, senderId, receiverId) {
   try {
     const response = await fetch(
       'http://3.27.94.77:8000/habital/v1/friend-requests',
+      // 'http://localhost:8000/habital/v1/friend-requests',
       {
         method: "POST",
         headers: {
@@ -337,7 +338,7 @@ export async function connectByUserId(token, senderId, receiverId) {
     );
 
     const data = await response.json();
-
+    console.log(data)
     if (data.status == "success") {
       Alert.alert("Success", "Send link request to this friend!");
     } else {
@@ -500,6 +501,32 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
+}
+// Chapter 4 Round Configuration
+
+export async function updateRound(roundData,token) {
+  fetch('http://3.27.94.77:8000/habital/v1/round/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(roundData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(`HTTP error ${response.status}: ${text}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
 }
 
 export async function getNotifiableFriendRequests(token) {
@@ -683,7 +710,6 @@ export async function getNoteUpdate(token, userId){
   if(response1){
     const data1 = await response1.json();
     res=res+data1.data.length;
-    // console.log('get friends:',data1.data.length);
   }
   if(response2){
     const data2 = await response2.json();
