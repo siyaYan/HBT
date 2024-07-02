@@ -11,7 +11,6 @@ import {
   getNoteUpdate
 } from "../components/Endpoint";
 
-// TODO: change the layout to match the new ios version
 const HomeScreen = ({ navigation }) => {
   const { userData, updateUserData, note, updateNotes } = useData();
     const animation = useRef(null);

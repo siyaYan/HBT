@@ -61,7 +61,6 @@ const firebaseConfig = {
 // // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// TODO: shaking the buttons
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [show, setShow] = useState(false);
