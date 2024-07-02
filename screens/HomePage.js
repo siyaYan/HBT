@@ -17,7 +17,7 @@ import Background from "../components/Background";
 import { useFocusEffect } from '@react-navigation/native';
 import LottieView from 'lottie-react-native'
 import {
-  getNoteUpdate
+  getNoteUpdate,getRoundInfo
 } from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
 import {
@@ -31,20 +31,39 @@ const HomeScreen = ({ navigation }) => {
   
   const today = new Date();
 
-  const { userData, updateUserData } = useData();
+  const { userData, updateUserData, note, updateNotes } = useData();
   const { roundData, updateRoundData } = useRound();
   console.log("rounddata", roundData);
-  const animation = useRef(null);
+  //const animation = useRef(null);
 
+    // Get screen dimensions
+    const { width, height } = Dimensions.get("window");
+    const  updateNote = async ()=>{
+      const res=await getNoteUpdate(userData.token,userData.data.email)
+      if(res>0){
+        updateNotes(res)
+      }
+   }
+   const updateRoundContext = async () => {
+    const newRoundData = await getRoundInfo(userData.token,userData._id); // Fetch latest round data
+    updateRoundData(newRoundData); // Update context with new data
+  };
+
+  useEffect(() => {
+    console.log("roundData updated on home page", roundData);
+  }, [roundData]);
 
   useFocusEffect(
     useCallback(() => {
       console.log("call back", roundData);
       // This code runs when the tab comes into focus
       // console.log('Tab is in focus, userInfo:', userData);
-      updateNote()
-      console.log(userData);
-    }, [userData, roundData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+      updateNote();
+      updateRoundContext(); // Update round data when screen is focused
+
+      //console.log(userData);
+
+    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
   console.log("rounddata after callback", roundData);
 
@@ -105,14 +124,7 @@ const HomeScreen = ({ navigation }) => {
     triggerAnimation();
   }, []);
 
-    // Get screen dimensions
-    const { width, height } = Dimensions.get("window");
-    const  updateNote = async ()=>{
-      const res=await getNoteUpdate(userData.token,userData.data.email)
-      if(res>0){
-        updateNotes(res)
-      }
-   }
+
 
   return (
     <NativeBaseProvider>

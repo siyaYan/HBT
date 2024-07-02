@@ -124,11 +124,12 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       };
       console.log("create round", newRoundData);
       const response = await createRound(newRoundData, userData.token);
-      console.log("create round response status", response.status);
-      console.log("create round response data", response.data);
-      console.log("create round response", response);
+      // console.log("create round response status", response.status);
+      // console.log("create round response data", response.data);
+      // console.log("create round response", response);
       insertRoundData(response.data);
-      console.log("after creation", roundData);
+      // console.log("after creation", roundData);
+      navigation.navigate("MainStack", { screen: "Home" }); // Navigate back to Home Screen once delete the round
     } else {
       console.log("route", route.params);
       const newRoundData = {
@@ -191,11 +192,28 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       console.log("delete round token", userData.token);
       console.log("delete round id", roundId);
       const response = await deleteRound(userData.token, roundId);
-      console.log(response);
+      setTimeout(() => {
+        console.log("delete round response", response);
+      }, 2000);
+
       // navigation.goBack();
-      navigation.navigate("MainStack", { screen: "Home" })// Navigate back to Home Screen once delete the round
+
+      if (response) {
+        // Fetch updated round data
+        const updatedRoundData = await getRoundInfo(
+          userData.token,
+          userData._id
+        );
+        updateRoundData(updatedRoundData);
+        console.log(
+          "round config updated round data after deletion",
+          updatedRoundData
+        );
+        // Navigate back to Home Screen once delete the round
+        navigation.navigate("MainStack", { screen: "Home" });
+      }
     } catch (error) {
-      // Alert.alert("Unsuccessful", "Cannot connect to server");
+      Alert.alert("Unsuccessful", "Cannot connect to server");
     }
   };
 
@@ -438,28 +456,29 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                 >
                   {ButtonUpdateRound}
                 </Button>
-                {source === "info" &&
-                <Button
-                  onPress={() => {
-                    handleDeleteRound();
-                  }}
-                  mt="5"
-                  width="100%"
-                  size="lg"
-                  // bg="#ff061e"
-                  // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
-                  backgroundColor={"rgba(250,250,250,0.2)"}
-                  _pressed={{
-                    bg: "#ff061e",
-                  }}
-                  _text={{
-                    color: "#f9f8f2",
-                    fontFamily: "Regular Medium",
-                    fontSize: "lg",
-                  }}
-                >
-                  Delete Round
-                </Button>}
+                {source === "info" && (
+                  <Button
+                    onPress={() => {
+                      handleDeleteRound();
+                    }}
+                    mt="5"
+                    width="100%"
+                    size="lg"
+                    // bg="#ff061e"
+                    // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
+                    backgroundColor={"rgba(250,250,250,0.2)"}
+                    _pressed={{
+                      bg: "#ff061e",
+                    }}
+                    _text={{
+                      color: "#f9f8f2",
+                      fontFamily: "Regular Medium",
+                      fontSize: "lg",
+                    }}
+                  >
+                    Delete Round
+                  </Button>
+                )}
                 <Modal
                   isOpen={isModalVisible}
                   onClose={handleCancelDelete}
@@ -493,7 +512,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                         >
                           Cancel
                         </Button>
-                         <Button
+                        <Button
                           rounded={30}
                           shadow="7"
                           width="50%"
@@ -502,7 +521,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                           onPress={handleConfirmDelete}
                         >
                           Delete
-                        </Button>    
+                        </Button>
                       </Button.Group>
                     </Modal.Footer>
                   </Modal.Content>

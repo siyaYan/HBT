@@ -873,19 +873,29 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
 // Chapter 4 Delete a round
 export async function deleteRound(token, roundId) {
   try {
-    const response = await fetch(
+    const response=await fetch(
       `http://3.27.94.77:8000/habital/v1/round/${roundId}`,
       {
         method: "DELETE",
         headers: {
-          // "Content-Type": "application/json",
+          'accept': "application/json",
           Authorization: `Bearer ${token}`
         },
       }
-    );
-    const data = await response.json();
+    )
+    if(response.ok){
+          console.log("successful in connect server:");
+          return true
+  // Alert.alert("Unsuccessful", "can not connect to server");
+    }
+      // const data= await response.json()
+      // console.log("response ok",data)
+      // return data
+      // return response;
+
+    // const data = await response.json();
     // console.log(data);
-    return data; // Make sure you return the data here
+    // return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
