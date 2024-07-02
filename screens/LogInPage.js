@@ -62,7 +62,6 @@ const firebaseConfig = {
 // // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// TODO: shaking the buttons
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [show, setShow] = useState(false);
@@ -116,7 +115,7 @@ const LoginScreen = ({ navigation }) => {
   const saveCredentials = async (id, password) => {
     try {
       await SecureStore.setItemAsync(
-        "userCredentials",
+        "userData",
         JSON.stringify({ id, password })
       );
     } catch (error) {
@@ -150,8 +149,7 @@ const LoginScreen = ({ navigation }) => {
           data: response.data.user,
           avatar: {
             uri: response.data.user.profileImageUrl,
-          },
-          notes:1
+          }
         });
         updateRounds(roundInfo)
         console.log("round context",roundData)

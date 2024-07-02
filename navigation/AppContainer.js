@@ -11,6 +11,7 @@ import { loginUser,getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
 import InviteScreen from "../screens/InviteFriends";
+import SplashAnimationScreen from "../components/SplashAnimation";
 import { IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { useRound } from "../context/RoundContext";
@@ -19,7 +20,7 @@ const Stack = createStackNavigator();
 
 const getCredentials = async () => {
   try {
-    const credentials = await SecureStore.getItemAsync("userCredentials");
+    const credentials = await SecureStore.getItemAsync("userData");
     if (credentials) {
       return JSON.parse(credentials);
     }
@@ -39,13 +40,14 @@ export default function AppContainer() {
   useEffect(() => {
     const checkCredentials = async () => {
       const storedCredentials = await getCredentials();
-      // console.log("in app");
+      console.log("in app",storedCredentials);
+
       if (storedCredentials) {
         // Use credentials to log in the user automatically
         // Implement your login logic here using the retrieved credentials
-        console.log(
-          "Credentials successfully loaded for user " + storedCredentials
-        );
+        // console.log(
+        //   "Credentials successfully loaded for user " + storedCredentials
+        // );
         const response = await loginUser(
           storedCredentials.id,
           storedCredentials.password
@@ -75,16 +77,18 @@ export default function AppContainer() {
         navigationRef.current?.navigate("Home");
       }
     };
-
-    checkCredentials();
+    setTimeout(() => {
+      checkCredentials();
+    }, 1500);
   }, [isAuthenticated]);
 
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Splash"
         screenOptions={{ headerShown: false, headerBackTitleVisible: false }}
       >
+        <Stack.Screen name="Splash" component={SplashAnimationScreen} />
         <Stack.Screen name="Home" component={AppHomeScreen} />
         <Stack.Screen
           name="Invite"

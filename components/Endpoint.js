@@ -1,7 +1,6 @@
 // Mock API functions for testing without a backend
 import { Alert } from "react-native";
 import RNFS from "react-native-fs";
-
 export async function registerUser(
   username,
   nickname,
@@ -176,7 +175,7 @@ export async function resetPassword(
 }
 
 export async function resetProfile(userId, token, nickname, username) {
-  // console.log(userId)
+  // // console.log(userId)
   try {
     const response = await fetch(
       "http://3.27.94.77:8000/habital/v1/users/" + userId,
@@ -224,7 +223,7 @@ export async function resetSendEmail(token, userId, email) {
       }
     );
     const data = await response.json();
-    // console.log(data)
+    // // console.log(data)
     if (data.status == "success") {
       Alert.alert("Code sent", "Please check your email");
     } else {
@@ -249,7 +248,7 @@ export async function resetEmail(token, userId, resetToken) {
       }
     );
     const data = await response.json();
-    // console.log(data)
+    // // console.log(data)
     if (data.status == "success") {
       Alert.alert("Success", "Email updated");
     } else {
@@ -264,7 +263,7 @@ export async function resetEmail(token, userId, resetToken) {
 
 export async function updateAvatar(token, userId, avatar) {
   // const binaryData = await RNFS.readFile(avatar.uri, 'base64');
-  // console.log(binaryData);
+  // // console.log(binaryData);
   const file = {
     uri: avatar.uri, // Local file URI
     type: "image/jpeg", // MIME type of the image
@@ -301,7 +300,7 @@ export async function updateAvatar(token, userId, avatar) {
   }
 }
 
-export async function findByUserId(token, userId) {
+export async function findByUserIdAndUsername(token, userId) {
   try {
     const response = await fetch(
       "http://3.27.94.77:8000/habital/v1/users/" + userId ,
@@ -327,6 +326,7 @@ export async function connectByUserId(token, senderId, receiverId) {
   try {
     const response = await fetch(
       'http://3.27.94.77:8000/habital/v1/friend-requests',
+      // 'http://localhost:8000/habital/v1/friend-requests',
       {
         method: "POST",
         headers: {
@@ -392,6 +392,33 @@ export async function getSendRequest(token) {
     // console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+export async function getRelationByUserId(token, senderId, receiverId) {
+  try {
+    const response = await fetch(
+      'http://3.27.94.77:8000/habital/v1/friend-requests',
+      // 'http://localhost:8000/habital/v1/friend-requests',
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          senderId: senderId,
+          receiverId: receiverId,
+        }),
+      }
+    );
+    // // console.log(response)
+    const data = await response.json();
+    // // console.log(data);
+    return data
+  }catch (e) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
@@ -481,6 +508,34 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
+}
+
+
+// Chapter 4 Round Configuration
+
+export async function updateRound(roundData,token) {
+  fetch('http://3.27.94.77:8000/habital/v1/round/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(roundData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then(text => {
+            throw new Error(`HTTP error ${response.status}: ${text}`);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
 }
 
 export async function getNotifiableFriendRequests(token) {
@@ -636,6 +691,44 @@ export async function clearFriendRequestById(token, friendRequestId) {
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
+
+export async function getNoteUpdate(token, userId){
+  let res=0;
+  const response1 = await fetch(
+    'http://3.27.94.77:8000/habital/v1/friend-requests/notifiable',
+    // 'http://localhost:8000/habital/v1/friend-requests/notifiable',
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  const response2 = await fetch(
+    `http://3.27.94.77:8000/habital/v1/notifications/${userId}/notifiable`,
+    // `http://localhost:8000/habital/v1/notifications/${userId}/notifiable`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if(response1){
+    const data1 = await response1.json();
+    res=res+data1.data.length;
+  }
+  if(response2){
+    const data2 = await response2.json();
+    res=res+data2.data.length;
+    // console.log('get notificates:',data2.data.length)
+  }
+  // console.log(res)
+  return res
+}
+
 
 // Chapter 4 Round Configuration
 

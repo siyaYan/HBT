@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect,useCallback } from "react";
 import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SettingScreen from "../screens/SettingPage";
@@ -10,12 +10,31 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import {
+  getNoteUpdate
+} from "../components/Endpoint";
 
 const Tab = createBottomTabNavigator();
 
 export default function AuthenticatedScreens() {
   const navigationRef = useRef();
-  const { userData, updateUserData } = useData();
+  const { userData, updateUserData, note, updateNotes } = useData();
+  useFocusEffect(
+    useCallback(() => {
+      // This code runs when the tab comes into focus
+      console.log('This is main tab, note is :',note );
+      updateNote()
+    }, [updateNotes]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  );
+
+  const updateNote = async ()=>{
+    const res=await getNoteUpdate(userData.token,userData.data.email)
+    // if(res>0){
+      console.log("update note in main");
+      updateNotes(res)
+    // }
+ }
   useEffect(() => {
     // Fetch or update avatar dynamically
     // userData=useData().useData
@@ -25,8 +44,8 @@ export default function AuthenticatedScreens() {
     if (value.target.includes("Home")) {
       navigationRef.current?.navigate("Home");
     }
-    if (value.target.includes("Friends")) {
-      navigationRef.current?.navigate("Friends");
+    if (value.target.includes("MyCircle")) {
+      navigationRef.current?.navigate("MyCircle");
     }
     if (value.target.includes("Setting")) {
       navigationRef.current?.navigate("Setting");
@@ -34,9 +53,13 @@ export default function AuthenticatedScreens() {
     if (value.target.includes("Notifications")) {
       navigationRef.current?.navigate("Notifications");
     }
+    if (value.target.includes("Upload")) {
+      // console.log("Upload");
+    }
     if (value.target.includes("Canmera")) {
       // console.log("Canmera");
     }
+
   };
 
   return (
@@ -68,7 +91,7 @@ export default function AuthenticatedScreens() {
         }}
       />
       <Tab.Screen
-        name="Friends"
+        name="MyCircle"
         component={FriendsScreen}
         listeners={{ tabPress: onPress }}
         options={{
@@ -95,7 +118,7 @@ export default function AuthenticatedScreens() {
         }}
       />
       <Tab.Screen
-        name="Canmera"
+        name="Upload"
         component={HomeScreen}
         listeners={{ tabPress: onPress }}
         options={{
@@ -140,7 +163,7 @@ export default function AuthenticatedScreens() {
               <MaterialCommunityIcons
               name="fruit-cherries"
               size={32}
-              color={userData.notes?"red":"#191919"}
+              color={note>0?"red":"#191919"}
             />
             </TouchableOpacity>
           ),

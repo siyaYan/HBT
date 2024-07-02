@@ -12,9 +12,9 @@ export const useData = () => {
 
 // DataProvider component to manage user
 export const DataProvider = ({ children }) => {
-    const [userData, setUserData] = useState({ data: '', token: '' });
-
-  // Load user data from AsyncStorage on component mount
+  const [userData, setUserData] = useState({ data: '', token: '' });
+  const [note, setNotes] = useState(0);
+  // Load data from AsyncStorage on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -26,7 +26,6 @@ export const DataProvider = ({ children }) => {
         console.error('Error loading user data:', error);
       }
     };
-
     loadData();
   }, []);
 
@@ -35,7 +34,7 @@ export const DataProvider = ({ children }) => {
     const saveData = async () => {
       try {
         await AsyncStorage.setItem('userData', JSON.stringify(userData));
-        console.log('FirstGetData:',userData)
+        // console.log('FirstGetData:',userData)
       } catch (error) {
         console.error('Error saving user data:', error);
       }
@@ -44,15 +43,16 @@ export const DataProvider = ({ children }) => {
     saveData();
   }, [userData]);
 
-  // const updateUserData = (newUserData) => {
-  //   setUserData(newUserData);
-  // };
   const updateUserData = (newUserData) => {
     setUserData((prevUserData) => ({ ...prevUserData, ...newUserData }));
   };
 
+  const updateNotes = (note) => {
+    setNotes(note);
+  };
+
   return (
-    <DataContext.Provider value={{ userData, updateUserData}}>
+    <DataContext.Provider value={{ userData, updateUserData, note, updateNotes }}>
       {children}
     </DataContext.Provider>
   );

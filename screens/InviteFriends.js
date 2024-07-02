@@ -10,18 +10,21 @@ import {
   FormControl,
   Flex,
   Input,
-  Pressable,
+  Pressable
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import {
   connectByUserId,
-  findByUserId,
+  findByUserIdAndUsername,
   getFriends,
+  getRelationByUserId,
+  deleteFriendOrWithdrawRequestById
 } from "../components/Endpoint";
 import Background from "../components/Background";
 import { Feather } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
 const InviteScreen = ({ navigation }) => {
   useEffect(() => {
@@ -33,31 +36,52 @@ const InviteScreen = ({ navigation }) => {
     userId: true,
   });
   const [findUser, setFind] = useState({ user: { profileImageUrl: "" } });
-  const [linked, setLink]= useState(false)
+  const [linked, setLink] = useState(false);
+  const [pend, setPend] = useState(false);
 
   const handleSearch = async () => {
-    // console.log(formData.userId);
-    const response = await findByUserId(userData.token, formData.userId);
-    const friendsRes = await getFriends(userData.token);
+    const response = await findByUserIdAndUsername(
+      userData.token,
+      formData.userId
+    );
+    // const friendsRes = await getFriends(userData.token);
     if (response.status === "success") {
-      console.log("find!!!!");
+      // console.log("find!!!!");
       setErrors({
         userId: true,
       });
       setFind({
-        user: response.data.user,
+        user: response.data.user
       });
-      if (friendsRes.users.length > 0) {
-        const res = friendsRes.users.filter(
-          (user) => user.email == formData.userId.toLowerCase()
-        );
-        // console.log('res',res)
-        if (res.length > 0) {
-          setLink(true)
-        }else{
-          setLink(false)
-        }
+      //     console.log(  response.data.user._id,
+      // userData.data._id);
+      const res = await getRelationByUserId(
+        userData.token,
+        response.data.user._id,
+        userData.data._id
+      );
+      console.log(res.result);
+      if (res.result == "A") {
+        setLink(true);
+        setPend(false);
+      } else if (res.result == "P") {
+        setLink(false);
+        setPend(res);
+      } else {
+        setLink(false);
+        setPend(false);
       }
+      // if (friendsRes.users.length > 0) {
+      //   const res = friendsRes.users.filter(
+      //     (user) => user.email == formData.userId.toLowerCase()
+      //   );
+      //   // console.log('res',res)
+      //   if (res.length > 0) {
+      //     setLink(true)
+      //   }else{
+      //     setLink(false)
+      //   }
+      // }
     } else {
       setErrors({
         userId: false,
@@ -80,15 +104,27 @@ const InviteScreen = ({ navigation }) => {
     } else {
       console.log("fail!!");
     }
+    handleSearch()
+  };
+  const handleCancel = async () => {
+    // console.log("connect", findUser);
+    // console.log(userData.data._id, findUser.user._id);
+      console.log("delete current item");
+      // const id=sent[i-1]._id
+      const id=pend.data._id
+      // console.log(pend.data._id)
+      deleteFriendOrWithdrawRequestById(userData.token, id);
+      handleSearch()
   };
 
   return (
     <NativeBaseProvider>
       <Background />
+
       <Flex direction="column" alignItems="center">
         <Box safeArea py="2" w="100%" maxW="320">
           <VStack space={3} alignItems="center">
-            <Box py="5" alignSelf={"flex-end"}>
+            <Box py="5" alignSelf={"center"}>
               {userData.avatar && userData.avatar.uri ? (
                 <Avatar
                   bg="white"
@@ -116,7 +152,7 @@ const InviteScreen = ({ navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Find a friend By Email
+                    Find a friend By Email/Username
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -140,7 +176,8 @@ const InviteScreen = ({ navigation }) => {
                 </FormControl>
 
                 {formData.userId &&
-                formData.userId.toLowerCase() == userData.data.email ? (
+                (formData.userId.toLowerCase() == userData.data.email ||
+                  formData.userId == userData.data.username) ? (
                   <Text fontFamily={"Regular"} fontSize="lg">
                     This is YOU!
                   </Text>
@@ -169,14 +206,19 @@ const InviteScreen = ({ navigation }) => {
                   </Button>
                 )}
 
-                {findUser.user.profileImageUrl ? (
+                {findUser.user.profileImageUrl &&
+                !(
+                  formData.userId.toLowerCase() == userData.data.email ||
+                  formData.userId == userData.data.username
+                ) ? (
                   <Box w={"100%"}>
                     <HStack
                       w={"100%"}
                       alignItems={"center"}
                       justifyContent={"center"}
                       space={5}
-                      backgroundColor={"light.100"}
+                      backgroundColor={linked?"rgba(73,165,121,0.2)":"light.100"}
+                      paddingY={2}
                     >
                       {findUser.user.profileImageUrl ? (
                         <Avatar
@@ -198,14 +240,25 @@ const InviteScreen = ({ navigation }) => {
                       </Text>
                       <Box>
                         {linked ? (
-                          <Pressable>
-                            <AntDesign
-                                  name="link"
-                                  size={30}
-                                  color="black"
-                                />
+                          <Pressable onPress={()=>{navigation.navigate('MyCircle')}}>
+                            <AntDesign name="link" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
                               linked
+                            </Text>
+                          </Pressable>
+                        ) : pend!=false ? (
+                          <Pressable onPress={handleCancel}>
+                            {/* <Feather name="cancel" size={30} color="grey" />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              cancel
+                            </Text> */}
+                            <Entypo
+                              name="back-in-time"
+                              size={30}
+                              color="black"
+                            />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              cancel
                             </Text>
                           </Pressable>
                         ) : (

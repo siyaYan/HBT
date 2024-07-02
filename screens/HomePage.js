@@ -14,7 +14,11 @@ import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from '@react-navigation/native';
+import LottieView from 'lottie-react-native'
+import {
+  getNoteUpdate
+} from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
 import {
   useSharedValue,
@@ -23,8 +27,6 @@ import {
 } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-// TODO: change the layout to match the new ios version @Siya
-
 const HomeScreen = ({ navigation }) => {
   
   const today = new Date();
@@ -32,11 +34,16 @@ const HomeScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const { roundData, updateRoundData } = useRound();
   console.log("rounddata", roundData);
+  const animation = useRef(null);
+
+
   useFocusEffect(
     useCallback(() => {
       console.log("call back", roundData);
       // This code runs when the tab comes into focus
       // console.log('Tab is in focus, userInfo:', userData);
+      updateNote()
+      console.log(userData);
     }, [userData, roundData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
   console.log("rounddata after callback", roundData);
@@ -100,11 +107,17 @@ const HomeScreen = ({ navigation }) => {
 
     // Get screen dimensions
     const { width, height } = Dimensions.get("window");
+    const  updateNote = async ()=>{
+      const res=await getNoteUpdate(userData.token,userData.data.email)
+      if(res>0){
+        updateNotes(res)
+      }
+   }
 
   return (
     <NativeBaseProvider>
       <Background />
-      <Flex direction="column" alignItems="center">
+      <Flex direction="column" alignItems='center'>
         <OptionMenu navigation={navigation} />
         <Pressable onPress={handleAvatarPress}>
           <Box py="5" px="2" alignItems="center" justifyContent="center">

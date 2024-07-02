@@ -64,7 +64,6 @@ const RegisterScreen = ({ navigation }) => {
     });
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const res = regex.test(text);
-    console.log(res);
     if (text) {
       setErrors({
         ...errors,

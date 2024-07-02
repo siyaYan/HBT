@@ -60,7 +60,6 @@ const SettingScreen = ({ navigation }) => {
       // Error clearing the credentials
     }
   };
-
   return (
     <NativeBaseProvider>
       <Background2 />
