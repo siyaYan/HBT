@@ -14,8 +14,10 @@ import {
   Image,
   ScrollView,
   Modal,
+  View,
+  Avatar,
 } from "native-base";
-import { Avatar } from "native-base";
+import { StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import Background2 from "../components/Background2";
@@ -33,8 +35,8 @@ import {
   getNoteUpdate,
 } from "../components/Endpoint";
 import { useFocusEffect } from "@react-navigation/native";
+import { SwipeListView } from "react-native-swipe-list-view";
 
-// TODO: change the layout to match the new ios version
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();
@@ -42,6 +44,11 @@ const FriendsScreen = ({ navigation }) => {
   const [received, setReceived] = useState([]);
   const [sent, setSent] = useState([]);
   const [friends, setFriends] = useState([]);
+  const [listViewData, setListViewData] = useState(
+    Array(20)
+      .fill("")
+      .map((_, i) => ({ key: `${i}`, text: `item #${i}` }))
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -61,9 +68,9 @@ const FriendsScreen = ({ navigation }) => {
 
   const updateNote = async () => {
     const res = await getNoteUpdate(userData.token, userData.data.email);
-    if (res > 0) {
-      updateNotes(res);
-    }
+    // if (res > 0) {
+    updateNotes(res);
+    // }
   };
   const updateFriendList = async () => {
     const response = await getFriends(userData.token);
@@ -248,6 +255,66 @@ const FriendsScreen = ({ navigation }) => {
     setShowModal(true);
   };
 
+  // const renderItem = ({
+  //   item,
+  //   index
+  // }) => <Box>
+  //     <Pressable onPress={() => console.log('You touched me')} _dark={{
+  //     bg: 'coolGray.800'
+  //   }} _light={{
+  //     bg: 'white'
+  //   }}>
+  //       <Box pl="4" pr="5" py="2">
+  //         <HStack alignItems="center" space={3}>
+  //           <Avatar size="48px" source={{
+  //           uri: item.avatarUrl
+  //         }} />
+  //           <VStack>
+  //             <Text color="coolGray.800" _dark={{
+  //             color: 'warmGray.50'
+  //           }} bold>
+  //               {item.fullName}
+  //             </Text>
+  //             <Text color="coolGray.600" _dark={{
+  //             color: 'warmGray.200'
+  //           }}>
+  //               {item.recentText}
+  //             </Text>
+  //           </VStack>
+  //           <Spacer />
+  //           <Text fontSize="xs" color="coolGray.800" _dark={{
+  //           color: 'warmGray.50'
+  //         }} alignSelf="flex-start">
+  //             {item.timeStamp}
+  //           </Text>
+  //         </HStack>
+  //       </Box>
+  //     </Pressable>
+  //   </Box>;
+
+  // const renderHiddenItem = (data, rowMap) => <HStack flex="1" pl="2">
+  //     <Pressable w="70" ml="auto" cursor="pointer" bg="coolGray.200" justifyContent="center" onPress={() => closeRow(rowMap, data.item.key)} _pressed={{
+  //     opacity: 0.5
+  //   }}>
+  //       <VStack alignItems="center" space={2}>
+  //         <Icon as={<Entypo name="dots-three-horizontal" />} size="xs" color="coolGray.800" />
+  //         <Text fontSize="xs" fontWeight="medium" color="coolGray.800">
+  //           More
+  //         </Text>
+  //       </VStack>
+  //     </Pressable>
+  //     <Pressable w="70" cursor="pointer" bg="red.500" justifyContent="center" onPress={() => deleteRow(rowMap, data.item.key)} _pressed={{
+  //     opacity: 0.5
+  //   }}>
+  //       <VStack alignItems="center" space={2}>
+  //         <Icon as={<MaterialIcons name="delete" />} color="white" size="xs" />
+  //         <Text color="white" fontSize="xs" fontWeight="medium">
+  //           Delete
+  //         </Text>
+  //       </VStack>
+  //     </Pressable>
+  //   </HStack>;
+    
   return (
     <NativeBaseProvider>
       <Background2 />
@@ -511,12 +578,13 @@ const FriendsScreen = ({ navigation }) => {
                   {friends.length}
                 </Text>
               </HStack>
-              <FontAwesome5
+              {/* <FontAwesome5
                 onPress={() => deleteOption(-1)}
                 name="unlink"
                 size={24}
                 color="black"
-              />
+              /> */}
+              {/* TODO:update to slide item */}
             </HStack>
             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
               <Modal.Content maxWidth="400px">
@@ -543,9 +611,10 @@ const FriendsScreen = ({ navigation }) => {
               </Modal.Content>
             </Modal>
             <Box w={"93%"} h={"45%"} alignSelf={"center"}>
-              <ScrollView w={"100%"} h="100%">
+              <ScrollView w={"100%"}>
                 {friends.length > 0 ? (
                   <Box w={"95%"}>
+                    {/* <SwipeListView data={friends} renderItem={renderItem} renderHiddenItem={renderHiddenItem} rightOpenValue={-130} previewRowKey={'0'} previewOpenValue={-40} previewOpenDelay={3000} onRowDidOpen={onRowDidOpen} /> */}
                     {friends.map((item, index) => (
                       <HStack
                         w={"100%"}
@@ -598,5 +667,14 @@ const FriendsScreen = ({ navigation }) => {
     </NativeBaseProvider>
   );
 };
-
+// const styles = StyleSheet.create({
+//   rowBack: {
+//     alignItems: "center",
+//     // backgroundColor: '#DDD',
+//     flex: 1,
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     paddingLeft: 15,
+//   },
+// });
 export default FriendsScreen;

@@ -217,7 +217,7 @@ const InviteScreen = ({ navigation }) => {
                       alignItems={"center"}
                       justifyContent={"center"}
                       space={5}
-                      backgroundColor={"rgba(73,165,121,0.2)"}
+                      backgroundColor={linked?"rgba(73,165,121,0.2)":"light.100"}
                       paddingY={2}
                     >
                       {findUser.user.profileImageUrl ? (

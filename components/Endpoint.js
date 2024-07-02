@@ -710,7 +710,6 @@ export async function getNoteUpdate(token, userId){
   if(response1){
     const data1 = await response1.json();
     res=res+data1.data.length;
-    // console.log('get friends:',data1.data.length);
   }
   if(response2){
     const data2 = await response2.json();

@@ -20,20 +20,20 @@ const Tab = createBottomTabNavigator();
 export default function AuthenticatedScreens() {
   const navigationRef = useRef();
   const { userData, updateUserData, note, updateNotes } = useData();
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     // This code runs when the tab comes into focus
-  //     console.log('This is main tab, note is :',note );
-  //     updateNote()
-  //   }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      // This code runs when the tab comes into focus
+      console.log('This is main tab, note is :',note );
+      updateNote()
+    }, [updateNotes]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  );
 
   const updateNote = async ()=>{
     const res=await getNoteUpdate(userData.token,userData.data.email)
-    if(res>0){
+    // if(res>0){
       console.log("update note in main");
       updateNotes(res)
-    }
+    // }
  }
   const onPress = (value) => {
     if (value.target.includes("Home")) {
