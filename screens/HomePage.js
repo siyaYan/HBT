@@ -9,16 +9,19 @@ import {
   Avatar,
   Modal,
 } from "native-base";
-import { Pressable, StyleSheet, TouchableOpacity,Dimensions } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
-import { useFocusEffect } from '@react-navigation/native';
-import LottieView from 'lottie-react-native'
-import {
-  getNoteUpdate,getRoundInfo
-} from "../components/Endpoint";
+import { useFocusEffect } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
+import { getNoteUpdate, getRoundInfo,getRoundInvitationByUserID } from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
 import {
   useSharedValue,
@@ -28,7 +31,6 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const HomeScreen = ({ navigation }) => {
-  
   const today = new Date();
 
   const { userData, updateUserData, note, updateNotes } = useData();
@@ -36,16 +38,16 @@ const HomeScreen = ({ navigation }) => {
   console.log("rounddata", roundData);
   //const animation = useRef(null);
 
-    // Get screen dimensions
-    const { width, height } = Dimensions.get("window");
-    const  updateNote = async ()=>{
-      const res=await getNoteUpdate(userData.token,userData.data.email)
-      if(res>0){
-        updateNotes(res)
-      }
-   }
-   const updateRoundContext = async () => {
-    const newRoundData = await getRoundInfo(userData.token,userData._id); // Fetch latest round data
+  // Get screen dimensions
+  const { width, height } = Dimensions.get("window");
+  const updateNote = async () => {
+    const res = await getNoteUpdate(userData.token, userData.data.email);
+    if (res > 0) {
+      updateNotes(res);
+    }
+  };
+  const updateRoundContext = async () => {
+    const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
     updateRoundData(newRoundData); // Update context with new data
   };
 
@@ -62,7 +64,6 @@ const HomeScreen = ({ navigation }) => {
       updateRoundContext(); // Update round data when screen is focused
 
       //console.log(userData);
-
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
   console.log("rounddata after callback", roundData);
@@ -80,7 +81,7 @@ const HomeScreen = ({ navigation }) => {
     // Navigate to round configuration when pressed
     navigation.navigate("RoundStack", {
       screen: "RoundConfig",
-      params: { emptyState: true,source:"home"  },
+      params: { emptyState: true, source: "home" },
     });
     console.log("Home page", roundData);
   };
@@ -124,12 +125,10 @@ const HomeScreen = ({ navigation }) => {
     triggerAnimation();
   }, []);
 
-
-
   return (
     <NativeBaseProvider>
       <Background />
-      <Flex direction="column" alignItems='center'>
+      <Flex direction="column" alignItems="center">
         <OptionMenu navigation={navigation} />
         <Pressable onPress={handleAvatarPress}>
           <Box py="5" px="2" alignItems="center" justifyContent="center">
@@ -154,44 +153,6 @@ const HomeScreen = ({ navigation }) => {
       {/* Linda Sprint 4 Show round/s*/}
 
       <Flex direction="column" alignItems="center">
-        {/* // Fab component, a box with a button
-      {roundData?.data?.map((round, index) => (
-          //<View key={round._id} >
-          <Box key={index} 
-          // height="100" w="200" 
-          width="80%"
-          height ="100"
-          shadow="2" rounded="lg"
-           bg={
-              round.status === "P"
-                ? "rgba(102, 102, 255, 1)"
-                : round.status === "R"
-                ? "rgba(102, 102, 255, 1)"
-                : round.status === "A"
-                ? "rgba(73, 165, 121, 1)"
-                : round.status === "C"
-                ? "rgba(249, 248, 242, 1)"
-                : "rgba(250,250,250,0.2)"
-            }
-            style={{
-    borderWidth: 1,
-    borderColor: "#49a579",
-    alignItems: "center", // Center items horizontally
-    justifyContent: "center", // Center items vertically
-  }}
-            _text={{
-              color: "#FFFFFF",
-              fontFamily: "Regular Semi Bold",
-              fontSize: "lg",
-            }}
-            >
-            {round.name}
-            <Fab onPress={() => {
-              handleRoundPress(round._id);
-            }}
-            renderInPortal={false} shadow={2} size="sm" icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />} />
-            </Box>
-          ))} */}
         {roundData?.data?.map((round, index) => {
           //<View key={round._id} >
           const startDate = new Date(round.startDate);
@@ -276,13 +237,6 @@ const HomeScreen = ({ navigation }) => {
                   )
                 </Text>
               )}
-              {/* {round.name}
-    {round.status === "P" && formattedDifference}
-    {round.status === "P" && startDate.toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-            })} */}
             </Button>
             // </View>
           );
@@ -323,8 +277,10 @@ const HomeScreen = ({ navigation }) => {
           <Icon name="envelope" size={50} color="#666" />
         </TouchableOpacity>
         <Modal isOpen={isOpened} onClose={handleClose} animationType="slide">
-        <View style={[styles.modalContent, { width: width*1}]}>
+          <View style={[styles.modalContent, { width: width * 1 }]}>
             <Text>This is the popup content</Text>
+            //TODO end point get the round invitation by userId
+            {/* getRoundInvitationByUserID(userData.token,userData.data._id) */}
             <Button onPress={handleClose}>Close</Button>
           </View>
         </Modal>

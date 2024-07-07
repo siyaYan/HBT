@@ -36,6 +36,11 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const round = roundData.data.find((r) => r._id === roundId);
   console.log("roundinfo page round data:", round);
 
+    // Update round info to RoundContext and DB
+    useEffect(() => {
+      // console.log("roundData updated___________", roundData);
+    }, [roundData]);
+
   useEffect(() => {
     if (!round) {
       console.error("Round not found in roundData");
@@ -164,6 +169,9 @@ const RoundInfoScreen = ({ route, navigation }) => {
           )}
 
           {/* Friend list*/}
+          {friendsList.length>0?
+          <View>
+
           <Text fontSize="lg" bold>
             Friends List
           </Text>
@@ -202,6 +210,8 @@ const RoundInfoScreen = ({ route, navigation }) => {
               ) : null
             )}
           </ScrollView>
+          </View>
+          :""}
         </VStack>
       </Box>
     </NativeBaseProvider>

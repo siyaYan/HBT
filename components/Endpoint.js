@@ -140,7 +140,7 @@ export async function resetPassword(
   //dummy success
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/"+ userId +"/password",
+      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/password",
       {
         method: "PATCH",
         headers: {
@@ -148,7 +148,7 @@ export async function resetPassword(
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          currentPassword:currentPassword,
+          currentPassword: currentPassword,
           newPassword: newPassword,
           newPasswordConfirm: passwordConfirm,
         }),
@@ -187,7 +187,7 @@ export async function resetProfile(userId, token, nickname, username) {
         },
         body: JSON.stringify({
           nickname: nickname,
-          username: username
+          username: username,
         }),
       }
     );
@@ -206,11 +206,12 @@ export async function resetProfile(userId, token, nickname, username) {
 }
 
 export async function resetSendEmail(token, userId, email) {
-
   try {
     // const response = await fetch("http://3.27.94.77:8000/habital/v1/users/"+userId+"/profileImage", {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/request-email-change",
+      "http://3.27.94.77:8000/habital/v1/users/" +
+        userId +
+        "/request-email-change",
       {
         method: "POST",
         headers: {
@@ -239,12 +240,15 @@ export async function resetSendEmail(token, userId, email) {
 export async function resetEmail(token, userId, resetToken) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/verify-email-change/"+ resetToken,
+      "http://3.27.94.77:8000/habital/v1/users/" +
+        userId +
+        "/verify-email-change/" +
+        resetToken,
       {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
-        }
+        },
       }
     );
     const data = await response.json();
@@ -252,7 +256,10 @@ export async function resetEmail(token, userId, resetToken) {
     if (data.status == "success") {
       Alert.alert("Success", "Email updated");
     } else {
-      Alert.alert("Unsuccessful",  data.message || "Code is invalid or has expired" );
+      Alert.alert(
+        "Unsuccessful",
+        data.message || "Code is invalid or has expired"
+      );
     }
     return data; // Make sure you return the data here
   } catch (error) {
@@ -303,7 +310,7 @@ export async function updateAvatar(token, userId, avatar) {
 export async function findByUserIdAndUsername(token, userId) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId ,
+      "http://3.27.94.77:8000/habital/v1/users/" + userId,
       // "http://localhost:8000/habital/v1/users/" + userId ,
       {
         method: "GET",
@@ -315,8 +322,8 @@ export async function findByUserIdAndUsername(token, userId) {
     );
     const data = await response.json();
     // console.log(data);
-    return data
-  }catch (e) {
+    return data;
+  } catch (e) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
@@ -325,7 +332,7 @@ export async function findByUserIdAndUsername(token, userId) {
 export async function connectByUserId(token, senderId, receiverId) {
   try {
     const response = await fetch(
-      'http://3.27.94.77:8000/habital/v1/friend-requests',
+      "http://3.27.94.77:8000/habital/v1/friend-requests",
       // 'http://localhost:8000/habital/v1/friend-requests',
       {
         method: "POST",
@@ -348,8 +355,8 @@ export async function connectByUserId(token, senderId, receiverId) {
       Alert.alert("Oh,No!", data.message || "Failed to connect!");
       // console.log(data.message);
     }
-    return data
-  }catch (e) {
+    return data;
+  } catch (e) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
@@ -358,7 +365,7 @@ export async function connectByUserId(token, senderId, receiverId) {
 export async function getFriends(token) {
   try {
     const response = await fetch(
-      'http://3.27.94.77:8000/habital/v1/friend-requests/getAllFriends',
+      "http://3.27.94.77:8000/habital/v1/friend-requests/getAllFriends",
       {
         method: "GET",
         headers: {
@@ -378,7 +385,7 @@ export async function getFriends(token) {
 export async function getSendRequest(token) {
   try {
     const response = await fetch(
-      'http://3.27.94.77:8000/habital/v1/friend-requests/sender',
+      "http://3.27.94.77:8000/habital/v1/friend-requests/sender",
       // 'http://localhost:8000/habital/v1/friend-requests/sender',
       {
         method: "GET",
@@ -400,7 +407,7 @@ export async function getSendRequest(token) {
 export async function getRelationByUserId(token, senderId, receiverId) {
   try {
     const response = await fetch(
-      'http://3.27.94.77:8000/habital/v1/friend-requests',
+      "http://3.27.94.77:8000/habital/v1/friend-requests",
       // 'http://localhost:8000/habital/v1/friend-requests',
       {
         method: "PATCH",
@@ -417,8 +424,8 @@ export async function getRelationByUserId(token, senderId, receiverId) {
     // // console.log(response)
     const data = await response.json();
     // // console.log(data);
-    return data
-  }catch (e) {
+    return data;
+  } catch (e) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
@@ -426,7 +433,7 @@ export async function getRelationByUserId(token, senderId, receiverId) {
 export async function getReceivedRequest(token) {
   try {
     const response = await fetch(
-      'http://3.27.94.77:8000/habital/v1/friend-requests/receiver',
+      "http://3.27.94.77:8000/habital/v1/friend-requests/receiver",
       // 'http://localhost:8000/habital/v1/friend-requests/receiver',
       {
         method: "GET",
@@ -455,9 +462,10 @@ export async function reactReceivedRequest(token, friendRequestId, react) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ // Stringify the body object
-          status: `${react}` // Assuming 'react' is a variable containing the status to update
-        })
+        body: JSON.stringify({
+          // Stringify the body object
+          status: `${react}`, // Assuming 'react' is a variable containing the status to update
+        }),
       }
     );
     const data = await response.json();
@@ -488,7 +496,10 @@ export async function deleteFriends(token) {
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
-export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
+export async function deleteFriendOrWithdrawRequestById(
+  token,
+  friendRequestId
+) {
   // console.log(friendRequestId)
   try {
     const response = await fetch(
@@ -510,38 +521,10 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
   }
 }
 
-
-// Chapter 4 Round Configuration
-
-export async function updateRound(roundData,token) {
-  fetch('http://3.27.94.77:8000/habital/v1/round/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(roundData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(`HTTP error ${response.status}: ${text}`);
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-}
-
 export async function getNotifiableFriendRequests(token) {
   try {
     const response = await fetch(
-      'http://3.27.94.77:8000/habital/v1/friend-requests/notifiable',
+      "http://3.27.94.77:8000/habital/v1/friend-requests/notifiable",
       // 'http://localhost:8000/habital/v1/friend-requests/notifiable',
       {
         method: "GET",
@@ -692,10 +675,10 @@ export async function clearFriendRequestById(token, friendRequestId) {
   }
 }
 
-export async function getNoteUpdate(token, userId){
-  let res=0;
+export async function getNoteUpdate(token, userId) {
+  let res = 0;
   const response1 = await fetch(
-    'http://3.27.94.77:8000/habital/v1/friend-requests/notifiable',
+    "http://3.27.94.77:8000/habital/v1/friend-requests/notifiable",
     // 'http://localhost:8000/habital/v1/friend-requests/notifiable',
     {
       method: "GET",
@@ -716,30 +699,29 @@ export async function getNoteUpdate(token, userId){
       },
     }
   );
-  if(response1){
+  if (response1) {
     const data1 = await response1.json();
-    res=res+data1.data.length;
+    res = res + data1.data.length;
   }
-  if(response2){
+  if (response2) {
     const data2 = await response2.json();
-    res=res+data2.data.length;
+    res = res + data2.data.length;
     // console.log('get notificates:',data2.data.length)
   }
   // console.log(res)
-  return res
+  return res;
 }
-
 
 // Chapter 4 Round Configuration
 
 export async function createRound(roundData, token) {
   try {
     const response = await fetch(
-      'http://3.27.94.77:8000/habital/v1/round/create',
+      "http://3.27.94.77:8000/habital/v1/round/create",
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(roundData),
@@ -752,18 +734,46 @@ export async function createRound(roundData, token) {
     }
 
     const data = await response.json();
-    console.log('Success:', data);
+    console.log("Success:", data);
     return data;
   } catch (error) {
-    console.error('Unsuccessful in createRound:', error);
-    Alert.alert('Unsuccessful', 'Round creation failed. Please try again later');
+    console.error("Unsuccessful in createRound:", error);
+    Alert.alert(
+      "Unsuccessful",
+      "Round creation failed. Please try again later"
+    );
     // Handle error appropriately, maybe return an error status or rethrow the error.
-    return { status: 'fail', message: error.message };
+    return { status: "fail", message: error.message };
   }
 }
+// Chapter 4 Round Configuration
 
+export async function updateRound(roundData, token) {
+  fetch("http://3.27.94.77:8000/habital/v1/round/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(roundData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return response.text().then((text) => {
+          throw new Error(`HTTP error ${response.status}: ${text}`);
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Success:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
 // Chapter 4: Function to get round information
-export async function getRoundInfo(token,userId) {
+export async function getRoundInfo(token, userId) {
   try {
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/round/${userId}`,
@@ -776,13 +786,13 @@ export async function getRoundInfo(token,userId) {
       }
     );
     const data = await response.json();
-    console.log("getRoundInfo",data);
+    console.log("getRoundInfo", data);
     return data; // Make sure you return the data here
-      // const dummyRounds = [
-  //   { id: 1, roundName: 'Round 1', level: '21', startDate: '2024-05-14T17:00:00Z', maxCapacity: 20, allowOthers: true, status:'active',endDate: '2024-06-14T17:00:00Z'},
-  //   { id: 2, name: 'Round 2', level: '35', startDate: '2024-08-14T17:00:00Z', maxCapacity: 15, allowOthers: false, status:'pending' },
-  // ];
-  // return dummyRounds;
+    // const dummyRounds = [
+    //   { id: 1, roundName: 'Round 1', level: '21', startDate: '2024-05-14T17:00:00Z', maxCapacity: 20, allowOthers: true, status:'active',endDate: '2024-06-14T17:00:00Z'},
+    //   { id: 2, name: 'Round 2', level: '35', startDate: '2024-08-14T17:00:00Z', maxCapacity: 15, allowOthers: false, status:'pending' },
+    // ];
+    // return dummyRounds;
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
@@ -793,7 +803,7 @@ export async function getRoundInfo(token,userId) {
 export async function updateRoundInfo(token, newRoundData) {
   try {
     // console.log("round id",newRoundData._id)
-    console.log("Pass to Endpoint",newRoundData)
+    console.log("Pass to Endpoint", newRoundData);
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/round/${newRoundData._id}`,
       {
@@ -803,12 +813,12 @@ export async function updateRoundInfo(token, newRoundData) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          "name": newRoundData.name,
-          "maximum": parseInt(newRoundData.maxCapacity, 10),
-          "level":newRoundData.level,
-          "startDate":newRoundData.startDate.toISOString(),
-          "updatedAt":new Date().toISOString(),
-          "isAllowedInvite": newRoundData.isAllowedInvite
+          name: newRoundData.name,
+          maximum: parseInt(newRoundData.maxCapacity, 10),
+          level: newRoundData.level,
+          startDate: newRoundData.startDate.toISOString(),
+          updatedAt: new Date().toISOString(),
+          isAllowedInvite: newRoundData.isAllowedInvite,
         }),
       }
     );
@@ -848,9 +858,9 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
         body: JSON.stringify({
           nickname: newFriendList.nickname,
           username: newFriendList.username,
-          habit:newFriendList.habit,
-          id:newFriendList.id,
-          status:newFriendList.status,
+          habit: newFriendList.habit,
+          id: newFriendList.id,
+          status: newFriendList.status,
         }),
       }
     );
@@ -864,7 +874,10 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
     if (data.status === "success") {
       Alert.alert("Success", "Update round friend list");
     } else {
-      Alert.alert("Unsuccessful", data.message || "Update round friend list unsuccessful");
+      Alert.alert(
+        "Unsuccessful",
+        data.message || "Update round friend list unsuccessful"
+      );
     }
     console.log("Patch endpoint", data);
     return data; // Make sure you return the data here
@@ -877,30 +890,95 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
 // Chapter 4 Delete a round
 export async function deleteRound(token, roundId) {
   try {
-    const response=await fetch(
+    const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/round/${roundId}`,
       {
         method: "DELETE",
         headers: {
-          'accept': "application/json",
-          Authorization: `Bearer ${token}`
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
         },
       }
-    )
-    if(response.ok){
-          console.log("successful in connect server: ", response.ok);
-          return true;
-  // Alert.alert("Unsuccessful", "can not connect to server");
+    );
+    if (response.ok) {
+      console.log("successful in connect server: ", response.ok);
+      return true;
     }
-      // const data= await response.json()
-      // console.log("response ok",data)
-      // return data
-      // return response;
-
-    // const data = await response.json();
-    // console.log(data);
-    // return data; // Make sure you return the data here
   } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+// Chapter 4.1 Create round notification
+
+export async function createRoundNotification(
+  roundId,
+  token,
+  senderId,
+  receiverId
+) {
+  console.log("------",roundId,"-----");
+  console.log("------",token,"-----");
+  console.log("------",senderId,"-----");
+
+  console.log("------",receiverId,"-----");
+
+  try {
+    const response = await fetch(
+      "http://3.27.94.77:8000/habital/v1/round-invitation/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          roundId: roundId,
+          senderId: senderId,
+          receiverId: receiverId,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log("Success:", data);
+    return data;
+  } catch (error) {
+    console.error("Unsuccessful in createRoundNotification:", error);
+    Alert.alert(
+      "Unsuccessful",
+      "Round Notification creation failed. Please try again later"
+    );
+    // Handle error appropriately, maybe return an error status or rethrow the error.
+    return { status: "fail", message: error.message };
+  }
+}
+
+// Chapter 4.1 Get the round notification for this user
+// TODO
+export async function getRoundInvitationByUserID(token, userId) {
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/round-invitation/${userId}`,
+
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    // console.log(data);
+    return data;
+  } catch (e) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }

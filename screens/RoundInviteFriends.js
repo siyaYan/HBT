@@ -14,16 +14,18 @@ import {
   Image,
   ScrollView,
   Modal,
+  View,
 } from "native-base";
 import { updateRoundFriendList } from "../components/Endpoint";
 import { Avatar } from "native-base";
 import { Foundation, Feather } from "@expo/vector-icons";
 import Background from "../components/Background";
-import { getFriends } from "../components/Endpoint";
+import { getFriends,createRoundNotification } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRound } from "../context/RoundContext";
+import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 
 // functions:
 // 1. add global friends into this round
@@ -33,15 +35,28 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   const [friends, setFriends] = useState([]);
   const { userData, updateUserData } = useData();
   const roundId = route.params.roundId;
-  const { roundData, updateRoundData, insertRoundData } = useRound();
+  const { roundData, insertRoundFriendList } = useRound();
   const round = roundData.data.find((r) => r._id === roundId);
   console.log("Round Friend List", round.roundFriends);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    console.log("modal visible", isModalVisible);
+  }, [isModalVisible]);
 
   useEffect(() => {
     console.log("friends updated:", friends);
     console.log("round data updated:", roundData);
     console.log("round data friend list: ", round.roundFriends);
   }, [friends, roundData]);
+
+  const countCurrentRoundFriends = (round) => {
+    const count = round.roundFriends.length>0?round.roundFriends.filter(
+      (friend) => friend.status === "P" || friend.status === "A"
+    ).length:0;
+    return count;
+  };
+  const currentRoundFriendCount = countCurrentRoundFriends(round);
 
   // TODO: duplicate functions with FriendsList
   // Global friends
@@ -88,48 +103,53 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
 
   // Round friends
   // update round info friend list
-
+  const handlePressInvite = (item) => {
+    console.log("counttttting:", currentRoundFriendCount);
+    console.log("maxx", round.maximum);
+    if (currentRoundFriendCount >= round.maximum) {
+      console.log(true);
+      setModalVisible(true);
+      console.log("modal visible", isModalVisible);
+    } else {
+      const newFriend = {
+        habit: "",
+        id: item._id,
+        nickname: item.nickname,
+        status: "P",
+        username: item.username,
+      };
+      handleInviteFriendToRound(newFriend);
+    }
+  };
   const handleInviteFriendToRound = async (newFriend) => {
     // 1. update database
     // 1.1 check existing friends
     console.log("new friend", newFriend);
-    // const newRoundFriendList = round.roundFriends.map((friend) => {
-    //   return {
-    //     habit: friend.habit,
-    //     id: friend.id,
-    //     nickname: friend.nickname,
-    //     status: friend.status,
-    //     username: friend.username,
-    //   };
-    // });
-
-    // // 1.2 add new friend
-    // newRoundFriendList.push(newFriend);
     console.log("new friend checking before sending to endpoint", newFriend);
-    const response = await updateRoundFriendList(userData.token, roundId, newFriend);
-    
+    const response = await updateRoundFriendList(
+      userData.token,
+      roundId,
+      newFriend
+    );
 
     // console.log("newRoundFriendList", newRoundFriendList);
-    console.log("update friend response",response);
+    console.log("update friend response", response);
     if (response.status === "success") {
       console.log("connect!!");
     } else {
       console.log("fail!!");
     }
     // 2. update roundContext
-    // TODO
-    // updateRoundData();
-    // console.log("Round Friend List", round.roundFriends);
+    insertRoundFriendList(roundId,newFriend);
+
+    // 3. create round invitation
+    const responseCR = createRoundNotification(roundId,userData.token,userData.data._id,newFriend.id);
+    console.log("userID______",userData);
+    console.log("friend id",newFriend.id)
+    console.log("round invitation: ", responseCR);
+    //TODO: backend sending 500 error
   };
-  // // Dummy list of friends
-  // const friends = [
-  //   { id: "1", name: "Friend" },
-  //   { id: "2", name: "Jane Smith" },
-  //   { id: "3", name: "Emily Johnson" },
-  //   { id: "4", name: "Michael Brown" },
-  //   // Add more friends as needed
-  // ];
-  // Navigate to Global add friend page
+
   const addFriend = () => {
     navigation.navigate("Invite");
   };
@@ -178,14 +198,8 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                     <Pressable
                       onPress={() => {
                         console.log("item", item);
-                        const newFriend = {
-                          habit: "",
-                          id: item._id,
-                          nickname: item.nickname,
-                          status: "P",
-                          username: item.username,
-                        };
-                        handleInviteFriendToRound(newFriend);
+
+                        handlePressInvite(item);
                       }}
                     >
                       <Feather name="send" size={30} color="black" />
@@ -206,8 +220,48 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                 No friends data
               </Text>
             )}
+            <Modal
+              isOpen={isModalVisible}
+              // onClose={handleCancelDelete}
+              animationPreset="fade"
+            >
+              <Modal.Content maxWidth="400px">
+                <Modal.CloseButton />
+                {/* <Modal.Header>
+                      <Text fontFamily={"Regular Medium"} fontSize="xl">
+                        Delete Round
+                      </Text>
+                    </Modal.Header> */}
+                <Modal.Body>
+                  <Text>Maximum capacity reached!</Text>
+                </Modal.Body>
+                <Modal.Footer>
+                  {/* <Button.Group space={1}> */}
+                  <Button
+                    rounded={30}
+                    shadow="7"
+                    width="50%"
+                    size={"md"}
+                    alignItems="center"
+                    _text={{
+                      color: "#f9f8f2",
+                    }}
+                    colorScheme="blueGray"
+                    onPress={() => setModalVisible(false)}
+                  >
+                    OK
+                  </Button>
+
+                  {/* </Button.Group> */}
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
+
           </ScrollView>
 
+          {/* {modalVisible && (
+        
+      )} */}
           {/* A button links to the global friend invitation */}
           <Button
             onPress={addFriend}
@@ -226,4 +280,29 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   );
 };
 
+const styles = StyleSheet.create({
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    color: "white",
+    fontSize: 18,
+  },
+  closeButton: {
+    backgroundColor: "#2196F3",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  closeButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+});
 export default RoundInviteFriendsScreen;

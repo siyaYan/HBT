@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getRoundInfo } from "../components/Endpoint";
 
 const RoundContext = createContext();
@@ -15,7 +15,7 @@ export const RoundProvider = ({ children }) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const savedRoundData = await AsyncStorage.getItem('roundData');
+        const savedRoundData = await AsyncStorage.getItem("roundData");
         if (savedRoundData) {
           // console.log('Loaded from AsyncStorage:', JSON.parse(savedRoundData));
           setRoundData(JSON.parse(savedRoundData));
@@ -23,13 +23,16 @@ export const RoundProvider = ({ children }) => {
           const fetchedRoundData = await getRoundInfo();
           // console.log('Fetched from Endpoint:', fetchedRoundData);
           setRoundData(fetchedRoundData);
-          await AsyncStorage.setItem('roundData', JSON.stringify(fetchedRoundData));
+          await AsyncStorage.setItem(
+            "roundData",
+            JSON.stringify(fetchedRoundData)
+          );
         }
       } catch (error) {
-        console.error('Error loading round data:', error);
+        console.error("Error loading round data:", error);
       }
     };
-  
+
     loadData();
   }, []);
 
@@ -40,15 +43,17 @@ export const RoundProvider = ({ children }) => {
         const updatedData = [...prevRoundData.data, newRound];
         return { ...prevRoundData, data: updatedData };
       } else {
-        console.error("Previous round data is undefined or does not contain data property");
+        console.error(
+          "Previous round data is undefined or does not contain data property"
+        );
         return prevRoundData;
       }
     });
   };
-// update existing round
+  // update existing round
   const updateRoundData = (updatedRound) => {
     // console.log("Updating round data with", updatedRound);
-  
+
     setRoundData((prevRoundData) => {
       if (prevRoundData && prevRoundData.data) {
         // console.log("round context previous Round Data", prevRoundData.data);
@@ -58,41 +63,78 @@ export const RoundProvider = ({ children }) => {
         // console.log("updateRoundData",updatedData);
         return { ...prevRoundData, data: updatedData };
       } else {
-        console.error("Previous round data is undefined or does not contain data property");
+        console.error(
+          "Previous round data is undefined or does not contain data property"
+        );
         return prevRoundData; // Let's see if this will happen, I highly doubt this. As we hide the button from showing if there is no round.
       }
     });
   };
   //add new to the round friend list (existing round)
-  const updateRoundFriendList = (newFriendList) => {
+  const insertRoundFriendList = (roundId, newFriend) => {
+    console.log("inser new friend in round context", newFriend);
+    setRoundData((prevRoundData) => {
+      if (prevRoundData && prevRoundData.data) {
+        const updatedData = prevRoundData.data.map((round) => {
+          if (round._id === roundId) {
+            // Clone the round object and update roundFriends by appending newFriend
+            const updatedRound = {
+              ...round,
+              roundFriends: [...round.roundFriends, newFriend],
+            };
+            return updatedRound;
+          } else {
+            return round;
+          }
+        });
+        return { ...prevRoundData, data: updatedData };
+      } else {
+        console.error(
+          "Previous round data is undefined or does not contain data property"
+        );
+        return prevRoundData;
+      }
+    });
+  };
 
+  // Update the entire roundData array
+  const updateRounds = (newRounds) => {
+    // console.log("round context",newRounds);
+    setRoundData(newRounds);
+  };
 
-
-  }
-
-// Update the entire roundData array
-const updateRounds = (newRounds) => {
-  // console.log("round context",newRounds);
-  setRoundData(newRounds);
-};
-
-// delete a round 
-const deleteRoundData = (roundId) => {
-  setRoundData((prevRoundData) => {
-    if (prevRoundData && prevRoundData.data) {
-      const updatedData = prevRoundData.data.filter(round => round._id !== roundId);
-      AsyncStorage.setItem('roundData', JSON.stringify({ ...prevRoundData, data: updatedData }));
-      return { ...prevRoundData, data: updatedData };
-    } else {
-      console.error("Previous round data is undefined or does not contain data property");
-      return prevRoundData;
-    }
-  });
-};
-
+  // delete a round
+  const deleteRoundData = (roundId) => {
+    setRoundData((prevRoundData) => {
+      if (prevRoundData && prevRoundData.data) {
+        const updatedData = prevRoundData.data.filter(
+          (round) => round._id !== roundId
+        );
+        AsyncStorage.setItem(
+          "roundData",
+          JSON.stringify({ ...prevRoundData, data: updatedData })
+        );
+        return { ...prevRoundData, data: updatedData };
+      } else {
+        console.error(
+          "Previous round data is undefined or does not contain data property"
+        );
+        return prevRoundData;
+      }
+    });
+  };
 
   return (
-    <RoundContext.Provider value={{ roundData, updateRoundData,updateRounds,insertRoundData,deleteRoundData,updateRoundFriendList }}>
+    <RoundContext.Provider
+      value={{
+        roundData,
+        updateRoundData,
+        updateRounds,
+        insertRoundData,
+        deleteRoundData,
+        insertRoundFriendList,
+      }}
+    >
       {children}
     </RoundContext.Provider>
   );
