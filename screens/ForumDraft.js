@@ -18,7 +18,7 @@ const ForumDraft = ({ navigation, route }) => {
     setPost({...post, image:res})
     //TODO:
     //get RoundId
-    const id='666ce364a375a4a199633315'
+    const id='667f56c8829aba44891d7615'
     const res=await addPost(id,post,userData.token)
     // console.log(ttt)
     if(res.status=='success'){

@@ -495,7 +495,7 @@ export async function deleteFriendOrWithdrawRequestById(token,friendRequestId) {
       }
     );
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -740,14 +740,14 @@ export async function addPost(id,post,token) {
     }
     const data= await response.json();
 
-    if (data.status == "success") {
-      Alert.alert("Success", "Post message successfully");
-    } else {
-      Alert.alert(
-        "Unsuccessful",
-        data.message || "Post message failed"
-      );
-    }
+    // if (data.status == "success") {
+    //   Alert.alert("Success", "Post message successfully");
+    // } else {
+    //   Alert.alert(
+    //     "Unsuccessful",
+    //     data.message || "Post message failed"
+    //   );
+    // }
     return data
     
   } catch (error) {
@@ -785,6 +785,87 @@ export async function getForum(id,token) {
     //   );
     // }
     return data
+    
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
+export async function likeMessage(roundId,messageId,token) {
+  try {
+    
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/like/${roundId}/${messageId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(`HTTP error ${response.status}: ${text}`);
+      });
+    }
+    const data= await response.json();
+    return data
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
+
+export async function cancelLike(roundId,messageId,token) {
+  try {
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/cancell/${roundId}/${messageId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(`HTTP error ${response.status}: ${text}`);
+      });
+    }
+    const data= await response.json();
+    return data
+    
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
+
+export async function deleteMessage(roundId,messageId,token) {
+  try {
+    const response= await fetch(`http://localhost:8000/habital/v1/forum/delete/${roundId}/${messageId}`, {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`
+      }
+    })
+    if (response.status === 204) {
+      console.log(response.message);
+      return; // No need to parse JSON
+    }
+  
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
     
   } catch (error) {
     Alert.alert(
