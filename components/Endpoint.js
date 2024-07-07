@@ -846,7 +846,11 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          newFriendList
+          nickname: newFriendList.nickname,
+          username: newFriendList.username,
+          habit:newFriendList.habit,
+          id:newFriendList.id,
+          status:newFriendList.status,
         }),
       }
     );
@@ -884,8 +888,8 @@ export async function deleteRound(token, roundId) {
       }
     )
     if(response.ok){
-          console.log("successful in connect server:");
-          return true
+          console.log("successful in connect server: ", response.ok);
+          return true;
   // Alert.alert("Unsuccessful", "can not connect to server");
     }
       // const data= await response.json()

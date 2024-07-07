@@ -28,7 +28,11 @@ export default function RoundStackNavigator({ navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.goBack();
+                navigation.goBack(); //TODO, navigate to round info page, rather than home page
+      //           navigation.navigate("RoundStack", {
+      //   screen: "RoundInfo",
+      //   params: { roundId},
+      // });
               }}
             />
           ),

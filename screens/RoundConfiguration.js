@@ -32,7 +32,7 @@ import { useRound } from "../context/RoundContext";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 
 const RoundConfigurationScreen = ({ route, navigation }) => {
-  const { roundData, updateRoundData, insertRoundData } = useRound();
+  const { roundData, updateRoundData, insertRoundData,deleteRoundData } = useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -59,10 +59,10 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const dataPickerMin = new Date();
   dataPickerMin.setDate(minDaysFromNow.getDate() - 1);
   const [startDate, setDate] = useState(
-    emptyState ? minDaysFromNow : new Date(round.startDate)
+    emptyState ? minDaysFromNow : (round? new Date(round.startDate):minDaysFromNow)
   );
-  const [roundName, setRoundName] = useState(emptyState ? null : round.name);
-  const [level, setLevel] = useState(emptyState ? null : round.level);
+  const [roundName, setRoundName] = useState(emptyState ? null : (round?round.name:null));
+  const [level, setLevel] = useState(emptyState ? null : (round?round.level:null));
   const [maxCapacity, setMaxCapacity] = useState(() => {
     if (emptyState) {
       return "10";
@@ -70,7 +70,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     return round.maximum != null ? round.maximum.toString() : "10";
   });
   const [allowOthers, setAllowOthers] = useState(
-    emptyState ? true : round.isAllowedInvite
+    emptyState ? true : (round?round.isAllowedInvite:true)
   );
 
   // Toggle button
@@ -111,7 +111,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     }
   };
 
-  // async function handleUpdateRound (){
   const handleUpdateRound = async () => {
     if (emptyState) {
       const newRoundData = {
@@ -129,7 +128,12 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       // console.log("create round response", response);
       insertRoundData(response.data);
       // console.log("after creation", roundData);
-      navigation.navigate("MainStack", { screen: "Home" }); // Navigate back to Home Screen once delete the round
+      // navigation.navigate("MainStack", { screen: "Home" }); 
+      // Navigate back to round info page once created
+      navigation.navigate("RoundStack", {
+        screen: "RoundInfo",
+        params: { roundId:response.data._id},
+      });
     } else {
       console.log("route", route.params);
       const newRoundData = {
@@ -192,28 +196,34 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       console.log("delete round token", userData.token);
       console.log("delete round id", roundId);
       const response = await deleteRound(userData.token, roundId);
-      setTimeout(() => {
-        console.log("delete round response", response);
-      }, 2000);
+      // setTimeout(() => {
+      //   console.log("delete round response", response);
+      // }, 2000);
 
       // navigation.goBack();
-
+      
+      //response is true, if it is successful
       if (response) {
-        // Fetch updated round data
-        const updatedRoundData = await getRoundInfo(
-          userData.token,
-          userData._id
-        );
-        updateRoundData(updatedRoundData);
-        console.log(
-          "round config updated round data after deletion",
-          updatedRoundData
-        );
+        // update round context
+        console.log("Round id that it deletes",roundId)
+        const responseDeleteRoundContext = await deleteRoundData(roundId);
+        console.log("round context: ",responseDeleteRoundContext)
+        console.log("Navigate back to home")
         // Navigate back to Home Screen once delete the round
-        navigation.navigate("MainStack", { screen: "Home" });
+        navigation.navigate("MainStack", { screen: "Home" }) 
+        // Show success alert
+        // Alert.alert(
+        //   "Success",
+        //   "Round deleted successfully",
+        //   [{ text: "OK", onPress: () => navigation.navigate("MainStack", { screen: "Home" }) }]
+        // );
+      }else {
+        // Handle case when response is not as expected
+        Alert.alert("Error", "Failed to delete the round");
       }
     } catch (error) {
-      Alert.alert("Unsuccessful", "Cannot connect to server");
+      console.error("Error deleting round:", error);
+      Alert.alert("Error", "An error occurred while deleting the round");
     }
   };
 
@@ -338,11 +348,11 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                           color: "#191919",
                         }}
                       >
-                        {startDate.toLocaleDateString(undefined, {
+                        {startDate?startDate.toLocaleDateString(undefined, {
                           year: "numeric",
                           month: "short",
                           day: "numeric",
-                        })}
+                        }):''}
                       </Text>
                     </VStack>
 

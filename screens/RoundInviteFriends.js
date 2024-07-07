@@ -105,8 +105,9 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
 
     // // 1.2 add new friend
     // newRoundFriendList.push(newFriend);
-
+    console.log("new friend checking before sending to endpoint", newFriend);
     const response = await updateRoundFriendList(userData.token, roundId, newFriend);
+    
 
     // console.log("newRoundFriendList", newRoundFriendList);
     console.log("update friend response",response);

@@ -76,8 +76,23 @@ const updateRounds = (newRounds) => {
   setRoundData(newRounds);
 };
 
+// delete a round 
+const deleteRoundData = (roundId) => {
+  setRoundData((prevRoundData) => {
+    if (prevRoundData && prevRoundData.data) {
+      const updatedData = prevRoundData.data.filter(round => round._id !== roundId);
+      AsyncStorage.setItem('roundData', JSON.stringify({ ...prevRoundData, data: updatedData }));
+      return { ...prevRoundData, data: updatedData };
+    } else {
+      console.error("Previous round data is undefined or does not contain data property");
+      return prevRoundData;
+    }
+  });
+};
+
+
   return (
-    <RoundContext.Provider value={{ roundData, updateRoundData,updateRounds,insertRoundData,updateRoundFriendList }}>
+    <RoundContext.Provider value={{ roundData, updateRoundData,updateRounds,insertRoundData,deleteRoundData,updateRoundFriendList }}>
       {children}
     </RoundContext.Provider>
   );
