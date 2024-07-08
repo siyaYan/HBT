@@ -20,7 +20,7 @@ import { updateRoundFriendList } from "../components/Endpoint";
 import { Avatar } from "native-base";
 import { Foundation, Feather } from "@expo/vector-icons";
 import Background from "../components/Background";
-import { getFriends,createRoundNotification } from "../components/Endpoint";
+import { getFriends, createRoundNotification } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -51,9 +51,12 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   }, [friends, roundData]);
 
   const countCurrentRoundFriends = (round) => {
-    const count = round.roundFriends.length>0?round.roundFriends.filter(
-      (friend) => friend.status === "P" || friend.status === "A"
-    ).length:0;
+    const count =
+      round.roundFriends.length > 0
+        ? round.roundFriends.filter(
+            (friend) => friend.status === "P" || friend.status === "A"
+          ).length
+        : 0;
     return count;
   };
   const currentRoundFriendCount = countCurrentRoundFriends(round);
@@ -140,19 +143,32 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       console.log("fail!!");
     }
     // 2. update roundContext
-    insertRoundFriendList(roundId,newFriend);
+    insertRoundFriendList(roundId, newFriend);
 
     // 3. create round invitation
-    const responseCR = createRoundNotification(roundId,userData.token,userData.data._id,newFriend.id);
-    console.log("-----roundid",roundId);
-    console.log("userID______",userData);
-    console.log("friend id",newFriend.id)
+    const responseCR = createRoundNotification(
+      roundId,
+      userData.token,
+      userData.data._id,
+      newFriend.id
+    );
+    console.log("-----roundid", roundId);
+    console.log("userID______", userData);
+    console.log("friend id", newFriend.id);
     console.log("round invitation: ", responseCR);
     //TODO: backend sending 500 error
   };
 
   const addFriend = () => {
     navigation.navigate("Invite");
+  };
+
+  const checkIfAlreadyActive = (friendId) => {
+    const friendExists = round.roundFriends.some(
+      (roundFriend) => roundFriend.id === friendId
+    );
+
+    return friendExists;
   };
 
   return (
@@ -165,51 +181,58 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
           <ScrollView w={"100%"} h="100%">
             {friends.length > 0 ? (
               <Box w={"95%"}>
-                {friends.map((item, index) => (
-                  <HStack
-                    w={"100%"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    m={1}
-                    key={index}
-                    item={item}
-                  >
-                    {item.profileImageUrl ? (
-                      <Avatar
-                        bg="white"
-                        mb="1"
-                        size={"md"}
-                        source={{ uri: item.profileImageUrl }}
-                      />
-                    ) : (
-                      <FontAwesome name="check" size={24} color="black" />
-                    )}
-                    <Text fontFamily={"Regular"} fontSize="md">
-                      {item.username}
-                    </Text>
-                    <Text fontFamily={"Regular"} fontSize="md">
-                      {item.nickname}
-                    </Text>
-                    {/* <Foundation
-                          onPress={() => deleteOption(index + 1)}
-                          name="inviteToRound"
-                          size={24}
-                          color="black"
-                        /> */}
-                    <Pressable
-                      onPress={() => {
-                        console.log("item", item);
-
-                        handlePressInvite(item);
-                      }}
+                {friends.map((item, index) => {
+                  const isFriendInRound = round.roundFriends.some(
+                    (friend) => friend.id === item._id
+                  );
+                  // Find the friend object in roundFriends to access its status
+  const friendInRound = round.roundFriends.find(friend => friend.id === item._id);
+  const friendStatus = friendInRound ? friendInRound.status : null;
+                  return (
+                    <HStack
+                      w={"100%"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                      m={1}
+                      key={index}
+                      item={item}
                     >
-                      <Feather name="send" size={30} color="black" />
-                      <Text fontFamily={"Regular"} fontSize="xs">
-                        invite
+                      {item.profileImageUrl ? (
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size={"md"}
+                          source={{ uri: item.profileImageUrl }}
+                        />
+                      ) : (
+                        <FontAwesome name="check" size={24} color="black" />
+                      )}
+                      <Text fontFamily={"Regular"} fontSize="md">
+                        {item.username}
                       </Text>
-                    </Pressable>
-                  </HStack>
-                ))}
+                      <Text fontFamily={"Regular"} fontSize="md">
+                        {item.nickname}
+                      </Text>
+                      {/* If already active, then hide invite button, show as linked */}
+                      {isFriendInRound && friendStatus ==="A" ? (
+                        <Feather name="link" size={30} color="black" />
+                      ) : (
+                        <Pressable
+                          onPress={() => {
+                            console.log("item", item);
+
+                            handlePressInvite(item);
+                          }}
+                        >
+                          <Feather name="send" size={30} color="black" />
+                          <Text fontFamily={"Regular"} fontSize="xs">
+                            invite
+                          </Text>
+                        </Pressable>
+                      )}
+                    </HStack>
+                  );
+                })}
               </Box>
             ) : (
               <Text
@@ -257,7 +280,6 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                 </Modal.Footer>
               </Modal.Content>
             </Modal>
-
           </ScrollView>
 
           {/* {modalVisible && (
