@@ -211,7 +211,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
             )}
           </ScrollView>
           </View>
-          :""}
+          :null}
         </VStack>
       </Box>
     </NativeBaseProvider>

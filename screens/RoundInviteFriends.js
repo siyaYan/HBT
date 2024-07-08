@@ -144,6 +144,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
 
     // 3. create round invitation
     const responseCR = createRoundNotification(roundId,userData.token,userData.data._id,newFriend.id);
+    console.log("-----roundid",roundId);
     console.log("userID______",userData);
     console.log("friend id",newFriend.id)
     console.log("round invitation: ", responseCR);

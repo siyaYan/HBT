@@ -931,12 +931,12 @@ export async function createRoundNotification(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           roundId: roundId,
           senderId: senderId,
-          receiverId: receiverId,
+          receiverId: receiverId
         }),
       }
     );

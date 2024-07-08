@@ -279,7 +279,7 @@ const HomeScreen = ({ navigation }) => {
         <Modal isOpen={isOpened} onClose={handleClose} animationType="slide">
           <View style={[styles.modalContent, { width: width * 1 }]}>
             <Text>This is the popup content</Text>
-            //TODO end point get the round invitation by userId
+            {/* //TODO end point get the round invitation by userId */}
             {/* getRoundInvitationByUserID(userData.token,userData.data._id) */}
             <Button onPress={handleClose}>Close</Button>
           </View>
