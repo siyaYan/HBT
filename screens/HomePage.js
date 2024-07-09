@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { StyleSheet , View} from "react-native";
 import { Box, Heading, IconButton,   Icon, Text, Pressable, Button, NativeBaseProvider, Flex , useDisclose, Actionsheet} from 'native-base';
 import { Avatar } from "native-base";
 import { AntDesign } from '@expo/vector-icons';
