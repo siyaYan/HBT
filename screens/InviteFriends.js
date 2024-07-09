@@ -152,7 +152,7 @@ const InviteScreen = ({ navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Find a friend By Email/Username
+                    Find a friend
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
