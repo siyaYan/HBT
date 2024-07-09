@@ -21,7 +21,11 @@ import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
 import { useFocusEffect } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
-import { getNoteUpdate, getRoundInfo,getRoundInvitationByUserID } from "../components/Endpoint";
+import {
+  getNoteUpdate,
+  getRoundInfo,
+  getRoundInvitation,
+} from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
 import {
   useSharedValue,
@@ -101,6 +105,7 @@ const HomeScreen = ({ navigation }) => {
   const handlePress = () => {
     setIsOpened(true);
     console.log("isOpened", isOpened);
+    loadAllReceivedNotification();
   };
 
   const handleClose = () => {
@@ -124,6 +129,18 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     triggerAnimation();
   }, []);
+
+  const loadAllReceivedNotification = async() => {
+    const receivedRoundInvitation = await getRoundInvitation(userData.token);
+    console.log("----receivedroundinvitation",receivedRoundInvitation);
+    if (receivedRoundInvitation.status === "success") {
+      const pendingReceiverIds = receivedRoundInvitation.data
+        .filter((invitation) => invitation.status === "P")
+        .map((invitation) => invitation.receiverId);
+
+      console.log(pendingReceiverIds);
+    }
+  };
 
   return (
     <NativeBaseProvider>
@@ -278,9 +295,7 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Modal isOpen={isOpened} onClose={handleClose} animationType="slide">
           <View style={[styles.modalContent, { width: width * 1 }]}>
-            <Text>This is the popup content</Text>
-            {/* //TODO end point get the round invitation by userId */}
-            {/* getRoundInvitationByUserID(userData.token,userData.data._id) */}
+            <Text>TODO: show a list of received notifications, a button to accept or reject.</Text>
             <Button onPress={handleClose}>Close</Button>
           </View>
         </Modal>
