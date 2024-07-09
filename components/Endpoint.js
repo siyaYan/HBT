@@ -982,3 +982,30 @@ export async function getRoundInvitation(token,receiver="receiver") {
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
+
+
+export async function reactReceivedRoundRequest(token, friendRequestId, react) {
+  // console.log(friendRequestId,react)
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}`, // update this one into the round
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          // Stringify the body object
+          status: `${react}`, // Assuming 'react' is a variable containing the status to update
+        }),
+      }
+    );
+    const data = await response.json();
+    // console.log(data);
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}

@@ -8,6 +8,7 @@ import {
   View,
   Avatar,
   Modal,
+  HStack,
 } from "native-base";
 import {
   Pressable,
@@ -129,16 +130,55 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     triggerAnimation();
   }, []);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
-  const loadAllReceivedNotification = async() => {
+
+  const loadAllReceivedNotification = async () => {
     const receivedRoundInvitation = await getRoundInvitation(userData.token);
-    console.log("----receivedroundinvitation",receivedRoundInvitation);
+    console.log("----receivedroundinvitation", receivedRoundInvitation);
     if (receivedRoundInvitation.status === "success") {
-      const pendingReceiverIds = receivedRoundInvitation.data
+      // Step 1: Extract pendingSenderIds
+      const pendingSenderIds = receivedRoundInvitation.data
         .filter((invitation) => invitation.status === "P")
-        .map((invitation) => invitation.receiverId);
+        .map((invitation) => invitation.senderId);
 
-      console.log(pendingReceiverIds);
+      console.log(pendingSenderIds);
+      // Step 2: Filter users based on pendingSenderIds
+      const filtered = receivedRoundInvitation.users.filter((user) =>
+        pendingSenderIds.includes(user._id)
+      );
+      setFilteredUsers(filtered);
+      console.log("filteredUsers", filteredUsers);
+    }
+  };
+  const acceptRoundFriend = (i) => {
+    console.log("accept round Friend,delete current notification");
+    setReceived((currentReceived) => [
+      ...currentReceived.slice(0, i - 1),
+      ...currentReceived.slice(i),
+    ]);
+    const id = received[i - 1]._id;
+    reactRequest(id, "A");
+  };
+  const rejectRoundFriend = (i) => {
+    console.log("reject round Friend,delete current notification");
+    setReceived((currentReceived) => [
+      ...currentReceived.slice(0, i - 1),
+      ...currentReceived.slice(i),
+    ]);
+    const id = received[i - 1]._id;
+    reactRequest(id, "R");
+  };
+  const reactRequest = async (id, react) => {
+    const response = await reactReceivedRequest(userData.token, id, react);
+    if (!response) {
+      console.log("react request failed");
+    }
+    // Handle success or error response
+    if (response.status == "success") {
+      console.log("react request success:", response);
+    } else {
+      console.error("react request failed:", response.message);
     }
   };
 
@@ -295,7 +335,63 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Modal isOpen={isOpened} onClose={handleClose} animationType="slide">
           <View style={[styles.modalContent, { width: width * 1 }]}>
-            <Text>TODO: show a list of received notifications, a button to accept or reject.</Text>
+            {filteredUsers.length > 0 ? (
+              <Box w={"95%"}>
+                {filteredUsers.map((item, index) => {
+                  return (
+                    <HStack
+                      w={"100%"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                      m={1}
+                      key={index}
+                      item={item}
+                    >
+                      {item.profileImageUrl ? (
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size={"md"}
+                          source={{ uri: item.profileImageUrl }}
+                        />
+                      ) : (
+                        <FontAwesome name="check" size={24} color="black" />
+                      )}
+                      <Text fontFamily={"Regular"} fontSize="md">
+                        {item.username}
+                      </Text>
+                      <Text fontFamily={"Regular"} fontSize="md">
+                        {item.nickname}
+                      </Text>
+                      <HStack space="3">
+              <AntDesign
+                onPress={() => acceptRoundFriend(1)}
+                name="checksquareo"
+                size={30}
+                color="black"
+              />
+              <AntDesign
+                onPress={() => rejectRoundFriend(1)}
+                name="closesquareo"
+                size={30}
+                color="black"
+              />
+            </HStack>
+                    </HStack>
+                  );
+                })}
+              </Box>
+            ) : (
+              <Text
+                marginTop={"30%"}
+                fontFamily={"Regular"}
+                fontSize="2xl"
+                textAlign={"center"}
+              >
+                No friends data
+              </Text>
+            )}
+           
             <Button onPress={handleClose}>Close</Button>
           </View>
         </Modal>
