@@ -6,18 +6,14 @@ import FriendsScreen from "../screens/FriendsList";
 import NotificationScreen from "../screens/Notifications";
 import AddImage from "../components/AddImage";
 import { useData } from "../context/DataContext";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { getNoteUpdate } from "../components/Endpoint";
-import { Box, ZStack } from "native-base";
-import { navigationRef } from "../navigation/AppContainer";
 import { useDisclose } from "native-base";
 
 const Tab = createBottomTabNavigator();
-const DummyScreen = () => null;
 
 export default function AuthenticatedScreens({navigation}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -42,7 +38,6 @@ export default function AuthenticatedScreens({navigation}) {
     if (value.target.includes("Upload")) {
       setIsModalVisible(true);
       onOpen()
-      // navigationRef.current?.navigate("Home");
     } else {
       setIsModalVisible(false);
     }
@@ -155,41 +150,7 @@ export default function AuthenticatedScreens({navigation}) {
             tabBarIcon: ({ color, size }) => null, // Hide icon for this tab
           }}
         />
-        {/* <Tab.Screen
-        name="Upload"
-        component={HomeScreen}
-        listeners={{
-          tabPress: e => {
-            e.preventDefault(); // Prevent default action
-            onCanmeraPress(e); // Call your custom onPress function
-          },
-        }}
-        options={{
-          headerShown: false,
-          tabBarButton: ({ accessibilityState, onPress: onPress }) => (
-            <TouchableOpacity
-                            onPress={() => {
-                setIsModalVisible(false); // Reset showModal to false
-                onPress(); // Call the original onPress handler
-              }}
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: accessibilityState.selected ? "#e7e5e4":"#d6d3d1", // Change colors accordingly
-              }}
-            >
-              <Feather name="camera" size={30} color="black" />
-            </TouchableOpacity>
-          ),
-          tabBarStyle: {
-            backgroundColor: '#d6d3d1', // Dark background color
-            borderTopColor: 'transparent', // Removes the border on the top
-          },
-          tabBarLabelStyle: { display: "none" },
-          tabBarShowLabel: false,
-        }}
-      /> */}
+
         <Tab.Screen
           name="Notifications"
           component={NotificationScreen}
@@ -217,11 +178,6 @@ export default function AuthenticatedScreens({navigation}) {
                 />
               </TouchableOpacity>
             ),
-
-            // <Image
-            //   style={{ width: 26, height: 26 }}
-            //   source={require("../assets/Buttonicons/ic_login.png")}
-            // />
             tabBarStyle: {
               backgroundColor: "#d6d3d1", // Dark background color
               borderTopColor: "transparent", // Removes the border on the top
@@ -267,15 +223,6 @@ export default function AuthenticatedScreens({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  // tabButton: {
-  //   flex: 1,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  // },
-  // tabBarStyle: {
-  //   backgroundColor: "#d6d3d1",
-  //   borderTopColor: "transparent",
-  // },
   modalContainer: {
     position: "absolute",
     zIndex: 1000,
