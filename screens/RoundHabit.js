@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
-
+import { View, Text, TextInput, StyleSheet} from 'react-native';
+import {Button } from "native-base"
+import { updateRoundhabit } from "../components/Endpoint"
+import { useData } from "../context/DataContext";
+import { useRound } from "../context/RoundContext";
 
 const RoundHabit= ({ route, navigation }) => {
   const [text, setText] = useState('');
-
+  const { userData } = useData();
+  const { roundData } = useRound();
+  const handleSubmit = async () => {
+    // console.log(userData,roundData, text);
+    const res= await updateRoundhabit(userData.token, roundData._id,text);
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Enter your habit:</Text>
@@ -14,7 +22,8 @@ const RoundHabit= ({ route, navigation }) => {
         onChangeText={setText}
         placeholder="Type here"
       />
-      <Text style={styles.displayText}>You entered: {text}</Text>
+      <Button  variant="info" onPress={handleSubmit}>
+      Submit</Button>
     </View>
   );
 };

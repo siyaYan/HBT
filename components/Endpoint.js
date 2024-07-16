@@ -997,6 +997,40 @@ export async function updateRoundInfo(token, newRoundData) {
   }
 }
 
+export async function updateRoundhabit(token, newHabit, roundId) {
+  
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/round/${roundId}/updatehabit`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          "habit":newHabit
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+    }
+
+    const data = await response.json();
+    if (data.status === "success") {
+      Alert.alert("Success", "Update your habit");
+    } else {
+      Alert.alert("Unsuccessful", data.message || "Update habit unsuccessful");
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "Cannot connect to server");
+  }
+}
 // Chapter 4: Function to update round friend list
 export async function updateRoundFriendList(token, roundId, newFriendList) {
   try {
