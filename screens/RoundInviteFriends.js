@@ -72,6 +72,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
 
+
   const getGlobalFriendList = async () => {
     const response = await getFriends(userData.token);
     // Handle success or error response
@@ -85,7 +86,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       console.log("end point get friends response:", response);
       response.users.map((user) => {
         const newFriend = {
-          _id: "",
+          _id: user._id,
           email: user.email,
           profileImageUrl: user.profileImageUrl,
           username: user.username,
@@ -93,9 +94,9 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
         };
         newFriends.push(newFriend);
       });
-      response.data.map((data, index) => {
-        newFriends[index]._id = data._id;
-      });
+      // response.data.map((data, index) => {
+      //   newFriends[index]._id = data._id;
+      // });
       setFriends(newFriends);
       console.log("newfriends:", newFriends);
       console.log("friends: ", friends);
@@ -107,8 +108,8 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   // Round friends
   // update round info friend list
   const handlePressInvite = (item) => {
-    console.log("counttttting:", currentRoundFriendCount);
-    console.log("maxx", round.maximum);
+    // console.log("counttttting:", currentRoundFriendCount);
+    // console.log("maxx", round.maximum);
     if (currentRoundFriendCount >= round.maximum) {
       console.log(true);
       setModalVisible(true);
@@ -146,18 +147,14 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
     insertRoundFriendList(roundId, newFriend);
 
     // 3. create round invitation
-    const responseCR = createRoundNotification(
+    const responseCR = await createRoundNotification(
       roundId,
       userData.token,
       userData.data._id,
       newFriend.id
     );
-    console.log("-----roundid", roundId);
-    console.log("userID______", userData);
-    console.log("friend id", newFriend.id);
-    console.log("round invitation: ", responseCR);
-    //TODO: backend sending 500 error
-  };
+    console.log("responseCR", responseCR);
+      };
 
   const addFriend = () => {
     navigation.navigate("Invite");
@@ -182,12 +179,17 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
             {friends.length > 0 ? (
               <Box w={"95%"}>
                 {friends.map((item, index) => {
+                  {/* setStatusCreateNotification("") */}
                   const isFriendInRound = round.roundFriends.some(
                     (friend) => friend.id === item._id
                   );
                   // Find the friend object in roundFriends to access its status
-  const friendInRound = round.roundFriends.find(friend => friend.id === item._id);
-  const friendStatus = friendInRound ? friendInRound.status : null;
+                  const friendInRound = round.roundFriends.find(
+                    (friend) => friend.id === item._id
+                  );
+                  const friendStatus = friendInRound
+                    ? friendInRound.status
+                    : null;
                   return (
                     <HStack
                       w={"100%"}
@@ -214,9 +216,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                         {item.nickname}
                       </Text>
                       {/* If already active, then hide invite button, show as linked */}
-                      {isFriendInRound && friendStatus ==="A" ? (
-                        <Feather name="link" size={30} color="black" />
+                      {isFriendInRound ? ((friendStatus === "A")?
+                        <Feather name="link" size={30} color="black" />:<Feather name="refresh-cw" size={30} color="black" />
                       ) : (
+                    
                         <Pressable
                           onPress={() => {
                             console.log("item", item);
@@ -225,6 +228,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                           }}
                         >
                           <Feather name="send" size={30} color="black" />
+
                           <Text fontFamily={"Regular"} fontSize="xs">
                             invite
                           </Text>

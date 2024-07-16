@@ -1107,11 +1107,11 @@ export async function createRoundNotification(
   senderId,
   receiverId
 ) {
-  console.log("------",roundId,"-----");
-  console.log("------",token,"-----");
-  console.log("------",senderId,"-----");
+  // console.log("------",roundId,"-----");
+  // console.log("------",token,"-----");
+  // console.log("------",senderId,"-----");
 
-  console.log("------",receiverId,"-----");
+  // console.log("------",receiverId,"-----");
 
   try {
     const response = await fetch(
@@ -1149,12 +1149,11 @@ export async function createRoundNotification(
   }
 }
 
-// Chapter 4.1 Get the round notification for this user
-// TODO
-export async function getRoundInvitationByUserID(token, userId) {
+// Chapter 4.1 Get all round notifications received for this user
+export async function getRoundInvitation(token,receiver="receiver") {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round-invitation/${userId}`,
+      `http://3.27.94.77:8000/habital/v1/round-invitation/${receiver}`,
 
       {
         method: "GET",
@@ -1165,9 +1164,36 @@ export async function getRoundInvitationByUserID(token, userId) {
       }
     );
     const data = await response.json();
-    // console.log(data);
+    console.log("getroundInvitation -----",data);
     return data;
   } catch (e) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "can not connect to server");
+  }
+}
+
+
+export async function reactReceivedRoundRequest(token, friendRequestId, react) {
+  // console.log(friendRequestId,react)
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}`, // update this one into the round
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          // Stringify the body object
+          status: `${react}`, // Assuming 'react' is a variable containing the status to update
+        }),
+      }
+    );
+    const data = await response.json();
+    // console.log(data);
+    return data; // Make sure you return the data here
+  } catch (error) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
