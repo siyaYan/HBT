@@ -53,7 +53,7 @@ const FriendsScreen = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
-      // console.log('Tab is in focus, userInfo:', userData);
+      console.log('Tab is in focus, userInfo:', userData);
       updateFriendList();
       updateSendRequest();
       updateReceivedRequest();
@@ -114,15 +114,17 @@ const FriendsScreen = ({ navigation }) => {
       const pendingRes = response.data.filter((item) => item.status == "P");
       // const pendingRes=response.users
       if (pendingRes.length > 0) {
-        pendingRes.map((data, index) => {
-          const newFriend = {
-            _id: data._id,
-            email: response.users[index].email,
-            profileImageUrl: response.users[index].profileImageUrl,
-            username: response.users[index].username,
-            nickname: response.users[index].nickname,
-          };
-          sendFriends[index] = newFriend;
+        response.data.map((data, index) => {
+          if(data.status == "P"){
+            const newFriend = {
+              _id: data._id,
+              email: response.users[index].email,
+              profileImageUrl: response.users[index].profileImageUrl,
+              username: response.users[index].username,
+              nickname: response.users[index].nickname,
+            };
+            sendFriends.push(newFriend)
+          }
         });
       }
       setSent(sendFriends);
