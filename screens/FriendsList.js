@@ -331,7 +331,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="received"
               />
               <Text fontFamily={"Regular"} fontSize="lg">
-                {received.length}
+                {received.length>0?received.length:""}
               </Text>
             </HStack>
             <Box
@@ -455,7 +455,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="sent"
               />
               <Text fontFamily={"Regular"} fontSize="lg">
-                {sent.length}
+                {sent.length>0?sent.length:''}
               </Text>
             </HStack>
             <Box
@@ -577,7 +577,7 @@ const FriendsScreen = ({ navigation }) => {
                   alt="friends"
                 />
                 <Text fontFamily={"Regular"} fontSize="lg">
-                  {friends.length}
+                  {friends.length>0? friends.length : ""}
                 </Text>
               </HStack>
               {/* <FontAwesome5
