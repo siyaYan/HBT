@@ -772,11 +772,11 @@ export async function updateRound(roundData, token) {
       console.error("Error:", error);
     });
 }
-// Chapter 4: Function to get round information
-export async function getRoundInfo(token, userId) {
+// Chapter 4: Function to get round information by UserId or RoundID
+export async function getRoundInfo(token, Id) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round/${userId}`,
+      `http://3.27.94.77:8000/habital/v1/round/${Id}`,
       {
         method: "GET",
         headers: {
