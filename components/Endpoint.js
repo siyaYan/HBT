@@ -997,7 +997,7 @@ export async function updateRoundInfo(token, newRoundData) {
   }
 }
 
-export async function updateRoundhabit(token, newHabit, roundId) {
+export async function updateRoundhabit(token, roundId, newHabit) {
   
   try {
     const response = await fetch(
