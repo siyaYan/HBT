@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getRoundInfo } from "../components/Endpoint";
+import { getRoundInfo,getRoundInvitation } from "../components/Endpoint";
 
 const RoundContext = createContext();
 
@@ -10,6 +10,8 @@ export const useRound = () => {
 
 export const RoundProvider = ({ children }) => {
   const [roundData, setRoundData] = useState([]);
+  const [roundInvitationData, setRoundInvitationData] = useState(null);
+
 
   // Load round data from AsyncStorage and fetch from endpoint on component mount
   useEffect(() => {
@@ -123,7 +125,16 @@ export const RoundProvider = ({ children }) => {
       }
     });
   };
-
+  // round invitation data
+ // Fetch and set round invitation data
+ const loadRoundInvitationData = async (token) => {
+  try {
+    const data = await getRoundInvitation(token);
+    setRoundInvitationData(data);
+  } catch (error) {
+    console.error("Error loading round invitation data:", error);
+  }
+};
   return (
     <RoundContext.Provider
       value={{
@@ -133,6 +144,9 @@ export const RoundProvider = ({ children }) => {
         insertRoundData,
         deleteRoundData,
         insertRoundFriendList,
+        roundInvitationData,
+        loadRoundInvitationData,
+
       }}
     >
       {children}
