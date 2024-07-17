@@ -983,12 +983,11 @@ export async function getRoundInvitation(token,receiver="receiver") {
   }
 }
 
-
-export async function reactReceivedRoundRequest(token, friendRequestId, react) {
+export async function reactRoundRequest(token, roundInvitationId, react) {
   // console.log(friendRequestId,react)
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}`, // update this one into the round
+      `http://3.27.94.77:8000/habital/v1/round-invitation/${roundInvitationId}`,
       {
         method: "PATCH",
         headers: {

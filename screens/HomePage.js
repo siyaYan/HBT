@@ -22,7 +22,11 @@ import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
 import { useFocusEffect } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
-import { getNoteUpdate, getRoundInfo } from "../components/Endpoint";
+import {
+  getNoteUpdate,
+  getRoundInfo,
+  reactRoundRequest,
+} from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
 import {
   useSharedValue,
@@ -32,81 +36,67 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const HomeScreen = ({ navigation }) => {
-  const [received, setReceived] = useState([]);
   const [thisRoundInfo, setThisRoundInfo] = useState(null); // State for round info
+  const [isOpened, setIsOpened] = useState(false);
+  const [showRoundDetails, setShowRoundDetails] = useState(false);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [pendingReceived, setPendingReceived] = useState([]);
 
   const today = new Date();
 
-  const { userData, updateUserData, note, updateNotes } = useData();
+  const { userData, updateNotes } = useData();
   const {
     roundData,
     updateRoundData,
     roundInvitationData,
     loadRoundInvitationData,
   } = useRound();
-  // console.log("rounddata", roundData);
-  //const animation = useRef(null);
 
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
+
   const updateNote = async () => {
     const res = await getNoteUpdate(userData.token, userData.data.email);
     if (res > 0) {
       updateNotes(res);
     }
   };
+
   const updateRoundContext = async () => {
     const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
     updateRoundData(newRoundData); // Update context with new data
   };
 
   useEffect(() => {
-    console.log("roundData updated on home page", roundData);
+    // console.log("roundData updated on home page", roundData);
   }, [roundData]);
 
   useFocusEffect(
     useCallback(() => {
-      // console.log("call back", roundData);
-      // This code runs when the tab comes into focus
-      // console.log('Tab is in focus, userInfo:', userData);
       updateNote();
       updateRoundContext(); // Update round data when screen is focused
-
-      //console.log(userData);
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
-  // console.log("rounddata after callback", roundData);
 
   const handleAvatarPress = () => {
-    // Navigate to another screen when the Avatar is pressed
     navigation.navigate("AccountStack", { screen: "Account" });
   };
 
-  {
-    /* Round */
-  }
-  //Navigation
   const startRound = () => {
-    // Navigate to round configuration when pressed
     navigation.navigate("RoundStack", {
       screen: "RoundConfig",
       params: { emptyState: true, source: "home" },
     });
-    console.log("Home page", roundData);
+    console.log("Home page round data", roundData);
   };
 
   const handleRoundPress = (roundId) => {
-    // console.log('function, roundinfo:', round);
     navigation.navigate("RoundStack", {
       screen: "RoundInfo",
       params: { roundId },
     });
     console.log("home page roundId", roundId);
   };
-
-  // Animated Envelope
-  const [isOpened, setIsOpened] = useState(false);
-  const [showRoundDetails, setShowRoundDetails] = useState(false);
 
   const handlePress = () => {
     setIsOpened(true);
@@ -118,6 +108,7 @@ const HomeScreen = ({ navigation }) => {
     setIsOpened(false);
     console.log("isOpened", isOpened);
   };
+
   const handleRoundInfoClose = () => {
     setShowRoundDetails(!showRoundDetails);
   };
@@ -138,29 +129,44 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     triggerAnimation();
   }, []);
-  const [filteredUsers, setFilteredUsers] = useState([]);
+
+  const findPendingReceived = () => {
+    console.log("----roundInvitationData", roundInvitationData);
+    if (roundInvitationData && roundInvitationData.status === "success") {
+      const pending = roundInvitationData.data.filter(
+        (invitation) => invitation.status === "P"
+      );
+      setPendingReceived(pending);
+    }
+  };
 
   useEffect(() => {
     loadRoundInvitationData(userData.token);
   }, [userData.token]);
 
-  const loadAllReceivedNotification = async () => {
+  const loadAllReceivedNotification = () => {
     console.log("----roundInvitationData", roundInvitationData);
-    if (roundInvitationData && roundInvitationData.status === "success") {
-      // Step 1: Extract pendingSenderIds
-      const pendingSenderIds = roundInvitationData.data
-        .filter((invitation) => invitation.status === "P")
-        .map((invitation) => invitation.senderId);
+    findPendingReceived();
+  };
 
-      // console.log(pendingSenderIds);
-      // Step 2: Filter users based on pendingSenderIds
-      const filtered = roundInvitationData.users.filter((user) =>
-        pendingSenderIds.includes(user._id)
+  useEffect(() => {
+    // console.log("Updated pendingReceived:", pendingReceived);
+    if (pendingReceived && pendingReceived.length > 0) {
+      const pendingSenderIds = pendingReceived.map(
+        (invitation) => invitation.senderId
+      );
+      // console.log(pendingReceived, "--------");
+      const filtered = pendingSenderIds.map((senderId) =>
+        roundInvitationData.users.find((user) => user._id === senderId)
       );
       setFilteredUsers(filtered);
-      // console.log("filteredUsers", filteredUsers);
     }
-  };
+  }, [pendingReceived]);
+
+  useEffect(() => {
+    loadAllReceivedNotification();
+  }, []);
+
   const openRoundInvitationInfo = async (i) => {
     const thisRoundId = roundInvitationData.data[i].roundId;
     setShowRoundDetails(!showRoundDetails);
@@ -168,34 +174,46 @@ const HomeScreen = ({ navigation }) => {
     console.log(aRoundInfo, "-------------");
     setThisRoundInfo(aRoundInfo);
   };
+
   useEffect(() => {
     console.log("Updated thisRoundInfo:", thisRoundInfo);
   }, [thisRoundInfo]);
 
   const acceptRoundFriend = (i) => {
     console.log("accept round Friend,delete current notification");
-    setReceived((currentReceived) => [
+    setFilteredUsers((currentReceived) => [
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
-    const id = received[i - 1]._id;
-    reactRequest(id, "A");
+    setPendingReceived((currentReceived) => [
+      ...currentReceived.slice(0, i - 1),
+      ...currentReceived.slice(i),
+    ]);
+    const id = pendingReceived[i - 1]._id;
+    reactRequest(id, "A"); //update round invitation data
+    // show the new accepted round on it
+    loadRoundInvitationData();
   };
+
   const rejectRoundFriend = (i) => {
     console.log("reject round Friend,delete current notification");
-    setReceived((currentReceived) => [
+    setFilteredUsers((currentReceived) => [
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
-    const id = received[i - 1]._id;
+    setPendingReceived((currentReceived) => [
+      ...currentReceived.slice(0, i - 1),
+      ...currentReceived.slice(i),
+    ]);
+    const id = pendingReceived[i - 1]._id;
     reactRequest(id, "R");
   };
+
   const reactRequest = async (id, react) => {
-    const response = await reactReceivedRequest(userData.token, id, react);
+    const response = await reactRoundRequest(userData.token, id, react);
     if (!response) {
       console.log("react request failed");
     }
-    // Handle success or error response
     if (response.status == "success") {
       console.log("react request success:", response);
     } else {
@@ -347,14 +365,31 @@ const HomeScreen = ({ navigation }) => {
           </Button>
         )}
       </Flex>
-      {/* Round Notification Animation */}
-      {/* <AnimatedEnvelope></AnimatedEnvelope> */}
-      <View style={styles.envelopeContainer}>
-        <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity
+        onPress={handlePress}
+        style={[
+          styles.button,
+          {
+            position: "absolute",
+            top: height - 420,
+            left: width-350,
+            right: 'auto', 
+          },
+        ]}
+      >
+        <Icon name="envelope" size={300} color="grey" />
+      </TouchableOpacity>
+      {/* <View style={styles.envelopeContainer}> */}
+
+      {/* <TouchableOpacity onPress={handlePress}>
           <Icon name="envelope" size={50} color="#666" />
-        </TouchableOpacity>
-        <Modal isOpen={isOpened} onClose={handleClose} animationType="slide">
-          <View style={[styles.modalContent, { width: width * 1 }]}>
+        </TouchableOpacity> */}
+      <Modal isOpen={isOpened} onClose={handleClose}>
+        <Modal.Content maxWidth="400px" width="90%">
+          <Modal.CloseButton />
+          <Modal.Header>Received Invitations</Modal.Header>
+          <Modal.Body>
+            {/* <View style={[styles.modalContent, { width: width * 1 }]}> */}
             {filteredUsers.length > 0 ? (
               <Box w={"95%"}>
                 {filteredUsers.map((item, index) => {
@@ -387,47 +422,53 @@ const HomeScreen = ({ navigation }) => {
                       <HStack space="3">
                         <AntDesign
                           onPress={() => openRoundInvitationInfo(index)}
-                          name="checksquareo"
+                          name="info"
                           color="black"
                           size={30}
                         />
                         <Modal
                           isOpen={showRoundDetails}
                           onClose={handleRoundInfoClose}
-                          animationType="slide"
                         >
-                          <View
+                          <Modal.Content maxWidth="400px">
+                            <Modal.CloseButton />
+                            <Modal.Header>Round Details</Modal.Header>
+                            <Modal.Body>
+                              {/* <View
                             style={{
                               backgroundColor: "lightgray",
                               padding: 10,
                               marginTop: 20,
                             }}
-                          >
-                            {thisRoundInfo && thisRoundInfo.data && (
-                              <>
-                              <Text fontSize="md">Round Name: {thisRoundInfo.data[0].name}</Text>
+                          > */}
+                              {thisRoundInfo && thisRoundInfo.data && (
+                                <>
+                                  <Text fontSize="md">
+                                    Round Name: {thisRoundInfo.data[0].name}
+                                  </Text>
 
-                                <Text fontSize="md">
-                                  Start Date:{" "}
-                                  {new Date(
-                                    thisRoundInfo.data[0].startDate
-                                  ).toLocaleDateString(undefined, {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  })}
-                                </Text>
-                                <Text fontSize="md">
-                                  Level: {thisRoundInfo.data[0].level}
-                                </Text>
-                                <Text fontSize="md">
-                                  Maximum Capacity: {thisRoundInfo.data[0].maximum}
-                                </Text>
-                              </>
-                            )}
-                         
-                          </View>
-                          )
+                                  <Text fontSize="md">
+                                    Start Date:{" "}
+                                    {new Date(
+                                      thisRoundInfo.data[0].startDate
+                                    ).toLocaleDateString(undefined, {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                    })}
+                                  </Text>
+                                  <Text fontSize="md">
+                                    Level: {thisRoundInfo.data[0].level}
+                                  </Text>
+                                  <Text fontSize="md">
+                                    Maximum Capacity:{" "}
+                                    {thisRoundInfo.data[0].maximum}
+                                  </Text>
+                                </>
+                              )}
+                              {/* </View> */})
+                            </Modal.Body>
+                          </Modal.Content>
                         </Modal>
                         <AntDesign
                           onPress={() => acceptRoundFriend(1)}
@@ -453,14 +494,14 @@ const HomeScreen = ({ navigation }) => {
                 fontSize="2xl"
                 textAlign={"center"}
               >
-                No friends data
+                No round invitation
               </Text>
             )}
-
-            <Button onPress={handleClose}>Close</Button>
-          </View>
-        </Modal>
-      </View>
+            {/* </View> */}
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      {/* </View> */}
     </NativeBaseProvider>
   );
 };
