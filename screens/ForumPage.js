@@ -44,25 +44,8 @@ const ForumPage = ({ route, navigation }) => {
       await getForumMessages();
     };
     fetchForumMessages();
-    if (scrollViewRef.current) {
-      console.log(scrollViewRef.current)
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
-  }, [route,navigation]);
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     console.log('getin')
-  //     const fetchForumMessages = async () => {
-  //       await getForumMessages();
-  //     };
-  //     fetchForumMessages();
-  //     if (scrollViewRef.current) {
-  //       console.log(scrollViewRef.current)
-  //       scrollViewRef.current.scrollToEnd({ animated: true });
-  //     }
-  //   }, [])
-  // );
-  // let post=[]
+  }, []);
+
   const [post, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [habit, setHabit] = useState();
@@ -114,6 +97,7 @@ const ForumPage = ({ route, navigation }) => {
     return postItem;
     // setPosts(...post, postItem)
   };
+  
   const formatDate = (timestamp) => {
     // console.log(timestamp)
     const date = new Date(timestamp);
@@ -142,7 +126,7 @@ const ForumPage = ({ route, navigation }) => {
   const handleContentSizeChange = (width, height) => {
     setContentHeight(height);
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
+      scrollViewRef.current.scrollToEnd({ animated: false });
     }
   };
   return (
