@@ -377,7 +377,7 @@ const HomeScreen = ({ navigation }) => {
           },
         ]}
       >
-        <Icon name="envelope" size={300} color="grey" />
+        <Icon name="envelope" size={300} color="#606060" />
       </TouchableOpacity>
       {/* <View style={styles.envelopeContainer}> */}
 

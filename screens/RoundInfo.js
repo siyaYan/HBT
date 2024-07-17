@@ -185,7 +185,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
             showsVerticalScrollIndicator={true} // Ensures the scrollbar is visible on iOS (when scrolling)
           >
             {friendsList.map((item) =>
-              item.status !== "R" ? (
+              (item.id !== userData.data._id && item.status !== "R") ? (
                 <View key={item.id} style={{ width: "95%", marginVertical: 5 }}>
                   <View
                     style={{

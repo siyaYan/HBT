@@ -47,13 +47,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   //TODO: change it to RoundContext with index
   // const roundData = route.params.roundData;
   const roundId = route.params.roundId;
-  console.log("round config roundId", roundId);
+  // console.log("round config roundId", roundId);
   const round = roundData.data.find((r) => r._id === roundId);
   const ButtonUpdateRound = source === "home" ? "Create round" : "Update round";
 
   // console.log('roundconfig page round data:', roundData);
-  console.log("roundconfig page empty:", emptyState);
-  console.log("round config round data", round);
+  // console.log("roundconfig page empty:", emptyState);
+  // console.log("round config round data", round);
   const minDaysFromNow = new Date(); // Start with today's date
   minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
   const dataPickerMin = new Date();
@@ -89,7 +89,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   ]);
   // Update round info to RoundContext and DB
   useEffect(() => {
-    console.log("roundData updated", roundData);
+    // console.log("roundData updated", roundData);
   }, [roundData]);
 
   const validateMaxCapacity = (text) => {
@@ -121,7 +121,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         maxCapacity: maxCapacity,
         isAllowedInvite: allowOthers,
       };
-      console.log("create round", newRoundData);
+      // console.log("create round", newRoundData);
       const response = await createRound(newRoundData, userData.token);
       // console.log("create round response status", response.status);
       // console.log("create round response data", response.data);
@@ -135,7 +135,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         params: { roundId:response.data._id},
       });
     } else {
-      console.log("route", route.params);
+      // console.log("route", route.params);
       const newRoundData = {
         _id: roundId,
         userId: userData.data._id,
@@ -145,13 +145,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         maxCapacity: maxCapacity,
         isAllowedInvite: allowOthers,
       };
-      console.log("new round data", newRoundData);
+      // console.log("new round data", newRoundData);
       const response = await updateRoundInfo(userData.token, newRoundData);
-      console.log("response", response.status);
+      // console.log("response", response.status);
       // updateRoundData(newRoundData);
       // console.log("Update round",newRoundData);
       if (response.status == "success") {
-        console.log("response", response.data);
+        // console.log("response", response.data);
         // updateRoundData(response.data)
         updateRoundData(response.data);
       }
@@ -186,15 +186,20 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
   const handleDeleteRound = () => {
     setModalVisible(true);
-    console.log("modal", isModalVisible);
+    // console.log("modal", isModalVisible);
+  };
+
+  
+  const handleLeaveRound = () => {
+   //TODO
   };
 
   const handleConfirmDelete = async () => {
     setModalVisible(false);
 
     try {
-      console.log("delete round token", userData.token);
-      console.log("delete round id", roundId);
+      // console.log("delete round token", userData.token);
+      // console.log("delete round id", roundId);
       const response = await deleteRound(userData.token, roundId);
       // setTimeout(() => {
       //   console.log("delete round response", response);
@@ -205,10 +210,10 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       //response is true, if it is successful
       if (response) {
         // update round context
-        console.log("Round id that it deletes",roundId)
+        // console.log("Round id that it deletes",roundId)
         const responseDeleteRoundContext = await deleteRoundData(roundId);
-        console.log("round context: ",responseDeleteRoundContext)
-        console.log("Navigate back to home")
+        // console.log("round context: ",responseDeleteRoundContext)
+        // console.log("Navigate back to home")
         // Navigate back to Home Screen once delete the round
         navigation.navigate("MainStack", { screen: "Home" }) 
         // Show success alert
@@ -389,10 +394,10 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                               // onChange={(params) => setDate(params.date)}
                               onChange={(params) => {
                                 setDate(new Date(params.date));
-                                console.log(
-                                  "Calendar icon pressed. Start Date is:",
-                                  startDate
-                                );
+                                // console.log(
+                                //   "Calendar icon pressed. Start Date is:",
+                                //   startDate
+                                // );
                               }}
                             />
                           </Menu>
@@ -466,7 +471,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                 >
                   {ButtonUpdateRound}
                 </Button>
-                {source === "info" && (
+                {source === "info" && userData.data._id===round.userId && (
                   <Button
                     onPress={() => {
                       handleDeleteRound();
@@ -487,6 +492,29 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     }}
                   >
                     Delete Round
+                  </Button>
+                )}
+                {source === "info" && userData.data._id!==round.userId && (
+                  <Button
+                    onPress={() => {
+                      handleLeaveRound();
+                    }}
+                    mt="5"
+                    width="100%"
+                    size="lg"
+                    // bg="#ff061e"
+                    // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
+                    backgroundColor={"rgba(250,250,250,0.2)"}
+                    _pressed={{
+                      bg: "#ff061e",
+                    }}
+                    _text={{
+                      color: "#f9f8f2",
+                      fontFamily: "Regular Medium",
+                      fontSize: "lg",
+                    }}
+                  >
+                    Leave Round
                   </Button>
                 )}
                 <Modal
