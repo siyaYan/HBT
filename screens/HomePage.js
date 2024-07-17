@@ -91,13 +91,20 @@ const HomeScreen = ({ navigation }) => {
     console.log("Home page", roundData);
   };
 
-  const handleRoundPress = (roundId) => {
+  const handleRoundPress = (roundId, roundStatus) => {
     // console.log('function, roundinfo:', round);
-    navigation.navigate("RoundStack", {
-      screen: "RoundInfo",
-      params: { roundId },
-    });
-    console.log("home page roundId", roundId);
+    if(roundStatus=="A"){
+      navigation.navigate("ForumStack", {
+        screen: "ForumPage",
+         params: { id: roundId }
+      });
+    }else{
+      navigation.navigate("RoundStack", {
+        screen: "RoundInfo",
+        params: { roundId },
+      });
+      console.log("home page roundId", roundId);
+    }
   };
 
   // Animated Envelope
@@ -227,7 +234,7 @@ const HomeScreen = ({ navigation }) => {
               key={index}
               title={"Round ${index+1}"}
               onPress={() => {
-                handleRoundPress(round._id);
+                handleRoundPress(round._id, round.status);
               }}
               rounded="30"
               // shadow="1"
