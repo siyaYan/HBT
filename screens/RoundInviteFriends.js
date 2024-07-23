@@ -245,7 +245,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                 fontSize="2xl"
                 textAlign={"center"}
               >
-                No friends data
+Create your circle | No Friends Yet
               </Text>
             )}
             <Modal

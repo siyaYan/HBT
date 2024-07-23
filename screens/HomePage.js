@@ -26,6 +26,7 @@ import {
   getNoteUpdate,
   getRoundInfo,
   reactRoundRequest,
+  updateRoundStatus,
 } from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
 import {
@@ -34,6 +35,13 @@ import {
   withSpring,
 } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/FontAwesome";
+
+// Function to add days to a date  
+function calculateEndDate(date, days) {  
+  const result = new Date(date);  
+  result.setDate(result.getDate() + days);  
+  return result;  
+} 
 
 const HomeScreen = ({ navigation }) => {
   const [thisRoundInfo, setThisRoundInfo] = useState(null); // State for round info
@@ -221,6 +229,28 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  // Function to update status and date context
+  const updateStatusAndDate = async (roundId, newStatus) => {
+    try {
+      const response = await updateRoundStatus(
+        userData.token,
+        roundId,
+        newStatus
+      );
+      if (!response.ok) {
+        throw new Error("Failed to update status");
+      }
+
+      // Assuming the API doesn't return the updated data, you might need to fetch it again
+      // or handle the date update in a different way
+      // Update date context code goes here (if needed)
+
+      console.log("Status updated successfully");
+    } catch (error) {
+      console.error("Failed to update status and date:", error);
+    }
+  };
+
   return (
     <NativeBaseProvider>
       <Background />
@@ -253,6 +283,18 @@ const HomeScreen = ({ navigation }) => {
           const startDate = new Date(round.startDate);
           const timeDifference = startDate - today;
           const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+          {/* console.log("-------daysdifference",daysDifference); */}
+
+          if (daysDifference <= 0 && round.status !== "A") {
+            //update the status
+            updateStatusAndDate(round._id, "A");
+          }
+          const endDate = calculateEndDate(startDate,parseInt(round.level, 10));
+          const endTimeDifference =  Math.ceil((endDate - today)/ (1000 * 3600 * 24));
+          if (endTimeDifference <= 0 && round.status === "A" && round.status !== "F" && round.status !== "C") {
+            updateStatusAndDate(round._id, "F");
+          }
+          {/* console.log("-------enddaysdifference",endTimeDifference); */}
 
           const prefix = timeDifference > 0 ? "D-" : "D+";
           const formattedDifference = `${prefix}${Math.abs(
@@ -372,8 +414,8 @@ const HomeScreen = ({ navigation }) => {
           {
             position: "absolute",
             top: height - 420,
-            left: width-350,
-            right: 'auto', 
+            left: width - 350,
+            right: "auto",
           },
         ]}
       >

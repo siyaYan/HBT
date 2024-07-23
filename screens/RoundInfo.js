@@ -52,17 +52,10 @@ const RoundInfoScreen = ({ route, navigation }) => {
     return null; // Render nothing if round is not found
   }
 
-  // roundData.roundFriends
-  // Read only
-  // Feature: send notification again
-  // const friendsList = [
-  //   { id: "1", name: "John Doe" },
-  //   { id: "2", name: "Jane Smith" },
-  //   { id: "3", name: "William Johnson" },
-  //   // Add more friends as needed
-  // ];
+
   const friendsList = round.roundFriends;
-  console.log("round friend list:", round.roundFriends);
+  // console.log("round friend list:", round.roundFriends);
+
   // Navigate to invite friend page
   const inviteFriend = () => {
     navigation.navigate("RoundStack", {

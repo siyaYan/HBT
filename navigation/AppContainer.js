@@ -70,7 +70,7 @@ export default function AppContainer() {
           // console.log(userData);
           setIsAuthenticated(true);
           navigationRef.current?.navigate("MainStack", { screen: "Home" });
-          console.log('tt____________')
+          // console.log('tt____________')
           // console.log(response.token);
         }
       } else {

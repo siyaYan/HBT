@@ -31,8 +31,34 @@ import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 
+// Function to add days to a date
+function calculateEndDate(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function calculateDatePickerMin(activeRound) {
+  if (activeRound) {
+    const endDatePlus1 = calculateEndDate(
+      activeRound.startDate,
+      parseInt(activeRound.level, 10) + 1
+    );
+    // console.log("End date+1----", endDatePlus1);
+
+    return endDatePlus1;
+  } else {
+    const datePickerMin = new Date();
+    const minDaysFromNow = new Date(); // Start with today's date
+    minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
+    datePickerMin.setDate(minDaysFromNow.getDate() - 1);
+    return datePickerMin;
+  }
+}
+
 const RoundConfigurationScreen = ({ route, navigation }) => {
-  const { roundData, updateRoundData, insertRoundData,deleteRoundData } = useRound();
+  const { roundData, updateRoundData, insertRoundData, deleteRoundData } =
+    useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -40,6 +66,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     maxCapacity: false,
     isAllowed: false,
   });
+  const [startDateError, setStartDateError] = useState("");
+  const activeRound = roundData.data.find((r) => r.status === "A");
+
   // Initialization
   const { userData } = useData();
   const emptyState = route.params.emptyState;
@@ -54,15 +83,22 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   // console.log('roundconfig page round data:', roundData);
   // console.log("roundconfig page empty:", emptyState);
   // console.log("round config round data", round);
-  const minDaysFromNow = new Date(); // Start with today's date
-  minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
-  const dataPickerMin = new Date();
-  dataPickerMin.setDate(minDaysFromNow.getDate() - 1);
+  const datePickerMin = calculateDatePickerMin(activeRound);
+
   const [startDate, setDate] = useState(
-    emptyState ? minDaysFromNow : (round? new Date(round.startDate):minDaysFromNow)
+    emptyState
+      ? datePickerMin
+      : round
+      ? new Date(round.startDate)
+      : datePickerMin
   );
-  const [roundName, setRoundName] = useState(emptyState ? null : (round?round.name:null));
-  const [level, setLevel] = useState(emptyState ? null : (round?round.level:null));
+
+  const [roundName, setRoundName] = useState(
+    emptyState ? null : round ? round.name : null
+  );
+  const [level, setLevel] = useState(
+    emptyState ? null : round ? round.level : null
+  );
   const [maxCapacity, setMaxCapacity] = useState(() => {
     if (emptyState) {
       return "10";
@@ -70,7 +106,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     return round.maximum != null ? round.maximum.toString() : "10";
   });
   const [allowOthers, setAllowOthers] = useState(
-    emptyState ? true : (round?round.isAllowedInvite:true)
+    emptyState ? true : round ? round.isAllowedInvite : true
   );
 
   // Toggle button
@@ -110,6 +146,36 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       });
     }
   };
+  const validateDate = (date) => {
+    // check if there is any existing active round, if yes, compare to the round end date
+    const activeRound = roundData.data.find((r) => r.status === "A");
+    // yes, get the round end date
+    if (activeRound) {
+      const endDate = calculateEndDate(
+        activeRound.startDate,
+        parseInt(activeRound.level, 10)
+      );
+      // compare if the new round start date is before the current active round end date
+      if (endDate > date) {
+        return "Only one can be active round at a time.";
+      }
+    }
+    // no, return '';
+    return "";
+  };
+  const handleDateChange = (params) => {
+    if (params.date) {
+      const newDate = new Date(params.date);
+      const validationError = validateDate(newDate);
+      if (validationError) {
+        setStartDateError(validationError);
+      } else {
+        setStartDateError("");
+        setDate(new Date(params.date));
+      }
+    }
+    console.log("Calendar icon pressed. Start Date is:", startDate);
+  };
 
   const handleUpdateRound = async () => {
     if (emptyState) {
@@ -128,11 +194,11 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       // console.log("create round response", response);
       insertRoundData(response.data);
       // console.log("after creation", roundData);
-      // navigation.navigate("MainStack", { screen: "Home" }); 
+      // navigation.navigate("MainStack", { screen: "Home" });
       // Navigate back to round info page once created
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { roundId:response.data._id},
+        params: { roundId: response.data._id },
       });
     } else {
       // console.log("route", route.params);
@@ -189,9 +255,8 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     // console.log("modal", isModalVisible);
   };
 
-  
   const handleLeaveRound = () => {
-   //TODO
+    //TODO
   };
 
   const handleConfirmDelete = async () => {
@@ -206,7 +271,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       // }, 2000);
 
       // navigation.goBack();
-      
+
       //response is true, if it is successful
       if (response) {
         // update round context
@@ -215,14 +280,14 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         // console.log("round context: ",responseDeleteRoundContext)
         // console.log("Navigate back to home")
         // Navigate back to Home Screen once delete the round
-        navigation.navigate("MainStack", { screen: "Home" }) 
+        navigation.navigate("MainStack", { screen: "Home" });
         // Show success alert
         // Alert.alert(
         //   "Success",
         //   "Round deleted successfully",
         //   [{ text: "OK", onPress: () => navigation.navigate("MainStack", { screen: "Home" }) }]
         // );
-      }else {
+      } else {
         // Handle case when response is not as expected
         Alert.alert("Error", "Failed to delete the round");
       }
@@ -353,11 +418,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                           color: "#191919",
                         }}
                       >
-                        {startDate?startDate.toLocaleDateString(undefined, {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        }):''}
+                        {startDate
+                          ? startDate.toLocaleDateString(undefined, {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })
+                          : ""}
                       </Text>
                     </VStack>
 
@@ -390,8 +457,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                               mode="single"
                               date={startDate}
                               // minDate={minDaysFromNow}
-                              minDate={dataPickerMin}
-                              // onChange={(params) => setDate(params.date)}
+                              minDate={datePickerMin}
                               onChange={(params) => {
                                 setDate(new Date(params.date));
                                 // console.log(
@@ -400,6 +466,11 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                                 // );
                               }}
                             />
+                            {/* {startDateError && (
+                              <Text style={{ color: "red", marginTop: 10 }}>
+                                {startDateError}
+                              </Text>
+                            )} */}
                           </Menu>
                         </Box>
                       </ZStack>
@@ -471,7 +542,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                 >
                   {ButtonUpdateRound}
                 </Button>
-                {source === "info" && userData.data._id===round.userId && (
+                {source === "info" && userData.data._id === round.userId && (
                   <Button
                     onPress={() => {
                       handleDeleteRound();
@@ -494,7 +565,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     Delete Round
                   </Button>
                 )}
-                {source === "info" && userData.data._id!==round.userId && (
+                {source === "info" && userData.data._id !== round.userId && (
                   <Button
                     onPress={() => {
                       handleLeaveRound();
