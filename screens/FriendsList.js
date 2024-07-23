@@ -114,15 +114,17 @@ const FriendsScreen = ({ navigation }) => {
       const pendingRes = response.data.filter((item) => item.status == "P");
       console.log('update:',pendingRes, response.users);
       if (pendingRes.length > 0) {
-        pendingRes.forEach((data, index) => {
-          const newFriend = {
-            _id: data._id,
-            email: response.users[index].email,
-            profileImageUrl: response.users[index].profileImageUrl,
-            username: response.users[index].username,
-            nickname: response.users[index].nickname,
-          };
-          sendFriends[index] = newFriend;
+        response.data.map((data, index) => {
+          if(data.status == "P"){
+            const newFriend = {
+              _id: data._id,
+              email: response.users[index].email,
+              profileImageUrl: response.users[index].profileImageUrl,
+              username: response.users[index].username,
+              nickname: response.users[index].nickname,
+            };
+            sendFriends.push(newFriend)
+          }
         });
       }
      console.log('update:',sendFriends);
@@ -330,7 +332,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="received"
               />
               <Text fontFamily={"Regular"} fontSize="lg">
-                {received.length}
+                {received.length>0?received.length:""}
               </Text>
             </HStack>
             <Box
@@ -454,7 +456,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="sent"
               />
               <Text fontFamily={"Regular"} fontSize="lg">
-                {sent.length}
+                {sent.length>0?sent.length:''}
               </Text>
             </HStack>
             <Box
@@ -576,7 +578,7 @@ const FriendsScreen = ({ navigation }) => {
                   alt="friends"
                 />
                 <Text fontFamily={"Regular"} fontSize="lg">
-                  {friends.length}
+                  {friends.length>0? friends.length : ""}
                 </Text>
               </HStack>
               {/* <FontAwesome5

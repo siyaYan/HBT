@@ -10,8 +10,8 @@ const RoundHabit= ({ route, navigation }) => {
   const { userData } = useData();
   const { roundData } = useRound();
   const handleSubmit = async () => {
-    // console.log(userData,roundData, text);
-    const res= await updateRoundhabit(userData.token, roundData._id,text);
+    // console.log( roundData.data[0]._id);
+    const res= await updateRoundhabit(userData.token, roundData.data[0]._id,text);
   };
   return (
     <View style={styles.container}>

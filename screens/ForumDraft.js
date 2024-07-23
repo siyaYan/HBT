@@ -5,24 +5,27 @@ import React, { useRef } from "react";
 import Background from "../components/Background";
 import { addPost } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
+import { useRound } from "../context/RoundContext";
 // import ForumPage from "../screens/ForumPage";
 
 const ForumDraft = ({ navigation, route }) => {
   const { res } = route.params;
-  const { userData, updateUserData } = useData();
+  const { userData } = useData();
+  const { roundData } = useRound();
   const [post, setPost] = useState({image:route.params.res})
   useEffect(() => {
-    console.log(res, "get image---------------");
+    console.log(res, "add new post");
   }, []);
   const handlePost = async ()=>{
     setPost({...post, image:res})
-    //TODO:
+    const activeRound = roundData.data.filter(item=>item.status === "A")
+    console.log(activeRound)
     //get RoundId
-    const id='667f56c8829aba44891d7615'
+    const id=activeRound[0]._id
     const res=await addPost(id,post,userData.token)
     // console.log(ttt)
     if(res.status=='success'){
-      navigation.navigate('ForumStack', { screen: 'ForumPage' });
+      navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: id }});
     }
   }
   return (
