@@ -42,7 +42,7 @@ function calculateDatePickerMin(activeRound) {
   if (activeRound) {
     const endDatePlus1 = calculateEndDate(
       activeRound.startDate,
-      parseInt(activeRound.level, 10) + 1
+      parseInt(activeRound.level, 10)
     );
     // console.log("End date+1----", endDatePlus1);
 
@@ -84,13 +84,16 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   // console.log("roundconfig page empty:", emptyState);
   // console.log("round config round data", round);
   const datePickerMin = calculateDatePickerMin(activeRound);
-
+  const datePickerMinPlus1 = new Date(datePickerMin);
+  datePickerMinPlus1.setDate(datePickerMinPlus1.getDate() + 1);
+  // console.log("date picker ----", datePickerMin);
+  // console.log("datepicker +1----", datePickerMinPlus1);
   const [startDate, setDate] = useState(
     emptyState
-      ? datePickerMin
+      ? datePickerMinPlus1
       : round
       ? new Date(round.startDate)
-      : datePickerMin
+      : datePickerMinPlus1
   );
 
   const [roundName, setRoundName] = useState(
