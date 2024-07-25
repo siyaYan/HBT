@@ -76,18 +76,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   //TODO: change it to RoundContext with index
   // const roundData = route.params.roundData;
   const roundId = route.params.roundId;
-  // console.log("round config roundId", roundId);
   const round = roundData.data.find((r) => r._id === roundId);
   const ButtonUpdateRound = source === "home" ? "Create round" : "Update round";
 
-  // console.log('roundconfig page round data:', roundData);
-  // console.log("roundconfig page empty:", emptyState);
-  // console.log("round config round data", round);
   const datePickerMin = calculateDatePickerMin(activeRound);
   const datePickerMinPlus1 = new Date(datePickerMin);
   datePickerMinPlus1.setDate(datePickerMinPlus1.getDate() + 1);
-  // console.log("date picker ----", datePickerMin);
-  // console.log("datepicker +1----", datePickerMinPlus1);
+
   const [startDate, setDate] = useState(
     emptyState
       ? datePickerMinPlus1
@@ -126,6 +121,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     { label: "35", value: "35" },
     { label: "66", value: "66" },
   ]);
+  // Delete round
+  const [isModalVisible, setModalVisible] = useState(false);
+
   // Update round info to RoundContext and DB
   useEffect(() => {
     // console.log("roundData updated", roundData);
@@ -250,16 +248,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
     handleUpdateRound();
   };
-  // Delete round
-  const [isModalVisible, setModalVisible] = useState(false);
 
   const handleDeleteRound = () => {
     setModalVisible(true);
-    // console.log("modal", isModalVisible);
-  };
-
-  const handleLeaveRound = () => {
-    //TODO
   };
 
   const handleConfirmDelete = async () => {
@@ -280,7 +271,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         // update round context
         // console.log("Round id that it deletes",roundId)
         const responseDeleteRoundContext = await deleteRoundData(roundId);
-        // console.log("round context: ",responseDeleteRoundContext)
+        // console.log("round context: ",responseDeleteRoundContext);
         // console.log("Navigate back to home")
         // Navigate back to Home Screen once delete the round
         navigation.navigate("MainStack", { screen: "Home" });
@@ -527,7 +518,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     color={allowOthers ? "green" : "gray"}
                   />
                 </FormControl>
-
                 <Button
                   onPress={() => {
                     handleValidateUpload();
@@ -545,11 +535,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                 >
                   {ButtonUpdateRound}
                 </Button>
-                {source === "info" && userData.data._id === round.userId && (
+                {source === "info" && (
                   <Button
                     onPress={() => {
                       handleDeleteRound();
                     }}
+                    
+        
                     mt="5"
                     width="100%"
                     size="lg"
@@ -568,7 +560,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     Delete Round
                   </Button>
                 )}
-                {source === "info" && userData.data._id !== round.userId && (
+                {/* {source === "info" && userData.data._id !== round.userId && (
                   <Button
                     onPress={() => {
                       handleLeaveRound();
@@ -590,7 +582,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   >
                     Leave Round
                   </Button>
-                )}
+                )} */}
                 <Modal
                   isOpen={isModalVisible}
                   onClose={handleCancelDelete}

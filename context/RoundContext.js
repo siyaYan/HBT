@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getRoundInfo,getRoundInvitation } from "../components/Endpoint";
+import { getRoundInfo, getRoundInvitation } from "../components/Endpoint";
 
 const RoundContext = createContext();
 
@@ -11,7 +11,6 @@ export const useRound = () => {
 export const RoundProvider = ({ children }) => {
   const [roundData, setRoundData] = useState([]);
   const [roundInvitationData, setRoundInvitationData] = useState(null);
-
 
   // Load round data from AsyncStorage and fetch from endpoint on component mount
   useEffect(() => {
@@ -62,7 +61,7 @@ export const RoundProvider = ({ children }) => {
         const updatedData = prevRoundData.data.map((round) =>
           round._id === updatedRound._id ? { ...round, ...updatedRound } : round
         );
-        // console.log("updateRoundData",updatedData);
+        console.log("updateRoundData", updatedRound);
         return { ...prevRoundData, data: updatedData };
       } else {
         console.error(
@@ -74,7 +73,7 @@ export const RoundProvider = ({ children }) => {
   };
   //add new to the round friend list (existing round)
   const insertRoundFriendList = (roundId, newFriend) => {
-    console.log("inser new friend in round context", newFriend);
+    console.log("insert new friend in round context", newFriend);
     setRoundData((prevRoundData) => {
       if (prevRoundData && prevRoundData.data) {
         const updatedData = prevRoundData.data.map((round) => {
@@ -106,35 +105,51 @@ export const RoundProvider = ({ children }) => {
   };
 
   // delete a round
-  const deleteRoundData = (roundId) => {
+  const deleteRoundData = async (roundId) => {
+    try {
+      const newData = roundData.data.filter((round) => round._id !== roundId);
+
+      await AsyncStorage.setItem(
+        "roundData",
+        JSON.stringify({ ...roundData, data: newData })
+      );
+
+      setRoundData({ ...roundData, data: newData });
+    } catch (error) {
+      console.error("Error deleting round data:", error);
+    }
+  };
+  const deleteRoundFriend = async (roundId, updatedFriends) => {
     setRoundData((prevRoundData) => {
-      if (prevRoundData && prevRoundData.data) {
-        const updatedData = prevRoundData.data.filter(
-          (round) => round._id !== roundId
-        );
-        AsyncStorage.setItem(
-          "roundData",
-          JSON.stringify({ ...prevRoundData, data: updatedData })
-        );
-        return { ...prevRoundData, data: updatedData };
-      } else {
+      if (!prevRoundData || !prevRoundData.data) {
         console.error(
           "Previous round data is undefined or does not contain data property"
         );
         return prevRoundData;
       }
+      const updatedData = prevRoundData.data.map((round) => {
+        if (round.id === roundId) {
+          return {
+            ...round,
+            friends: updatedFriends,
+          };
+        }
+        return round;
+      });
+
+      return { ...prevRoundData, data: updatedData };
     });
   };
   // round invitation data
- // Fetch and set round invitation data
- const loadRoundInvitationData = async (token) => {
-  try {
-    const data = await getRoundInvitation(token);
-    setRoundInvitationData(data);
-  } catch (error) {
-    console.error("Error loading round invitation data:", error);
-  }
-};
+  // Fetch and set round invitation data
+  const loadRoundInvitationData = async (token) => {
+    try {
+      const data = await getRoundInvitation(token);
+      setRoundInvitationData(data);
+    } catch (error) {
+      console.error("Error loading round invitation data:", error);
+    }
+  };
   return (
     <RoundContext.Provider
       value={{
@@ -143,10 +158,10 @@ export const RoundProvider = ({ children }) => {
         updateRounds,
         insertRoundData,
         deleteRoundData,
+        deleteRoundFriend,
         insertRoundFriendList,
         roundInvitationData,
         loadRoundInvitationData,
-
       }}
     >
       {children}

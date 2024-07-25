@@ -71,12 +71,15 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const updateRoundContext = async () => {
+    console.log("home page round context",roundData.data);
     const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
     updateRoundData(newRoundData); // Update context with new data
   };
 
   useEffect(() => {
     // console.log("roundData updated on home page", roundData);
+    // updateRoundContext(); // Update round data when screen is focused
+
   }, [roundData]);
 
   useFocusEffect(

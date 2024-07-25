@@ -780,7 +780,8 @@ export async function getRoundInfo(token, Id) {
       {
         method: "GET",
         headers: {
-          "Content-Type": "multipart/form-data",
+          // "Content-Type": "multipart/form-data",
+          "Content-Type":"application/json",
           Authorization: `Bearer ${token}`,
         },
       }
@@ -803,7 +804,7 @@ export async function getRoundInfo(token, Id) {
 export async function updateRoundInfo(token, newRoundData) {
   try {
     // console.log("round id",newRoundData._id)
-    console.log("Pass to Endpoint", newRoundData);
+    // console.log("Pass to Endpoint", newRoundData);
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/round/${newRoundData._id}`,
       {
@@ -870,6 +871,40 @@ export async function updateRoundStatus(token, roundId, newStatus) {
       Alert.alert("Success", "Status updated successfully");  
     } else {  
       Alert.alert("Unsuccessful", data.message || "Failed to update status");  
+    }  
+    console.log("Patch endpoint", data);  
+    return data; // Return the data for further processing if needed  
+  } catch (error) {  
+    console.error("Failed to connect to server:", error);  
+    Alert.alert("Unsuccessful", "Cannot connect to server");  
+  }  
+}
+
+// Chapter 4: leave round
+export async function leaveRound(token, roundId) {  
+  try {  
+    console.log("Leaving round", roundId);  
+    const response = await fetch(  
+      `http://3.27.94.77:8000/habital/v1/round/leave/${roundId}`,  
+      {  
+        method: "PATCH",  
+        headers: {  
+          "Content-Type": "application/json",  
+          Authorization: `Bearer ${token}`,  
+        },    
+      }  
+    );  
+  
+    if (!response.ok) {  
+      const errorText = await response.text();  
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);  
+    }  
+  
+    const data = await response.json();  
+    if (data.status === "success") {  
+      Alert.alert("Success", "Leave round successfully");  
+    } else {  
+      Alert.alert("Unsuccessful", data.message || "Failed to leave round");  
     }  
     console.log("Patch endpoint", data);  
     return data; // Return the data for further processing if needed  
@@ -1012,7 +1047,7 @@ export async function getRoundInvitation(token, receiver = "receiver") {
       }
     );
     const data = await response.json();
-    console.log("getroundInvitation -----", data);
+    // console.log("getroundInvitation -----", data);
     return data;
   } catch (e) {
     console.error("Unsuccessful in connect server:", error);
