@@ -18,7 +18,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import { useState, useEffect } from "react";
-import { leaveRound } from "../components/Endpoint";
+import { leaveRound,getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
@@ -31,7 +31,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
     return null; // Render nothing while navigating back
   }
 
-  const { roundData, deleteRoundFriend,deleteRoundData } = useRound();
+  const { roundData, updateRounds } = useRound();
   // console.log("round context", roundData);
 
   const round = roundData.data.find((r) => r._id === roundId);
@@ -40,7 +40,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   // Update round info to RoundContext and DB
   useEffect(() => {
     // console.log("roundData updated___________", roundData);
-  }, [roundData,deleteRoundFriend]);
+  }, [roundData]);
 
   useEffect(() => {
     if (!round) {
@@ -56,6 +56,15 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const [isLeaveModalVisible, setLeaveModalVisible] = useState(false);
   const handleLeaveRound = () => {
     setLeaveModalVisible(true);
+  };
+  const updateRoundContext = async () => {
+    console.log("home page round context", roundData.data);
+    const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
+    // updateRoundData(newRoundData); // Update context with new data
+    console.log("home page --- round context",newRoundData);
+    updateRounds(newRoundData);
+    // const {roundData} = useRound();
+    console.log("-----home page round context", roundData.data);
   };
   const handleConfirmLeave = async () => {
     setLeaveModalVisible(false);
@@ -73,15 +82,19 @@ const RoundInfoScreen = ({ route, navigation }) => {
         //   roundId,
         //   userData.data._id
         // );
-        deleteRoundFriend(response.data._id,response.data.roundFriends);
-        roundData.data.map((round) => {
-          if (round._id === roundId) {
-            console.log(
-              "round context on round info: ",
-              round.roundFriends
-            );
-          }});
-
+        // const newRoundData = await getRoundInfo(userData.token, userData.data._id); // Fetch latest round data
+        // console.log("round info page, get new round info again--",newRoundData);
+        // // const responseLeaveRoundContext = await deleteRoundFriend(response.data._id,userData.data._id);
+        // // console.log("round context move back to round info page",responseLeaveRoundContext);
+        // newRoundData.data.map((round) => {
+        //   if (round._id === roundId) {
+        //     console.log("roundId",round._id,
+        //       "round context on round info: ",
+        //       round.roundFriends
+        //     );
+        //   }});
+        //   const r = await updateRounds(newRoundData);
+        updateRoundContext();
         navigation.navigate("MainStack", { screen: "Home" });
       } else {
         // Handle case when response is not as expected

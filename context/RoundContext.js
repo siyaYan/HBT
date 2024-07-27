@@ -100,7 +100,7 @@ export const RoundProvider = ({ children }) => {
 
   // Update the entire roundData array
   const updateRounds = (newRounds) => {
-    // console.log("round context",newRounds);
+    console.log("round context------",newRounds);
     setRoundData(newRounds);
   };
 
@@ -119,27 +119,48 @@ export const RoundProvider = ({ children }) => {
       console.error("Error deleting round data:", error);
     }
   };
-  const deleteRoundFriend = async (roundId, updatedFriends) => {
-    setRoundData((prevRoundData) => {
-      if (!prevRoundData || !prevRoundData.data) {
-        console.error(
-          "Previous round data is undefined or does not contain data property"
-        );
-        return prevRoundData;
+  // delete round friend/leave round
+const deleteRoundFriend = async (roundId, friendIdToRemove) => {
+  setRoundData(prevRoundData => {
+      if (prevRoundData && prevRoundData.data) {
+          const updatedData = prevRoundData.data.map(round => {
+              if (round._id === roundId) {
+                  const updatedRound = {
+                      ...round,
+                      roundFriends: round.roundFriends.filter(friend => friend.id !== friendIdToRemove),
+                  };
+                  console.log("round context updatedRound",updatedRound.roundFriends);
+                  return updatedRound;
+              } else {
+                  return round;
+              }
+          });
+          const updatedRoundData = { ...prevRoundData, data: updatedData };
+          // Update the state with the modified data
+          updatedRoundData.data.map((round) => {
+            if (round._id === roundId) {
+              console.log("roundId",round._id,
+                "round context on round context after update: ",
+                round.roundFriends
+              );
+            }});
+            console.log("round context updated before return",updatedRoundData);
+          return updatedRoundData;
+      } else {
+          console.error("Previous round data is undefined or does not contain data property");
+          return prevRoundData;
       }
-      const updatedData = prevRoundData.data.map((round) => {
-        if (round.id === roundId) {
-          return {
-            ...round,
-            friends: updatedFriends,
-          };
-        }
-        return round;
-      });
+  });
 
-      return { ...prevRoundData, data: updatedData };
-    });
-  };
+//   // Update AsyncStorage outside the state update function
+//   AsyncStorage.setItem("roundData", JSON.stringify(roundData))
+//       .then(() => {
+//           console.log("Round data updated in AsyncStorage");
+//       })
+//       .catch(error => {
+//           console.error("Error updating round data in AsyncStorage:", error);
+//       });
+};
   // round invitation data
   // Fetch and set round invitation data
   const loadRoundInvitationData = async (token) => {

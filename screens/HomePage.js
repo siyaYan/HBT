@@ -36,12 +36,12 @@ import {
 } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-// Function to add days to a date  
-function calculateEndDate(date, days) {  
-  const result = new Date(date);  
-  result.setDate(result.getDate() + days);  
-  return result;  
-} 
+// Function to add days to a date
+function calculateEndDate(date, days) {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
 
 const HomeScreen = ({ navigation }) => {
   const [thisRoundInfo, setThisRoundInfo] = useState(null); // State for round info
@@ -58,6 +58,7 @@ const HomeScreen = ({ navigation }) => {
     updateRoundData,
     roundInvitationData,
     loadRoundInvitationData,
+    updateRounds,
   } = useRound();
 
   // Get screen dimensions
@@ -70,22 +71,16 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const updateRoundContext = async () => {
-    console.log("home page round context",roundData.data);
-    const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
-    updateRoundData(newRoundData); // Update context with new data
-  };
-
-  useEffect(() => {
-    // console.log("roundData updated on home page", roundData);
-    // updateRoundContext(); // Update round data when screen is focused
-
-  }, [roundData]);
+  // useEffect(() => {
+  //   // Function to run when entering the page
+  //   console.log("-------------Enter page--------");
+  //   updateRoundContext(); // Update round data when screen is focused
+  // }, []); // Empty dependency array means this effect runs only once when the component mounts
 
   useFocusEffect(
     useCallback(() => {
       updateNote();
-      updateRoundContext(); // Update round data when screen is focused
+      // updateRoundContext(); // Update round data when screen is focused
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
 
@@ -286,18 +281,32 @@ const HomeScreen = ({ navigation }) => {
           const startDate = new Date(round.startDate);
           const timeDifference = startDate - today;
           const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
-          {/* console.log("-------daysdifference",daysDifference); */}
+          {
+            /* console.log("-------daysdifference",daysDifference); */
+          }
 
           if (daysDifference <= 0 && round.status !== "A") {
             //update the status
             updateStatusAndDate(round._id, "A");
           }
-          const endDate = calculateEndDate(startDate,parseInt(round.level, 10));
-          const endTimeDifference =  Math.ceil((endDate - today)/ (1000 * 3600 * 24));
-          if (endTimeDifference <= 0 && round.status === "A" && round.status !== "F" && round.status !== "C") {
+          const endDate = calculateEndDate(
+            startDate,
+            parseInt(round.level, 10)
+          );
+          const endTimeDifference = Math.ceil(
+            (endDate - today) / (1000 * 3600 * 24)
+          );
+          if (
+            endTimeDifference <= 0 &&
+            round.status === "A" &&
+            round.status !== "F" &&
+            round.status !== "C"
+          ) {
             updateStatusAndDate(round._id, "F");
           }
-          {/* console.log("-------enddaysdifference",endTimeDifference); */}
+          {
+            /* console.log("-------enddaysdifference",endTimeDifference); */
+          }
 
           const prefix = timeDifference > 0 ? "D-" : "D+";
           const formattedDifference = `${prefix}${Math.abs(

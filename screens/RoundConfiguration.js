@@ -540,8 +540,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     onPress={() => {
                       handleDeleteRound();
                     }}
-                    
-        
                     mt="5"
                     width="100%"
                     size="lg"
