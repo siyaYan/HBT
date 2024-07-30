@@ -43,6 +43,22 @@ function calculateEndDate(date, days) {
   return result;
 }
 
+// Function to check if round is accepted/owned by the current user
+function isRoundAccepted(round, currentUserId) {
+  if (round.userId === currentUserId) {
+    return true;
+  } else {
+    const hasId =
+      round.roundFriends.find((item) => (item.id === currentUserId && item.status==="A")) !==
+      undefined;
+    if (hasId) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
 const HomeScreen = ({ navigation }) => {
   const [thisRoundInfo, setThisRoundInfo] = useState(null); // State for round info
   const [isOpened, setIsOpened] = useState(false);
@@ -61,6 +77,7 @@ const HomeScreen = ({ navigation }) => {
     updateRounds,
   } = useRound();
 
+  const activeRounds = roundData.data.filter(round => isRoundAccepted(round,userData.data._id));
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
 
@@ -277,6 +294,10 @@ const HomeScreen = ({ navigation }) => {
       {/* Linda Sprint 4 Show round/s*/}
       <Flex direction="column" alignItems="center">
         {roundData?.data?.map((round, index) => {
+          // Add condition to check the round if owner or active participant
+          if(isRoundAccepted(round,userData.data._id))
+          {
+          
           //<View key={round._id} >
           const startDate = new Date(round.startDate);
           const timeDifference = startDate - today;
@@ -388,10 +409,10 @@ const HomeScreen = ({ navigation }) => {
               )}
             </Button>
             // </View>
-          );
+          );}
         })}
         {/* Linda Sprint 4 Start a round*/}
-        {(!roundData.data || roundData?.data?.length < 2) && (
+        {(!roundData.data || activeRounds.length < 2) && (
           <Button
             onPress={startRound}
             rounded="30"
@@ -413,7 +434,7 @@ const HomeScreen = ({ navigation }) => {
               bg: "#e5f5e5",
             }}
           >
-            {roundData?.data?.length === 1
+            {activeRounds.length === 1
               ? "Plan the next round"
               : "Start a round"}
           </Button>
