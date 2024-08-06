@@ -268,10 +268,11 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
       //response is true, if it is successful
       if (response) {
+        // console.log("round context1: ",roundData);
         // update round context
         // console.log("Round id that it deletes",roundId)
         const responseDeleteRoundContext = await deleteRoundData(roundId);
-        // console.log("round context: ",responseDeleteRoundContext);
+        console.log("round context2: ",responseDeleteRoundContext);
         // console.log("Navigate back to home")
         // Navigate back to Home Screen once delete the round
         navigation.navigate("MainStack", { screen: "Home" });
