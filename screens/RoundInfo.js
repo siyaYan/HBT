@@ -18,7 +18,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import { useState, useEffect } from "react";
-import { leaveRound,getRoundInfo } from "../components/Endpoint";
+import { leaveRound, getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
@@ -33,6 +33,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
 
   const { roundData, updateRounds } = useRound();
   // console.log("round context", roundData);
+
 
   const round = roundData.data.find((r) => r._id === roundId);
   console.log("roundinfo page round data:", round);
@@ -61,7 +62,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
     console.log("home page round context", roundData.data);
     const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
     // updateRoundData(newRoundData); // Update context with new data
-    console.log("home page --- round context",newRoundData);
+    console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
     // const {roundData} = useRound();
     console.log("-----home page round context", roundData.data);
@@ -70,13 +71,12 @@ const RoundInfoScreen = ({ route, navigation }) => {
     setLeaveModalVisible(false);
     roundData.data.map((round) => {
       if (round._id === roundId) {
-        console.log("---- before leave round: ",
-          round.roundFriends
-        );
-      }});
+        console.log("---- before leave round: ", round.roundFriends);
+      }
+    });
     try {
       const response = await leaveRound(userData.token, roundId);
-      console.log("leave round response",response.data.roundFriends);
+      console.log("leave round response", response.data.roundFriends);
       if (response) {
         // const responseDeleteRoundContext = await deleteRoundFriend(
         //   roundId,

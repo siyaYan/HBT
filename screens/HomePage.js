@@ -65,7 +65,7 @@ const HomeScreen = ({ navigation }) => {
   const [showRoundDetails, setShowRoundDetails] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [pendingReceived, setPendingReceived] = useState([]);
-
+ 
   const today = new Date();
 
   const { userData, updateNotes } = useData();
@@ -75,12 +75,23 @@ const HomeScreen = ({ navigation }) => {
     roundInvitationData,
     loadRoundInvitationData,
     updateRounds,
+    activeRoundData,
   } = useRound();
 
-  const activeRounds = roundData.data.filter(round => isRoundAccepted(round,userData.data._id));
+  console.log("active round---",activeRoundData);
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
-
+  const updateRoundContext = async () => {
+    console.log("home page round context", roundData.data);
+    const newRoundData = await getRoundInfo(); // Fetch latest round data
+    // updateRoundData(newRoundData); // Update context with new data
+    console.log("home page --- round context", newRoundData);
+    updateRounds(newRoundData);
+    // const {roundData} = useRound();
+    console.log("-----home page round context", roundData.data);
+    // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
+    console.log("active round----",activeRoundData);
+  };
   const updateNote = async () => {
     const res = await getNoteUpdate(userData.token, userData.data.email);
     if (res > 0) {
@@ -88,11 +99,11 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  // useEffect(() => {
-  //   // Function to run when entering the page
-  //   console.log("-------------Enter page--------");
-  //   updateRoundContext(); // Update round data when screen is focused
-  // }, []); // Empty dependency array means this effect runs only once when the component mounts
+  useEffect(() => {
+    // Function to run when entering the page
+    console.log("-------------Enter page--------");
+    updateRoundContext(); // Update round data when screen is focused
+  }, []); // Empty dependency array means this effect runs only once when the component mounts
 
   useFocusEffect(
     useCallback(() => {
@@ -122,8 +133,9 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handlePress = () => {
+    console.log("UserData",userData);
     setIsOpened(true);
-    console.log("isOpened", isOpened);
+    // console.log("isOpened", isOpened);
     loadAllReceivedNotification();
   };
 
@@ -215,7 +227,7 @@ const HomeScreen = ({ navigation }) => {
     const id = pendingReceived[i - 1]._id;
     reactRequest(id, "A"); //update round invitation data
     // show the new accepted round on it
-    loadRoundInvitationData();
+    updateRoundContext();
   };
 
   const rejectRoundFriend = (i) => {
@@ -412,7 +424,7 @@ const HomeScreen = ({ navigation }) => {
           );}
         })}
         {/* Linda Sprint 4 Start a round*/}
-        {(!roundData.data || activeRounds.length < 2) && (
+        {(!roundData.data || activeRoundData.length < 2) && (
           <Button
             onPress={startRound}
             rounded="30"
@@ -434,7 +446,7 @@ const HomeScreen = ({ navigation }) => {
               bg: "#e5f5e5",
             }}
           >
-            {activeRounds.length === 1
+            {activeRoundData.length === 1
               ? "Plan the next round"
               : "Start a round"}
           </Button>
