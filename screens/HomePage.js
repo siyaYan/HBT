@@ -83,7 +83,7 @@ const HomeScreen = ({ navigation }) => {
   const { width, height } = Dimensions.get("window");
   const updateRoundContext = async () => {
     console.log("home page round context", roundData.data);
-    const newRoundData = await getRoundInfo(); // Fetch latest round data
+    const newRoundData = await getRoundInfo(userData.token,userData.data._id); // Fetch latest round data
     // updateRoundData(newRoundData); // Update context with new data
     console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
@@ -99,11 +99,11 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    // Function to run when entering the page
-    console.log("-------------Enter page--------");
-    updateRoundContext(); // Update round data when screen is focused
-  }, []); // Empty dependency array means this effect runs only once when the component mounts
+  // useEffect(() => {
+  //   // Function to run when entering the page
+  //   console.log("-------------Enter page--------");
+  //   updateRoundContext(); // Update round data when screen is focused
+  // }, []); // Empty dependency array means this effect runs only once when the component mounts
 
   useFocusEffect(
     useCallback(() => {
@@ -521,13 +521,6 @@ const HomeScreen = ({ navigation }) => {
                             <Modal.CloseButton />
                             <Modal.Header>Round Details</Modal.Header>
                             <Modal.Body>
-                              {/* <View
-                            style={{
-                              backgroundColor: "lightgray",
-                              padding: 10,
-                              marginTop: 20,
-                            }}
-                          > */}
                               {thisRoundInfo && thisRoundInfo.data && (
                                 <>
                                   <Text fontSize="md">
@@ -553,7 +546,6 @@ const HomeScreen = ({ navigation }) => {
                                   </Text>
                                 </>
                               )}
-                              {/* </View> */})
                             </Modal.Body>
                           </Modal.Content>
                         </Modal>

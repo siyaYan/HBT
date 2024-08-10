@@ -58,14 +58,24 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const handleLeaveRound = () => {
     setLeaveModalVisible(true);
   };
+  // const updateRoundContext = async () => {
+  //   console.log("home page round context", roundData.data);
+  //   const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
+  //   // updateRoundData(newRoundData); // Update context with new data
+  //   console.log("home page --- round context", newRoundData);
+  //   updateRounds(newRoundData);
+  //   // const {roundData} = useRound();
+  //   console.log("-----home page round context", roundData.data);
+  // };
   const updateRoundContext = async () => {
     console.log("home page round context", roundData.data);
-    const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
+    const newRoundData = await getRoundInfo(userData.token, userData.data._id); // Fetch latest round data
     // updateRoundData(newRoundData); // Update context with new data
     console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
     // const {roundData} = useRound();
     console.log("-----home page round context", roundData.data);
+    // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
   };
   const handleConfirmLeave = async () => {
     setLeaveModalVisible(false);

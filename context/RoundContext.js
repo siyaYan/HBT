@@ -50,7 +50,7 @@ export const RoundProvider = ({ children }) => {
         }
         // filter active rounds
         setActiveRoundData(
-          roundData.data.filter((round) =>
+          roundData.data?.filter((round) =>
             isRoundAccepted(round, userData.data._id)
           )
         );
@@ -61,7 +61,6 @@ export const RoundProvider = ({ children }) => {
 
     loadData();
   }, []);
-  // active round
 
   // insert new round
   const insertRoundData = (newRound) => {
