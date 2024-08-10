@@ -149,9 +149,8 @@ export const RoundProvider = ({ children }) => {
         "roundData",
         JSON.stringify({ ...roundData, data: newData })
       );
-      setRoundData((prevRoundData) => {return {...prevRoundData, data: newData } });
+      setRoundData({ ...roundData, data: newData });
       //setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
-      return newData
     } catch (error) {
       console.error("Error deleting round data:", error);
     }
@@ -172,10 +171,11 @@ export const RoundProvider = ({ children }) => {
               "round context updatedRound",
               updatedRound.roundFriends
             );
-            return updatedRound;
-          } else {
-            return round;
-          }
+            // return updatedRound;
+          } 
+          // else {
+          //   return round;
+          // }
         });
         const updatedRoundData = { ...prevRoundData, data: updatedData };
         // Update the state with the modified data
