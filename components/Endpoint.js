@@ -513,7 +513,7 @@ export async function deleteFriendOrWithdrawRequestById(
       }
     );
     const data = await response.json();
-    // console.log(data);
+    console.log(data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -712,7 +712,162 @@ export async function getNoteUpdate(token, userId) {
   return res;
 }
 
-// Chapter 4 Round Configuration
+export async function addPost(id,post,token) {
+  const formData = new FormData();
+  formData.append("image", post.image);
+  formData.append("text", post.text);
+  try {
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/add/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    })
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(`HTTP error ${response.status}: ${text}`);
+      });
+    }
+    const data= await response.json();
+
+    // if (data.status == "success") {
+    //   Alert.alert("Success", "Post message successfully");
+    // } else {
+    //   Alert.alert(
+    //     "Unsuccessful",
+    //     data.message || "Post message failed"
+    //   );
+    // }
+    return data
+    
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
+
+export async function getForum(id,token) {
+  try {
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/get/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(`HTTP error ${response.status}: ${text}`);
+      });
+    }
+    const data= await response.json();
+
+    // if (data.status == "success") {
+    //   Alert.alert("Success", "get messages successfully");
+    // } else {
+    //   Alert.alert(
+    //     "Unsuccessful",
+    //     data.message || "get messages failed"
+    //   );
+    // }
+    return data
+    
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
+export async function likeMessage(roundId,messageId,token) {
+  try {
+    
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/like/${roundId}/${messageId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(`HTTP error ${response.status}: ${text}`);
+      });
+    }
+    const data= await response.json();
+    return data
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
+
+export async function cancelLike(roundId,messageId,token) {
+  try {
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/cancell/${roundId}/${messageId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    if (!response.ok) {
+      return response.text().then(text => {
+        throw new Error(`HTTP error ${response.status}: ${text}`);
+      });
+    }
+    const data= await response.json();
+    return data
+    
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}
+
+export async function deleteMessage(roundId,messageId,token) {
+  try {
+    const response= await fetch(`http://localhost:8000/habital/v1/forum/delete/${roundId}/${messageId}`, {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`
+      }
+    })
+    if (response.status === 204) {
+      console.log(response.message);
+      return; // No need to parse JSON
+    }
+  
+    if (!response.ok) {
+      throw new Error(`Server responded with status: ${response.status}`);
+    }
+    
+  } catch (error) {
+    Alert.alert(
+      "Unsuccessful",
+      "Please contact the server admin"
+    );
+    console.log('error:',error)
+  }
+
+}// Chapter 4 Round Configuration
 
 export async function createRound(roundData, token) {
   try {
@@ -914,6 +1069,40 @@ export async function leaveRound(token, roundId) {
   }  
 }
 
+export async function updateRoundhabit(token, roundId, newHabit) {
+  
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/round/${roundId}/updatehabit`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          "habit":newHabit
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);
+    }
+
+    const data = await response.json();
+    if (data.status === "success") {
+      Alert.alert("Success", "Update your habit");
+    } else {
+      Alert.alert("Unsuccessful", data.message || "Update habit unsuccessful");
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "Cannot connect to server");
+  }
+}
 // Chapter 4: Function to update round friend list
 export async function updateRoundFriendList(token, roundId, newFriendList) {
   try {

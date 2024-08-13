@@ -19,6 +19,7 @@ import {
   connectByUserId,
   findByUserIdAndUsername,
   getFriends,
+  reactReceivedRequest,
   getRelationByUserId,
   deleteFriendOrWithdrawRequestById
 } from "../components/Endpoint";
@@ -60,7 +61,7 @@ const InviteScreen = ({ navigation }) => {
         response.data.user._id,
         userData.data._id
       );
-      console.log(res.result);
+      console.log(res,userData.data);
       if (res.result == "A") {
         setLink(true);
         setPend(false);
@@ -116,6 +117,14 @@ const InviteScreen = ({ navigation }) => {
       deleteFriendOrWithdrawRequestById(userData.token, id);
       handleSearch()
   };
+  const handleAccept =async ()=>{
+    console.log("accept current item");
+    const id=pend.data._id
+    // console.log(pend.data._id)
+    reactReceivedRequest(userData.token, id, 'A');
+    setPend(false)
+    handleSearch()
+  }
 
   return (
     <NativeBaseProvider>
@@ -152,7 +161,7 @@ const InviteScreen = ({ navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Find a friend By Email/Username
+                    Find a friend
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -247,7 +256,8 @@ const InviteScreen = ({ navigation }) => {
                             </Text>
                           </Pressable>
                         ) : pend!=false ? (
-                          <Pressable onPress={handleCancel}>
+                          pend.senderId==userData.data._id?(
+                            <Pressable onPress={handleCancel}>
                             {/* <Feather name="cancel" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
                               cancel
@@ -261,6 +271,18 @@ const InviteScreen = ({ navigation }) => {
                               cancel
                             </Text>
                           </Pressable>
+                          ):(
+                            <Pressable onPress={handleAccept}>
+                            {/* <Feather name="cancel" size={30} color="grey" />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              cancel
+                            </Text> */}
+                            <AntDesign name="checkcircleo" size={30} color="black" />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              accept
+                            </Text>
+                          </Pressable>
+                          )
                         ) : (
                           <Pressable onPress={handleConnect}>
                             <Feather name="send" size={30} color="black" />

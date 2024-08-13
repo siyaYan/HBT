@@ -6,12 +6,14 @@ import AuthenticatedScreens from "../components/AuthenticatedScreens";
 import LoginStackNavigator from "../components/LoginStackNavigator";
 import AccountStackNavigator from "../components/AccountStackNavigator";
 import RoundStackNavigator from "../components/RoundStackNavigator";
+import ForumStackNavigator from "../components/ForumStackNavigator";
 import * as SecureStore from "expo-secure-store";
 import { loginUser,getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
 import InviteScreen from "../screens/InviteFriends";
 import SplashAnimationScreen from "../components/SplashAnimation";
+import LoadingAnimationScreen from "../components/LoadingAnimation";
 import { IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { useRound } from "../context/RoundContext";
@@ -30,8 +32,10 @@ const getCredentials = async () => {
   }
 };
 
+export const navigationRef = React.createRef();
+
 export default function AppContainer() {
-  const navigationRef = useRef();
+  // const navigationRef = useRef();
   const { userData, updateUserData } = useData();
   const { roundData, updateRounds } = useRound();
 
@@ -116,7 +120,7 @@ export default function AppContainer() {
         <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
         <Stack.Screen name="AccountStack" component={AccountStackNavigator} />
         <Stack.Screen name="RoundStack"  component={RoundStackNavigator} />
-
+        <Stack.Screen name="ForumStack"  component={ForumStackNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );
