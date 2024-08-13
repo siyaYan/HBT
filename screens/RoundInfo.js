@@ -11,13 +11,14 @@ import {
   NativeBaseProvider,
   ScrollView,
   View,
+  Modal,
 } from "native-base";
 import Background from "../components/Background";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
-import { useEffect } from "react";
-import IconM from "react-native-vector-icons/MaterialIcons";
+import { useState, useEffect } from "react";
+import { leaveRound, getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
@@ -30,16 +31,17 @@ const RoundInfoScreen = ({ route, navigation }) => {
     return null; // Render nothing while navigating back
   }
 
-  const { roundData } = useRound();
-  console.log("round context", roundData);
+  const { roundData, updateRounds } = useRound();
+  // console.log("round context", roundData);
+
 
   const round = roundData.data.find((r) => r._id === roundId);
   console.log("roundinfo page round data:", round);
 
-    // Update round info to RoundContext and DB
-    useEffect(() => {
-      // console.log("roundData updated___________", roundData);
-    }, [roundData]);
+  // Update round info to RoundContext and DB
+  // useEffect(() => {
+  //   // console.log("roundData updated___________", roundData);
+  // }, [roundData]);
 
   useEffect(() => {
     if (!round) {
@@ -51,18 +53,75 @@ const RoundInfoScreen = ({ route, navigation }) => {
   if (!round) {
     return null; // Render nothing if round is not found
   }
+  // Leave round
+  const [isLeaveModalVisible, setLeaveModalVisible] = useState(false);
+  const handleLeaveRound = () => {
+    setLeaveModalVisible(true);
+  };
+  // const updateRoundContext = async () => {
+  //   console.log("home page round context", roundData.data);
+  //   const newRoundData = await getRoundInfo(userData.token, userData._id); // Fetch latest round data
+  //   // updateRoundData(newRoundData); // Update context with new data
+  //   console.log("home page --- round context", newRoundData);
+  //   updateRounds(newRoundData);
+  //   // const {roundData} = useRound();
+  //   console.log("-----home page round context", roundData.data);
+  // };
+  const updateRoundContext = async () => {
+    console.log("home page round context", roundData.data);
+    const newRoundData = await getRoundInfo(userData.token, userData.data._id); // Fetch latest round data
+    // updateRoundData(newRoundData); // Update context with new data
+    console.log("home page --- round context", newRoundData);
+    updateRounds(newRoundData);
+    // const {roundData} = useRound();
+    console.log("-----home page round context", roundData.data);
+    // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
+  };
+  const handleConfirmLeave = async () => {
+    setLeaveModalVisible(false);
+    roundData.data.map((round) => {
+      if (round._id === roundId) {
+        console.log("---- before leave round: ", round.roundFriends);
+      }
+    });
+    try {
+      const response = await leaveRound(userData.token, roundId);
+      console.log("leave round response", response.data.roundFriends);
+      if (response) {
+        // const responseDeleteRoundContext = await deleteRoundFriend(
+        //   roundId,
+        //   userData.data._id
+        // );
+        // const newRoundData = await getRoundInfo(userData.token, userData.data._id); // Fetch latest round data
+        // console.log("round info page, get new round info again--",newRoundData);
+        // // const responseLeaveRoundContext = await deleteRoundFriend(response.data._id,userData.data._id);
+        // // console.log("round context move back to round info page",responseLeaveRoundContext);
+        // newRoundData.data.map((round) => {
+        //   if (round._id === roundId) {
+        //     console.log("roundId",round._id,
+        //       "round context on round info: ",
+        //       round.roundFriends
+        //     );
+        //   }});
+        //   const r = await updateRounds(newRoundData);
+        updateRoundContext();
+        navigation.navigate("MainStack", { screen: "Home" });
+      } else {
+        // Handle case when response is not as expected
+        Alert.alert("Error", "Failed to leave the round");
+      }
+    } catch (error) {
+      console.error("Error leaving round:", error);
+      Alert.alert("Error", "An error occurred while leaving the round");
+    }
+  };
 
-  // roundData.roundFriends
-  // Read only
-  // Feature: send notification again
-  // const friendsList = [
-  //   { id: "1", name: "John Doe" },
-  //   { id: "2", name: "Jane Smith" },
-  //   { id: "3", name: "William Johnson" },
-  //   // Add more friends as needed
-  // ];
+  const handleCancelLeave = () => {
+    setLeaveModalVisible(false);
+  };
   const friendsList = round.roundFriends;
-  console.log("round friend list:", round.roundFriends);
+  // console.log("round friend list:", round.roundFriends);
+
   // Navigate to invite friend page
   const inviteFriend = () => {
     navigation.navigate("RoundStack", {
@@ -168,50 +227,126 @@ const RoundInfoScreen = ({ route, navigation }) => {
             ""
           )}
 
-          {/* Friend list*/}
-          {friendsList.length>0?
-          <View>
-
-          <Text fontSize="lg" bold>
-            Friends List
-          </Text>
-          <ScrollView
-            style={{
-              w: "100%",
-              h: "10%",
-              backgroundColor: "#f0f0f0", // Light background color
-            }}
-            persistentScrollbar={true} // Makes the scrollbar always visible on Android
-            showsVerticalScrollIndicator={true} // Ensures the scrollbar is visible on iOS (when scrolling)
+          {userData.data._id !== round.userId && (
+            <Button
+              onPress={() => {
+                handleLeaveRound();
+              }}
+              mt="5"
+              width="100%"
+              size="lg"
+              // bg="#ff061e"
+              // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
+              backgroundColor={"#f9f8f2"}
+              _pressed={{
+                bg: "#ff061e",
+              }}
+              _text={{
+                color: "#94d3c5",
+                fontFamily: "Regular Medium",
+                fontSize: "lg",
+              }}
+            >
+              Leave Round
+            </Button>
+          )}
+          <Modal
+            isOpen={isLeaveModalVisible}
+            onClose={handleCancelLeave}
+            animationPreset="fade"
           >
-            {friendsList.map((item) =>
-              item.status !== "R" ? (
-                <View key={item.id} style={{ width: "95%", marginVertical: 5 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      paddingHorizontal: 10,
-                      paddingVertical: 8,
-                      backgroundColor: "#E5E7EB", // Example background color
-                      borderRadius: 8,
+            <Modal.Content maxWidth="400px">
+              <Modal.CloseButton />
+              <Modal.Header>
+                <Text fontFamily={"Regular Medium"} fontSize="xl">
+                  Leave Round
+                </Text>
+              </Modal.Header>
+              <Modal.Body>
+                <Text>
+                  Are you sure? It will delete everything including posts,
+                  scores, that can be your important memories.
+                </Text>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button.Group space={2}>
+                  <Button
+                    rounded={30}
+                    shadow="7"
+                    width="50%"
+                    size={"md"}
+                    _text={{
+                      color: "#f9f8f2",
                     }}
+                    colorScheme="blueGray"
+                    onPress={handleCancelLeave}
                   >
-                    <Text style={{ fontSize: 16 }}>{item.username}</Text>
-                    <Text style={{ fontSize: 16 }}>{item.nickname}</Text>
-                    {item.status === "A" ? (
-                      <Icon name="checkmark-circle" size={24} color="green" /> // Active icon
-                    ) : (
-                      <Icon name="time" size={24} color="orange" /> // Pending icon
-                    )}
-                  </View>
-                </View>
-              ) : null
-            )}
-          </ScrollView>
-          </View>
-          :null}
+                    Cancel
+                  </Button>
+                  <Button
+                    rounded={30}
+                    shadow="7"
+                    width="50%"
+                    size={"md"}
+                    colorScheme="danger"
+                    onPress={handleConfirmLeave}
+                  >
+                    Leave
+                  </Button>
+                </Button.Group>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+          {/* Friend list*/}
+          {friendsList.length > 0 ? (
+            <View>
+              <Text fontSize="lg" bold>
+                Friends List
+              </Text>
+              <ScrollView
+                style={{
+                  w: "100%",
+                  h: "10%",
+                  backgroundColor: "#f0f0f0", // Light background color
+                }}
+                persistentScrollbar={true} // Makes the scrollbar always visible on Android
+                showsVerticalScrollIndicator={true} // Ensures the scrollbar is visible on iOS (when scrolling)
+              >
+                {friendsList.map((item) =>
+                  item.id !== userData.data._id && item.status !== "R" ? (
+                    <View
+                      key={item.id}
+                      style={{ width: "95%", marginVertical: 5 }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          paddingHorizontal: 10,
+                          paddingVertical: 8,
+                          backgroundColor: "#E5E7EB", // Example background color
+                          borderRadius: 8,
+                        }}
+                      >
+                        <Text style={{ fontSize: 16 }}>{item.username}</Text>
+                        <Text style={{ fontSize: 16 }}>{item.nickname}</Text>
+                        {item.status === "A" ? (
+                          <Icon
+                            name="checkmark-circle"
+                            size={24}
+                            color="green"
+                          /> // Active icon
+                        ) : (
+                          <Icon name="time" size={24} color="orange" /> // Pending icon
+                        )}
+                      </View>
+                    </View>
+                  ) : null
+                )}
+              </ScrollView>
+            </View>
+          ) : null}
         </VStack>
       </Box>
     </NativeBaseProvider>

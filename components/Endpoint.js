@@ -903,30 +903,30 @@ export async function createRound(roundData, token) {
 }
 // Chapter 4 Round Configuration
 
-export async function updateRound(roundData, token) {
-  fetch("http://3.27.94.77:8000/habital/v1/round/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(roundData),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        return response.text().then((text) => {
-          throw new Error(`HTTP error ${response.status}: ${text}`);
-        });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log("Success:", data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
+// export async function updateRound(roundData, token) {
+//   fetch("http://3.27.94.77:8000/habital/v1/round/create", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`,
+//     },
+//     body: JSON.stringify(roundData),
+//   })
+//     .then((response) => {
+//       if (!response.ok) {
+//         return response.text().then((text) => {
+//           throw new Error(`HTTP error ${response.status}: ${text}`);
+//         });
+//       }
+//       return response.json();
+//     })
+//     .then((data) => {
+//       console.log("Success:", data);
+//     })
+//     .catch((error) => {
+//       console.error("Error:", error);
+//     });
+// }
 // Chapter 4: Function to get round information by UserId or RoundID
 export async function getRoundInfo(token, Id) {
   try {
@@ -935,7 +935,8 @@ export async function getRoundInfo(token, Id) {
       {
         method: "GET",
         headers: {
-          "Content-Type": "multipart/form-data",
+          // "Content-Type": "multipart/form-data",
+          "Content-Type":"application/json",
           Authorization: `Bearer ${token}`,
         },
       }
@@ -958,7 +959,7 @@ export async function getRoundInfo(token, Id) {
 export async function updateRoundInfo(token, newRoundData) {
   try {
     // console.log("round id",newRoundData._id)
-    console.log("Pass to Endpoint", newRoundData);
+    // console.log("Pass to Endpoint", newRoundData);
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/round/${newRoundData._id}`,
       {
@@ -974,6 +975,7 @@ export async function updateRoundInfo(token, newRoundData) {
           startDate: newRoundData.startDate.toISOString(),
           updatedAt: new Date().toISOString(),
           isAllowedInvite: newRoundData.isAllowedInvite,
+          status:newRoundData.status,
         }),
       }
     );
@@ -995,6 +997,76 @@ export async function updateRoundInfo(token, newRoundData) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "Cannot connect to server");
   }
+}
+// Chapter 4: update round status
+export async function updateRoundStatus(token, roundId, newStatus) {  
+  try {  
+    console.log("Updating status for round", roundId);  
+    const response = await fetch(  
+      `http://3.27.94.77:8000/habital/v1/round/${roundId}`,  
+      {  
+        method: "PATCH",  
+        headers: {  
+          "Content-Type": "application/json",  
+          Authorization: `Bearer ${token}`,  
+        },  
+        body: JSON.stringify({  
+          status: newStatus,  
+        }),  
+      }  
+    );  
+  
+    if (!response.ok) {  
+      const errorText = await response.text();  
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);  
+    }  
+  
+    const data = await response.json();  
+    // if (data.status === "success") {  
+    //   Alert.alert("Success", "Status updated successfully");  
+    // } else {  
+    //   Alert.alert("Unsuccessful", data.message || "Failed to update status");  
+    // }  
+    console.log("Patch endpoint", data);  
+    return data; // Return the data for further processing if needed  
+  } catch (error) {  
+    console.error("Failed to connect to server:", error);  
+    Alert.alert("Unsuccessful", "Cannot connect to server");  
+  }  
+}
+
+// Chapter 4: leave round
+export async function leaveRound(token, roundId) {  
+  try {  
+    console.log("Leaving round", roundId);  
+    const response = await fetch(  
+      `http://3.27.94.77:8000/habital/v1/round/leave/${roundId}`,  
+      {  
+        method: "PATCH",  
+        headers: {  
+          "Content-Type": "application/json",  
+          Authorization: `Bearer ${token}`,  
+        },    
+      }  
+    );  
+  
+    if (!response.ok) {  
+      const errorText = await response.text();  
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);  
+    }  
+  
+    const data = await response.json();  
+    if (data.status === "success") {  
+      Alert.alert("Success", "Leave round successfully");  
+    } else {  
+      Alert.alert("Unsuccessful", data.message || "Failed to leave round");  
+    }  
+    console.log("Patch endpoint", data);  
+    return data; // Return the data for further processing if needed  
+  } catch (error) {  
+    console.error("Failed to connect to server:", error);  
+    Alert.alert("Unsuccessful", "Cannot connect to server");  
+  }  
 }
 
 export async function updateRoundhabit(token, roundId, newHabit) {
@@ -1125,7 +1197,7 @@ export async function createRoundNotification(
         body: JSON.stringify({
           roundId: roundId,
           senderId: senderId,
-          receiverId: receiverId
+          receiverId: receiverId,
         }),
       }
     );
@@ -1150,7 +1222,7 @@ export async function createRoundNotification(
 }
 
 // Chapter 4.1 Get all round notifications received for this user
-export async function getRoundInvitation(token,receiver="receiver") {
+export async function getRoundInvitation(token, receiver = "receiver") {
   try {
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/round-invitation/${receiver}`,
@@ -1164,7 +1236,7 @@ export async function getRoundInvitation(token,receiver="receiver") {
       }
     );
     const data = await response.json();
-    console.log("getroundInvitation -----",data);
+    // console.log("getroundInvitation -----", data);
     return data;
   } catch (e) {
     console.error("Unsuccessful in connect server:", error);
