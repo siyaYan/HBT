@@ -39,7 +39,7 @@ const ForumPage = ({ route, navigation }) => {
     .roundFriends;
   const scrollViewRef = useRef(null);
   useEffect(() => {
-    console.log('getin')
+    // console.log('getin')
     const fetchForumMessages = async () => {
       await getForumMessages();
     };
