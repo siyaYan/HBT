@@ -1022,11 +1022,11 @@ export async function updateRoundStatus(token, roundId, newStatus) {
     }  
   
     const data = await response.json();  
-    if (data.status === "success") {  
-      Alert.alert("Success", "Status updated successfully");  
-    } else {  
-      Alert.alert("Unsuccessful", data.message || "Failed to update status");  
-    }  
+    // if (data.status === "success") {  
+    //   Alert.alert("Success", "Status updated successfully");  
+    // } else {  
+    //   Alert.alert("Unsuccessful", data.message || "Failed to update status");  
+    // }  
     console.log("Patch endpoint", data);  
     return data; // Return the data for further processing if needed  
   } catch (error) {  
