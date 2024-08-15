@@ -57,15 +57,6 @@ const AccountScreen = ({ navigation }) => {
           ...userData,
           avatar: result.assets[0],
         });
-        // if (response.data) {
-        //   // console.log(response.data,"got!!")
-        //   const newData = userData.data;
-        //   newData.profileImageUrl = response.data.profileImageUrl;
-        //   updateUserData({
-        //     ...userData,
-        //     data: newData,
-        //   });
-        // }
       }
     } catch (e) {
       console.log(e.message);

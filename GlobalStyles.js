@@ -13,7 +13,7 @@ export const FontSize = {
 /* Colors */
 export const Color = {
   labelColorLightPrimary: "#000",
-  colorWhite: "#fff",
+  colorWhite: "#f9f8f2",
   colorGray: "rgba(0, 0, 0, 0.2)",
 };
 /* border radiuses */
