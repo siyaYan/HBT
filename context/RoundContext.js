@@ -54,13 +54,37 @@ export const RoundProvider = ({ children }) => {
             isRoundAccepted(round, userData.data._id)
           )
         );
+        const savedRoundInvitationData = await AsyncStorage.getItem("roundInvitationData");
+        if (savedRoundInvitationData) {
+          // console.log('Loaded from AsyncStorage:', JSON.parse(savedRoundData));
+          setRoundInvitationData(JSON.parse(savedRoundInvitationData));
+        } else {
+          const fetchedInvitationData = await getRoundInvitation(userData.token);
+          // console.log('Fetched from Endpoint:', fetchedRoundData);
+          setRoundInvitationData(fetchedInvitationData);
+          await AsyncStorage.setItem(
+            "roundInvitationData",
+            JSON.stringify(fetchedInvitationData)
+          );
+        }
       } catch (error) {
-        console.error("Error loading round data:", error);
+        console.error("Error loading round/invitation data:", error);
       }
     };
 
     loadData();
   }, []);
+  const loadActiveRoundData = async () => {
+    try {
+      setActiveRoundData(
+        roundData.data?.filter((round) =>
+          isRoundAccepted(round, userData.data._id)
+        )
+      );
+    } catch (error) {
+      console.error("Error loading round active data:", error);
+    }
+  };
 
   // insert new round
   const insertRoundData = (newRound) => {
@@ -149,7 +173,9 @@ export const RoundProvider = ({ children }) => {
         "roundData",
         JSON.stringify({ ...roundData, data: newData })
       );
-      setRoundData({ ...roundData, data: newData });
+      // setRoundData({ ...roundData, data: newData });
+      setRoundData((prevRoundData) => {return {...prevRoundData, data: newData } });
+
       //setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
     } catch (error) {
       console.error("Error deleting round data:", error);
@@ -220,11 +246,13 @@ export const RoundProvider = ({ children }) => {
       console.error("Error loading round invitation data:", error);
     }
   };
+  
   return (
     <RoundContext.Provider
       value={{
         roundData,
         activeRoundData,
+        loadActiveRoundData,
         updateRoundData,
         updateRounds,
         insertRoundData,

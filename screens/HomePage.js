@@ -79,6 +79,7 @@ const HomeScreen = ({ navigation }) => {
     loadRoundInvitationData,
     updateRounds,
     activeRoundData,
+    loadActiveRoundData,
   } = useRound();
 
   console.log("active round---", activeRoundData);
@@ -188,6 +189,10 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     loadRoundInvitationData(userData.token);
   }, [userData.token]);
+
+  useEffect(() => {
+    loadActiveRoundData();
+  }, [roundInvitationData]);
 
   const loadAllReceivedNotification = () => {
     console.log("----roundInvitationData", roundInvitationData);

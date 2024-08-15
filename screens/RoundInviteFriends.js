@@ -16,11 +16,10 @@ import {
   Modal,
   View,
 } from "native-base";
-import { updateRoundFriendList } from "../components/Endpoint";
 import { Avatar } from "native-base";
 import { Foundation, Feather } from "@expo/vector-icons";
 import Background from "../components/Background";
-import { getFriends, createRoundNotification } from "../components/Endpoint";
+import { getFriends, createRoundNotification,updateRoundFriendList } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -71,7 +70,6 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       getGlobalFriendList();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
-
 
   const getGlobalFriendList = async () => {
     const response = await getFriends(userData.token);
@@ -154,7 +152,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       newFriend.id
     );
     console.log("responseCR", responseCR);
-      };
+  };
 
   const addFriend = () => {
     navigation.navigate("Invite");
@@ -179,7 +177,9 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
             {friends.length > 0 ? (
               <Box w={"95%"}>
                 {friends.map((item, index) => {
-                  {/* setStatusCreateNotification("") */}
+                  {
+                    /* setStatusCreateNotification("") */
+                  }
                   const isFriendInRound = round.roundFriends.some(
                     (friend) => friend.id === item._id
                   );
@@ -216,10 +216,13 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                         {item.nickname}
                       </Text>
                       {/* If already active, then hide invite button, show as linked */}
-                      {isFriendInRound ? ((friendStatus === "A")?
-                        <Feather name="link" size={30} color="black" />:<Feather name="refresh-cw" size={30} color="black" />
+                      {isFriendInRound ? (
+                        friendStatus === "A" ? (
+                          <Feather name="link" size={30} color="black" />
+                        ) : (
+                          <Feather name="refresh-cw" size={30} color="black" />
+                        )
                       ) : (
-                    
                         <Pressable
                           onPress={() => {
                             console.log("item", item);
@@ -245,7 +248,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                 fontSize="2xl"
                 textAlign={"center"}
               >
-Create your circle | No Friends Yet
+                Create your circle | No Friends Yet
               </Text>
             )}
             <Modal
