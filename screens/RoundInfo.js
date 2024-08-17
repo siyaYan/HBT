@@ -39,9 +39,9 @@ const RoundInfoScreen = ({ route, navigation }) => {
   console.log("roundinfo page round data:", round);
 
   // Update round info to RoundContext and DB
-  // useEffect(() => {
-  //   // console.log("roundData updated___________", roundData);
-  // }, [roundData]);
+  useEffect(() => {
+    // console.log("roundData updated___________", roundData);
+  }, [roundData]);
 
   useEffect(() => {
     if (!round) {

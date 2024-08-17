@@ -149,7 +149,8 @@ export const RoundProvider = ({ children }) => {
         "roundData",
         JSON.stringify({ ...roundData, data: newData })
       );
-      setRoundData({ ...roundData, data: newData });
+      // setRoundData({ ...roundData, data: newData });
+      setRoundData((preRoundData)=>{return{...preRoundData, data: newData }});
       //setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
     } catch (error) {
       console.error("Error deleting round data:", error);

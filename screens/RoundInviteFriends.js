@@ -121,6 +121,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
         nickname: item.nickname,
         status: "P",
         username: item.username,
+        score:0
       };
       handleInviteFriendToRound(newFriend);
     }
@@ -130,19 +131,19 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
     // 1.1 check existing friends
     console.log("new friend", newFriend);
     console.log("new friend checking before sending to endpoint", newFriend);
-    const response = await updateRoundFriendList(
-      userData.token,
-      roundId,
-      newFriend
-    );
+    // const response = await updateRoundFriendList(
+    //   userData.token,
+    //   roundId,
+    //   newFriend
+    // );
 
-    // console.log("newRoundFriendList", newRoundFriendList);
-    console.log("update friend response", response);
-    if (response.status === "success") {
-      console.log("connect!!");
-    } else {
-      console.log("fail!!");
-    }
+    // // console.log("newRoundFriendList", newRoundFriendList);
+    // console.log("update friend response", response);
+    // if (response.status === "success") {
+    //   console.log("connect!!");
+    // } else {
+    //   console.log("fail!!");
+    // }
     // 2. update roundContext
     insertRoundFriendList(roundId, newFriend);
 

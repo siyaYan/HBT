@@ -703,7 +703,7 @@ const HomeScreen = ({ navigation }) => {
           <Modal.CloseButton />
           <Modal.Header>Round Score Board</Modal.Header>
           <Modal.Body>
-            <Text fontSize="md">Round ID: {roundData.data[0]._id}</Text>
+            <Text fontSize="md">Round ID: {roundData.data[0]?roundData.data[0]._id:''}</Text>
             
           </Modal.Body>
         </Modal.Content>

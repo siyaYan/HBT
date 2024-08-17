@@ -1122,6 +1122,7 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
           habit: newFriendList.habit,
           id: newFriendList.id,
           status: newFriendList.status,
+          score:0
         }),
       }
     );

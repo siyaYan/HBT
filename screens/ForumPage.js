@@ -49,6 +49,7 @@ const ForumPage = ({ route, navigation }) => {
   const [post, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [habit, setHabit] = useState();
+  const [score, setScore] = useState();
   const [contentHeight, setContentHeight] = useState(0);
   const getForumMessages = async () => {
     const res = await getForum(id, userData.token);
@@ -115,8 +116,9 @@ const ForumPage = ({ route, navigation }) => {
   };
   const handleModal = (value) => {
     setShowModal(true);
-    const habit = roundFriends.filter((item) => item.id == value)[0];
-    setHabit(habit.habit);
+    const friend = roundFriends.filter((item) => item.id == value)[0];
+    setHabit(friend.habit);
+    setScore(friend.score)
   };
   const handleUploadClose = () => {
     onClose();
@@ -305,7 +307,7 @@ const ForumPage = ({ route, navigation }) => {
             <Modal.Header>User Info</Modal.Header>
             <Modal.Body>
               <Text>Habit:{habit}</Text>
-              <Text>Score:</Text>
+              <Text>Score:{score}</Text>
             </Modal.Body>
           </Modal.Content>
         </Modal>
