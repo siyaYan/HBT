@@ -1,31 +1,23 @@
-import React, { useRef, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
-import LottieView from "lottie-react-native";
+import React, { useRef, useEffect } from 'react';
+import { View } from 'react-native';
+import LottieView from 'lottie-react-native';
 
 const SplashAnimationScreen = ({ navigation }) => {
   return (
     // <NativeBaseProvider>
-    <View style={stylesSplash.animationContainer}>
+    <View >
       <LottieView
         autoPlay
         style={{
-          height: 150,
-          backgroundColor: "transparent",
+          width: 200,
+          height: 200,
+          backgroundColor: '#eee',
         }}
         source={require("../assets/Animations/Splash.json")}
       />
     </View>
     // </NativeBaseProvider>
   );
-};
-
-const stylesSplash = StyleSheet.create({
-  animationContainer: {
-    backgroundColor: "#6666ff",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-  },
-});
+}
 
 export default SplashAnimationScreen;

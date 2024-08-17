@@ -53,7 +53,7 @@ const FriendsScreen = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
-      console.log('Tab is in focus, userInfo:', userData);
+      // console.log('Tab is in focus, userInfo:', userData);
       updateFriendList();
       updateSendRequest();
       updateReceivedRequest();
@@ -112,22 +112,19 @@ const FriendsScreen = ({ navigation }) => {
       // console.log('get friends success:',response.data);
       let sendFriends = [];
       const pendingRes = response.data.filter((item) => item.status == "P");
-      console.log('update:',pendingRes, response.users);
+      // const pendingRes=response.users
       if (pendingRes.length > 0) {
-        response.data.map((data, index) => {
-          if(data.status == "P"){
-            const newFriend = {
-              _id: data._id,
-              email: response.users[index].email,
-              profileImageUrl: response.users[index].profileImageUrl,
-              username: response.users[index].username,
-              nickname: response.users[index].nickname,
-            };
-            sendFriends.push(newFriend)
-          }
+        pendingRes.map((data, index) => {
+          const newFriend = {
+            _id: data._id,
+            email: response.users[index].email,
+            profileImageUrl: response.users[index].profileImageUrl,
+            username: response.users[index].username,
+            nickname: response.users[index].nickname,
+          };
+          sendFriends[index] = newFriend;
         });
       }
-     console.log('update:',sendFriends);
       setSent(sendFriends);
       // console.log('send request:',sent)
     } else {
@@ -332,7 +329,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="received"
               />
               <Text fontFamily={"Regular"} fontSize="lg">
-                {received.length>0?received.length:""}
+                {received.length}
               </Text>
             </HStack>
             <Box
@@ -456,7 +453,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="sent"
               />
               <Text fontFamily={"Regular"} fontSize="lg">
-                {sent.length>0?sent.length:''}
+                {sent.length}
               </Text>
             </HStack>
             <Box
@@ -578,7 +575,7 @@ const FriendsScreen = ({ navigation }) => {
                   alt="friends"
                 />
                 <Text fontFamily={"Regular"} fontSize="lg">
-                  {friends.length>0? friends.length : ""}
+                  {friends.length}
                 </Text>
               </HStack>
               {/* <FontAwesome5

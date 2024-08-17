@@ -1,32 +1,43 @@
-import React, { useRef, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
-import LottieView from "lottie-react-native";
+import React, { useRef, useEffect } from 'react';
+import { Button, StyleSheet, View } from 'react-native';
+import LottieView from 'lottie-react-native';
 
-const LoadingAnimationScreen = ({ navigation }) => {
+export default function LoadingAnimation() {
+  const animation = useRef(null);
+
   return (
-    // <NativeBaseProvider>
-    <View Loadingstyle={styles.animationContainer}>
+    <View style={styles.animationContainer}>
       <LottieView
         autoPlay
+        ref={animation}
         style={{
-          width: 250,
-          height: 250,
-          backgroundColor: "transparent",
+          width: 200,
+          height: 200,
+          backgroundColor: '#eee',
         }}
-        source={require("../assets/Animations/loadingDots.json")}
+        source={require('../assets/Animations/LoadingDots.json')}
       />
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Restart Animation"
+          onPress={() => {
+            animation.current?.reset();
+            animation.current?.play();
+          }}
+        />
+      </View>
     </View>
-    // </NativeBaseProvider>
   );
-};
+}
 
-const Loadingstyle = StyleSheet.create({
+const styles = StyleSheet.create({
   animationContainer: {
-    backgroundColor: "#transparent",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
     flex: 1,
   },
+  buttonContainer: {
+    paddingTop: 20,
+  },
 });
-
-export default LoadingAnimationScreen;
