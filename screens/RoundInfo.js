@@ -23,7 +23,6 @@ import { leaveRound, getRoundInfo } from "../components/Endpoint";
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
   const { roundId } = route.params || {}; // Safe access to route params
-  console.log("round info page round id", roundId);
 
   if (!roundId) {
     console.error("roundId is not defined");
@@ -34,14 +33,10 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const { roundData, updateRounds } = useRound();
   // console.log("round context", roundData);
 
-
   const round = roundData.data.find((r) => r._id === roundId);
-  console.log("roundinfo page round data:", round);
+  // console.log("roundinfo page round data:", round);
 
   // Update round info to RoundContext and DB
-  useEffect(() => {
-    // console.log("roundData updated___________", roundData);
-  }, [roundData]);
 
   useEffect(() => {
     if (!round) {
@@ -50,9 +45,9 @@ const RoundInfoScreen = ({ route, navigation }) => {
     }
   }, [round]);
 
-  if (!round) {
-    return null; // Render nothing if round is not found
-  }
+  // if (!round) {
+  //   return null; // Render nothing if round is not found
+  // }
   // Leave round
   const [isLeaveModalVisible, setLeaveModalVisible] = useState(false);
   const handleLeaveRound = () => {
@@ -155,61 +150,45 @@ const RoundInfoScreen = ({ route, navigation }) => {
       {/* <Center w="100%"> */}
       <Background />
       <Box flex={1} p={4}>
-        <VStack space={4}>
-          <HStack>
-            <Heading size="lg" color="coolGray.800">
-              {round.name}
-            </Heading>
-            {/* Edit round, which leads to Round Config page */}
-            {round.userId == userData.data._id ? (
-              <Box alignItems="center" justifyContent="center">
-                <Button p={0} variant="unstyled" onPress={goRoundConfig}>
-                  <Icon name="pencil" size={24} color="#000" /> {/* Pen icon */}
-                </Button>
-              </Box>
-            ) : (
-              ""
-            )}
-          </HStack>
-          <Text fontSize="md">Level: {round.level}</Text>
-          <Text fontSize="md">
-            Start Date:{" "}
-            {new Date(round.startDate).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          </Text>
-          <Text fontSize="md">
-            End Date:{" "}
-            {endDate.toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          </Text>
-          <Divider my="2" />
-          <Button
-            onPress={() => {
-              goHabit();
-            }}
-            mt="5"
-            width="100%"
-            size="lg"
-            bg="#49a579"
-            _text={{
-              color: "#f9f8f2",
-              fontFamily: "Regular Medium",
-              fontSize: "lg",
-            }}
-          >
-            My habit
-          </Button>
-          {round.isAllowedInvite || round.userId == userData.data._id ? (
+        {round ? (
+          <VStack space={4}>
+            <HStack>
+              <Heading size="lg" color="coolGray.800">
+                {round.name}
+              </Heading>
+              {/* Edit round, which leads to Round Config page */}
+              {round.userId == userData.data._id ? (
+                <Box alignItems="center" justifyContent="center">
+                  <Button p={0} variant="unstyled" onPress={goRoundConfig}>
+                    <Icon name="pencil" size={24} color="#000" />{" "}
+                    {/* Pen icon */}
+                  </Button>
+                </Box>
+              ) : (
+                ""
+              )}
+            </HStack>
+            <Text fontSize="md">Level: {round.level}</Text>
+            <Text fontSize="md">
+              Start Date:{" "}
+              {new Date(round.startDate).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </Text>
+            <Text fontSize="md">
+              End Date:{" "}
+              {endDate.toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </Text>
+            <Divider my="2" />
             <Button
               onPress={() => {
-                inviteFriend();
-                // console.log("Calendar icon pressed. info:", startDate,level,roundName,allowOthers,userData.data._id);
+                goHabit();
               }}
               mt="5"
               width="100%"
@@ -221,133 +200,154 @@ const RoundInfoScreen = ({ route, navigation }) => {
                 fontSize: "lg",
               }}
             >
-              Invite friend
+              My habit
             </Button>
-          ) : (
-            ""
-          )}
-
-          {userData.data._id !== round.userId && (
-            <Button
-              onPress={() => {
-                handleLeaveRound();
-              }}
-              mt="5"
-              width="100%"
-              size="lg"
-              // bg="#ff061e"
-              // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
-              backgroundColor={"#f9f8f2"}
-              _pressed={{
-                bg: "#ff061e",
-              }}
-              _text={{
-                color: "#94d3c5",
-                fontFamily: "Regular Medium",
-                fontSize: "lg",
-              }}
-            >
-              Leave Round
-            </Button>
-          )}
-          <Modal
-            isOpen={isLeaveModalVisible}
-            onClose={handleCancelLeave}
-            animationPreset="fade"
-          >
-            <Modal.Content maxWidth="400px">
-              <Modal.CloseButton />
-              <Modal.Header>
-                <Text fontFamily={"Regular Medium"} fontSize="xl">
-                  Leave Round
-                </Text>
-              </Modal.Header>
-              <Modal.Body>
-                <Text>
-                  Are you sure? It will delete everything including posts,
-                  scores, that can be your important memories.
-                </Text>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button.Group space={2}>
-                  <Button
-                    rounded={30}
-                    shadow="7"
-                    width="50%"
-                    size={"md"}
-                    _text={{
-                      color: "#f9f8f2",
-                    }}
-                    colorScheme="blueGray"
-                    onPress={handleCancelLeave}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    rounded={30}
-                    shadow="7"
-                    width="50%"
-                    size={"md"}
-                    colorScheme="danger"
-                    onPress={handleConfirmLeave}
-                  >
-                    Leave
-                  </Button>
-                </Button.Group>
-              </Modal.Footer>
-            </Modal.Content>
-          </Modal>
-          {/* Friend list*/}
-          {friendsList.length > 0 ? (
-            <View>
-              <Text fontSize="lg" bold>
-                Friends List
-              </Text>
-              <ScrollView
-                style={{
-                  w: "100%",
-                  h: "10%",
-                  backgroundColor: "#f0f0f0", // Light background color
+            {round.isAllowedInvite || round.userId == userData.data._id ? (
+              <Button
+                onPress={() => {
+                  inviteFriend();
+                  // console.log("Calendar icon pressed. info:", startDate,level,roundName,allowOthers,userData.data._id);
                 }}
-                persistentScrollbar={true} // Makes the scrollbar always visible on Android
-                showsVerticalScrollIndicator={true} // Ensures the scrollbar is visible on iOS (when scrolling)
+                mt="5"
+                width="100%"
+                size="lg"
+                bg="#49a579"
+                _text={{
+                  color: "#f9f8f2",
+                  fontFamily: "Regular Medium",
+                  fontSize: "lg",
+                }}
               >
-                {friendsList.map((item) =>
-                  item.id !== userData.data._id && item.status !== "R" ? (
-                    <View
-                      key={item.id}
-                      style={{ width: "95%", marginVertical: 5 }}
+                Invite friend
+              </Button>
+            ) : (
+              ""
+            )}
+
+            {userData.data._id !== round.userId && (
+              <Button
+                onPress={() => {
+                  handleLeaveRound();
+                }}
+                mt="5"
+                width="100%"
+                size="lg"
+                // bg="#ff061e"
+                // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
+                backgroundColor={"#f9f8f2"}
+                _pressed={{
+                  bg: "#ff061e",
+                }}
+                _text={{
+                  color: "#94d3c5",
+                  fontFamily: "Regular Medium",
+                  fontSize: "lg",
+                }}
+              >
+                Leave Round
+              </Button>
+            )}
+            <Modal
+              isOpen={isLeaveModalVisible}
+              onClose={handleCancelLeave}
+              animationPreset="fade"
+            >
+              <Modal.Content maxWidth="400px">
+                <Modal.CloseButton />
+                <Modal.Header>
+                  <Text fontFamily={"Regular Medium"} fontSize="xl">
+                    Leave Round
+                  </Text>
+                </Modal.Header>
+                <Modal.Body>
+                  <Text>
+                    Are you sure? It will delete everything including posts,
+                    scores, that can be your important memories.
+                  </Text>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button.Group space={2}>
+                    <Button
+                      rounded={30}
+                      shadow="7"
+                      width="50%"
+                      size={"md"}
+                      _text={{
+                        color: "#f9f8f2",
+                      }}
+                      colorScheme="blueGray"
+                      onPress={handleCancelLeave}
                     >
+                      Cancel
+                    </Button>
+                    <Button
+                      rounded={30}
+                      shadow="7"
+                      width="50%"
+                      size={"md"}
+                      colorScheme="danger"
+                      onPress={handleConfirmLeave}
+                    >
+                      Leave
+                    </Button>
+                  </Button.Group>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
+            {/* Friend list*/}
+            {friendsList.length > 0 ? (
+              <View>
+                <Text fontSize="lg" bold>
+                  Friends List
+                </Text>
+                <ScrollView
+                  style={{
+                    w: "100%",
+                    h: "10%",
+                    backgroundColor: "#f0f0f0", // Light background color
+                  }}
+                  persistentScrollbar={true} // Makes the scrollbar always visible on Android
+                  showsVerticalScrollIndicator={true} // Ensures the scrollbar is visible on iOS (when scrolling)
+                >
+                  {friendsList.map((item) =>
+                    item.id !== userData.data._id && item.status !== "R" ? (
                       <View
-                        style={{
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          paddingHorizontal: 10,
-                          paddingVertical: 8,
-                          backgroundColor: "#E5E7EB", // Example background color
-                          borderRadius: 8,
-                        }}
+                        key={item.id}
+                        style={{ width: "95%", marginVertical: 5 }}
                       >
-                        <Text style={{ fontSize: 16 }}>{item.username}</Text>
-                        <Text style={{ fontSize: 16 }}>{item.nickname}</Text>
-                        {item.status === "A" ? (
-                          <Icon
-                            name="checkmark-circle"
-                            size={24}
-                            color="green"
-                          /> // Active icon
-                        ) : (
-                          <Icon name="time" size={24} color="orange" /> // Pending icon
-                        )}
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            paddingHorizontal: 10,
+                            paddingVertical: 8,
+                            backgroundColor: "#E5E7EB", // Example background color
+                            borderRadius: 8,
+                          }}
+                        >
+                          <Text style={{ fontSize: 16 }}>{item.username}</Text>
+                          <Text style={{ fontSize: 16 }}>{item.nickname}</Text>
+                          {item.status === "A" ? (
+                            <Icon
+                              name="checkmark-circle"
+                              size={24}
+                              color="green"
+                            /> // Active icon
+                          ) : (
+                            <Icon name="time" size={24} color="orange" /> // Pending icon
+                          )}
+                        </View>
                       </View>
-                    </View>
-                  ) : null
-                )}
-              </ScrollView>
-            </View>
-          ) : null}
-        </VStack>
+                    ) : null
+                  )}
+                </ScrollView>
+              </View>
+            ) : null}
+          </VStack>
+        ) : (
+          ""
+        )}
       </Box>
     </NativeBaseProvider>
   );
