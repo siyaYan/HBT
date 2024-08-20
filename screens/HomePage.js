@@ -128,11 +128,15 @@ const HomeScreen = ({ navigation }) => {
     console.log("Home page round data", roundData);
   };
 
-  const handleRoundPress = (roundId) => {
-    navigation.navigate("RoundStack", {
-      screen: "RoundInfo",
-      params: { roundId },
-    });
+  const handleRoundPress = (roundId, status) => {
+    if(status === "A"){
+      navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundId }})
+    }else{
+      navigation.navigate("RoundStack", {
+        screen: "RoundInfo",
+        params: { roundId },
+      });
+    }
     console.log("home page roundId", roundId);
   };
 
@@ -383,7 +387,7 @@ const HomeScreen = ({ navigation }) => {
                 key={index}
                 title={"Round ${index+1}"}
                 onPress={() => {
-                  handleRoundPress(round._id);
+                  handleRoundPress(round._id,round.status);
                 }}
                 rounded="30"
                 // shadow="1"
@@ -485,7 +489,7 @@ const HomeScreen = ({ navigation }) => {
         )}
       {/* Just for testing TODO: this button need to be on Round card */}
         <Box py="5" px="2" alignItems="center" justifyContent="center">
-          <Button             
+          {/* <Button             
             onPress={()=>navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundData.data[0]._id }})}
             rounded="30"
             width="80%"
@@ -502,7 +506,7 @@ const HomeScreen = ({ navigation }) => {
             }}
             _pressed={{
               bg: "#e5f5e5",
-            }} >checkForum</Button>
+            }} >checkForum</Button> */}
           <Button    
             onPress={()=>{setScoreBoardOpen(true)}}                 
             rounded="30"
