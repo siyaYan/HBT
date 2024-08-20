@@ -143,8 +143,9 @@ export const RoundProvider = ({ children }) => {
   // delete a round
   const deleteRoundData = async (roundId) => {
     try {
+      console.log('-----------',roundId)
       const newData = roundData.data.filter((round) => round._id !== roundId);
-
+      console.log("delete round data-------", newData);
       await AsyncStorage.setItem(
         "roundData",
         JSON.stringify({ ...roundData, data: newData })

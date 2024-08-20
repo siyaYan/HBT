@@ -39,12 +39,11 @@ const ForumPage = ({ route, navigation }) => {
     .roundFriends;
   const scrollViewRef = useRef(null);
   useEffect(() => {
-    // console.log('getin')
     const fetchForumMessages = async () => {
       await getForumMessages();
     };
     fetchForumMessages();
-  }, []);
+  }, [route.params]);
 
   const [post, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -57,7 +56,7 @@ const ForumPage = ({ route, navigation }) => {
       const newPosts = res.data.map((item, index) =>
         generateItem(item, res.user[index])
       );
-      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+      setPosts(newPosts);
       // console.log(newPosts);
     }
   };

@@ -23,7 +23,7 @@ const ForumDraft = ({ navigation, route }) => {
     //get RoundId
     const id=activeRound[0]._id
     const res=await addPost(id,post,userData.token)
-    // console.log(ttt)
+
     if(res.status=='success'){
       navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: id }});
     }

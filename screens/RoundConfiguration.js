@@ -255,33 +255,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
   const handleConfirmDelete = async () => {
     setModalVisible(false);
-
     try {
-      // console.log("delete round token", userData.token);
-      // console.log("delete round id", roundId);
       const response = await deleteRound(userData.token, roundId);
-      // setTimeout(() => {
-      //   console.log("delete round response", response);
-      // }, 2000);
-
-      // navigation.goBack();
-
       //response is true, if it is successful
       if (response) {
-        // console.log("round context1: ",roundData);
-        // update round context
-        // console.log("Round id that it deletes",roundId)
         await deleteRoundData(roundId);
-        // console.log("round context2: ",responseDeleteRoundContext);
-        // console.log("Navigate back to home")
-        // Navigate back to Home Screen once delete the round
         navigation.navigate("MainStack", { screen: "Home" });
-        // Show success alert
-        // Alert.alert(
-        //   "Success",
-        //   "Round deleted successfully",
-        //   [{ text: "OK", onPress: () => navigation.navigate("MainStack", { screen: "Home" }) }]
-        // );
+
       } else {
         // Handle case when response is not as expected
         Alert.alert("Error", "Failed to delete the round");
