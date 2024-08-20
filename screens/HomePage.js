@@ -96,12 +96,12 @@ const HomeScreen = ({ navigation }) => {
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
     console.log("active round----", activeRoundData);
   };
-  const updateNote = async () => {
-    const res = await getNoteUpdate(userData.token, userData.data.email);
-    if (res > 0) {
-      updateNotes(res);
-    }
-  };
+  // const updateNote = async () => {
+  //   const res = await getNoteUpdate(userData.token, userData.data.email);
+  //   if (res > 0) {
+  //     updateNotes(res);
+  //   }
+  // };
 
   // useEffect(() => {
   //   // Function to run when entering the page
@@ -109,12 +109,12 @@ const HomeScreen = ({ navigation }) => {
   //   updateRoundContext(); // Update round data when screen is focused
   // }, []); // Empty dependency array means this effect runs only once when the component mounts
 
-  useFocusEffect(
-    useCallback(() => {
-      updateNote();
-      // updateRoundContext(); // Update round data when screen is focused
-    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     updateNote();
+  //     // updateRoundContext(); // Update round data when screen is focused
+  //   }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  // );
 
   const handleAvatarPress = () => {
     navigation.navigate("AccountStack", { screen: "Account" });
@@ -196,7 +196,7 @@ const HomeScreen = ({ navigation }) => {
   }, [userData.token]);
 
   const loadAllReceivedNotification = () => {
-    console.log("----roundInvitationData", roundInvitationData);
+    console.log("----roundInvitationData---notification", roundInvitationData);
     findPendingReceived();
   };
 
