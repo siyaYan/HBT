@@ -843,7 +843,7 @@ export async function cancelLike(roundId,messageId,token) {
 
 export async function deleteMessage(roundId,messageId,token) {
   try {
-    const response= await fetch(`http://localhost:8000/habital/v1/forum/delete/${roundId}/${messageId}`, {
+    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/delete/${roundId}/${messageId}`, {
       method: 'DELETE',
       headers: {
         "Content-Type": "multipart/form-data",
