@@ -63,6 +63,7 @@ function isRoundAccepted(round, currentUserId) {
 const HomeScreen = ({ navigation }) => {
   const [thisRoundInfo, setThisRoundInfo] = useState(null); // State for round info
   const [isOpened, setIsOpened] = useState(false);
+  const [scoreBoardOpen, setScoreBoardOpen] = useState(false)
   const [showRoundDetails, setShowRoundDetails] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [pendingReceived, setPendingReceived] = useState([]);
@@ -96,12 +97,12 @@ const HomeScreen = ({ navigation }) => {
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
     console.log("active round----", activeRoundData);
   };
-  const updateNote = async () => {
-    const res = await getNoteUpdate(userData.token, userData.data.email);
-    if (res > 0) {
-      updateNotes(res);
-    }
-  };
+  // const updateNote = async () => {
+  //   const res = await getNoteUpdate(userData.token, userData.data.email);
+  //   if (res > 0) {
+  //     updateNotes(res);
+  //   }
+  // };
 
   // useEffect(() => {
   //   // Function to run when entering the page
@@ -109,12 +110,12 @@ const HomeScreen = ({ navigation }) => {
   //   updateRoundContext(); // Update round data when screen is focused
   // }, []); // Empty dependency array means this effect runs only once when the component mounts
 
-  useFocusEffect(
-    useCallback(() => {
-      updateNote();
-      // updateRoundContext(); // Update round data when screen is focused
-    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     updateNote();
+  //     // updateRoundContext(); // Update round data when screen is focused
+  //   }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  // );
 
   const handleAvatarPress = () => {
     navigation.navigate("AccountStack", { screen: "Account" });
@@ -128,11 +129,15 @@ const HomeScreen = ({ navigation }) => {
     console.log("Home page round data", roundData);
   };
 
-  const handleRoundPress = (roundId) => {
-    navigation.navigate("RoundStack", {
-      screen: "RoundInfo",
-      params: { roundId },
-    });
+  const handleRoundPress = (roundId, status) => {
+    if(status === "A"){
+      navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundId }})
+    }else{
+      navigation.navigate("RoundStack", {
+        screen: "RoundInfo",
+        params: { roundId },
+      });
+    }
     console.log("home page roundId", roundId);
   };
 
@@ -145,7 +150,8 @@ const HomeScreen = ({ navigation }) => {
 
   const handleClose = () => {
     setIsOpened(false);
-    console.log("isOpened", isOpened);
+    setScoreBoardOpen(false)
+    // console.log("isOpened", isOpened);
   };
 
   const handleRoundValidationClose = () => {
@@ -195,7 +201,7 @@ const HomeScreen = ({ navigation }) => {
   }, [roundInvitationData]);
 
   const loadAllReceivedNotification = () => {
-    console.log("----roundInvitationData", roundInvitationData);
+    console.log("----roundInvitationData---notification", roundInvitationData);
     findPendingReceived();
   };
 
@@ -339,9 +345,6 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </Box>
         </Pressable>
-      </Flex>
-      {/* Linda Sprint 4 Show round/s*/}
-      <Flex direction="column" alignItems="center">
         {roundData?.data?.map((round, index) => {
           // Add condition to check the round if owner or active participant
           if (isRoundAccepted(round, userData.data._id)) {
@@ -389,7 +392,7 @@ const HomeScreen = ({ navigation }) => {
                 key={index}
                 title={"Round ${index+1}"}
                 onPress={() => {
-                  handleRoundPress(round._id);
+                  handleRoundPress(round._id,round.status);
                 }}
                 rounded="30"
                 // shadow="1"
@@ -489,7 +492,51 @@ const HomeScreen = ({ navigation }) => {
               : "Start a round"}
           </Button>
         )}
+      {/* Just for testing TODO: this button need to be on Round card */}
+        <Box py="5" px="2" alignItems="center" justifyContent="center">
+          {/* <Button             
+            onPress={()=>navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundData.data[0]._id }})}
+            rounded="30"
+            width="80%"
+            size="lg"
+            style={{
+              borderWidth: 1, // This sets the width of the border
+              borderColor: "#49a579", // This sets the color of the border
+            }}
+            backgroundColor={"rgba(250,250,250,0.2)"}
+            _text={{
+              color: "#191919",
+              fontFamily: "Regular Semi Bold",
+              fontSize: "lg",
+            }}
+            _pressed={{
+              bg: "#e5f5e5",
+            }} >checkForum</Button> */}
+          <Button    
+            onPress={()=>{setScoreBoardOpen(true)}}                 
+            rounded="30"
+            mt="5"
+            width="80%"
+            size="lg"
+            style={{
+              borderWidth: 1, // This sets the width of the border
+              borderColor: "#49a579", // This sets the color of the border
+            }}
+            backgroundColor={"rgba(250,250,250,0.2)"}
+            _text={{
+              color: "#191919",
+              fontFamily: "Regular Semi Bold",
+              fontSize: "lg",
+            }}
+            _pressed={{
+              bg: "#e5f5e5",
+            }}>checkScoreBoard</Button>
+        </Box>
       </Flex>
+      {/* Linda Sprint 4 Show round/s*/}
+      {/* <Flex direction="column" alignItems="center">
+
+      </Flex> */}
       <TouchableOpacity
         onPress={handlePress}
         style={[
@@ -509,6 +556,7 @@ const HomeScreen = ({ navigation }) => {
       {/* <TouchableOpacity onPress={handlePress}>
           <Icon name="envelope" size={50} color="#666" />
         </TouchableOpacity> */}
+        {/* Modal 1: round invitation notification */}
       <Modal isOpen={isOpened} onClose={handleClose}>
         <Modal.Content maxWidth="400px" width="90%">
           <Modal.CloseButton />
@@ -658,7 +706,17 @@ const HomeScreen = ({ navigation }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-      {/* </View> */}
+      {/* Modal 2: score board of Finished Round */}
+      <Modal isOpen={scoreBoardOpen} onClose={handleClose}>
+        <Modal.Content maxWidth="400px" width="90%">
+          <Modal.CloseButton />
+          <Modal.Header>Round Score Board</Modal.Header>
+          <Modal.Body>
+            <Text fontSize="md">Round ID: {roundData.data[0]?roundData.data[0]._id:''}</Text>
+            
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </NativeBaseProvider>
   );
 };

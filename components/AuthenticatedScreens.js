@@ -20,26 +20,30 @@ const Tab = createBottomTabNavigator();
 export default function AuthenticatedScreens() {
   const navigationRef = useRef();
   const { userData, updateUserData, note, updateNotes } = useData();
-  useFocusEffect(
-    useCallback(() => {
-      // This code runs when the tab comes into focus
-      console.log('This is main tab, note is :',note );
-      updateNote()
-    }, [updateNotes]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
-  );
+  const { isOpen, onOpen, onClose } = useDisclose();
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // This code runs when the tab comes into focus
+  //     console.log('This is main tab, note is :',note );
+  //     updateNote()
+  //   }, [updateNotes]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  // );
 
   const updateNote = async ()=>{
     const res=await getNoteUpdate(userData.token,userData.data.email)
-    // if(res>0){
+    if(res>0){
       console.log("update note in main");
       updateNotes(res)
-    // }
+    }
  }
   useEffect(() => {
     // Fetch or update avatar dynamically
     // userData=useData().useData
     // console.log(userData.notes, "tab-----");
-  }, [userData]);
+    console.log('This is main tab, note is :',note );
+    updateNote()
+  }, [updateNotes]);
+  
   const onPress = (value) => {
     if (value.target.includes("Home")) {
       navigationRef.current?.navigate("Home");

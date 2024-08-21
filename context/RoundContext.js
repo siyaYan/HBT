@@ -167,15 +167,15 @@ export const RoundProvider = ({ children }) => {
   // delete a round
   const deleteRoundData = async (roundId) => {
     try {
+      console.log('-----------',roundId)
       const newData = roundData.data.filter((round) => round._id !== roundId);
-
+      console.log("delete round data-------", newData);
       await AsyncStorage.setItem(
         "roundData",
         JSON.stringify({ ...roundData, data: newData })
       );
       // setRoundData({ ...roundData, data: newData });
-      setRoundData((prevRoundData) => {return {...prevRoundData, data: newData } });
-
+      setRoundData((preRoundData)=>{return{...preRoundData, data: newData }});
       //setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
     } catch (error) {
       console.error("Error deleting round data:", error);
