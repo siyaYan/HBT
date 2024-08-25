@@ -63,7 +63,7 @@ function isRoundAccepted(round, currentUserId) {
 const HomeScreen = ({ navigation }) => {
   const [thisRoundInfo, setThisRoundInfo] = useState(null); // State for round info
   const [isOpened, setIsOpened] = useState(false);
-  const [scoreBoardOpen, setScoreBoardOpen] = useState(false)
+  const [scoreBoardOpen, setScoreBoardOpen] = useState(false);
   const [showRoundDetails, setShowRoundDetails] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [pendingReceived, setPendingReceived] = useState([]);
@@ -129,9 +129,12 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleRoundPress = (roundId, status) => {
-    if(status === "A"){
-      navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundId }})
-    }else{
+    if (status === "A") {
+      navigation.navigate("ForumStack", {
+        screen: "ForumPage",
+        params: { id: roundId },
+      });
+    } else {
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
         params: { roundId },
@@ -149,7 +152,7 @@ const HomeScreen = ({ navigation }) => {
 
   const handleClose = () => {
     setIsOpened(false);
-    setScoreBoardOpen(false)
+    setScoreBoardOpen(false);
     // console.log("isOpened", isOpened);
   };
 
@@ -387,7 +390,7 @@ const HomeScreen = ({ navigation }) => {
                 key={index}
                 title={"Round ${index+1}"}
                 onPress={() => {
-                  handleRoundPress(round._id,round.status);
+                  handleRoundPress(round._id, round.status);
                 }}
                 rounded="30"
                 // shadow="1"
@@ -487,7 +490,7 @@ const HomeScreen = ({ navigation }) => {
               : "Start a round"}
           </Button>
         )}
-      {/* Just for testing TODO: this button need to be on Round card */}
+        {/* Just for testing TODO: this button need to be on Round card */}
         <Box py="5" px="2" alignItems="center" justifyContent="center">
           {/* <Button             
             onPress={()=>navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundData.data[0]._id }})}
@@ -507,8 +510,10 @@ const HomeScreen = ({ navigation }) => {
             _pressed={{
               bg: "#e5f5e5",
             }} >checkForum</Button> */}
-          <Button    
-            onPress={()=>{setScoreBoardOpen(true)}}                 
+          <Button
+            onPress={() => {
+              setScoreBoardOpen(true);
+            }}
             rounded="30"
             mt="5"
             width="80%"
@@ -525,7 +530,10 @@ const HomeScreen = ({ navigation }) => {
             }}
             _pressed={{
               bg: "#e5f5e5",
-            }}>checkScoreBoard</Button>
+            }}
+          >
+            checkScoreBoard
+          </Button>
         </Box>
       </Flex>
       {/* Linda Sprint 4 Show round/s*/}
@@ -551,7 +559,7 @@ const HomeScreen = ({ navigation }) => {
       {/* <TouchableOpacity onPress={handlePress}>
           <Icon name="envelope" size={50} color="#666" />
         </TouchableOpacity> */}
-        {/* Modal 1: round invitation notification */}
+      {/* Modal 1: round invitation notification */}
       <Modal isOpen={isOpened} onClose={handleClose}>
         <Modal.Content maxWidth="400px" width="90%">
           <Modal.CloseButton />
@@ -705,10 +713,24 @@ const HomeScreen = ({ navigation }) => {
       <Modal isOpen={scoreBoardOpen} onClose={handleClose}>
         <Modal.Content maxWidth="400px" width="90%">
           <Modal.CloseButton />
-          <Modal.Header>Round Score Board</Modal.Header>
+          <Modal.Header>
+            Score Board:{roundData.data[0] ? roundData.data[0]._id : ""}
+          </Modal.Header>
           <Modal.Body>
-            <Text fontSize="md">Round ID: {roundData.data[0]?roundData.data[0]._id:''}</Text>
-            
+            {roundData.data[0] ? (
+              <View>
+                {roundData.data[0].roundFriends.map((item) => {
+                  return (
+                    <View>
+                      <Text>{item.nickname}</Text>
+                      <Text>{item.score}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            ) : (
+              ""
+            )}
           </Modal.Body>
         </Modal.Content>
       </Modal>
