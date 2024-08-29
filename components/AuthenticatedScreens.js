@@ -14,6 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import {
   getNoteUpdate
 } from "../components/Endpoint";
+import {useDisclose } from "native-base";
 
 const Tab = createBottomTabNavigator();
 

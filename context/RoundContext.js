@@ -96,7 +96,6 @@ export const RoundProvider = ({ children }) => {
             isRoundAccepted(round, userData.data._id)
           )
         );
-
         return { ...prevRoundData, data: updatedData };
       } else {
         console.error(
@@ -246,6 +245,24 @@ export const RoundProvider = ({ children }) => {
       console.error("Error loading round invitation data:", error);
     }
   };
+  // insert new round
+  const insertActiveRoundData = (newRound) => {
+    setActiveRoundData((prevActiveRoundData) => {
+      console.log("round context check previous active round",prevActiveRoundData)
+
+      if (prevActiveRoundData) {
+        const updatedData = [...prevActiveRoundData, newRound];
+     
+
+        return updatedData;
+      } else {
+        console.error(
+          "Previous active round data is undefined or does not contain data property"
+        );
+        return prevActiveRoundData;
+      }
+    });
+  };
   
   return (
     <RoundContext.Provider
@@ -261,6 +278,7 @@ export const RoundProvider = ({ children }) => {
         insertRoundFriendList,
         roundInvitationData,
         loadRoundInvitationData,
+        insertActiveRoundData,
       }}
     >
       {children}

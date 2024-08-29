@@ -91,7 +91,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const handleCancelLeave = () => {
     setLeaveModalVisible(false);
   };
-  const friendsList = round.roundFriends;
+  const friendsList = round?round.roundFriends:[];
   // console.log("round friend list:", round.roundFriends);
 
   // Navigate to invite friend page
@@ -116,8 +116,8 @@ const RoundInfoScreen = ({ route, navigation }) => {
     });
   };
 
-  const levelInt = parseInt(round.level, 10);
-  const startDate = new Date(round.startDate);
+  const levelInt = round?parseInt(round.level, 10):0;
+  const startDate = round?new Date(round.startDate):new Date();
   const endDate = new Date(
     startDate.getTime() + levelInt * 24 * 60 * 60 * 1000
   ); // Convert days to milliseconds

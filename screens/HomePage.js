@@ -81,41 +81,14 @@ const HomeScreen = ({ navigation }) => {
     updateRounds,
     activeRoundData,
     loadActiveRoundData,
+    insertActiveRoundData,
+    insertRoundData,
   } = useRound();
 
   console.log("active round---", activeRoundData);
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
-  const updateRoundContext = async () => {
-    console.log("home page round context", roundData.data);
-    const newRoundData = await getRoundInfo(userData.token, userData.data._id); // Fetch latest round data
-    // updateRoundData(newRoundData); // Update context with new data
-    console.log("home page --- round context", newRoundData);
-    updateRounds(newRoundData);
-    // const {roundData} = useRound();
-    console.log("-----home page round context", roundData.data);
-    // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
-    console.log("active round----", activeRoundData);
-  };
-  // const updateNote = async () => {
-  //   const res = await getNoteUpdate(userData.token, userData.data.email);
-  //   if (res > 0) {
-  //     updateNotes(res);
-  //   }
-  // };
 
-  // useEffect(() => {
-  //   // Function to run when entering the page
-  //   console.log("-------------Enter page--------");
-  //   updateRoundContext(); // Update round data when screen is focused
-  // }, []); // Empty dependency array means this effect runs only once when the component mounts
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     updateNote();
-  //     // updateRoundContext(); // Update round data when screen is focused
-  //   }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
-  // );
 
   const handleAvatarPress = () => {
     navigation.navigate("AccountStack", { screen: "Account" });
@@ -126,7 +99,7 @@ const HomeScreen = ({ navigation }) => {
       screen: "RoundConfig",
       params: { emptyState: true, source: "home" },
     });
-    console.log("Home page round data", roundData);
+    // console.log("Home page round data", roundData);
   };
 
   const handleRoundPress = (roundId, status) => {
@@ -196,9 +169,9 @@ const HomeScreen = ({ navigation }) => {
     loadRoundInvitationData(userData.token);
   }, [userData.token]);
 
-  useEffect(() => {
-    loadActiveRoundData();
-  }, [roundInvitationData]);
+  // useEffect(() => {
+  //   loadActiveRoundData();
+  // }, [roundInvitationData]);
 
   const loadAllReceivedNotification = () => {
     console.log("----roundInvitationData---notification", roundInvitationData);
@@ -235,9 +208,10 @@ const HomeScreen = ({ navigation }) => {
     console.log("Updated thisRoundInfo:", thisRoundInfo);
   }, [thisRoundInfo]);
 
-  const acceptRoundFriend = (i, thisRoundStartDate) => {
+  const acceptRoundFriend = (i, thisRoundInfo) => {
     // Validation first
     // 2 round already, then warning, keep the invitation
+    thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate)
     if (activeRoundData.length == 2) {
       setShowRoundValidation(!showRoundValidation);
       return;
@@ -270,7 +244,11 @@ const HomeScreen = ({ navigation }) => {
     const id = pendingReceived[i - 1]._id;
     reactRequest(id, "A"); //update round invitation data
     // show the new accepted round on it
-    updateRoundContext();
+    //Insert this new accepted round into round context directly
+    insertRoundData(thisRoundInfo.data[0]);
+     console.log("Home page round data after inserting", roundData);
+
+    insertActiveRoundData(thisRoundInfo.data[0]);
   };
 
   const rejectRoundFriend = (i) => {
@@ -345,9 +323,10 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </Box>
         </Pressable>
-        {roundData?.data?.map((round, index) => {
+        {/* {roundData?.data?.map((round, index) => { */}
+        {activeRoundData?.map((round, index) => {
           // Add condition to check the round if owner or active participant
-          if (isRoundAccepted(round, userData.data._id)) {
+          //if (isRoundAccepted(round, userData.data._id)) {
             //<View key={round._id} >
             const startDate = new Date(round.startDate);
             const timeDifference = startDate - today;
@@ -462,7 +441,7 @@ const HomeScreen = ({ navigation }) => {
               </Button>
               // </View>
             );
-          }
+          //}
         })}
         {/* Linda Sprint 4 Start a round*/}
         {(!activeRoundData || activeRoundData.length < 2) && (
@@ -674,7 +653,7 @@ const HomeScreen = ({ navigation }) => {
                           onPress={() =>
                             acceptRoundFriend(
                               1,
-                              new Date(thisRoundInfo.data[0].startDate)
+                              thisRoundInfo
                             )
                           }
                           name="checksquareo"
