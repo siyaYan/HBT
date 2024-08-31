@@ -1270,3 +1270,31 @@ export async function reactRoundRequest(token, roundInvitationId, react) {
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
+
+export async function getScoreBoard(token, roundId) {  
+  try {  
+    // console.log("calculate or get scoreboard", roundId);  
+    const response = await fetch(  
+      `http://3.27.94.77:8000/habital/v1/round/calculateScoreBoard/${roundId}`,  
+      {  
+        method: "GET",  
+        headers: {  
+          "Content-Type": "application/json",  
+          Authorization: `Bearer ${token}`,  
+        },   
+      }  
+    );  
+  
+    if (!response.ok) {  
+      const errorText = await response.text();  
+      throw new Error(`HTTP error ${response.status}: ${errorText}`);  
+    }  
+  
+    const data = await response.json(); 
+    // console.log("Success:", data); 
+    return data; // Return the data for further processing if needed  
+  } catch (error) {  
+    console.error("Failed to connect to server:", error);  
+    Alert.alert("Unsuccessful", "Cannot connect to server");  
+  }  
+}
