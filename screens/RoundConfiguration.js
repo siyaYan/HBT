@@ -260,7 +260,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       const response = await deleteRound(userData.token, roundId);
       //response is true, if it is successful
       if (response) {
-        await deleteRoundData(roundId);
+        await deleteRoundData(roundId); // round invitation is deleted in backend as well.
         navigation.navigate("MainStack", { screen: "Home" });
 
       } else {
