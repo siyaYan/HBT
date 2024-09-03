@@ -780,7 +780,9 @@ const HomeScreen = ({ navigation }) => {
                             ? styles.firstPlace
                             : topThree[1].rank == 2
                             ? styles.secondPlace
-                            : styles.thirdPlace,
+                            : topThree[1].rank == 3
+                            ? styles.thirdPlace
+                            : styles.restPlcae,
                         ]}
                       >
                         <Text>{topThree[1]?.nickname}</Text>
@@ -819,47 +821,53 @@ const HomeScreen = ({ navigation }) => {
                     )}
                   </View>
                   <View style={styles.stageContainer}>
-                    <View
-                      style={[
-                        styles.stage,
-                        topThree[0].rank == 1
-                          ? styles.firstPlace
-                          : topThree[0].rank == 2
-                          ? styles.secondPlace
-                          : styles.thirdPlace,
-                      ]}
-                    >
-                      <Text>{topThree[0]?.nickname}</Text>
-                      <Avatar
-                        bg="white"
-                        mb="1"
-                        size="md"
-                        source={{ uri: topThree[0]?.avatar }}
-                        style={{
-                          position: "relative",
-                          right: 5,
-                        }}
-                      />
-                      <Badge
-                        colorScheme="coolGray" // or use any other color scheme if needed
-                        style={{
-                          position: "absolute",
-                          bottom: 30,
-                          right: 10,
-                          backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                          padding: 0, // Adjust padding if necessary
-                        }}
+                    {topThree[0] ? (
+                      <View
+                        style={[
+                          styles.stage,
+                          topThree[0].rank == 1
+                            ? styles.firstPlace
+                            : topThree[0].rank == 2
+                            ? styles.secondPlace
+                            : topThree[0].rank == 3
+                            ? styles.thirdPlace
+                            : styles.restPlcae,
+                        ]}
                       >
-                        <AntDesign
-                          name="Trophy"
-                          size={30}
-                          color={medalColors[topThree[0].medal] || "#49a579"}
+                        <Text>{topThree[0]?.nickname}</Text>
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size="md"
+                          source={{ uri: topThree[0]?.avatar }}
+                          style={{
+                            position: "relative",
+                            right: 5,
+                          }}
                         />
-                      </Badge>
-                      <Text>
-                        {topThree[0]?.score} | {topThree[0]?.credit}
-                      </Text>
-                    </View>
+                        <Badge
+                          colorScheme="coolGray" // or use any other color scheme if needed
+                          style={{
+                            position: "absolute",
+                            bottom: 30,
+                            right: 10,
+                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
+                            padding: 0, // Adjust padding if necessary
+                          }}
+                        >
+                          <AntDesign
+                            name="Trophy"
+                            size={30}
+                            color={medalColors[topThree[0].medal] || "#49a579"}
+                          />
+                        </Badge>
+                        <Text>
+                          {topThree[0]?.score} | {topThree[0]?.credit}
+                        </Text>
+                      </View>
+                    ) : (
+                      ""
+                    )}
                   </View>
                   <View style={styles.stageContainer}>
                     {topThree[2] ? (
@@ -870,7 +878,9 @@ const HomeScreen = ({ navigation }) => {
                             ? styles.firstPlace
                             : topThree[2].rank == 2
                             ? styles.secondPlace
-                            : styles.thirdPlace,
+                            : topThree[2].rank == 3
+                            ? styles.thirdPlace
+                            : styles.restPlcae,
                         ]}
                       >
                         <Text>{topThree[2]?.nickname}</Text>
@@ -1091,6 +1101,9 @@ const styles = StyleSheet.create({
   },
   thirdPlace: {
     backgroundColor: "rgba(205, 127, 50,0.2)", // Bronze
+  },
+  restPlcae: {
+    backgroundColor: "rgba(73, 165, 121,0.2)",
   },
   rankText: {
     fontWeight: "bold",
