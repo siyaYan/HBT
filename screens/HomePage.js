@@ -499,7 +499,7 @@ const HomeScreen = ({ navigation }) => {
           </Button>
         )}
         {/* Just for testing TODO: this button need to be on Round card */}
-        <Box py="5" px="2" alignItems="center" justifyContent="center">
+        {/* <Box py="5" px="2" alignItems="center" justifyContent="center">
           {round ? (
             <Button
               onPress={() => {
@@ -528,7 +528,7 @@ const HomeScreen = ({ navigation }) => {
           ) : (
             ""
           )}
-        </Box>
+        </Box> */}
       </Flex>
       {/* Linda Sprint 4 Show round/s*/}
       {/* <Flex direction="column" alignItems="center">
