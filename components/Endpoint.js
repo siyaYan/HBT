@@ -991,7 +991,7 @@ export async function updateRoundInfo(token, newRoundData) {
     } else {
       Alert.alert("Unsuccessful", data.message || "Update round unsuccessful");
     }
-    console.log("Patch endpoint", data);
+    console.log("Patch endpoint 1", data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
@@ -1025,9 +1025,10 @@ export async function updateRoundStatus(token, roundId, newStatus) {
     if (data.status === "success") {  
       Alert.alert("Success", "Status updated successfully");  
     } else {  
+      console.log("----test-")
       Alert.alert("Unsuccessful", data.message || "Failed to update status");  
     }  
-    console.log("Patch endpoint", data);  
+    console.log("Patch endpoint 2", data);  
     return data; // Return the data for further processing if needed  
   } catch (error) {  
     console.error("Failed to connect to server:", error);  
@@ -1061,7 +1062,7 @@ export async function leaveRound(token, roundId) {
     } else {  
       Alert.alert("Unsuccessful", data.message || "Failed to leave round");  
     }  
-    console.log("Patch endpoint", data);  
+    console.log("Patch endpoint 3", data);  
     return data; // Return the data for further processing if needed  
   } catch (error) {  
     console.error("Failed to connect to server:", error);  
@@ -1107,7 +1108,7 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
         data.message || "Update round friend list unsuccessful"
       );
     }
-    console.log("Patch endpoint", data);
+    console.log("Patch endpoint 4", data);
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);

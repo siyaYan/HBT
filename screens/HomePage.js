@@ -159,15 +159,6 @@ const HomeScreen = ({ navigation }) => {
     };
   });
 
-  const triggerAnimation = () => {
-    animation.value = 0; // Reset to initial position
-    animation.value = withSpring(10, { stiffness: 300, damping: 5 }); // Shaking effect
-  };
-
-  useEffect(() => {
-    triggerAnimation();
-  }, []);
-
   const findPendingReceived = () => {
     console.log("----roundInvitationData", roundInvitationData);
     if (roundInvitationData && roundInvitationData.status === "success") {
@@ -182,9 +173,9 @@ const HomeScreen = ({ navigation }) => {
     loadRoundInvitationData(userData.token);
   }, [userData.token]);
 
-  // useEffect(() => {
-  //   loadActiveRoundData();
-  // }, [roundInvitationData]);
+  useEffect(() => {
+    loadActiveRoundData();
+  }, [roundInvitationData]);
 
   const loadAllReceivedNotification = () => {
     console.log("----roundInvitationData---notification", roundInvitationData);
@@ -205,9 +196,6 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [pendingReceived]);
 
-  useEffect(() => {
-    loadAllReceivedNotification();
-  }, []);
 
   const openRoundInvitationInfo = async (i) => {
     const thisRoundId = roundInvitationData.data[i].roundId;
@@ -298,10 +286,6 @@ const HomeScreen = ({ navigation }) => {
         roundId,
         newStatus
       );
-      if (!response.ok) {
-        throw new Error("Failed to update status");
-      }
-
       // Assuming the API doesn't return the updated data, you might need to fetch it again
       // or handle the date update in a different way
       // Update date context code goes here (if needed)
