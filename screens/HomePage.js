@@ -7,6 +7,7 @@ import {
   Flex,
   View,
   Avatar,
+  Badge,
   Modal,
   HStack,
 } from "native-base";
@@ -15,14 +16,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  FlatList,
+  ImageBackground,
+  ScrollView,
 } from "react-native";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
-import { useFocusEffect } from "@react-navigation/native";
-import LottieView from "lottie-react-native";
 import {
+  getScoreBoard,
   getNoteUpdate,
   getRoundInfo,
   reactRoundRequest,
@@ -35,6 +40,9 @@ import {
   withSpring,
 } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/FontAwesome";
+// import ScoreBoardModal from "../components/ScoreBoard.js";
+import RewardStageBackground from "../assets/UIicons/checkout.webp";
+import { color } from "react-native-elements/dist/helpers";
 
 // Function to add days to a date
 function calculateEndDate(date, days) {
@@ -63,12 +71,14 @@ function isRoundAccepted(round, currentUserId) {
 const HomeScreen = ({ navigation }) => {
   const [thisRoundInfo, setThisRoundInfo] = useState(null); // State for round info
   const [isOpened, setIsOpened] = useState(false);
-  const [scoreBoardOpen, setScoreBoardOpen] = useState(false)
+  const [scoreBoardOpen, setScoreBoardOpen] = useState(false);
   const [showRoundDetails, setShowRoundDetails] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [pendingReceived, setPendingReceived] = useState([]);
   const [showRoundValidation, setShowRoundValidation] = useState(false);
   const [showRoundValidationDate, setShowRoundValidationDate] = useState(false);
+  const [rest, setRest] = useState([]);
+  const [topThree, setTopThree] = useState([]);
 
   const today = new Date();
 
@@ -103,9 +113,12 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleRoundPress = (roundId, status) => {
-    if(status === "A"){
-      navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundId }})
-    }else{
+    if (status === "A") {
+      navigation.navigate("ForumStack", {
+        screen: "ForumPage",
+        params: { id: roundId },
+      });
+    } else {
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
         params: { roundId },
@@ -123,7 +136,7 @@ const HomeScreen = ({ navigation }) => {
 
   const handleClose = () => {
     setIsOpened(false);
-    setScoreBoardOpen(false)
+    setScoreBoardOpen(false);
     // console.log("isOpened", isOpened);
   };
 
@@ -298,12 +311,26 @@ const HomeScreen = ({ navigation }) => {
       console.error("Failed to update status and date:", error);
     }
   };
-
+  const medalColors = {
+    Gold: "rgb(255, 215, 0)", // Gold in RGB
+    Silver: "rgb(192, 192, 192)", // Silver in RGB
+    Bronze: "rgb(205, 127, 50)", // Bronze in RGB
+  };
   return (
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems="center">
         <OptionMenu navigation={navigation} />
+
+        {/* {scoreBoardOpen ? (
+          <ScoreBoardModal
+            isOpen={scoreBoardOpen}
+            onClose={handleClose}
+            roundData={roundData}
+          />
+        ) : (
+          ""
+        )} */}
         <Pressable onPress={handleAvatarPress}>
           <Box py="5" px="2" alignItems="center" justifyContent="center">
             {userData.avatar && userData.avatar.uri ? (
@@ -371,7 +398,7 @@ const HomeScreen = ({ navigation }) => {
                 key={index}
                 title={"Round ${index+1}"}
                 onPress={() => {
-                  handleRoundPress(round._id,round.status);
+                  handleRoundPress(round._id, round.status);
                 }}
                 rounded="30"
                 // shadow="1"
@@ -471,45 +498,36 @@ const HomeScreen = ({ navigation }) => {
               : "Start a round"}
           </Button>
         )}
-      {/* Just for testing TODO: this button need to be on Round card */}
+        {/* Just for testing TODO: this button need to be on Round card */}
         <Box py="5" px="2" alignItems="center" justifyContent="center">
-          {/* <Button             
-            onPress={()=>navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundData.data[0]._id }})}
-            rounded="30"
-            width="80%"
-            size="lg"
-            style={{
-              borderWidth: 1, // This sets the width of the border
-              borderColor: "#49a579", // This sets the color of the border
-            }}
-            backgroundColor={"rgba(250,250,250,0.2)"}
-            _text={{
-              color: "#191919",
-              fontFamily: "Regular Semi Bold",
-              fontSize: "lg",
-            }}
-            _pressed={{
-              bg: "#e5f5e5",
-            }} >checkForum</Button> */}
-          <Button    
-            onPress={()=>{setScoreBoardOpen(true)}}                 
-            rounded="30"
-            mt="5"
-            width="80%"
-            size="lg"
-            style={{
-              borderWidth: 1, // This sets the width of the border
-              borderColor: "#49a579", // This sets the color of the border
-            }}
-            backgroundColor={"rgba(250,250,250,0.2)"}
-            _text={{
-              color: "#191919",
-              fontFamily: "Regular Semi Bold",
-              fontSize: "lg",
-            }}
-            _pressed={{
-              bg: "#e5f5e5",
-            }}>checkScoreBoard</Button>
+          {round ? (
+            <Button
+              onPress={() => {
+                getExistScoreBoard(round._id);
+              }}
+              rounded="30"
+              mt="5"
+              width="80%"
+              size="lg"
+              style={{
+                borderWidth: 1, // This sets the width of the border
+                borderColor: "#49a579", // This sets the color of the border
+              }}
+              backgroundColor={"rgba(250,250,250,0.2)"}
+              _text={{
+                color: "#191919",
+                fontFamily: "Regular Semi Bold",
+                fontSize: "lg",
+              }}
+              _pressed={{
+                bg: "#e5f5e5",
+              }}
+            >
+              checkScoreBoard
+            </Button>
+          ) : (
+            ""
+          )}
         </Box>
       </Flex>
       {/* Linda Sprint 4 Show round/s*/}
@@ -530,12 +548,13 @@ const HomeScreen = ({ navigation }) => {
       >
         <Icon name="envelope" size={300} color="#606060" />
       </TouchableOpacity>
+
       {/* <View style={styles.envelopeContainer}> */}
 
       {/* <TouchableOpacity onPress={handlePress}>
           <Icon name="envelope" size={50} color="#666" />
         </TouchableOpacity> */}
-        {/* Modal 1: round invitation notification */}
+      {/* Modal 1: round invitation notification */}
       <Modal isOpen={isOpened} onClose={handleClose}>
         <Modal.Content maxWidth="400px" width="90%">
           <Modal.CloseButton />
@@ -685,17 +704,288 @@ const HomeScreen = ({ navigation }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
+
       {/* Modal 2: score board of Finished Round */}
-      <Modal isOpen={scoreBoardOpen} onClose={handleClose}>
-        <Modal.Content maxWidth="400px" width="90%">
+      <Modal
+        isOpen={scoreBoardOpen}
+        onClose={handleClose}
+        size="full"
+        style={{ marginTop: "6%", overflow: "hidden", flex: 1 }}
+      >
+        <Modal.Content
+          maxWidth="400px"
+          width="90%"
+          style={{ overflow: "hidden", flex: 1 }}
+        >
           <Modal.CloseButton />
-          <Modal.Header>Round Score Board</Modal.Header>
-          <Modal.Body>
-            <Text fontSize="md">Round ID: {roundData.data[0]?roundData.data[0]._id:''}</Text>
-            
+          <Modal.Body style={{ flex: 1, overflow: "hidden" }}>
+            <View
+              style={{ flex: 1, flexDirection: "column", overflow: "hidden" }}
+            >
+              <Box height={"25%"}>
+                <View style={styles.topThreeContainer}>
+                  <View style={styles.stageContainer}>
+                    {topThree[1] ? (
+                      <View
+                        style={[
+                          styles.stage,
+                          topThree[1].rank == 1
+                            ? styles.firstPlace
+                            : topThree[1].rank == 2
+                            ? styles.secondPlace
+                            : topThree[1].rank == 3
+                            ? styles.thirdPlace
+                            : styles.restPlcae,
+                        ]}
+                      >
+                        <Text>{topThree[1]?.nickname}</Text>
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size="md"
+                          source={{ uri: topThree[1]?.avatar }}
+                          style={{
+                            position: "relative",
+                            right: 5,
+                          }}
+                        />
+                        <Badge
+                          colorScheme="coolGray" // or use any other color scheme if needed
+                          style={{
+                            position: "absolute",
+                            bottom: 30,
+                            right: 10,
+                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
+                            padding: 0, // Adjust padding if necessary
+                          }}
+                        >
+                          <AntDesign
+                            name="Trophy"
+                            size={30}
+                            color={medalColors[topThree[1].medal] || "#49a579"}
+                          />
+                        </Badge>
+                        <Text>
+                          {topThree[1]?.score} | {topThree[2]?.credit}
+                        </Text>
+                      </View>
+                    ) : (
+                      ""
+                    )}
+                  </View>
+                  <View style={styles.stageContainer}>
+                    {topThree[0] ? (
+                      <View
+                        style={[
+                          styles.stage,
+                          topThree[0].rank == 1
+                            ? styles.firstPlace
+                            : topThree[0].rank == 2
+                            ? styles.secondPlace
+                            : topThree[0].rank == 3
+                            ? styles.thirdPlace
+                            : styles.restPlcae,
+                        ]}
+                      >
+                        <Text>{topThree[0]?.nickname}</Text>
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size="md"
+                          source={{ uri: topThree[0]?.avatar }}
+                          style={{
+                            position: "relative",
+                            right: 5,
+                          }}
+                        />
+                        <Badge
+                          colorScheme="coolGray" // or use any other color scheme if needed
+                          style={{
+                            position: "absolute",
+                            bottom: 30,
+                            right: 10,
+                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
+                            padding: 0, // Adjust padding if necessary
+                          }}
+                        >
+                          <AntDesign
+                            name="Trophy"
+                            size={30}
+                            color={medalColors[topThree[0].medal] || "#49a579"}
+                          />
+                        </Badge>
+                        <Text>
+                          {topThree[0]?.score} | {topThree[0]?.credit}
+                        </Text>
+                      </View>
+                    ) : (
+                      ""
+                    )}
+                  </View>
+                  <View style={styles.stageContainer}>
+                    {topThree[2] ? (
+                      <View
+                        style={[
+                          styles.stage,
+                          topThree[2].rank == 1
+                            ? styles.firstPlace
+                            : topThree[2].rank == 2
+                            ? styles.secondPlace
+                            : topThree[2].rank == 3
+                            ? styles.thirdPlace
+                            : styles.restPlcae,
+                        ]}
+                      >
+                        <Text>{topThree[2]?.nickname}</Text>
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size="md"
+                          source={{ uri: topThree[2]?.avatar }}
+                          style={{
+                            position: "relative",
+                            right: 5,
+                          }}
+                        />
+                        <Badge
+                          colorScheme="coolGray" // or use any other color scheme if needed
+                          style={{
+                            position: "absolute",
+                            bottom: 30,
+                            right: 10,
+                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
+                            padding: 0, // Adjust padding if necessary
+                          }}
+                        >
+                          <AntDesign
+                            name="Trophy"
+                            size={30}
+                            color={medalColors[topThree[2].medal] || "#49a579"}
+                          />
+                        </Badge>
+
+                        <Text>
+                          {topThree[2]?.score} | {topThree[2]?.credit}
+                        </Text>
+                      </View>
+                    ) : (
+                      ""
+                    )}
+                  </View>
+                </View>
+              </Box>
+              <Box height={"60%"}>
+                <ScrollView style={styles.listContainer}>
+                  <FlatList
+                    data={rest}
+                    keyExtractor={(item) => item.nickname}
+                    renderItem={({ item, index }) => (
+                      <View key={index} style={styles.playerItem}>
+                        <View>
+                          <Text style={styles.rankText}>{item.rank}th</Text>
+                          <MaterialCommunityIcons
+                            name="medal-outline"
+                            size={25}
+                            color={medalColors[item.medal] || "#49a579"}
+                          />
+                        </View>
+
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size="md"
+                          source={{ uri: item?.avatar }}
+                        />
+                        <Text>{item.nickname}</Text>
+                        <Text>
+                          {item.score} | {item.credit}
+                        </Text>
+                      </View>
+                    )}
+                  />
+                </ScrollView>
+              </Box>
+              <Box height={"15%"}>
+                {
+                  rest.filter((item) => item.id === userData.data._id).length >
+                  0
+                    ? rest
+                        .filter((item) => item.id === userData.data._id)
+                        .map((item, index) => (
+                          <View key={index} style={styles.placementContainer}>
+                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
+                              {item.nickname}
+                            </Text>
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                color: "#f9f8f2",
+                              }}
+                            >{`${index + 1}th  place`}</Text>
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                color: "#f9f8f2",
+                              }}
+                            >{`${item.score} | ${item.credit} `}</Text>
+                          </View>
+                        ))
+                    : topThree
+                        .filter((item) => item.id === userData.data._id)
+                        .map((item, index) => (
+                          <View key={index} style={styles.placementContainer}>
+                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
+                              {item.nickname}
+                            </Text>
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                color: "#f9f8f2",
+                              }}
+                            >{`${index + 1}th  place`}</Text>
+                            <Text
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                color: "#f9f8f2",
+                              }}
+                            >{`${item.score} | ${item.credit} `}</Text>
+                          </View>
+                        )) // or you can replace null with some fallback JSX if needed
+                }
+              </Box>
+            </View>
           </Modal.Body>
         </Modal.Content>
       </Modal>
+
+      {/* <Modal isOpen={scoreBoardOpen} onClose={handleClose}>
+        <Modal.Content maxWidth="400px" width="90%">
+          <Modal.CloseButton />
+          <Modal.Header>
+            Score Board:{roundData.data[0] ? roundData.data[0]._id : ""}
+          </Modal.Header>
+          <Modal.Body>
+            {roundData.data[0] ? (
+              <View>
+                {roundData.data[0].roundFriends.map((item) => {
+                  return (
+                    <View>
+                      <Text>{item.nickname}</Text>
+                      <Text>{item.score}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            ) : (
+              ""
+            )}
+          </Modal.Body>
+        </Modal.Content>
+      </Modal> */}
     </NativeBaseProvider>
   );
 };
@@ -718,6 +1008,77 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10, // Optional: Add border radius for a more polished look
   },
-});
 
+  background: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    height: "100%",
+  },
+
+  topThreeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  placementContainer: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgb(102, 102, 255)",
+    fontSize: 20,
+    paddingHorizontal: "10%",
+    paddingVertical: "8%",
+    borderRadius: 10,
+  },
+  stageContainer: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "rgba(205, 200, 200, 0.2)",
+    paddingVertical: 20,
+  },
+  stage: {
+    width: 110, // Example width
+    height: 110, // Example height
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 60,
+    fontSize: 16,
+  },
+  firstPlace: {
+    // backgroundColor: "rgba(205, 200, 200, 0.2)",
+    backgroundColor: "rgba(255, 215, 0, 0.2)", // Gold in RGB
+  },
+  secondPlace: {
+    backgroundColor: "rgba(192, 192, 192,0.2)",
+  },
+  thirdPlace: {
+    backgroundColor: "rgba(205, 127, 50,0.2)", // Bronze
+  },
+  restPlcae: {
+    backgroundColor: "rgba(73, 165, 121,0.2)",
+  },
+  rankText: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  listContainer: {
+    marginVertical: 20,
+    height: "70%",
+    borderRadius: 10,
+    flex: 1,
+    backgroundColor: "rgba(200, 200, 200, 0.2)",
+  },
+  playerItem: {
+    borderRadius: 10,
+    backgroundColor: "rgba(147, 216, 197, 0.5)",
+    fontSize: 20,
+    flexDirection: "row",
+    paddingHorizontal: "10%",
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: 5,
+    paddingVertical: 15,
+  },
+});
 export default HomeScreen;
