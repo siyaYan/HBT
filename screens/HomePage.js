@@ -547,24 +547,6 @@ const HomeScreen = ({ navigation }) => {
         )}
         {/* Just for testing TODO: this button need to be on Round card */}
         <Box py="5" px="2" alignItems="center" justifyContent="center">
-          {/* <Button             
-            onPress={()=>navigation.navigate('ForumStack', { screen: 'ForumPage' , params: { id: roundData.data[0]._id }})}
-            rounded="30"
-            width="80%"
-            size="lg"
-            style={{
-              borderWidth: 1, // This sets the width of the border
-              borderColor: "#49a579", // This sets the color of the border
-            }}
-            backgroundColor={"rgba(250,250,250,0.2)"}
-            _text={{
-              color: "#191919",
-              fontFamily: "Regular Semi Bold",
-              fontSize: "lg",
-            }}
-            _pressed={{
-              bg: "#e5f5e5",
-            }} >checkForum</Button> */}
           {round ? (
             <Button
               onPress={() => {
@@ -775,18 +757,32 @@ const HomeScreen = ({ navigation }) => {
         isOpen={scoreBoardOpen}
         onClose={handleClose}
         size="full"
-        style={{ marginTop: "6%", overflow:'hidden', flex:1 }}
+        style={{ marginTop: "6%", overflow: "hidden", flex: 1 }}
       >
-        <Modal.Content maxWidth="400px" width="90%" style={{overflow:'hidden', flex:1 }}>
+        <Modal.Content
+          maxWidth="400px"
+          width="90%"
+          style={{ overflow: "hidden", flex: 1 }}
+        >
           <Modal.CloseButton />
-          <Modal.Body style={{ flex: 1, overflow: 'hidden' }}>
-            <View style={{ flex: 1, flexDirection: 'column', overflow: 'hidden' }}>
-              <Box height={'20%'}>
+          <Modal.Body style={{ flex: 1, overflow: "hidden" }}>
+            <View
+              style={{ flex: 1, flexDirection: "column", overflow: "hidden" }}
+            >
+              <Box height={"25%"}>
                 <View style={styles.topThreeContainer}>
                   <View style={styles.stageContainer}>
                     {topThree[1] ? (
-                      <View style={[styles.stage, styles.secondPlace]}>
-   
+                      <View
+                        style={[
+                          styles.stage,
+                          topThree[1].rank == 1
+                            ? styles.firstPlace
+                            : topThree[1].rank == 2
+                            ? styles.secondPlace
+                            : styles.thirdPlace,
+                        ]}
+                      >
                         <Text>{topThree[1]?.nickname}</Text>
                         <Avatar
                           bg="white"
@@ -811,10 +807,9 @@ const HomeScreen = ({ navigation }) => {
                           <AntDesign
                             name="Trophy"
                             size={30}
-                            color={medalColors["Silver"] || "black"}
+                            color={medalColors[topThree[1].medal] || "#49a579"}
                           />
                         </Badge>
-                      
                         <Text>
                           {topThree[1]?.score} | {topThree[2]?.credit}
                         </Text>
@@ -824,8 +819,16 @@ const HomeScreen = ({ navigation }) => {
                     )}
                   </View>
                   <View style={styles.stageContainer}>
-                    <View style={[styles.stage, styles.firstPlace]}>
- 
+                    <View
+                      style={[
+                        styles.stage,
+                        topThree[0].rank == 1
+                          ? styles.firstPlace
+                          : topThree[0].rank == 2
+                          ? styles.secondPlace
+                          : styles.thirdPlace,
+                      ]}
+                    >
                       <Text>{topThree[0]?.nickname}</Text>
                       <Avatar
                         bg="white"
@@ -837,22 +840,22 @@ const HomeScreen = ({ navigation }) => {
                           right: 5,
                         }}
                       />
-                        <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
-                          style={{
-                            position: "absolute",
-                            bottom: 30,
-                            right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
-                          }}
-                        >
-                          <AntDesign
-                            name="Trophy"
-                            size={30}
-                            color={medalColors["Gold"] || "black"}
-                          />
-                        </Badge>
+                      <Badge
+                        colorScheme="coolGray" // or use any other color scheme if needed
+                        style={{
+                          position: "absolute",
+                          bottom: 30,
+                          right: 10,
+                          backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
+                          padding: 0, // Adjust padding if necessary
+                        }}
+                      >
+                        <AntDesign
+                          name="Trophy"
+                          size={30}
+                          color={medalColors[topThree[0].medal] || "#49a579"}
+                        />
+                      </Badge>
                       <Text>
                         {topThree[0]?.score} | {topThree[0]?.credit}
                       </Text>
@@ -860,8 +863,16 @@ const HomeScreen = ({ navigation }) => {
                   </View>
                   <View style={styles.stageContainer}>
                     {topThree[2] ? (
-                      <View style={[styles.stage, styles.thirdPlace]}>
-                 
+                      <View
+                        style={[
+                          styles.stage,
+                          topThree[2].rank == 1
+                            ? styles.firstPlace
+                            : topThree[2].rank == 2
+                            ? styles.secondPlace
+                            : styles.thirdPlace,
+                        ]}
+                      >
                         <Text>{topThree[2]?.nickname}</Text>
                         <Avatar
                           bg="white"
@@ -886,10 +897,10 @@ const HomeScreen = ({ navigation }) => {
                           <AntDesign
                             name="Trophy"
                             size={30}
-                            color={medalColors["Bronze"] || "black"}
+                            color={medalColors[topThree[2].medal] || "#49a579"}
                           />
                         </Badge>
-                       
+
                         <Text>
                           {topThree[2]?.score} | {topThree[2]?.credit}
                         </Text>
@@ -899,9 +910,8 @@ const HomeScreen = ({ navigation }) => {
                     )}
                   </View>
                 </View>
-
               </Box>
-              <Box height={"60%"} >
+              <Box height={"60%"}>
                 <ScrollView style={styles.listContainer}>
                   <FlatList
                     data={rest}
@@ -932,7 +942,7 @@ const HomeScreen = ({ navigation }) => {
                   />
                 </ScrollView>
               </Box>
-              <Box height={"12%"}>
+              <Box height={"15%"}>
                 {
                   rest.filter((item) => item.id === userData.data._id).length >
                   0
@@ -940,15 +950,22 @@ const HomeScreen = ({ navigation }) => {
                         .filter((item) => item.id === userData.data._id)
                         .map((item, index) => (
                           <View key={index} style={styles.placementContainer}>
-                          
-                            <Text style={{ fontSize: 20, color:'#f9f8f2'}}>
+                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
                               {item.nickname}
                             </Text>
                             <Text
-                              style={{ fontWeight: "bold", fontSize: 20, color:'#f9f8f2' }}
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                color: "#f9f8f2",
+                              }}
                             >{`${index + 1}th  place`}</Text>
                             <Text
-                              style={{ fontWeight: "bold", fontSize: 20, color:'#f9f8f2' }}
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                color: "#f9f8f2",
+                              }}
                             >{`${item.score} | ${item.credit} `}</Text>
                           </View>
                         ))
@@ -956,15 +973,22 @@ const HomeScreen = ({ navigation }) => {
                         .filter((item) => item.id === userData.data._id)
                         .map((item, index) => (
                           <View key={index} style={styles.placementContainer}>
-                           
-                            <Text style={{ fontSize: 20, color:'#f9f8f2'}}>
+                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
                               {item.nickname}
                             </Text>
                             <Text
-                              style={{ fontWeight: "bold", fontSize: 20, color:'#f9f8f2' }}
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                color: "#f9f8f2",
+                              }}
                             >{`${index + 1}th  place`}</Text>
                             <Text
-                              style={{ fontWeight: "bold", fontSize: 20, color:'#f9f8f2' }}
+                              style={{
+                                fontWeight: "bold",
+                                fontSize: 20,
+                                color: "#f9f8f2",
+                              }}
                             >{`${item.score} | ${item.credit} `}</Text>
                           </View>
                         )) // or you can replace null with some fallback JSX if needed
@@ -1038,7 +1062,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: 'rgb(102, 102, 255)',
+    backgroundColor: "rgb(102, 102, 255)",
     fontSize: 20,
     paddingHorizontal: "10%",
     paddingVertical: "8%",
