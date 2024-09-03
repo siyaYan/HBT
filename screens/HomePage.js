@@ -757,17 +757,16 @@ const HomeScreen = ({ navigation }) => {
         isOpen={scoreBoardOpen}
         onClose={handleClose}
         size="full"
-        style={{ marginTop: "6%", overflow: "hidden", flex: 1 }}
+        style={{ marginTop: "15%", overflow: "hidden", flex: 1 }}
       >
         <Modal.Content
           maxWidth="400px"
           width="90%"
-          style={{ overflow: "hidden", flex: 1 }}
+          height={'95%'}
         >
           <Modal.CloseButton />
-          <Modal.Body style={{ flex: 1, overflow: "hidden" }}>
+          <Modal.Body >
             <View
-              style={{ flex: 1, flexDirection: "column", overflow: "hidden" }}
             >
               <Box height={"25%"}>
                 <View style={styles.topThreeContainer}>
