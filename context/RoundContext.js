@@ -24,6 +24,16 @@ function isRoundAccepted(round, currentUserId) {
     }
   }
 }
+
+function isRoundWithin10Per(start, level) {
+  const today = new Date();
+  const startDate = new Date(start);
+  const timeDifference = startDate - today;
+  const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+  const check= daysDifference<=parseInt(level)*0.1;//within 10% of duration or not
+  return check;
+}
 export const RoundProvider = ({ children }) => {
   const { userData } = useData();
 
@@ -54,13 +64,56 @@ export const RoundProvider = ({ children }) => {
             isRoundAccepted(round, userData.data._id)
           )
         );
+        const savedRoundInvitationData = await AsyncStorage.getItem(
+          "roundInvitationData"
+        );
+        if (savedRoundInvitationData) {
+          console.log(
+            "Fetched from Endpoint Round Invitation Loaded from AsyncStorage:",
+            JSON.parse(savedRoundData)
+          );
+          //filtered up to 10% of level,if more than 10%, then don't show invitation any more.
+          setRoundInvitationData(
+            JSON.parse(savedRoundInvitationData).data?.filter((round) =>
+              isRoundWithin10Per(round.startDate, round.level)==true
+            )
+          );
+          // setRoundInvitationData(JSON.parse(savedRoundInvitationData));
+        } else {
+          const fetchedInvitationData = await getRoundInvitation(
+            userData.token
+          );
+          console.log("Fetched from Endpoint:", fetchedRoundData);
+          //filtered up to 10% of level,if more than 10%, then don't show invitation any more.
+          setRoundInvitationData(
+            JSON.parse(fetchedInvitationData).data?.filter((round) =>
+              isRoundWithin10Per(round.startDate, round.level)==true
+            )
+          );
+          // setRoundInvitationData(fetchedInvitationData);
+          await AsyncStorage.setItem(
+            "roundInvitationData",
+            JSON.stringify(fetchedInvitationData)
+          );
+        }
       } catch (error) {
-        console.error("Error loading round data:", error);
+        console.error("Error loading round/invitation data:", error);
       }
     };
 
     loadData();
   }, []);
+  const loadActiveRoundData = async () => {
+    try {
+      setActiveRoundData(
+        roundData.data?.filter((round) =>
+          isRoundAccepted(round, userData.data._id)
+        )
+      );
+    } catch (error) {
+      console.error("Error loading round active data:", error);
+    }
+  };
 
   // insert new round
   const insertRoundData = (newRound) => {
@@ -72,7 +125,6 @@ export const RoundProvider = ({ children }) => {
             isRoundAccepted(round, userData.data._id)
           )
         );
-
         return { ...prevRoundData, data: updatedData };
       } else {
         console.error(
@@ -93,7 +145,11 @@ export const RoundProvider = ({ children }) => {
           round._id === updatedRound._id ? { ...round, ...updatedRound } : round
         );
         console.log("updateRoundData", updatedRound);
-        setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
+        setActiveRoundData(
+          roundData.data.filter((round) =>
+            isRoundAccepted(round, userData.data._id)
+          )
+        );
         return { ...prevRoundData, data: updatedData };
       } else {
         console.error(
@@ -115,13 +171,21 @@ export const RoundProvider = ({ children }) => {
               ...round,
               roundFriends: [...round.roundFriends, newFriend],
             };
-            setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
+            setActiveRoundData(
+              roundData.data.filter((round) =>
+                isRoundAccepted(round, userData.data._id)
+              )
+            );
             return updatedRound;
           } else {
             return round;
           }
         });
-        setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
+        setActiveRoundData(
+          roundData.data.filter((round) =>
+            isRoundAccepted(round, userData.data._id)
+          )
+        );
         return { ...prevRoundData, data: updatedData };
       } else {
         console.error(
@@ -136,14 +200,17 @@ export const RoundProvider = ({ children }) => {
   const updateRounds = (newRounds) => {
     console.log("round context------", newRounds);
     setRoundData(newRounds);
-   setActiveRoundData(newRounds.data.filter(round => isRoundAccepted(round,userData.data._id)));
-
+    setActiveRoundData(
+      newRounds.data.filter((round) =>
+        isRoundAccepted(round, userData.data._id)
+      )
+    );
   };
 
   // delete a round
   const deleteRoundData = async (roundId) => {
     try {
-      console.log('-----------',roundId)
+      console.log("-----------", roundId);
       const newData = roundData.data.filter((round) => round._id !== roundId);
       console.log("delete round data-------", newData);
       await AsyncStorage.setItem(
@@ -151,7 +218,9 @@ export const RoundProvider = ({ children }) => {
         JSON.stringify({ ...roundData, data: newData })
       );
       // setRoundData({ ...roundData, data: newData });
-      setRoundData((preRoundData)=>{return{...preRoundData, data: newData }});
+      setRoundData((preRoundData) => {
+        return { ...preRoundData, data: newData };
+      });
       //setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
     } catch (error) {
       console.error("Error deleting round data:", error);
@@ -174,7 +243,7 @@ export const RoundProvider = ({ children }) => {
               updatedRound.roundFriends
             );
             // return updatedRound;
-          } 
+          }
           // else {
           //   return round;
           // }
@@ -192,7 +261,7 @@ export const RoundProvider = ({ children }) => {
           }
         });
         console.log("round context updated before return", updatedRoundData);
-       // setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
+        // setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
 
         return updatedRoundData;
       } else {
@@ -222,11 +291,33 @@ export const RoundProvider = ({ children }) => {
       console.error("Error loading round invitation data:", error);
     }
   };
+  // insert new round
+  const insertActiveRoundData = (newRound) => {
+    setActiveRoundData((prevActiveRoundData) => {
+      console.log(
+        "round context check previous active round",
+        prevActiveRoundData
+      );
+
+      if (prevActiveRoundData) {
+        const updatedData = [...prevActiveRoundData, newRound];
+
+        return updatedData;
+      } else {
+        console.error(
+          "Previous active round data is undefined or does not contain data property"
+        );
+        return prevActiveRoundData;
+      }
+    });
+  };
+
   return (
     <RoundContext.Provider
       value={{
         roundData,
         activeRoundData,
+        loadActiveRoundData,
         updateRoundData,
         updateRounds,
         insertRoundData,
@@ -235,6 +326,7 @@ export const RoundProvider = ({ children }) => {
         insertRoundFriendList,
         roundInvitationData,
         loadRoundInvitationData,
+        insertActiveRoundData,
       }}
     >
       {children}

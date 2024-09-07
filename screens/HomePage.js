@@ -87,70 +87,15 @@ const HomeScreen = ({ navigation }) => {
     loadRoundInvitationData,
     updateRounds,
     activeRoundData,
+    loadActiveRoundData,
+    insertActiveRoundData,
+    insertRoundData,
   } = useRound();
 
   console.log("active round---", activeRoundData);
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
 
-  // const topThree = round ? round.roundFriends.slice(0, 3) : [];
-  // const rest = round ? round.roundFriends.slice(3) : [];
-  const updateRoundContext = async () => {
-    console.log("home page round context", roundData.data);
-    const newRoundData = await getRoundInfo(userData.token, userData.data._id); // Fetch latest round data
-    // updateRoundData(newRoundData); // Update context with new data
-    console.log("home page --- round context", newRoundData);
-    updateRounds(newRoundData);
-    // const {roundData} = useRound();
-    console.log("-----home page round context", roundData.data);
-    // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
-    console.log("active round----", activeRoundData);
-  };
-
-  const getExistScoreBoard = async (roundId) => {
-    // console.log(userData.token, roundId)
-    const res = await getScoreBoard(userData.token, roundId);
-    if (res) {
-      const topThree = res.data.ranking.slice(0, 3);
-      const rest = res.data.ranking.slice(3);
-      // updateRoundData({ ...roundData, scoreBoard: res.data });
-      setRest(rest);
-      setTopThree(topThree);
-    }
-  };
-  // const getSortedFriends = (round) => {
-  //   if (!round) return { topThree: [], rest: [] };
-
-  //   // Sort the friends array based on score in descending order
-  //   const sortedFriends = [...round.roundFriends].sort(
-  //     (a, b) => b.score - a.score
-  //   );
-
-  //   // Get top three and the rest
-  //   const topThree = sortedFriends.slice(0, 3);
-  //   const rest = sortedFriends.slice(3);
-
-  //   return { topThree, rest };
-  // };
-  // const updateNote = async () => {
-  //   const res = await getNoteUpdate(userData.token, userData.data.email);
-  //   if (res > 0) {
-  //     updateNotes(res);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   // Function to run when entering the page
-  //   console.log("-------------Enter page--------");
-  //   updateRoundContext(); // Update round data when screen is focused
-  // }, [userData]); // Empty dependency array means this effect runs only once when the component mounts
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     // updateNote();
-  //     updateRoundContext(); // Update round data when screen is focused
-  //   }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
-  // );
 
   const handleAvatarPress = () => {
     navigation.navigate("AccountStack", { screen: "Account" });
@@ -161,7 +106,7 @@ const HomeScreen = ({ navigation }) => {
       screen: "RoundConfig",
       params: { emptyState: true, source: "home" },
     });
-    console.log("Home page round data", roundData);
+    // console.log("Home page round data", roundData);
   };
 
   const handleRoundPress = (roundId, status) => {
@@ -211,15 +156,6 @@ const HomeScreen = ({ navigation }) => {
     };
   });
 
-  const triggerAnimation = () => {
-    animation.value = 0; // Reset to initial position
-    animation.value = withSpring(10, { stiffness: 300, damping: 5 }); // Shaking effect
-  };
-
-  useEffect(() => {
-    triggerAnimation();
-  }, []);
-
   const findPendingReceived = () => {
     console.log("----roundInvitationData", roundInvitationData);
     if (roundInvitationData && roundInvitationData.status === "success") {
@@ -233,6 +169,10 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     loadRoundInvitationData(userData.token);
   }, [userData.token]);
+
+  useEffect(() => {
+    loadActiveRoundData();
+  }, [roundInvitationData]);
 
   const loadAllReceivedNotification = () => {
     console.log("----roundInvitationData---notification", roundInvitationData);
@@ -253,9 +193,6 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [pendingReceived]);
 
-  useEffect(() => {
-    loadAllReceivedNotification();
-  }, []);
 
   const openRoundInvitationInfo = async (i) => {
     const thisRoundId = roundInvitationData.data[i].roundId;
@@ -269,9 +206,10 @@ const HomeScreen = ({ navigation }) => {
     console.log("Updated thisRoundInfo:", thisRoundInfo);
   }, [thisRoundInfo]);
 
-  const acceptRoundFriend = (i, thisRoundStartDate) => {
+  const acceptRoundFriend = (i, thisRoundInfo) => {
     // Validation first
     // 2 round already, then warning, keep the invitation
+    thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate)
     if (activeRoundData.length == 2) {
       setShowRoundValidation(!showRoundValidation);
       return;
@@ -304,7 +242,11 @@ const HomeScreen = ({ navigation }) => {
     const id = pendingReceived[i - 1]._id;
     reactRequest(id, "A"); //update round invitation data
     // show the new accepted round on it
-    updateRoundContext();
+    //Insert this new accepted round into round context directly
+    insertRoundData(thisRoundInfo.data[0]);
+     console.log("Home page round data after inserting", roundData);
+
+    insertActiveRoundData(thisRoundInfo.data[0]);
   };
 
   const rejectRoundFriend = (i) => {
@@ -341,6 +283,9 @@ const HomeScreen = ({ navigation }) => {
         roundId,
         newStatus
       );
+      // Assuming the API doesn't return the updated data, you might need to fetch it again
+      // or handle the date update in a different way
+      // Update date context code goes here (if needed)
       if (!response.ok) {
         throw new Error("Failed to update status");
       }
@@ -362,6 +307,40 @@ const HomeScreen = ({ navigation }) => {
     Silver: "rgb(192, 192, 192)", // Silver in RGB
     Bronze: "rgb(205, 127, 50)", // Bronze in RGB
   };
+  const processRounds = (rounds, today, userId) => {
+    return rounds.map((round, index) => {
+      const startDate = new Date(round.startDate);
+      const timeDifference = startDate - today;
+      const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+  
+      if (daysDifference <= 0 && round.status !== "A") {
+        updateStatusAndDate(round._id, "A");
+      }
+  
+      const endDate = calculateEndDate(startDate, parseInt(round.level, 10));
+      const endTimeDifference = Math.ceil((endDate - today) / (1000 * 3600 * 24));
+  
+      if (
+        endTimeDifference <= 0 &&
+        round.status === "A" &&
+        round.status !== "F" &&
+        round.status !== "C"
+      ) {
+        updateStatusAndDate(round._id, "F");
+      }
+  
+      const prefix = timeDifference > 0 ? "D-" : "D+";
+      const formattedDifference = `${prefix}${Math.abs(daysDifference)} days`;
+  
+      return {
+        round,
+        index,
+        startDate,
+        formattedDifference,
+      };
+    });
+  };
+  const processedRounds = processRounds(activeRoundData, today, userData.data._id);
 
   return (
     <NativeBaseProvider>
@@ -397,122 +376,78 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </Box>
         </Pressable>
-        {roundData?.data?.map((round, index) => {
-          // Add condition to check the round if owner or active participant
-          if (isRoundAccepted(round, userData.data._id)) {
-            //<View key={round._id} >
-            const startDate = new Date(round.startDate);
-            const timeDifference = startDate - today;
-            const daysDifference = Math.ceil(
-              timeDifference / (1000 * 3600 * 24)
-            );
+        {/* {roundData?.data?.map((round, index) => { */}
+        {processedRounds?.map(({ round, index, startDate, formattedDifference }) => {
+  return (
+    <Button
+      key={index}
+      title={`Round ${index + 1}`}
+      onPress={() => {
+        handleRoundPress(round._id, round.status);
+      }}
+      rounded="30"
+      mt="5"
+      width="80%"
+      height="100"
+      size="lg"
+      style={{
+        borderWidth: 1, // This sets the width of the border
+        borderColor: "#49a579", // This sets the color of the border
+      }}
+      backgroundColor={
+        round.status === "P"
+          ? "#606060"
+          : round.status === "R"
+          ? "#666ff"
+          : round.status === "A"
+          ? "#49a579"
+          : round.status === "F"
+          ? "#f9f8f2"
+          : "rgba(250,250,250,0.2)"
+      }
+      _pressed={{
+        bg:
+          round.status === "P"
+            ? "#252525"
+            : round.status === "R"
+            ? "#323280"
+            : round.status === "A"
+            ? "173225"
+            : round.status === "F"
+            ? "C0C0C0"
+            : "rgba(0, 0, 0, 0)", // default is transparent
+      }}
+    >
+      <Text
+        style={{
+          color: "#FFFFFF",
+          fontFamily: "Regular Semi Bold",
+          fontSize: 20, // Use a number for fontSize instead of "lg"
+        }}
+      >
+        {round.name}
+      </Text>
+      {(round.status === "P" || round.status === "R") && (
+        <Text
+          style={{
+            color: "#FFFFFF",
+            fontFamily: "Regular Semi Bold",
+            fontSize: 20, // Use a number for fontSize instead of "lg"
+          }}
+        >
+          {formattedDifference} (
+          {startDate.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+          )
+        </Text>
+      )}
+    </Button>
+  );
+})}
 
-            if (daysDifference <= 0 && round.status !== "A") {
-              //update the status
-              updateStatusAndDate(round._id, "A");
-            }
-            const endDate = calculateEndDate(
-              startDate,
-              parseInt(round.level, 10)
-            );
-            const endTimeDifference = Math.ceil(
-              (endDate - today) / (1000 * 3600 * 24)
-            );
-            if (
-              endTimeDifference <= 0 &&
-              round.status === "A" &&
-              round.status !== "F" &&
-              round.status !== "C"
-            ) {
-              updateStatusAndDate(round._id, "F");
-            }
-            {
-              /* console.log("-------enddaysdifference",endTimeDifference); */
-            }
-
-            const prefix = timeDifference > 0 ? "D-" : "D+";
-            const formattedDifference = `${prefix}${Math.abs(
-              daysDifference
-            )} days`;
-
-            return (
-              // <View>
-              <Button
-                key={index}
-                title={"Round ${index+1}"}
-                onPress={() => {
-                  handleRoundPress(round._id, round.status);
-                }}
-                rounded="30"
-                // shadow="1"
-                mt="5"
-                width="80%"
-                height="100"
-                size="lg"
-                style={{
-                  borderWidth: 1, // This sets the width of the border
-                  borderColor: "#49a579", // This sets the color of the border
-                }}
-                backgroundColor={
-                  round.status === "P"
-                    ? "#606060"
-                    : round.status === "R"
-                    ? "#666ff"
-                    : round.status === "A"
-                    ? "#49a579"
-                    : round.status === "F"
-                    ? "#f9f8f2"
-                    : "rgba(250,250,250,0.2)"
-                }
-                // _text={{
-                //   color: "#FFFFFF",
-                //   fontFamily: "Regular Semi Bold",
-                //   fontSize: "lg",
-                // }}
-                _pressed={{
-                  bg:
-                    round.status === "P"
-                      ? "#252525"
-                      : round.status === "R"
-                      ? "#323280"
-                      : round.status === "A"
-                      ? "173225"
-                      : round.status === "F"
-                      ? "C0C0C0"
-                      : "rgba(0, 0, 0, 0)", // default is transparent
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#FFFFFF",
-                    fontFamily: "Regular Semi Bold",
-                    fontSize: 20, // Use a number for fontSize instead of "lg"
-                  }}
-                >
-                  {round.name}
-                </Text>
-                {(round.status === "P" || "R") && (
-                  <Text
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Regular Semi Bold",
-                      fontSize: 20, // Use a number for fontSize instead of "lg"
-                    }}
-                  >
-                    {formattedDifference} (
-                    {startDate.toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                    )
-                  </Text>
-                )}
-              </Button>
-              // </View>
-            );
-          }
-        })}
         {/* Linda Sprint 4 Start a round*/}
         {(!activeRoundData || activeRoundData.length < 2) && (
           <Button
@@ -715,7 +650,7 @@ const HomeScreen = ({ navigation }) => {
                           onPress={() =>
                             acceptRoundFriend(
                               1,
-                              new Date(thisRoundInfo.data[0].startDate)
+                              thisRoundInfo
                             )
                           }
                           name="checksquareo"

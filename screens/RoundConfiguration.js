@@ -49,9 +49,10 @@ function calculateDatePickerMin(activeRound) {
     return endDatePlus1;
   } else {
     const datePickerMin = new Date();
-    const minDaysFromNow = new Date(); // Start with today's date
-    minDaysFromNow.setDate(minDaysFromNow.getDate() + 3); // 3 days
-    datePickerMin.setDate(minDaysFromNow.getDate() - 1);
+
+    datePickerMin.setDate(datePickerMin.getDate() + 2);
+    // console.log("no active round date picker min 1",datePickerMin);
+
     return datePickerMin;
   }
 }
@@ -259,7 +260,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       const response = await deleteRound(userData.token, roundId);
       //response is true, if it is successful
       if (response) {
-        await deleteRoundData(roundId);
+        await deleteRoundData(roundId); // round invitation is deleted in backend as well.
         navigation.navigate("MainStack", { screen: "Home" });
 
       } else {
