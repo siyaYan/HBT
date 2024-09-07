@@ -19,13 +19,6 @@ export default function AuthenticatedScreens({navigation}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();
   const { isOpen, onOpen, onClose } = useDisclose();
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     // This code runs when the tab comes into focus
-  //     console.log('This is main tab, note is :',note );
-  //     updateNote()
-  //   }, [updateNotes]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
-  // );
 
   const updateNote = async ()=>{
     const res=await getNoteUpdate(userData.token,userData.data.email)

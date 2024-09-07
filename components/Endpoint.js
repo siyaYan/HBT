@@ -1001,6 +1001,7 @@ export async function updateRoundInfo(token, newRoundData) {
 // Chapter 4: update round status
 export async function updateRoundStatus(token, roundId, newStatus) {  
   try {  
+    console.log(newStatus)
     console.log("Updating status for round", roundId);  
     const response = await fetch(  
       `http://3.27.94.77:8000/habital/v1/round/${roundId}`,  
@@ -1021,12 +1022,7 @@ export async function updateRoundStatus(token, roundId, newStatus) {
       throw new Error(`HTTP error ${response.status}: ${errorText}`);  
     }  
   
-    const data = await response.json();  
-    // if (data.status === "success") {  
-    //   Alert.alert("Success", "Status updated successfully");  
-    // } else {  
-    //   Alert.alert("Unsuccessful", data.message || "Failed to update status");  
-    // }  
+    const data = await response.json();   
     console.log("Patch endpoint", data);  
     return data; // Return the data for further processing if needed  
   } catch (error) {  

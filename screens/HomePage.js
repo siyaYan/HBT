@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useFocusEffect, useCallback } from "react";
 import {
   Box,
   Text,
@@ -17,10 +17,8 @@ import {
   TouchableOpacity,
   Dimensions,
   FlatList,
-  ImageBackground,
   ScrollView,
 } from "react-native";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
@@ -30,15 +28,11 @@ import {
   getScoreBoard,
   getNoteUpdate,
   getRoundInfo,
+  getRoundInvitation,
   reactRoundRequest,
   updateRoundStatus,
 } from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
-import {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from "react-native-reanimated";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 // Function to add days to a date
@@ -46,23 +40,6 @@ function calculateEndDate(date, days) {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
-}
-
-// Function to check if round is accepted/owned by the current user
-function isRoundAccepted(round, currentUserId) {
-  if (round.userId === currentUserId) {
-    return true;
-  } else {
-    const hasId =
-      round.roundFriends.find(
-        (item) => item.id === currentUserId && item.status === "A"
-      ) !== undefined;
-    if (hasId) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 }
 
 const HomeScreen = ({ navigation }) => {
@@ -76,41 +53,68 @@ const HomeScreen = ({ navigation }) => {
   const [showRoundValidationDate, setShowRoundValidationDate] = useState(false);
   const [rest, setRest] = useState([]);
   const [topThree, setTopThree] = useState([]);
-
-  const today = new Date();
+  const [roundInvitationData, setRoundInvitationData] = useState(null);
+ 
+  const [processedRounds, setProcessedRounds] = useState(null)
 
   const { userData, updateNotes } = useData();
-  const {
-    roundData,
-    updateRoundData,
-    roundInvitationData,
-    loadRoundInvitationData,
-    updateRounds,
-    activeRoundData,
-    loadActiveRoundData,
-    insertActiveRoundData,
-    insertRoundData,
-  } = useRound();
+  const { activeRoundData, insertRoundData } = useRound();
 
-  console.log("active round---", activeRoundData);
+  // console.log("active round---", activeRoundData);
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
 
+  const medalColors = {
+    Gold: "rgb(255, 215, 0)", // Gold in RGB
+    Silver: "rgb(192, 192, 192)", // Silver in RGB
+    Bronze: "rgb(205, 127, 50)", // Bronze in RGB
+  };
+
+  const [show10PerRoundValidation, setShow10PerRoundValidation] =
+    useState(false);
+
+  useEffect(() => {
+    console.log("Tab is in focus, userInfo:", userData);
+    getRoundInvitationData();
+    console.log('-----------1',activeRoundData)
+    const processing=processRounds(activeRoundData,  new Date())
+    console.log('-----------2',processing)
+    setProcessedRounds(processing);
+  }, [userData]);
+
+  const getRoundInvitationData = async () => {
+    const res = await getRoundInvitation(userData.token);
+    console.log("--------", res);
+    setRoundInvitationData(res);
+  };
+  const handle10PerRoundValidationClose = () => {
+    setShow10PerRoundValidation(!show10PerRoundValidation);
+  };
 
   const handleAvatarPress = () => {
     navigation.navigate("AccountStack", { screen: "Account" });
   };
 
+  const getExistScoreBoard = async (roundId) => {
+    // console.log(userData.token, roundId)
+    const res = await getScoreBoard(userData.token, roundId);
+    if (res) {
+      const topThree = res.data.ranking.slice(0, 3);
+      const rest = res.data.ranking.slice(3);
+      setRest(rest);
+      setTopThree(topThree);
+    }
+  };
+
   const startRound = () => {
     navigation.navigate("RoundStack", {
       screen: "RoundConfig",
-      params: { emptyState: true, source: "home" },
+      params: { emptyState: true, source: "home", roundId: 0 },
     });
-    // console.log("Home page round data", roundData);
   };
 
   const handleRoundPress = (roundId, status) => {
-    if (status === "A"|| status === "F") {
+    if (status === "A" || status === "F") {
       navigation.navigate("ForumStack", {
         screen: "ForumPage",
         params: { id: roundId },
@@ -148,14 +152,7 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundDetails(!showRoundDetails);
   };
 
-  const animation = useSharedValue(0);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: withSpring(animation.value) }],
-    };
-  });
-
+  //TODO:check
   const findPendingReceived = () => {
     console.log("----roundInvitationData", roundInvitationData);
     if (roundInvitationData && roundInvitationData.status === "success") {
@@ -166,19 +163,12 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    loadRoundInvitationData(userData.token);
-  }, [userData.token]);
-
-  useEffect(() => {
-    loadActiveRoundData();
-  }, [roundInvitationData]);
-
   const loadAllReceivedNotification = () => {
     console.log("----roundInvitationData---notification", roundInvitationData);
     findPendingReceived();
   };
 
+  //TODO:
   useEffect(() => {
     // console.log("Updated pendingReceived:", pendingReceived);
     if (pendingReceived && pendingReceived.length > 0) {
@@ -193,23 +183,28 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [pendingReceived]);
 
-
   const openRoundInvitationInfo = async (i) => {
     const thisRoundId = roundInvitationData.data[i].roundId;
     setShowRoundDetails(!showRoundDetails);
     const aRoundInfo = await getRoundInfo(userData.token, thisRoundId);
-    console.log(aRoundInfo, "-------------");
     setThisRoundInfo(aRoundInfo);
   };
 
-  useEffect(() => {
-    console.log("Updated thisRoundInfo:", thisRoundInfo);
-  }, [thisRoundInfo]);
-
   const acceptRoundFriend = (i, thisRoundInfo) => {
     // Validation first
+    thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate);
+    // check the round info, if it starts more than 10% of level:
+    // show warning message, then remove invitation(reject)
+    const thisRoundLevelInt = parseInt(thisRoundInfo.data[0].level, 10);
+    const endDate10Percent = new Date(
+      startDate.getTime() + thisRoundLevelInt * 24 * 60 * 60 * 1000 * 0.1
+    ); // Convert days to milliseconds
+    if (today > endDate10Percent) {
+      setShow10PerRoundValidation(!show10PerRoundValidation);
+      rejectRoundFriend(i);
+      return;
+    }
     // 2 round already, then warning, keep the invitation
-    thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate)
     if (activeRoundData.length == 2) {
       setShowRoundValidation(!showRoundValidation);
       return;
@@ -244,9 +239,6 @@ const HomeScreen = ({ navigation }) => {
     // show the new accepted round on it
     //Insert this new accepted round into round context directly
     insertRoundData(thisRoundInfo.data[0]);
-     console.log("Home page round data after inserting", roundData);
-
-    insertActiveRoundData(thisRoundInfo.data[0]);
   };
 
   const rejectRoundFriend = (i) => {
@@ -283,16 +275,14 @@ const HomeScreen = ({ navigation }) => {
         roundId,
         newStatus
       );
-      // Assuming the API doesn't return the updated data, you might need to fetch it again
-      // or handle the date update in a different way
-      // Update date context code goes here (if needed)
-      if (!response.ok) {
-        throw new Error("Failed to update status");
-      }
+      console.log("", response);
+      // if (!response.ok) {
+      //   throw new Error("Failed to update status");
+      // }
       //If this is a newly finsihed round, calculate the scoreboard and show up
       if (newStatus === "F") {
         console.log("Round finished, get scoreboard");
-        getExistScoreBoard(roundId)
+        getExistScoreBoard(roundId);
         setScoreBoardOpen(true);
       }
 
@@ -302,24 +292,16 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const medalColors = {
-    Gold: "rgb(255, 215, 0)", // Gold in RGB
-    Silver: "rgb(192, 192, 192)", // Silver in RGB
-    Bronze: "rgb(205, 127, 50)", // Bronze in RGB
-  };
-  const processRounds = (rounds, today, userId) => {
+  const processRounds = (rounds, today) => {
     return rounds.map((round, index) => {
       const startDate = new Date(round.startDate);
       const timeDifference = startDate - today;
       const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
-  
-      if (daysDifference <= 0 && round.status !== "A") {
-        updateStatusAndDate(round._id, "A");
-      }
-  
       const endDate = calculateEndDate(startDate, parseInt(round.level, 10));
-      const endTimeDifference = Math.ceil((endDate - today) / (1000 * 3600 * 24));
-  
+      const endTimeDifference = Math.ceil(
+        (endDate - today) / (1000 * 3600 * 24)
+      );
+
       if (
         endTimeDifference <= 0 &&
         round.status === "A" &&
@@ -328,10 +310,14 @@ const HomeScreen = ({ navigation }) => {
       ) {
         updateStatusAndDate(round._id, "F");
       }
-  
+      else if(daysDifference <= 0 && endTimeDifference>0 && round.status !== "A") {
+        updateStatusAndDate(round._id, "A");
+        
+      }
+
       const prefix = timeDifference > 0 ? "D-" : "D+";
       const formattedDifference = `${prefix}${Math.abs(daysDifference)} days`;
-  
+
       return {
         round,
         index,
@@ -340,23 +326,13 @@ const HomeScreen = ({ navigation }) => {
       };
     });
   };
-  const processedRounds = processRounds(activeRoundData, today, userData.data._id);
+  
 
   return (
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems="center">
         <OptionMenu navigation={navigation} />
-
-        {/* {scoreBoardOpen ? (
-          <ScoreBoardModal
-            isOpen={scoreBoardOpen}
-            onClose={handleClose}
-            roundData={roundData}
-          />
-        ) : (
-          ""
-        )} */}
         <Pressable onPress={handleAvatarPress}>
           <Box py="5" px="2" alignItems="center" justifyContent="center">
             {userData.avatar && userData.avatar.uri ? (
@@ -376,77 +352,78 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </Box>
         </Pressable>
-        {/* {roundData?.data?.map((round, index) => { */}
-        {processedRounds?.map(({ round, index, startDate, formattedDifference }) => {
-  return (
-    <Button
-      key={index}
-      title={`Round ${index + 1}`}
-      onPress={() => {
-        handleRoundPress(round._id, round.status);
-      }}
-      rounded="30"
-      mt="5"
-      width="80%"
-      height="100"
-      size="lg"
-      style={{
-        borderWidth: 1, // This sets the width of the border
-        borderColor: "#49a579", // This sets the color of the border
-      }}
-      backgroundColor={
-        round.status === "P"
-          ? "#606060"
-          : round.status === "R"
-          ? "#666ff"
-          : round.status === "A"
-          ? "#49a579"
-          : round.status === "F"
-          ? "#f9f8f2"
-          : "rgba(250,250,250,0.2)"
-      }
-      _pressed={{
-        bg:
-          round.status === "P"
-            ? "#252525"
-            : round.status === "R"
-            ? "#323280"
-            : round.status === "A"
-            ? "173225"
-            : round.status === "F"
-            ? "C0C0C0"
-            : "rgba(0, 0, 0, 0)", // default is transparent
-      }}
-    >
-      <Text
-        style={{
-          color: "#FFFFFF",
-          fontFamily: "Regular Semi Bold",
-          fontSize: 20, // Use a number for fontSize instead of "lg"
-        }}
-      >
-        {round.name}
-      </Text>
-      {(round.status === "P" || round.status === "R") && (
-        <Text
-          style={{
-            color: "#FFFFFF",
-            fontFamily: "Regular Semi Bold",
-            fontSize: 20, // Use a number for fontSize instead of "lg"
-          }}
-        >
-          {formattedDifference} (
-          {startDate.toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
-          )
-        </Text>
-      )}
-    </Button>
-  );
-})}
+        {processedRounds?.map(
+          ({ round, index, startDate, formattedDifference }) => {
+            return (
+              <Button
+                key={index}
+                title={`Round ${index + 1}`}
+                onPress={() => {
+                  handleRoundPress(round._id, round.status);
+                }}
+                rounded="30"
+                mt="5"
+                width="80%"
+                height="100"
+                size="lg"
+                style={{
+                  borderWidth: 1, // This sets the width of the border
+                  borderColor: "#49a579", // This sets the color of the border
+                }}
+                backgroundColor={
+                  round.status === "P"
+                    ? "#606060"
+                    : round.status === "R"
+                    ? "#666ff"
+                    : round.status === "A"
+                    ? "#49a579"
+                    : round.status === "F"
+                    ? "rgba(0,0,0,0.4)"
+                    : "rgba(250,250,250,0.2)"
+                }
+                _pressed={{
+                  bg:
+                    round.status === "P"
+                      ? "#252525"
+                      : round.status === "R"
+                      ? "#323280"
+                      : round.status === "A"
+                      ? "173225"
+                      : round.status === "F"
+                      ? "C0C0C0"
+                      : "rgba(0, 0, 0, 0)", // default is transparent
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#FFFFFF",
+                    fontFamily: "Regular Semi Bold",
+                    fontSize: 20, // Use a number for fontSize instead of "lg"
+                  }}
+                >
+                  {round.name}
+                </Text>
+                {(round.status === "P" || round.status === "R") && (
+                  <Text
+                    style={{
+                      color: "#FFFFFF",
+                      fontFamily: "Regular Semi Bold",
+                      fontSize: 20, // Use a number for fontSize instead of "lg"
+                    }}
+                  >
+                    {formattedDifference} (
+                    {startDate.toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                    )
+                  </Text>
+                )}
+              </Button>
+            );
+          }
+        )}
 
         {/* Linda Sprint 4 Start a round*/}
         {(!activeRoundData || activeRoundData.length < 2) && (
@@ -476,6 +453,7 @@ const HomeScreen = ({ navigation }) => {
               : "Start a round"}
           </Button>
         )}
+
         {/* Just for testing TODO: this button need to be on Round card */}
         {/* <Box py="5" px="2" alignItems="center" justifyContent="center">
           {round ? (
@@ -532,6 +510,7 @@ const HomeScreen = ({ navigation }) => {
       {/* <TouchableOpacity onPress={handlePress}>
           <Icon name="envelope" size={50} color="#666" />
         </TouchableOpacity> */}
+
       {/* Modal 1: round invitation notification */}
       <Modal isOpen={isOpened} onClose={handleClose}>
         <Modal.Content maxWidth="400px" width="90%">
@@ -647,12 +626,7 @@ const HomeScreen = ({ navigation }) => {
                           </Modal.Content>
                         </Modal>
                         <AntDesign
-                          onPress={() =>
-                            acceptRoundFriend(
-                              1,
-                              thisRoundInfo
-                            )
-                          }
+                          onPress={() => acceptRoundFriend(1, thisRoundInfo)}
                           name="checksquareo"
                           size={30}
                           color="black"
@@ -690,15 +664,10 @@ const HomeScreen = ({ navigation }) => {
         size="full"
         style={{ marginTop: "15%", overflow: "hidden", flex: 1 }}
       >
-        <Modal.Content
-          maxWidth="400px"
-          width="90%"
-          height={'95%'}
-        >
+        <Modal.Content maxWidth="400px" width="90%" height={"95%"}>
           <Modal.CloseButton />
-          <Modal.Body >
-            <View
-            >
+          <Modal.Body>
+            <View>
               <Box height={"25%"}>
                 <View style={styles.topThreeContainer}>
                   <View style={styles.stageContainer}>
@@ -939,30 +908,23 @@ const HomeScreen = ({ navigation }) => {
         </Modal.Content>
       </Modal>
 
-      {/* <Modal isOpen={scoreBoardOpen} onClose={handleClose}>
-        <Modal.Content maxWidth="400px" width="90%">
+      <Modal
+        isOpen={show10PerRoundValidation}
+        onClose={handle10PerRoundValidationClose}
+      >
+        <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
-          <Modal.Header>
-            Score Board:{roundData.data[0] ? roundData.data[0]._id : ""}
-          </Modal.Header>
+          <Modal.Header>Warning</Modal.Header>
           <Modal.Body>
-            {roundData.data[0] ? (
-              <View>
-                {roundData.data[0].roundFriends.map((item) => {
-                  return (
-                    <View>
-                      <Text>{item.nickname}</Text>
-                      <Text>{item.score}</Text>
-                    </View>
-                  );
-                })}
-              </View>
-            ) : (
-              ""
-            )}
+            <>
+              <Text fontSize="md">
+                The round is already 10% complete. You are no longer allowed to
+                join.
+              </Text>
+            </>
           </Modal.Body>
         </Modal.Content>
-      </Modal> */}
+      </Modal>
     </NativeBaseProvider>
   );
 };
@@ -1023,7 +985,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   firstPlace: {
-    // backgroundColor: "rgba(205, 200, 200, 0.2)",
     backgroundColor: "rgba(255, 215, 0, 0.2)", // Gold in RGB
   },
   secondPlace: {

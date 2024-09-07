@@ -2,7 +2,6 @@ import React from "react";
 import {
   Input,
   Center,
-  NativeBaseProvider,
   VStack,
   FormControl,
   Button,
@@ -16,7 +15,7 @@ import {
   KeyboardAvoidingView,
   Modal,
 } from "native-base";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Background from "../components/Background";
 import { Switch } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -29,7 +28,6 @@ import {
 } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
-import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 
 // Function to add days to a date
 function calculateEndDate(date, days) {
@@ -44,22 +42,18 @@ function calculateDatePickerMin(activeRound) {
       activeRound.startDate,
       parseInt(activeRound.level, 10)
     );
-    // console.log("End date+1----", endDatePlus1);
 
     return endDatePlus1;
   } else {
     const datePickerMin = new Date();
-
     datePickerMin.setDate(datePickerMin.getDate() + 2);
-    // console.log("no active round date picker min 1",datePickerMin);
 
     return datePickerMin;
   }
 }
 
 const RoundConfigurationScreen = ({ route, navigation }) => {
-  const { roundData, updateRoundData, insertRoundData, deleteRoundData } =
-    useRound();
+  const { activeRoundData, insertRoundData, deleteRoundData } = useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -67,17 +61,19 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     maxCapacity: false,
     isAllowed: false,
   });
-  const [startDateError, setStartDateError] = useState("");
-  const activeRound = roundData.data.find((r) => r.status === "A");
+  // const [startDateError, setStartDateError] = useState("");
+  const activeRound = activeRoundData.data.find((r) => r.status === "A");
 
   // Initialization
   const { userData } = useData();
+
   const emptyState = route.params.emptyState;
   const source = route.params.source;
-  //TODO: change it to RoundContext with index
-  // const roundData = route.params.roundData;
   const roundId = route.params.roundId;
-  const round = roundData.data.find((r) => r._id === roundId);
+  
+  //TODO: change it to RoundContext with index
+
+  const round = activeRoundData.data.find((r) => r._id === roundId);
   const ButtonUpdateRound = source === "home" ? "Create round" : "Update round";
 
   const datePickerMin = calculateDatePickerMin(activeRound);
@@ -148,36 +144,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       });
     }
   };
-  const validateDate = (date) => {
-    // check if there is any existing active round, if yes, compare to the round end date
-    const activeRound = roundData.data.find((r) => r.status === "A");
-    // yes, get the round end date
-    if (activeRound) {
-      const endDate = calculateEndDate(
-        activeRound.startDate,
-        parseInt(activeRound.level, 10)
-      );
-      // compare if the new round start date is before the current active round end date
-      if (endDate > date) {
-        return "Only one can be active round at a time.";
-      }
-    }
-    // no, return '';
-    return "";
-  };
-  const handleDateChange = (params) => {
-    if (params.date) {
-      const newDate = new Date(params.date);
-      const validationError = validateDate(newDate);
-      if (validationError) {
-        setStartDateError(validationError);
-      } else {
-        setStartDateError("");
-        setDate(new Date(params.date));
-      }
-    }
-    console.log("Calendar icon pressed. Start Date is:", startDate);
-  };
+
 
   const handleUpdateRound = async () => {
     if (emptyState) {
@@ -189,21 +156,16 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         maxCapacity: maxCapacity,
         isAllowedInvite: allowOthers,
       };
-      // console.log("create round", newRoundData);
+
       const response = await createRound(newRoundData, userData.token);
-      // console.log("create round response status", response.status);
-      // console.log("create round response data", response.data);
-      // console.log("create round response", response);
+
       insertRoundData(response.data);
-      // console.log("after creation", roundData);
-      // navigation.navigate("MainStack", { screen: "Home" });
-      // Navigate back to round info page once created
+
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
         params: { roundId: response.data._id },
       });
     } else {
-      // console.log("route", route.params);
       const newRoundData = {
         _id: roundId,
         userId: userData.data._id,
@@ -213,18 +175,15 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         maxCapacity: maxCapacity,
         isAllowedInvite: allowOthers,
       };
-      // console.log("new round data", newRoundData);
+
       const response = await updateRoundInfo(userData.token, newRoundData);
-      // console.log("response", response.status);
-      // updateRoundData(newRoundData);
-      // console.log("Update round",newRoundData);
+
       if (response.status == "success") {
-        // console.log("response", response.data);
-        // updateRoundData(response.data)
-        updateRoundData(response.data);
+        insertRoundData(newRoundData)
       }
     }
   };
+
   const handleValidateUpload = () => {
     let newIsInvalid = { ...isInvalid };
     // Validate level
@@ -286,12 +245,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <Center w="100%">
-        {/* <ScrollView
-        w="100%"
-        h="100%"
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ flexGrow: 1, minHeight: "100%" }}
-      > */}
         <Background />
         <Box
           alignItems="center"
@@ -416,9 +369,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                                 <Pressable
                                   accessibilityLabel="Date picker"
                                   {...triggerProps}
-                                  //                         onPress={() => {
-                                  //   console.log("Calendar icon pressed. Start Date is:", startDate); // Replace this with your actual function to show date picker
-                                  // }}
                                 >
                                   <AntDesign
                                     name="calendar"
@@ -436,17 +386,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                               minDate={datePickerMin}
                               onChange={(params) => {
                                 setDate(new Date(params.date));
-                                // console.log(
-                                //   "Calendar icon pressed. Start Date is:",
-                                //   startDate
-                                // );
                               }}
                             />
-                            {/* {startDateError && (
-                              <Text style={{ color: "red", marginTop: 10 }}>
-                                {startDateError}
-                              </Text>
-                            )} */}
+
                           </Menu>
                         </Box>
                       </ZStack>
@@ -540,29 +482,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     Delete Round
                   </Button>
                 )}
-                {/* {source === "info" && userData.data._id !== round.userId && (
-                  <Button
-                    onPress={() => {
-                      handleLeaveRound();
-                    }}
-                    mt="5"
-                    width="100%"
-                    size="lg"
-                    // bg="#ff061e"
-                    // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
-                    backgroundColor={"rgba(250,250,250,0.2)"}
-                    _pressed={{
-                      bg: "#ff061e",
-                    }}
-                    _text={{
-                      color: "#f9f8f2",
-                      fontFamily: "Regular Medium",
-                      fontSize: "lg",
-                    }}
-                  >
-                    Leave Round
-                  </Button>
-                )} */}
+
                 <Modal
                   isOpen={isModalVisible}
                   onClose={handleCancelDelete}
@@ -620,14 +540,3 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 };
 
 export default RoundConfigurationScreen;
-
-const styles = StyleSheet.create({
-  modalContent: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10, // Optional: Add border radius for a more polished look
-  },
-});

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getRoundInfo, getRoundInvitation } from "../components/Endpoint";
+import { getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 
 const RoundContext = createContext();
@@ -25,106 +25,55 @@ function isRoundAccepted(round, currentUserId) {
   }
 }
 
-function isRoundWithin10Per(start, level) {
-  const today = new Date();
-  const startDate = new Date(start);
-  const timeDifference = startDate - today;
-  const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
-
-  const check= daysDifference<=parseInt(level)*0.1;//within 10% of duration or not
-  return check;
-}
 export const RoundProvider = ({ children }) => {
   const { userData } = useData();
 
   const [roundData, setRoundData] = useState([]);
-  const [roundInvitationData, setRoundInvitationData] = useState(null);
   const [activeRoundData, setActiveRoundData] = useState([]);
 
-  // Load round data from AsyncStorage and fetch from endpoint on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
         const savedRoundData = await AsyncStorage.getItem("roundData");
-        if (savedRoundData) {
-          // console.log('Loaded from AsyncStorage:', JSON.parse(savedRoundData));
+        if (savedRoundData && savedRoundData.data?.length > 0) {
           setRoundData(JSON.parse(savedRoundData));
-        } else {
-          const fetchedRoundData = await getRoundInfo();
-          // console.log('Fetched from Endpoint:', fetchedRoundData);
-          setRoundData(fetchedRoundData);
-          await AsyncStorage.setItem(
-            "roundData",
-            JSON.stringify(fetchedRoundData)
-          );
-        }
-        // filter active rounds
-        setActiveRoundData(
-          roundData.data?.filter((round) =>
-            isRoundAccepted(round, userData.data._id)
-          )
-        );
-        const savedRoundInvitationData = await AsyncStorage.getItem(
-          "roundInvitationData"
-        );
-        if (savedRoundInvitationData) {
-          console.log(
-            "Fetched from Endpoint Round Invitation Loaded from AsyncStorage:",
-            JSON.parse(savedRoundData)
-          );
-          //filtered up to 10% of level,if more than 10%, then don't show invitation any more.
-          setRoundInvitationData(
-            JSON.parse(savedRoundInvitationData).data?.filter((round) =>
-              isRoundWithin10Per(round.startDate, round.level)==true
-            )
-          );
-          // setRoundInvitationData(JSON.parse(savedRoundInvitationData));
-        } else {
-          const fetchedInvitationData = await getRoundInvitation(
-            userData.token
-          );
-          console.log("Fetched from Endpoint:", fetchedRoundData);
-          //filtered up to 10% of level,if more than 10%, then don't show invitation any more.
-          setRoundInvitationData(
-            JSON.parse(fetchedInvitationData).data?.filter((round) =>
-              isRoundWithin10Per(round.startDate, round.level)==true
-            )
-          );
-          // setRoundInvitationData(fetchedInvitationData);
-          await AsyncStorage.setItem(
-            "roundInvitationData",
-            JSON.stringify(fetchedInvitationData)
-          );
         }
       } catch (error) {
-        console.error("Error loading round/invitation data:", error);
+        console.error("Error loading user data:", error);
+      }
+    };
+    loadData();
+  }, []);
+
+  // Save data to AsyncStorage whenever userData changes
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem("roundData", JSON.stringify(roundData));
+        // console.log('FirstGetData:',userData)
+      } catch (error) {
+        console.error("Error saving user data:", error);
       }
     };
 
-    loadData();
-  }, []);
-  const loadActiveRoundData = async () => {
-    try {
-      setActiveRoundData(
-        roundData.data?.filter((round) =>
-          isRoundAccepted(round, userData.data._id)
-        )
-      );
-    } catch (error) {
-      console.error("Error loading round active data:", error);
-    }
-  };
+    saveData();
+  }, [roundData]);
 
+  const updateActiveRoundData = (newRounds) => {
+    const res = newRounds.data.filter((round) =>
+      isRoundAccepted(round, userData.data._id)
+    );
+    console.log("------update active rounds", res);
+    setActiveRoundData(res);
+  };
   // insert new round
+  // step1: update all accpeted round
+  // step2: append round data
   const insertRoundData = (newRound) => {
+    updateActiveRoundData(roundData.data.append(newRound));
     setRoundData((prevRoundData) => {
       if (prevRoundData && prevRoundData.data) {
         const updatedData = [...prevRoundData.data, newRound];
-        setActiveRoundData(
-          roundData.data.filter((round) =>
-            isRoundAccepted(round, userData.data._id)
-          )
-        );
         return { ...prevRoundData, data: updatedData };
       } else {
         console.error(
@@ -134,58 +83,47 @@ export const RoundProvider = ({ children }) => {
       }
     });
   };
-  // update existing round
-  const updateRoundData = (updatedRound) => {
-    // console.log("Updating round data with", updatedRound);
 
-    setRoundData((prevRoundData) => {
-      if (prevRoundData && prevRoundData.data) {
-        // console.log("round context previous Round Data", prevRoundData.data);
-        const updatedData = prevRoundData.data.map((round) =>
-          round._id === updatedRound._id ? { ...round, ...updatedRound } : round
-        );
-        console.log("updateRoundData", updatedRound);
-        setActiveRoundData(
-          roundData.data.filter((round) =>
-            isRoundAccepted(round, userData.data._id)
-          )
-        );
-        return { ...prevRoundData, data: updatedData };
-      } else {
-        console.error(
-          "Previous round data is undefined or does not contain data property"
-        );
-        return prevRoundData; // Let's see if this will happen, I highly doubt this. As we hide the button from showing if there is no round.
-      }
-    });
-  };
+  // TODO: update partcially round data
+  // const updateRoundData = (updatedRound) => {
+  //   // console.log("Updating round data with", updatedRound);
+  //   setRoundData((prevRoundData) => {
+  //     if (prevRoundData && prevRoundData.data) {
+  //       // console.log("round context previous Round Data", prevRoundData.data);
+  //       const updatedData = [...prevRoundData.data, updatedRound];
+  //       setActiveRoundData(
+  //         updatedRound.data.filter((round) =>
+  //           isRoundAccepted(round, userData.data._id)
+  //         )
+  //       );
+  //       return { ...prevRoundData, data: updatedData };
+  //     } else {
+  //       console.error(
+  //         "Previous round data is undefined or does not contain data property"
+  //       );
+  //       return prevRoundData; // Let's see if this will happen, I highly doubt this. As we hide the button from showing if there is no round.
+  //     }
+  //   });
+  // };
+
   //add new to the round friend list (existing round)
   const insertRoundFriendList = (roundId, newFriend) => {
     console.log("insert new friend in round context", newFriend);
+    let updatedData;
     setRoundData((prevRoundData) => {
       if (prevRoundData && prevRoundData.data) {
-        const updatedData = prevRoundData.data.map((round) => {
+        updatedData = prevRoundData.data.map((round) => {
           if (round._id === roundId) {
             // Clone the round object and update roundFriends by appending newFriend
             const updatedRound = {
               ...round,
               roundFriends: [...round.roundFriends, newFriend],
             };
-            setActiveRoundData(
-              roundData.data.filter((round) =>
-                isRoundAccepted(round, userData.data._id)
-              )
-            );
             return updatedRound;
           } else {
             return round;
           }
         });
-        setActiveRoundData(
-          roundData.data.filter((round) =>
-            isRoundAccepted(round, userData.data._id)
-          )
-        );
         return { ...prevRoundData, data: updatedData };
       } else {
         console.error(
@@ -194,23 +132,24 @@ export const RoundProvider = ({ children }) => {
         return prevRoundData;
       }
     });
+    const round = activeRoundData.data.find((r) => r._id === roundId);
+    if (round) {
+      updateActiveRoundData(updatedData);
+      setActiveRoundData((prevRoundData) => {
+        return { ...prevRoundData, data: updatedData };
+      });
+    }
   };
 
   // Update the entire roundData array
   const updateRounds = (newRounds) => {
     console.log("round context------", newRounds);
     setRoundData(newRounds);
-    setActiveRoundData(
-      newRounds.data.filter((round) =>
-        isRoundAccepted(round, userData.data._id)
-      )
-    );
   };
 
   // delete a round
   const deleteRoundData = async (roundId) => {
     try {
-      console.log("-----------", roundId);
       const newData = roundData.data.filter((round) => round._id !== roundId);
       console.log("delete round data-------", newData);
       await AsyncStorage.setItem(
@@ -281,52 +220,18 @@ export const RoundProvider = ({ children }) => {
     //           console.error("Error updating round data in AsyncStorage:", error);
     //       });
   };
-  // round invitation data
-  // Fetch and set round invitation data
-  const loadRoundInvitationData = async (token) => {
-    try {
-      const data = await getRoundInvitation(token);
-      setRoundInvitationData(data);
-    } catch (error) {
-      console.error("Error loading round invitation data:", error);
-    }
-  };
-  // insert new round
-  const insertActiveRoundData = (newRound) => {
-    setActiveRoundData((prevActiveRoundData) => {
-      console.log(
-        "round context check previous active round",
-        prevActiveRoundData
-      );
-
-      if (prevActiveRoundData) {
-        const updatedData = [...prevActiveRoundData, newRound];
-
-        return updatedData;
-      } else {
-        console.error(
-          "Previous active round data is undefined or does not contain data property"
-        );
-        return prevActiveRoundData;
-      }
-    });
-  };
 
   return (
     <RoundContext.Provider
       value={{
         roundData,
         activeRoundData,
-        loadActiveRoundData,
-        updateRoundData,
+        updateActiveRoundData,
         updateRounds,
         insertRoundData,
         deleteRoundData,
         deleteRoundFriend,
         insertRoundFriendList,
-        roundInvitationData,
-        loadRoundInvitationData,
-        insertActiveRoundData,
       }}
     >
       {children}
