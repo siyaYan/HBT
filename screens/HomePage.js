@@ -40,9 +40,6 @@ import {
   withSpring,
 } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/FontAwesome";
-// import ScoreBoardModal from "../components/ScoreBoard.js";
-import RewardStageBackground from "../assets/UIicons/checkout.webp";
-import { color } from "react-native-elements/dist/helpers";
 
 // Function to add days to a date
 function calculateEndDate(date, days) {
@@ -109,17 +106,16 @@ const HomeScreen = ({ navigation }) => {
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
     console.log("active round----", activeRoundData);
   };
+
   const getExistScoreBoard = async (roundId) => {
     // console.log(userData.token, roundId)
     const res = await getScoreBoard(userData.token, roundId);
     if (res) {
       const topThree = res.data.ranking.slice(0, 3);
       const rest = res.data.ranking.slice(3);
-      // console.log('11-----321-----------'+JSON.stringify(topThree));
-      updateRoundData({ ...roundData, scoreBoard: res.data });
+      // updateRoundData({ ...roundData, scoreBoard: res.data });
       setRest(rest);
       setTopThree(topThree);
-      setScoreBoardOpen(true);
     }
   };
   // const getSortedFriends = (round) => {
@@ -136,7 +132,6 @@ const HomeScreen = ({ navigation }) => {
 
   //   return { topThree, rest };
   // };
-  const round = roundData.data[0];
   // const updateNote = async () => {
   //   const res = await getNoteUpdate(userData.token, userData.data.email);
   //   if (res > 0) {
@@ -170,7 +165,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleRoundPress = (roundId, status) => {
-    if (status === "A") {
+    if (status === "A"|| status === "F") {
       navigation.navigate("ForumStack", {
         screen: "ForumPage",
         params: { id: roundId },
@@ -349,21 +344,25 @@ const HomeScreen = ({ navigation }) => {
       if (!response.ok) {
         throw new Error("Failed to update status");
       }
-
-      // Assuming the API doesn't return the updated data, you might need to fetch it again
-      // or handle the date update in a different way
-      // Update date context code goes here (if needed)
+      //If this is a newly finsihed round, calculate the scoreboard and show up
+      if (newStatus === "F") {
+        console.log("Round finished, get scoreboard");
+        getExistScoreBoard(roundId)
+        setScoreBoardOpen(true);
+      }
 
       console.log("Status updated successfully");
     } catch (error) {
       console.error("Failed to update status and date:", error);
     }
   };
+
   const medalColors = {
     Gold: "rgb(255, 215, 0)", // Gold in RGB
     Silver: "rgb(192, 192, 192)", // Silver in RGB
     Bronze: "rgb(205, 127, 50)", // Bronze in RGB
   };
+
   return (
     <NativeBaseProvider>
       <Background />
@@ -407,9 +406,6 @@ const HomeScreen = ({ navigation }) => {
             const daysDifference = Math.ceil(
               timeDifference / (1000 * 3600 * 24)
             );
-            {
-              /* console.log("-------daysdifference",daysDifference); */
-            }
 
             if (daysDifference <= 0 && round.status !== "A") {
               //update the status
@@ -546,7 +542,7 @@ const HomeScreen = ({ navigation }) => {
           </Button>
         )}
         {/* Just for testing TODO: this button need to be on Round card */}
-        <Box py="5" px="2" alignItems="center" justifyContent="center">
+        {/* <Box py="5" px="2" alignItems="center" justifyContent="center">
           {round ? (
             <Button
               onPress={() => {
@@ -575,7 +571,7 @@ const HomeScreen = ({ navigation }) => {
           ) : (
             ""
           )}
-        </Box>
+        </Box> */}
       </Flex>
       {/* Linda Sprint 4 Show round/s*/}
       {/* <Flex direction="column" alignItems="center">
