@@ -79,8 +79,9 @@ const HomeScreen = ({ navigation }) => {
   }, [userData]);
 
   useEffect(() => {
-    const processing=processRounds(activeRoundData,  new Date())
-    setProcessedRounds(processing);
+    const processing=processRounds(activeRoundData.data,  new Date())
+    const sortedRounds = processing.sort((a, b) => b.startDate - a.startDate).slice(0,2);
+    setProcessedRounds(sortedRounds);
   }, [activeRoundData]);
 
   const getRoundInvitationData = async () => {
@@ -206,12 +207,12 @@ const HomeScreen = ({ navigation }) => {
       return;
     }
     // 2 round already, then warning, keep the invitation
-    if (activeRoundData.filter(item=>item.status=="A").length == 2) {
+    if (activeRoundData?.data.filter(item=>item.status=="A"||item.status=="P").length == 2) {
       setShowRoundValidation(!showRoundValidation);
       return;
     }
     // 1 active, check start date if it is before the active round ends
-    else if (activeRoundData.filter(item=>item.status=="A").length == 1) {
+    else if (activeRoundData?.data.filter(item=>item.status=="A"||item.status=="P").length == 1) {
       const activeRound = activeRoundData[0];
       if (activeRound.status == "A") {
         const levelInt = parseInt(activeRound.level, 10);
@@ -427,7 +428,7 @@ const HomeScreen = ({ navigation }) => {
         )}
 
         {/* Linda Sprint 4 Start a round*/}
-        {(!activeRoundData || activeRoundData.filter(item=>item.status=="A").length < 2) && (
+        {(!activeRoundData || activeRoundData?.data.filter(item=>item.status=="A"||item.status=="P").length < 2) && (
           <Button
             onPress={startRound}
             rounded="30"
@@ -449,7 +450,7 @@ const HomeScreen = ({ navigation }) => {
               bg: "#e5f5e5",
             }}
           >
-            {activeRoundData.filter(item=>item.status=="A").length === 1
+            {activeRoundData?.data.filter(item=>item.status=="A"||item.status=="P").length === 1
               ? "Plan the next round"
               : "Start a round"}
           </Button>

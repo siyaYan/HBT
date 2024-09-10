@@ -11,9 +11,9 @@ const Stack = createStackNavigator();
 export default function ForumStackNavigator({ route, navigation }) {
   const { activeRoundData } = useRound();
   const roundId = route.params.id;
-  const activeRound = activeRoundData?.filter((item) => item.status === "A")[0];
+  const activeRound = activeRoundData?.data.filter((item) => item.status === "A")[0];
   const firstTwoFinishRounds = activeRoundData
-    ?.filter((item) => item.status === "F")
+    ?.data.filter((item) => item.status === "F")
     .slice(0, 2);
   return (
     <Stack.Navigator>

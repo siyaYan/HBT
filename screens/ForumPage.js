@@ -35,7 +35,7 @@ const ForumPage = ({ route, navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclose();
   const { id } = route.params;
-  const roundFriends = activeRoundData.filter((item) => (item._id = id))[0]
+  const roundFriends = activeRoundData?.data.filter((item) => (item._id = id))[0]
     .roundFriends;
   const scrollViewRef = useRef(null);
   useEffect(() => {
@@ -296,7 +296,7 @@ const ForumPage = ({ route, navigation }) => {
           </ScrollView>
         </View>
         {!isModalVisible &&
-          (activeRoundData.filter(
+          (activeRoundData?.data.filter(
             (item) => item._id == id && item.status == "A"
           ).length > 0 ? (
             <Fab

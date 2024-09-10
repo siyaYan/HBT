@@ -67,13 +67,20 @@ export const RoundProvider = ({ children }) => {
       isRoundAccepted(round, userData.data._id)
     );
     console.log("------update active rounds", res);
-    setActiveRoundData(res);
+    // setActiveRoundData(res);
+    setActiveRoundData((prevRoundData) => {
+      return { ...prevRoundData, data: res };
+    });
   };
   // insert new round
   // step1: update all accpeted round
   // step2: append round data
   const insertRoundData = (newRound) => {
-    updateActiveRoundData(roundData.data.append(newRound));
+    const updatedData = [...roundData.data, newRound];
+    const newRoundList={ ...roundData, data: updatedData };
+    console.log("Insert new round data",newRoundList);
+    // const newRoundList=roundData.data.append(newRound)
+    updateActiveRoundData(newRoundList);
     setRoundData((prevRoundData) => {
       if (prevRoundData && prevRoundData.data) {
         const updatedData = [...prevRoundData.data, newRound];

@@ -62,7 +62,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     isAllowed: false,
   });
   // const [startDateError, setStartDateError] = useState("");
-  const activeRound = activeRoundData?.find((r) => r.status === "A");
+  const activeRound = activeRoundData?.data.find((r) => r.status === "A");
 
   // Initialization
   const { userData } = useData();
@@ -73,7 +73,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   
   //TODO: change it to RoundContext with index
 
-  const round = activeRoundData?.find((r) => r._id === roundId);
+  const round = activeRoundData?.data.find((r) => r._id === roundId);
   const ButtonUpdateRound = source === "home" ? "Create round" : "Update round";
 
   const datePickerMin = calculateDatePickerMin(activeRound);
