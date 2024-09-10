@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import { IconButton } from "native-base";
 import ForumPage from "../screens/ForumPage";
 import ForumDraft from "../screens/ForumDraft";
 import { useRound } from "../context/RoundContext";
-import { Feather } from '@expo/vector-icons';
+import { Feather } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
-export default function ForumStackNavigator({ navigation }) {
+export default function ForumStackNavigator({ route, navigation }) {
   const { activeRoundData } = useRound();
-  const activeRound=activeRoundData.data.filter(item=>item.status === "A")[0]
+  const roundId = route.params.id;
+  const activeRound = activeRoundData?.filter((item) => item.status === "A")[0];
+  const firstTwoFinishRounds = activeRoundData
+    ?.filter((item) => item.status === "F")
+    .slice(0, 2);
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -18,7 +22,11 @@ export default function ForumStackNavigator({ navigation }) {
         component={ForumDraft}
         options={{
           headerBackTitleVisible: false,
-          title: activeRound.name,
+          title:
+            activeRound?._id === roundId
+              ? activeRound?.name
+              : firstTwoFinishRounds?.find((item) => item._id === roundId)
+                  ?.name,
           headerLeft: () => (
             <IconButton
               ml={3}
@@ -36,7 +44,12 @@ export default function ForumStackNavigator({ navigation }) {
         component={ForumPage}
         options={{
           headerBackTitleVisible: false,
-          title: activeRound.name,
+          title:
+            activeRound?._id === roundId
+              ? activeRound?.name
+              : firstTwoFinishRounds?.find((item) => item._id === roundId)
+                  ?.name,
+
           headerLeft: () => (
             <IconButton
               ml={3}
@@ -47,19 +60,22 @@ export default function ForumStackNavigator({ navigation }) {
               }}
             />
           ),
-          headerRight: () => (
-            <IconButton
-              mr={3}
-              marginY={0}
-              icon={<Feather name="edit" size={24} color="black" />}
-              onPress={() => {
-                navigation.navigate("RoundStack", {
-                  screen: "RoundInfo",
-                  params: { roundId:activeRound._id },
-                });
-              }}
-            />
-          ),
+          headerRight: () =>
+            !activeRound ? (
+              ""
+            ) : (
+              <IconButton
+                mr={3}
+                marginY={0}
+                icon={<Feather name="edit" size={24} color="black" />}
+                onPress={() => {
+                  navigation.navigate("RoundStack", {
+                    screen: "RoundInfo",
+                    params: { roundId: activeRound._id },
+                  });
+                }}
+              />
+            ),
         }}
       />
     </Stack.Navigator>

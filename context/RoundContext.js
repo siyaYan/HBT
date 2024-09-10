@@ -35,8 +35,10 @@ export const RoundProvider = ({ children }) => {
     const loadData = async () => {
       try {
         const savedRoundData = await AsyncStorage.getItem("roundData");
+        console.log('FirstGetData:',savedRoundData)
         if (savedRoundData && savedRoundData.data?.length > 0) {
           setRoundData(JSON.parse(savedRoundData));
+          updateActiveRoundData(JSON.parse(savedRoundData))
         }
       } catch (error) {
         console.error("Error loading user data:", error);
@@ -50,7 +52,7 @@ export const RoundProvider = ({ children }) => {
     const saveData = async () => {
       try {
         await AsyncStorage.setItem("roundData", JSON.stringify(roundData));
-        // console.log('FirstGetData:',userData)
+        console.log('FirstSaveData:',roundData)
       } catch (error) {
         console.error("Error saving user data:", error);
       }
@@ -60,6 +62,7 @@ export const RoundProvider = ({ children }) => {
   }, [roundData]);
 
   const updateActiveRoundData = (newRounds) => {
+    console.log("Update active round data",newRounds)
     const res = newRounds.data.filter((round) =>
       isRoundAccepted(round, userData.data._id)
     );
@@ -132,7 +135,7 @@ export const RoundProvider = ({ children }) => {
         return prevRoundData;
       }
     });
-    const round = activeRoundData.data.find((r) => r._id === roundId);
+    const round = activeRoundData?.find((r) => r._id === roundId);
     if (round) {
       updateActiveRoundData(updatedData);
       setActiveRoundData((prevRoundData) => {
@@ -145,6 +148,7 @@ export const RoundProvider = ({ children }) => {
   const updateRounds = (newRounds) => {
     console.log("round context------", newRounds);
     setRoundData(newRounds);
+    updateActiveRoundData(newRounds);
   };
 
   // delete a round

@@ -13,14 +13,14 @@ import {
 } from "native-base";
 import { Fab, useDisclose } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
-import { useState, useEffect,useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useRef } from "react";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import { Card, WhiteSpace, WingBlank } from "@ant-design/react-native";
 import Background from "../components/Background";
-import { Pressable, StyleSheet ,  ScrollView} from "react-native";
+import { Pressable, StyleSheet, ScrollView } from "react-native";
 import {
   getForum,
   likeMessage,
@@ -35,7 +35,7 @@ const ForumPage = ({ route, navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclose();
   const { id } = route.params;
-  const roundFriends = activeRoundData.data.filter((item) => (item._id = id))[0]
+  const roundFriends = activeRoundData.filter((item) => (item._id = id))[0]
     .roundFriends;
   const scrollViewRef = useRef(null);
   useEffect(() => {
@@ -97,7 +97,7 @@ const ForumPage = ({ route, navigation }) => {
     return postItem;
     // setPosts(...post, postItem)
   };
-  
+
   const formatDate = (timestamp) => {
     // console.log(timestamp)
     const date = new Date(timestamp);
@@ -117,7 +117,7 @@ const ForumPage = ({ route, navigation }) => {
     setShowModal(true);
     const friend = roundFriends.filter((item) => item.id == value)[0];
     setHabit(friend.habit);
-    setScore(friend.score)
+    setScore(friend.score);
   };
   const handleUploadClose = () => {
     onClose();
@@ -150,16 +150,20 @@ const ForumPage = ({ route, navigation }) => {
               />
             </View>
           )}
-          <ScrollView ref={scrollViewRef} w={"100%"} h={"100%"}
-           contentContainerStyle={{ flexGrow: 1 }}
-           onContentSizeChange={handleContentSizeChange}>
+          <ScrollView
+            ref={scrollViewRef}
+            w={"100%"}
+            h={"100%"}
+            contentContainerStyle={{ flexGrow: 1 }}
+            onContentSizeChange={handleContentSizeChange}
+          >
             {post.length > 0 ? (
               post.map((item, index) => (
                 <View
-                key={index}
+                  key={index}
                   style={{ flex: 1, marginVertical: 15, marginHorizontal: 10 }}
                 >
-                  <WingBlank >
+                  <WingBlank>
                     <Badge
                       mb={-7}
                       mr={0}
@@ -291,15 +295,20 @@ const ForumPage = ({ route, navigation }) => {
             )}
           </ScrollView>
         </View>
-        {!isModalVisible && (
-          <Fab
-            onPress={() => handleUpload()}
-            m={6}
-            bg={"#6666ff"}
-            size="75"
-            icon={<Icon color="white" size={35} as={AntDesign} name="plus" />}
-          />
-        )}
+        {!isModalVisible &&
+          (activeRoundData.filter(
+            (item) => item._id == id && item.status == "A"
+          ).length > 0 ? (
+            <Fab
+              onPress={() => handleUpload()}
+              m={6}
+              bg={"#6666ff"}
+              size="75"
+              icon={<Icon color="white" size={35} as={AntDesign} name="plus" />}
+            />
+          ) : (
+            ""
+          ))}
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <Modal.Content maxWidth="300px">
             <Modal.CloseButton />
