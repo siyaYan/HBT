@@ -171,23 +171,34 @@ export const RoundProvider = ({ children }) => {
   };
 
   // delete a round
-  const deleteRoundData = async (roundId) => {
-    try {
-      const newData = roundData.data.filter((round) => round._id !== roundId);
-      console.log("delete round data-------", newData);
-      await AsyncStorage.setItem(
-        "roundData",
-        JSON.stringify({ ...roundData, data: newData })
-      );
-      // setRoundData({ ...roundData, data: newData });
-      setRoundData((preRoundData) => {
-        return { ...preRoundData, data: newData };
-      });
-      //setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
-    } catch (error) {
-      console.error("Error deleting round data:", error);
-    }
+  const deleteRoundData = (roundIdToDelete) => {
+    // Step 1: Filter out the round with the matching _id
+    const updatedData = roundData.data.filter((round) => round._id !== roundIdToDelete);
+  
+    // Step 2: Create the new round data structure after deletion
+    const newRoundList = { ...roundData, data: updatedData };
+  
+    console.log("After delete round data:", newRoundList);
+  
+    // Step 3: Update active round data
+    updateActiveRoundData(newRoundList);
+  
+    // Step 4: Set the new round data state
+    setRoundData(newRoundList);
+  
+    // Step 5: Save the updated round data to AsyncStorage
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem("roundData", JSON.stringify(newRoundList));
+        console.log('Round data after deletion saved successfully');
+      } catch (error) {
+        console.error("Error saving updated round data:", error);
+      }
+    };
+  
+    saveData();
   };
+  
   // delete round friend/leave round
   const deleteRoundFriend = async (roundId, friendIdToRemove) => {
     setRoundData((prevRoundData) => {
