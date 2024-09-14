@@ -73,26 +73,14 @@ export const RoundProvider = ({ children }) => {
     });
   };
   // insert new round
-  // step1: update all accpeted round
-  // step2: append round data
   const insertRoundData = (newRound) => {
     const updatedData = [...roundData.data, newRound];
-    const newRoundList={ ...roundData, data: updatedData };
-    console.log("Insert new round data",newRoundList);
-    // const newRoundList=roundData.data.append(newRound)
+    const newRoundList = { ...roundData, data: updatedData };
+    console.log("Insert new round data", newRoundList);
     updateActiveRoundData(newRoundList);
-    setRoundData((prevRoundData) => {
-      if (prevRoundData && prevRoundData.data) {
-        const updatedData = [...prevRoundData.data, newRound];
-        return { ...prevRoundData, data: updatedData };
-      } else {
-        console.error(
-          "Previous round data is undefined or does not contain data property"
-        );
-        return prevRoundData;
-      }
-    });
+    setRoundData(newRoundList);
   };
+  
 
   // TODO: update partcially round data
   // const updateRoundData = (updatedRound) => {

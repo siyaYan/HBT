@@ -82,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
     const processing=processRounds(activeRoundData.data,  new Date())
     const sortedRounds = processing.sort((a, b) => b.startDate - a.startDate).slice(0,2);
     setProcessedRounds(sortedRounds);
-  }, [activeRoundData,pendingReceived]);
+  }, [activeRoundData]);
 
   const getRoundInvitationData = async () => {
     const res = await getRoundInvitation(userData.token);
