@@ -62,7 +62,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     isAllowed: false,
   });
   // const [startDateError, setStartDateError] = useState("");
-  const activeRound = activeRoundData?.data.find((r) => r.status === "A");
+  const activeRound = activeRoundData?.data.find((r) => r.status === "A"||r.status==="P");
 
   // Initialization
   const { userData } = useData();
