@@ -38,12 +38,12 @@ const RoundInfoScreen = ({ route, navigation }) => {
 
   // Update round info to RoundContext and DB
 
-  useEffect(() => {
-    if (!round) {
-      console.error("Round not found in roundData");
-      navigation.navigate("MainStack", { screen: "Home" }); // Navigate to Home if round is not found
-    }
-  }, [round]);
+  // useEffect(() => {
+  //   if (!round) {
+  //     console.error("Round not found in roundData");
+  //     navigation.navigate("MainStack", { screen: "Home" }); // Navigate to Home if round is not found
+  //   }
+  // }, [round]);
 
   // if (!round) {
   //   return null; // Render nothing if round is not found

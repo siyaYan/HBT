@@ -7,12 +7,14 @@ import RoundInfoScreen from "../screens/RoundInfo";
 import RoundInviteFriendsScreen from "../screens/RoundInviteFriends";
 import InviteScreen from "../screens/InviteFriends";
 import RoundHabit from "../screens/RoundHabit";
+// import HomeScreen from '../screens/HomePage';
 
 const Stack = createStackNavigator();
 
 export default function RoundStackNavigator({ navigation }) {
   return (
     <Stack.Navigator>
+      {/* <Stack.Screen name="HomeScreen" component={HomeScreen} /> */}
     <Stack.Screen
         name="RoundInviteFriend"
         component={RoundInviteFriendsScreen}
@@ -117,7 +119,8 @@ export default function RoundStackNavigator({ navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.goBack();
+                // navigation.goBack();
+                navigation.navigate("MainStack", { screen: "Home" }); // Navigate to Home if round is not found
               }}
             />
           ),
