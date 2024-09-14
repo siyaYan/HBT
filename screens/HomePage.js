@@ -199,8 +199,10 @@ const HomeScreen = ({ navigation }) => {
     // show warning message, then remove invitation(reject)
     const thisRoundLevelInt = parseInt(thisRoundInfo.data[0].level, 10);
     const endDate10Percent = new Date(
-      startDate.getTime() + thisRoundLevelInt * 24 * 60 * 60 * 1000 * 0.1
+      thisRoundStartDate.getTime() + thisRoundLevelInt * 24 * 60 * 60 * 1000 * 0.1
     ); // Convert days to milliseconds
+    const today = new Date();
+
     if (today > endDate10Percent) {
       setShow10PerRoundValidation(!show10PerRoundValidation);
       rejectRoundFriend(i);
