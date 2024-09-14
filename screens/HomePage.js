@@ -82,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
     const processing=processRounds(activeRoundData.data,  new Date())
     const sortedRounds = processing.sort((a, b) => b.startDate - a.startDate).slice(0,2);
     setProcessedRounds(sortedRounds);
-  }, [activeRoundData]);
+  }, [activeRoundData,pendingReceived]);
 
   const getRoundInvitationData = async () => {
     const res = await getRoundInvitation(userData.token);
@@ -185,14 +185,19 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [pendingReceived]);
 
-  const openRoundInvitationInfo = async (i) => {
+  const fetchRoundInvitationInfo = async (i) => {
     const thisRoundId = roundInvitationData.data[i].roundId;
-    setShowRoundDetails(!showRoundDetails);
+    
     const aRoundInfo = await getRoundInfo(userData.token, thisRoundId);
     setThisRoundInfo(aRoundInfo);
   };
+  const openRoundInvitationInfo = () =>{
+    setShowRoundDetails(!showRoundDetails);
+  }
 
   const acceptRoundFriend = (i, thisRoundInfo) => {
+    console.log('thisRoundInfo calling acceptRoundFriend:', thisRoundInfo);
+
     // Validation first
     thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate);
     // check the round info, if it starts more than 10% of level:
@@ -525,6 +530,7 @@ const HomeScreen = ({ navigation }) => {
             {filteredUsers.length > 0 ? (
               <Box w={"95%"}>
                 {filteredUsers.map((item, index) => {
+                  fetchRoundInvitationInfo(index);
                   return (
                     <HStack
                       w={"100%"}
@@ -553,7 +559,7 @@ const HomeScreen = ({ navigation }) => {
                       </Text>
                       <HStack space="3">
                         <AntDesign
-                          onPress={() => openRoundInvitationInfo(index)}
+                          onPress={() => openRoundInvitationInfo()}
                           name="info"
                           color="black"
                           size={30}
