@@ -108,6 +108,13 @@ const RoundInfoScreen = ({ route, navigation }) => {
       params: { roundId: roundId },
     });
   };
+
+  const goScoreBoard = () => {
+    navigation.navigate("RoundStack", {
+      screen: "RoundScore",
+      params: { roundId: roundId },
+    });
+  }
   // Navigate to Round Config page
   const goRoundConfig = () => {
     navigation.navigate("RoundStack", {
@@ -163,6 +170,22 @@ const RoundInfoScreen = ({ route, navigation }) => {
               })}
             </Text>
             <Divider my="2" />
+            {round.status=="A"?(<Button
+              onPress={() => {
+                goScoreBoard();
+              }}
+              mt="5"
+              width="100%"
+              size="lg"
+              bg="#49a579"
+              _text={{
+                color: "#f9f8f2",
+                fontFamily: "Regular Medium",
+                fontSize: "lg",
+              }}
+            >
+              Score Board
+            </Button>):("")}
             <Button
               onPress={() => {
                 goHabit();

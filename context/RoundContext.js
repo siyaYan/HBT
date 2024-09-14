@@ -118,13 +118,16 @@ export const RoundProvider = ({ children }) => {
 
   //add new to the round friend list (existing round)
   const insertRoundFriendList = (roundId, newFriend) => {
-    console.log("insert new friend in round context", newFriend);
+    console.log("Insert new friend in round context", newFriend);
+    
     let updatedData;
+  
+    // Update roundData with the new friend added
     setRoundData((prevRoundData) => {
       if (prevRoundData && prevRoundData.data) {
         updatedData = prevRoundData.data.map((round) => {
           if (round._id === roundId) {
-            // Clone the round object and update roundFriends by appending newFriend
+            // Clone the round object and append the new friend to roundFriends
             const updatedRound = {
               ...round,
               roundFriends: [...round.roundFriends, newFriend],
@@ -134,6 +137,7 @@ export const RoundProvider = ({ children }) => {
             return round;
           }
         });
+        // Return updated roundData
         return { ...prevRoundData, data: updatedData };
       } else {
         console.error(
@@ -142,14 +146,22 @@ export const RoundProvider = ({ children }) => {
         return prevRoundData;
       }
     });
-    const round = activeRoundData?.find((r) => r._id === roundId);
-    if (round) {
-      updateActiveRoundData(updatedData);
-      setActiveRoundData((prevRoundData) => {
-        return { ...prevRoundData, data: updatedData };
+  
+    // Immediately update activeRoundData after roundData has been updated
+    setActiveRoundData((prevActiveRoundData) => {
+      const updatedActiveRounds = prevActiveRoundData.data.map((round) => {
+        if (round._id === roundId) {
+          return { ...round, roundFriends: [...round.roundFriends, newFriend] };
+        }
+        return round;
       });
-    }
+  
+      return { ...prevActiveRoundData, data: updatedActiveRounds };
+    });
+  
+    console.log("Updated roundData:", updatedData);
   };
+  
 
   // Update the entire roundData array
   const updateRounds = (newRounds) => {
