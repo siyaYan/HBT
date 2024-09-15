@@ -34,6 +34,7 @@ export default function AuthenticatedScreens({navigation}) {
     console.log('This is main tab, note is :',note );
     updateNote()
   }, [updateNotes]);
+
   
   const onPress = (value) => {
     if (value.target.includes("Upload")) {
