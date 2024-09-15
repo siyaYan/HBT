@@ -61,12 +61,12 @@ export const RoundProvider = ({ children }) => {
     saveData();
   }, [roundData]);
 
-  const updateActiveRoundData = (newRounds) => {
-    console.log("Update active round data",newRounds)
+  const updateActiveRoundData = (newRounds, userId=userData.data._id) => {
+    console.log("Update active round data---userdata",userData)
     const res = newRounds.data.filter((round) =>
-      isRoundAccepted(round, userData.data._id)
+      isRoundAccepted(round, userId)
     );
-    console.log("------update active rounds", res);
+    // console.log("------update active rounds", res);
     // setActiveRoundData(res);
     setActiveRoundData((prevRoundData) => {
       return { ...prevRoundData, data: res };
