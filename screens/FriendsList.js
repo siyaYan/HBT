@@ -112,7 +112,7 @@ const FriendsScreen = ({ navigation }) => {
       // console.log('get friends success:',response.data);
       let sendFriends = [];
       const pendingRes = response.data.filter((item) => item.status == "P");
-      console.log('update:',pendingRes, response.users);
+      // console.log('update:',pendingRes, response.users);
       if (pendingRes.length > 0) {
         response.data.map((data, index) => {
           if(data.status == "P"){
@@ -127,7 +127,7 @@ const FriendsScreen = ({ navigation }) => {
           }
         });
       }
-     console.log('update:',sendFriends);
+    //  console.log('update:',sendFriends);
       setSent(sendFriends);
       // console.log('send request:',sent)
     } else {

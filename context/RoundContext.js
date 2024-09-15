@@ -62,23 +62,22 @@ export const RoundProvider = ({ children }) => {
   }, [roundData]);
 
   const updateActiveRoundData = (newRounds, userId=userData.data._id) => {
-    console.log("Update active round data---userdata",userData)
+    console.log("Update active round data---userdata",newRounds.data)
     const res = newRounds.data.filter((round) =>
       isRoundAccepted(round, userId)
     );
-    // console.log("------update active rounds", res);
-    // setActiveRoundData(res);
+    console.log("res--------",res)
     setActiveRoundData((prevRoundData) => {
       return { ...prevRoundData, data: res };
     });
   };
+
   // insert new round
   const insertRoundData = (newRound) => {
     const updatedData = [...roundData.data, newRound];
     const newRoundList = { ...roundData, data: updatedData };
     console.log("Insert new round data", newRoundList);
-    updateActiveRoundData(newRoundList);
-    setRoundData(newRoundList);
+    updateRounds(newRoundList)
   };
   
 
@@ -153,7 +152,7 @@ export const RoundProvider = ({ children }) => {
 
   // Update the entire roundData array
   const updateRounds = (newRounds) => {
-    console.log("round context------", newRounds);
+    // console.log("round context------", newRounds);
     setRoundData(newRounds);
     updateActiveRoundData(newRounds);
   };
@@ -248,6 +247,7 @@ export const RoundProvider = ({ children }) => {
       value={{
         roundData,
         activeRoundData,
+        setActiveRoundData,
         updateActiveRoundData,
         updateRounds,
         insertRoundData,

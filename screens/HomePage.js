@@ -58,7 +58,8 @@ const HomeScreen = ({ navigation }) => {
   const [processedRounds, setProcessedRounds] = useState(null);
 
   const { userData, updateNotes } = useData();
-  const { activeRoundData, roundData, insertRoundData } = useRound();
+  const { activeRoundData, roundData,updateRounds } =
+    useRound();
 
   // console.log("active round---", activeRoundData);
   // Get screen dimensions
@@ -77,12 +78,13 @@ const HomeScreen = ({ navigation }) => {
     useCallback(() => {
       // This code runs when the tab comes into focus
       // console.log("Tab is in focus, userInfo:------------", userData);
-
       getRoundInvitationData();
+      getRoundData();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
 
   useEffect(() => {
+    // console.log("activeRoundData----", activeRoundData?.data[activeRoundData.data.length - 1]?.roundFriends);
     const processing = processRounds(activeRoundData.data, new Date());
     const sortedRounds = processing
       .sort((a, b) => b.startDate - a.startDate)
@@ -90,9 +92,17 @@ const HomeScreen = ({ navigation }) => {
     setProcessedRounds(sortedRounds);
   }, [activeRoundData]);
 
+  useEffect(() => {
+    // console.log("RoundData-------", roundData);
+  }, [roundData]);
+
   const getRoundInvitationData = async () => {
     const res = await getRoundInvitation(userData.token);
     setRoundInvitationData(res);
+  };
+  const getRoundData = async () => {
+    const res = await getRoundInfo(userData.token, userData.data._id);
+    updateRounds(res);
   };
   const handle10PerRoundValidationClose = () => {
     setShow10PerRoundValidation(!show10PerRoundValidation);
@@ -159,7 +169,6 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundDetails(!showRoundDetails);
   };
 
-  //TODO:check
   const findPendingReceived = () => {
     console.log("----roundInvitationData", roundInvitationData);
     if (roundInvitationData && roundInvitationData.status === "success") {
@@ -175,11 +184,10 @@ const HomeScreen = ({ navigation }) => {
     findPendingReceived();
   };
 
-  //TODO:
   useEffect(() => {
     // Define the async function inside the useEffect
     const fetchData = async () => {
-      console.log("Fetching data-----", pendingReceived);
+      // console.log("Fetching data-----", pendingReceived);
       // Ensure pendingReceived is valid and has data
       if (pendingReceived && pendingReceived.length > 0) {
         const pendingSenderIds = pendingReceived.map(
@@ -226,7 +234,7 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundDetails(!showRoundDetails);
   };
 
-  const acceptRoundFriend = (i, thisRoundInfo) => {
+  const acceptRoundFriend = async (i, thisRoundInfo)  => {
     console.log("thisRoundInfo calling acceptRoundFriend:", thisRoundInfo);
 
     // Validation first
@@ -261,7 +269,7 @@ const HomeScreen = ({ navigation }) => {
       ).length == 1
     ) {
       const activeRound = activeRoundData[0];
-      if (activeRound.status == "A") {
+      if (activeRound?.status == "A") {
         const levelInt = parseInt(activeRound.level, 10);
         const startDate = new Date(activeRound.startDate);
         const endDate = new Date(
@@ -295,10 +303,16 @@ const HomeScreen = ({ navigation }) => {
       ...currentReceived.slice(i),
     ]);
     const id = pendingReceived[i - 1]._id;
-    reactRequest(id, "A"); //update round invitation data
+    const res = reactRequest(id, "A"); //update round invitation data
+    if (res) {
+      console.log("react request success");
+      const RoundInfoList = await getRoundInfo(userData.token, userData.data._id);
+      console.log("last roundfrinedlist", RoundInfoList.data[RoundInfoList.data.length - 1].roundFriends);
+      updateRounds(RoundInfoList)
+    }
     // show the new accepted round on it
     //Insert this new accepted round into round context directly
-    insertRoundData(thisRoundInfo.data[0]);
+    
   };
 
   const rejectRoundFriend = (i) => {
@@ -333,8 +347,10 @@ const HomeScreen = ({ navigation }) => {
     }
     if (response.status == "success") {
       console.log("react request success:", response);
+      return true;
     } else {
       console.error("react request failed:", response.message);
+      return false;
     }
   };
 
