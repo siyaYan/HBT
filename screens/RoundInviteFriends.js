@@ -36,8 +36,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   const { userData, updateUserData } = useData();
   const roundId = route.params.roundId;
   const { roundData, insertRoundFriendList } = useRound();
-  const [round, setRound] = useState(roundData.data.find((r) => r._id === roundId));
- 
+  const [round, setRound] = useState(
+    roundData.data.find((r) => r._id === roundId)
+  );
+
   console.log("Round Friend List", round.roundFriends);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -46,7 +48,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   }, [isModalVisible]);
 
   useEffect(() => {
-    setRound(roundData.data.find((r) => r._id === roundId))
+    setRound(roundData.data.find((r) => r._id === roundId));
     // console.log("friends updated:", friends);
     // console.log("round data updated:", roundData);
     // console.log("round data friend list: ", round.roundFriends);
@@ -223,7 +225,9 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                       {isFriendInRound ? (
                         friendStatus === "A" ? (
                           <Feather name="link" size={30} color="black" />
-                        ) : friendStatus === "R" ? (
+                        ) : friendStatus === "P" ? (
+                          <Feather name="refresh-cw" size={30} color="black" />
+                        ) : (
                           <Pressable
                             onPress={() => {
                               console.log("item", item);
@@ -235,19 +239,15 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                               invite
                             </Text>
                           </Pressable>
-                        ) : (
-                          <Feather name="refresh-cw" size={30} color="black" />
                         )
                       ) : (
                         <Pressable
                           onPress={() => {
                             console.log("item", item);
-
                             handlePressInvite(item);
                           }}
                         >
                           <Feather name="send" size={30} color="black" />
-
                           <Text fontFamily={"Regular"} fontSize="xs">
                             invite
                           </Text>

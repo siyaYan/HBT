@@ -275,6 +275,7 @@ const ForumPage = ({ route, navigation }) => {
                         color={item.like ? "red" : "lightgray"}
                       />
                     </Badge>
+                    {item.userId == userData.data._id ? (
                     <Badge
                       colorScheme="danger"
                       rounded="full"
@@ -293,7 +294,7 @@ const ForumPage = ({ route, navigation }) => {
                         size={24}
                         color="red"
                       />
-                    </Badge>
+                    </Badge>):("")}
                   </WingBlank>
                 </View>
               ))

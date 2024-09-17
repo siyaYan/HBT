@@ -321,6 +321,7 @@ const HomeScreen = ({ navigation }) => {
       );
       updateRounds(RoundInfoList);
     }
+    getRoundInvitationData();
     // show the new accepted round on it
     //Insert this new accepted round into round context directly
   };
@@ -348,6 +349,7 @@ const HomeScreen = ({ navigation }) => {
     ]);
     const id = pendingReceived[i - 1]._id;
     reactRequest(id, "R");
+    getRoundInvitationData();
   };
 
   const reactRequest = async (id, react) => {
@@ -501,7 +503,7 @@ const HomeScreen = ({ navigation }) => {
                     fontSize: 20, // Use a number for fontSize instead of "lg"
                   }}
                 >
-                  {round.name}
+                  {round?.name}
                 </Text>
                 {(round.status === "P" || round.status === "R") && (
                   <Text
