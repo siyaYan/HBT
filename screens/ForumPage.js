@@ -13,12 +13,11 @@ import {
 } from "native-base";
 import { Fab, useDisclose } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
-import { useState, useEffect, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useState, useEffect } from "react";
 import React, { useRef } from "react";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
-import { Card, WhiteSpace, WingBlank } from "@ant-design/react-native";
+import { Card, WingBlank } from "@ant-design/react-native";
 import Background from "../components/Background";
 import { Pressable, StyleSheet, ScrollView } from "react-native";
 import {
@@ -31,19 +30,26 @@ import AddImage from "../components/AddImage";
 
 const ForumPage = ({ route, navigation }) => {
   const { userData } = useData();
-  const { activeRoundData } = useRound();
+  const { activeRoundData, roundData } = useRound();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclose();
   const { id } = route.params;
-  const roundFriends = activeRoundData?.data.filter((item) => (item._id = id))[0]
-    .roundFriends;
+  const [roundFriends, setRoundFriends] = useState(roundData?.data.filter((item) => (item._id = id))[0]
+  .roundFriends); 
   const scrollViewRef = useRef(null);
   useEffect(() => {
     const fetchForumMessages = async () => {
       await getForumMessages();
     };
+    setRoundFriends(roundData?.data.filter((item) => (item._id = id))[0]
+    .roundFriends)
     fetchForumMessages();
   }, [route.params]);
+
+  useEffect(() => {
+    setRoundFriends(roundData?.data.filter((item) => (item._id = id))[0]
+    .roundFriends)
+  }, [roundData]);
 
   const [post, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -116,6 +122,7 @@ const ForumPage = ({ route, navigation }) => {
   const handleModal = (value) => {
     setShowModal(true);
     const friend = roundFriends.filter((item) => item.id == value)[0];
+    console.log(friend);
     setHabit(friend.habit);
     setScore(friend.score);
   };

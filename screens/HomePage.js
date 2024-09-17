@@ -57,9 +57,14 @@ const HomeScreen = ({ navigation }) => {
 
   const [processedRounds, setProcessedRounds] = useState(null);
 
+  const [showRoundFriendValidation, setShowRoundFriendValidation] =
+    useState(false);
+
+  const handleCloseRoundFriendValidation = () => {
+    setShowRoundFriendValidation(false);
+  };
   const { userData, updateNotes } = useData();
-  const { activeRoundData, roundData,updateRounds } =
-    useRound();
+  const { activeRoundData, roundData, updateRounds } = useRound();
 
   // console.log("active round---", activeRoundData);
   // Get screen dimensions
@@ -87,14 +92,14 @@ const HomeScreen = ({ navigation }) => {
     // console.log("activeRoundData----", activeRoundData?.data[activeRoundData.data.length - 1]?.roundFriends);
     const processing = processRounds(activeRoundData.data, new Date());
     const sortedRounds = processing
-      .sort((a, b) => b.startDate - a.startDate)
+      .sort((a, b) => a.startDate - b.startDate)
       .slice(0, 2);
     setProcessedRounds(sortedRounds);
   }, [activeRoundData]);
 
-  useEffect(() => {
-    // console.log("RoundData-------", roundData);
-  }, [roundData]);
+  // useEffect(() => {
+  //   // console.log("RoundData-------", roundData);
+  // }, [roundData]);
 
   const getRoundInvitationData = async () => {
     const res = await getRoundInvitation(userData.token);
@@ -234,7 +239,7 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundDetails(!showRoundDetails);
   };
 
-  const acceptRoundFriend = async (i, thisRoundInfo)  => {
+  const acceptRoundFriend = async (i, thisRoundInfo) => {
     console.log("thisRoundInfo calling acceptRoundFriend:", thisRoundInfo);
 
     // Validation first
@@ -306,13 +311,18 @@ const HomeScreen = ({ navigation }) => {
     const res = reactRequest(id, "A"); //update round invitation data
     if (res) {
       console.log("react request success");
-      const RoundInfoList = await getRoundInfo(userData.token, userData.data._id);
-      console.log("last roundfrinedlist", RoundInfoList.data[RoundInfoList.data.length - 1].roundFriends);
-      updateRounds(RoundInfoList)
+      const RoundInfoList = await getRoundInfo(
+        userData.token,
+        userData.data._id
+      );
+      console.log(
+        "last roundfrinedlist",
+        RoundInfoList.data[RoundInfoList.data.length - 1].roundFriends
+      );
+      updateRounds(RoundInfoList);
     }
     // show the new accepted round on it
     //Insert this new accepted round into round context directly
-    
   };
 
   const rejectRoundFriend = (i) => {
@@ -401,6 +411,8 @@ const HomeScreen = ({ navigation }) => {
         endTimeDifference > 0 &&
         round.status !== "A"
       ) {
+        // validate if there is any active friend
+        setShowRoundFriendValidation(!showRoundFriendValidation);
         updateStatusAndDate(round._id, "A");
       }
 
@@ -1031,6 +1043,25 @@ const HomeScreen = ({ navigation }) => {
               <Text fontSize="md">
                 The round is already 10% complete. You are no longer allowed to
                 join.
+              </Text>
+            </>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+
+      <Modal
+        isOpen={showRoundFriendValidation}
+        onClose={handleCloseRoundFriendValidation}
+      >
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header>Warning</Modal.Header>
+          <Modal.Body>
+            <>
+              <Text fontSize="md">
+                Your friend hasn't accepted the invitation yet. Without
+                participants, this round risks deletion. Please remind your
+                friend to accept the invitation to keep the round active.{" "}
               </Text>
             </>
           </Modal.Body>
