@@ -36,7 +36,8 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   const { userData, updateUserData } = useData();
   const roundId = route.params.roundId;
   const { roundData, insertRoundFriendList } = useRound();
-  const round = roundData.data.find((r) => r._id === roundId);
+  const [round, setRound] = useState(roundData.data.find((r) => r._id === roundId));
+ 
   console.log("Round Friend List", round.roundFriends);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -45,10 +46,11 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   }, [isModalVisible]);
 
   useEffect(() => {
-    console.log("friends updated:", friends);
-    console.log("round data updated:", roundData);
-    console.log("round data friend list: ", round.roundFriends);
-  }, [friends, roundData]);
+    setRound(roundData.data.find((r) => r._id === roundId))
+    // console.log("friends updated:", friends);
+    // console.log("round data updated:", roundData);
+    // console.log("round data friend list: ", round.roundFriends);
+  }, [roundData]);
 
   const countCurrentRoundFriends = (round) => {
     const count =
