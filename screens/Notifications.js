@@ -50,9 +50,9 @@ const NotificationScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
   const updateNote = async ()=>{
     const res=await getNoteUpdate(userData.token,userData.data.email)
-    // if(res>0){
+    if(res>0){
       updateNotes(res)
-    // }
+    }
  }
   const updateNotifiableFriendRequest = async () => {
     const response = await getNotifiableFriendRequests(userData.token);
@@ -280,7 +280,7 @@ const NotificationScreen = ({ navigation }) => {
           <Box mt="5" w="95%">
             <VStack space={1} alignItems="left">
               <HStack w={"100%"} justifyContent={"space-between"}>
-                {friendRequest.length > 0 ? (
+                {friendRequest?.length > 0 ? (
                   <Box>
                     <Image
                       size={30}
@@ -301,7 +301,7 @@ const NotificationScreen = ({ navigation }) => {
                         fontSize: 12,
                       }}
                     >
-                      {friendRequest.length}
+                      {friendRequest?.length}
                     </Badge>
                   </Box>
                 ) : (
@@ -327,17 +327,17 @@ const NotificationScreen = ({ navigation }) => {
                 justifyContent={"center"}
               >
                 <ScrollView w={"100%"}>
-                  {friendRequest.length > 0 ? (
+                  {friendRequest?.length > 0 ? (
                     <Box mt={"2"} w={"95%"} alignSelf={"center"}>
-                      {friendRequest.map((item, index) => 
+                      {friendRequest?.map((item, index) => 
                         // (item.requestRole == "sent"?item.username:'qqq')
                           (item.requestRole == "received" ? (
-                            <Box mt={"2"} w={"100%"} alignSelf={"center"}>
+                            <Box mt={"2"} w={"100%"} alignSelf={"center"} key={index}>
                               <HStack
                                 w={"100%"}
                                 alignItems={"center"}
                                 justifyContent={"space-between"}
-                                key={index}
+                                
                               >
                                 {item.profileImageUrl ? (
                                   <Avatar
@@ -383,12 +383,11 @@ const NotificationScreen = ({ navigation }) => {
                               </HStack>
                             </Box>
                           ) : (
-                            <Box mt={"2"} w={"100%"} alignSelf={"center"}>
+                            <Box mt={"2"} w={"100%"} alignSelf={"center"} key={index}>
                               <HStack
                                 w={"100%"}
                                 alignItems={"center"}
                                 justifyContent={"space-between"}
-                                key={index}
                               >
                                 {item.profileImageUrl ? (
                                   <Avatar
@@ -469,7 +468,7 @@ const NotificationScreen = ({ navigation }) => {
               />
 
               <HStack w={"100%"} justifyContent={"space-between"}>
-                {notificates.length ? (
+                {notificates?.length ? (
                   <Box>
                     <Image
                       size={30}
@@ -490,7 +489,7 @@ const NotificationScreen = ({ navigation }) => {
                         fontSize: 12,
                       }}
                     >
-                      {notificates.length}
+                      {notificates?.length}
                     </Badge>
                   </Box>
                 ) : (
@@ -516,16 +515,15 @@ const NotificationScreen = ({ navigation }) => {
                 justifyContent={"center"}
               >
                 <ScrollView w={"100%"}>
-                  {notificates.length > 0 ? (
+                  {notificates?.length > 0 ? (
                     <Box my="2" w={"95%"} alignSelf={"center"}>
-                      {notificates.map((item, index) => (
+                      {notificates?.map((item, index) => (
                         <HStack
                           w={"100%"}
                           alignItems={"center"}
                           justifyContent={"space-between"}
                           mt={2}
                           key={index}
-                          item={item}
                         >
                           {item.profileImageUrl ? (
                             <Avatar
@@ -587,16 +585,15 @@ const NotificationScreen = ({ navigation }) => {
 
               <Box w={"96%"} h={"40%"} alignSelf={"center"}>
                 <ScrollView w={"100%"} h="40%">
-                  {history.length > 0 ? (
+                  {history?.length > 0 ? (
                     <Box my="2" w={"95%"} alignSelf={"center"}>
-                      {history.map((item, index) => (
+                      {history?.map((item, index) => (
                         <HStack
                           w={"100%"}
                           alignItems={"center"}
                           justifyContent={"space-between"}
                           m={1}
                           key={index}
-                          item={item}
                         >
                           {item.profileImageUrl ? (
                             <Avatar

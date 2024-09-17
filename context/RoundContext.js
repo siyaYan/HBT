@@ -52,7 +52,6 @@ export const RoundProvider = ({ children }) => {
     const saveData = async () => {
       try {
         await AsyncStorage.setItem("roundData", JSON.stringify(roundData));
-        console.log('FirstSaveData:',roundData)
       } catch (error) {
         console.error("Error saving user data:", error);
       }
@@ -62,11 +61,9 @@ export const RoundProvider = ({ children }) => {
   }, [roundData]);
 
   const updateActiveRoundData = (newRounds, userId=userData.data._id) => {
-    console.log("Update active round data---userdata",newRounds.data)
     const res = newRounds.data.filter((round) =>
       isRoundAccepted(round, userId)
     );
-    console.log("res--------",res)
     setActiveRoundData((prevRoundData) => {
       return { ...prevRoundData, data: res };
     });

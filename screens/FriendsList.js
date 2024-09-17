@@ -53,7 +53,7 @@ const FriendsScreen = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
-      console.log('Tab is in focus, userInfo:', userData);
+      console.log("Tab is in focus, userInfo:", userData);
       updateFriendList();
       updateSendRequest();
       updateReceivedRequest();
@@ -91,11 +91,11 @@ const FriendsScreen = ({ navigation }) => {
         newFriends.push(newFriend);
       });
       response.data.map((data, index) => {
-        newFriends[index]._id = data._id;
+        console.log("data:", data);
+        if (index < newFriends.length) {
+          newFriends[index]._id = data?._id;
+        }
       });
-      // console.log('new friends:',newFriends)
-      // const reversedFriends = newFriends.slice().reverse();
-      // console.log('reversed friends:',reversedFriends)
       setFriends(newFriends);
     } else {
       console.error("get friends failed:", response.message);
@@ -115,19 +115,19 @@ const FriendsScreen = ({ navigation }) => {
       // console.log('update:',pendingRes, response.users);
       if (pendingRes.length > 0) {
         response.data.map((data, index) => {
-          if(data.status == "P"){
+          if (data.status == "P") {
             const newFriend = {
-              _id: data._id,
+              _id: data?._id,
               email: response.users[index].email,
               profileImageUrl: response.users[index].profileImageUrl,
               username: response.users[index].username,
               nickname: response.users[index].nickname,
             };
-            sendFriends.push(newFriend)
+            sendFriends.push(newFriend);
           }
         });
       }
-    //  console.log('update:',sendFriends);
+      //  console.log('update:',sendFriends);
       setSent(sendFriends);
       // console.log('send request:',sent)
     } else {
@@ -151,7 +151,7 @@ const FriendsScreen = ({ navigation }) => {
       if (pendingRes.length > 0) {
         pendingRes.map((data, index) => {
           const newFriend = {
-            _id: data._id,
+            _id: data?._id,
             email: response.users[index].email,
             profileImageUrl: response.users[index].profileImageUrl,
             username: response.users[index].username,
@@ -175,7 +175,7 @@ const FriendsScreen = ({ navigation }) => {
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
-    const id = received[i - 1]._id;
+    const id = received[i - 1]?._id;
     reactRequest(id, "R");
   };
   const acceptFriend = (i) => {
@@ -184,7 +184,7 @@ const FriendsScreen = ({ navigation }) => {
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
-    const id = received[i - 1]._id;
+    const id = received[i - 1]?._id;
     reactRequest(id, "A");
   };
   const reactRequest = async (id, react) => {
@@ -233,7 +233,7 @@ const FriendsScreen = ({ navigation }) => {
         ...currentSent.slice(0, i - 1),
         ...currentSent.slice(i),
       ]);
-      const id = sent[i - 1]._id;
+      const id = sent[i - 1]?._id;
       deleteFriendOrRequestByID(id);
     }
     if (item === "friend") {
@@ -244,7 +244,7 @@ const FriendsScreen = ({ navigation }) => {
           ...currentFriends.slice(0, deleted - 1),
           ...currentFriends.slice(deleted),
         ]);
-        const id = friends[deleted - 1]._id;
+        const id = friends[deleted - 1]?._id;
         deleteFriendOrRequestByID(id);
       } else {
         console.log("delete all friends");
@@ -317,7 +317,7 @@ const FriendsScreen = ({ navigation }) => {
   //       </VStack>
   //     </Pressable>
   //   </HStack>;
-    
+
   return (
     <NativeBaseProvider>
       <Background2 />
@@ -332,7 +332,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="received"
               />
               <Text fontFamily={"Regular"} fontSize="lg">
-                {received.length>0?received.length:""}
+                {received?.length > 0 ? received.length : ""}
               </Text>
             </HStack>
             <Box
@@ -342,7 +342,7 @@ const FriendsScreen = ({ navigation }) => {
               alignSelf={"center"}
               justifyContent={"center"}
             >
-              {received.length > 0 ? (
+              {received?.length > 0 ? (
                 <VStack space={3}>
                   <HStack
                     w={"100%"}
@@ -382,7 +382,7 @@ const FriendsScreen = ({ navigation }) => {
                       />
                     </HStack>
                   </HStack>
-                  {received.length > 1 ? (
+                  {received?.length > 1 ? (
                     <HStack
                       w={"100%"}
                       alignItems={"center"}
@@ -456,7 +456,7 @@ const FriendsScreen = ({ navigation }) => {
                 alt="sent"
               />
               <Text fontFamily={"Regular"} fontSize="lg">
-                {sent.length>0?sent.length:''}
+                {sent?.length > 0 ? sent.length : ""}
               </Text>
             </HStack>
             <Box
@@ -466,7 +466,7 @@ const FriendsScreen = ({ navigation }) => {
               alignSelf={"center"}
               justifyContent={"center"}
             >
-              {sent.length > 0 ? (
+              {sent?.length > 0 ? (
                 <VStack space={3}>
                   <HStack
                     w={"100%"}
@@ -503,7 +503,7 @@ const FriendsScreen = ({ navigation }) => {
                       </Text>
                     </VStack>
                   </HStack>
-                  {sent.length > 1 ? (
+                  {sent?.length > 1 ? (
                     <HStack
                       w={"100%"}
                       alignItems={"center"}
@@ -578,7 +578,7 @@ const FriendsScreen = ({ navigation }) => {
                   alt="friends"
                 />
                 <Text fontFamily={"Regular"} fontSize="lg">
-                  {friends.length>0? friends.length : ""}
+                  {friends?.length > 0 ? friends.length : ""}
                 </Text>
               </HStack>
               {/* <FontAwesome5
@@ -615,17 +615,16 @@ const FriendsScreen = ({ navigation }) => {
             </Modal>
             <Box w={"93%"} h={"45%"} alignSelf={"center"}>
               <ScrollView w={"100%"}>
-                {friends.length > 0 ? (
+                {friends?.length > 0 ? (
                   <Box w={"95%"}>
                     {/* <SwipeListView data={friends} renderItem={renderItem} renderHiddenItem={renderHiddenItem} rightOpenValue={-130} previewRowKey={'0'} previewOpenValue={-40} previewOpenDelay={3000} onRowDidOpen={onRowDidOpen} /> */}
-                    {friends.map((item, index) => (
+                    {friends?.map((item, index) => (
                       <HStack
                         w={"100%"}
                         alignItems={"center"}
                         justifyContent={"space-between"}
                         m={1}
                         key={index}
-                        item={item}
                       >
                         {item.profileImageUrl ? (
                           <Avatar

@@ -160,7 +160,7 @@ export default function AuthenticatedScreens({navigation}) {
             headerShown: false,
             tabBarButton: ({ accessibilityState, onPress }) => (
               <TouchableOpacity
-                              onPress={() => {
+                onPress={() => {
                 setIsModalVisible(false); // Reset showModal to false
                 onPress(); // Call the original onPress handler
               }}
