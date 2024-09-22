@@ -35,10 +35,10 @@ export const RoundProvider = ({ children }) => {
     const loadData = async () => {
       try {
         const savedRoundData = await AsyncStorage.getItem("roundData");
-        console.log('FirstGetData:',savedRoundData)
+        console.log("FirstGetData:", savedRoundData);
         if (savedRoundData && savedRoundData.data?.length > 0) {
           setRoundData(JSON.parse(savedRoundData));
-          updateActiveRoundData(JSON.parse(savedRoundData))
+          updateActiveRoundData(JSON.parse(savedRoundData));
         }
       } catch (error) {
         console.error("Error loading user data:", error);
@@ -60,7 +60,7 @@ export const RoundProvider = ({ children }) => {
     saveData();
   }, [roundData]);
 
-  const updateActiveRoundData = (newRounds, userId=userData.data._id) => {
+  const updateActiveRoundData = (newRounds, userId = userData.data._id) => {
     const res = newRounds.data.filter((round) =>
       isRoundAccepted(round, userId)
     );
@@ -74,9 +74,8 @@ export const RoundProvider = ({ children }) => {
     const updatedData = [...roundData.data, newRound];
     const newRoundList = { ...roundData, data: updatedData };
     console.log("Insert new round data", newRoundList);
-    updateRounds(newRoundList)
+    updateRounds(newRoundList);
   };
-  
 
   // TODO: update partcially round data
   // const updateRoundData = (updatedRound) => {
@@ -101,20 +100,29 @@ export const RoundProvider = ({ children }) => {
   // };
 
   //add new to the round friend list (existing round)
-  const insertRoundFriendList = (roundId, newFriend) => {
-    console.log("Insert new friend in round context", newFriend);
-    
+  const insertRoundFriendList = (roundId, newFriend, isFriendInRound) => {
+    console.log("Insert or update friend in round context", newFriend);
+
     let updatedData;
-  
-    // Update roundData with the new friend added
+
+    // Update roundData with the new or updated friend
     setRoundData((prevRoundData) => {
       if (prevRoundData && prevRoundData.data) {
         updatedData = prevRoundData.data.map((round) => {
           if (round._id === roundId) {
-            // Clone the round object and append the new friend to roundFriends
+            // Check if the friend is already in the round
+            const friendExists = round.roundFriends.some(
+              (friend) => friend._id === newFriend._id
+            );
+
+            // Clone the round object and update or insert the friend
             const updatedRound = {
               ...round,
-              roundFriends: [...round.roundFriends, newFriend],
+              roundFriends: friendExists
+                ? round.roundFriends.map((friend) =>
+                    friend._id === newFriend._id ? newFriend : friend
+                  ) // Update friend if they exist
+                : [...round.roundFriends, newFriend], // Insert new friend if they don't exist
             };
             return updatedRound;
           } else {
@@ -130,22 +138,33 @@ export const RoundProvider = ({ children }) => {
         return prevRoundData;
       }
     });
-  
+
     // Immediately update activeRoundData after roundData has been updated
     setActiveRoundData((prevActiveRoundData) => {
       const updatedActiveRounds = prevActiveRoundData.data.map((round) => {
         if (round._id === roundId) {
-          return { ...round, roundFriends: [...round.roundFriends, newFriend] };
+          // Check if the friend is already in the round
+          const friendExists = round.roundFriends.some(
+            (friend) => friend._id === newFriend._id
+          );
+
+          return {
+            ...round,
+            roundFriends: friendExists
+              ? round.roundFriends.map((friend) =>
+                  friend._id === newFriend._id ? newFriend : friend
+                ) // Update friend if they exist
+              : [...round.roundFriends, newFriend], // Insert new friend if they don't exist
+          };
         }
         return round;
       });
-  
+
       return { ...prevActiveRoundData, data: updatedActiveRounds };
     });
-  
+
     console.log("Updated roundData:", updatedData);
   };
-  
 
   // Update the entire roundData array
   const updateRounds = (newRounds) => {
@@ -157,32 +176,34 @@ export const RoundProvider = ({ children }) => {
   // delete a round
   const deleteRoundData = (roundIdToDelete) => {
     // Step 1: Filter out the round with the matching _id
-    const updatedData = roundData.data.filter((round) => round._id !== roundIdToDelete);
-  
+    const updatedData = roundData.data.filter(
+      (round) => round._id !== roundIdToDelete
+    );
+
     // Step 2: Create the new round data structure after deletion
     const newRoundList = { ...roundData, data: updatedData };
-  
+
     console.log("After delete round data:", newRoundList);
-  
+
     // Step 3: Update active round data
     updateActiveRoundData(newRoundList);
-  
+
     // Step 4: Set the new round data state
     setRoundData(newRoundList);
-  
+
     // Step 5: Save the updated round data to AsyncStorage
     const saveData = async () => {
       try {
         await AsyncStorage.setItem("roundData", JSON.stringify(newRoundList));
-        console.log('Round data after deletion saved successfully');
+        console.log("Round data after deletion saved successfully");
       } catch (error) {
         console.error("Error saving updated round data:", error);
       }
     };
-  
+
     saveData();
   };
-  
+
   // delete round friend/leave round
   const deleteRoundFriend = async (roundId, friendIdToRemove) => {
     setRoundData((prevRoundData) => {

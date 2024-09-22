@@ -12,6 +12,7 @@ export default function ForumStackNavigator({ route, navigation }) {
   const { activeRoundData } = useRound();
   const roundId = route.params.id;
   const activeRound = activeRoundData?.data.filter((item) => item.status === "A")[0];
+  console.log(activeRoundData);
   const firstTwoFinishRounds = activeRoundData
     ?.data.filter((item) => item.status === "F")
     .slice(0, 2);
@@ -33,7 +34,7 @@ export default function ForumStackNavigator({ route, navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.goBack();
+                navigation.navigate("MainStack", { screen: "Home" });
               }}
             />
           ),
@@ -42,28 +43,26 @@ export default function ForumStackNavigator({ route, navigation }) {
       <Stack.Screen
         name="ForumPage"
         component={ForumPage}
+        initialParams={{ id: roundId }}
         options={{
           headerBackTitleVisible: false,
           title:
-            activeRound?._id === roundId
-              ? activeRound?.name
-              : firstTwoFinishRounds?.find((item) => item._id === roundId)
-                  ?.name,
-
+          activeRound?._id === roundId
+          ? activeRound?.name
+          : firstTwoFinishRounds?.find((item) => item._id === roundId)
+              ?.name,
           headerLeft: () => (
             <IconButton
               ml={3}
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.goBack();
+                navigation.navigate("MainStack", { screen: "Home" });
               }}
             />
           ),
           headerRight: () =>
-            !activeRound ? (
-              ""
-            ) : (
+            activeRound && activeRound._id===roundId ? (
               <IconButton
                 mr={3}
                 marginY={0}
@@ -71,11 +70,13 @@ export default function ForumStackNavigator({ route, navigation }) {
                 onPress={() => {
                   navigation.navigate("RoundStack", {
                     screen: "RoundInfo",
-                    params: { roundId: activeRound._id },
+                    params: { roundId: roundId },
                   });
                 }}
               />
-            ),
+            ):(
+              ""
+            ) 
         }}
       />
     </Stack.Navigator>

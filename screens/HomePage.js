@@ -89,13 +89,44 @@ const HomeScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
+    console.log('-------1',activeRoundData)
     // console.log("activeRoundData----", activeRoundData?.data[activeRoundData.data.length - 1]?.roundFriends);
     const processing = processRounds(activeRoundData.data, new Date());
-    const sortedRounds = processing
-      .sort((a, b) => a.startDate - b.startDate)
-      .slice(0, 2);
+    const sortedRounds = filterAndSortRounds(processing);
     setProcessedRounds(sortedRounds);
+    console.log("-------2",sortedRounds)
   }, [activeRoundData]);
+  
+
+
+  const filterAndSortRounds = (rounds) => {
+    
+    // Step 1: Filter out "F" rounds
+    const priorityRounds = rounds.filter((round) => round.round.status !== "F");
+    // Step 2: Sort by priority of statuses and then by startDate
+    const sortedPriorityRounds = priorityRounds.sort((a, b) => {
+      const statusPriority = { P: 1, A: 2 }; // Prioritize "P" and "A"
+      const statusA = statusPriority[a.status] || 3; // Default lower priority
+      const statusB = statusPriority[b.status] || 3;
+  
+      if (statusA !== statusB) {
+        return statusA - statusB; // Sort by status priority
+      }
+  
+      // If statuses are the same, sort by startDate
+      return new Date(a.startDate) - new Date(b.startDate);
+    });
+  
+    // Step 3: If we have less than 2 rounds, include "F" rounds as fallback
+    if (sortedPriorityRounds.length < 2) {
+      const fallbackRounds = rounds.filter((round) => round.round.status === "F");
+  
+      sortedPriorityRounds.push(...fallbackRounds.slice(0, 2 - sortedPriorityRounds.length));
+    }
+  
+    // Step 4: Return only the first 2 rounds
+    return sortedPriorityRounds.slice(0, 2);
+  };
 
   // useEffect(() => {
   //   // console.log("RoundData-------", roundData);
@@ -118,7 +149,6 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const getExistScoreBoard = async (roundId) => {
-    // console.log(userData.token, roundId)
     const res = await getScoreBoard(userData.token, roundId);
     if (res) {
       const topThree = res.data.ranking.slice(0, 3);
@@ -136,6 +166,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleRoundPress = (roundId, status) => {
+    console.log("-------", roundId);
     if (status === "A" || status === "F") {
       navigation.navigate("ForumStack", {
         screen: "ForumPage",
@@ -147,7 +178,7 @@ const HomeScreen = ({ navigation }) => {
         params: { roundId },
       });
     }
-    console.log("home page roundId", roundId);
+    // console.log("home page roundId", roundId);
   };
 
   const handlePress = () => {
@@ -175,7 +206,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const findPendingReceived = () => {
-    console.log("----roundInvitationData", roundInvitationData);
+    // console.log("----roundInvitationData", roundInvitationData);
     if (roundInvitationData && roundInvitationData.status === "success") {
       const pending = roundInvitationData.data.filter(
         (invitation) => invitation.status === "P"
@@ -185,7 +216,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const loadAllReceivedNotification = () => {
-    console.log("----roundInvitationData---notification", roundInvitationData);
+    // console.log("----roundInvitationData---notification", roundInvitationData);
     findPendingReceived();
   };
 
@@ -392,7 +423,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const processRounds = (rounds, today) => {
-    return rounds.map((round, index) => {
+    const newRound = rounds.map((round, index) => {
       const startDate = new Date(round.startDate);
       const timeDifference = startDate - today;
       const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
@@ -420,7 +451,9 @@ const HomeScreen = ({ navigation }) => {
 
       const prefix = timeDifference > 0 ? "D-" : "D+";
       const formattedDifference = `${prefix}${Math.abs(daysDifference)} days`;
-
+      // console.log(
+      //   "round id",round._id
+      // );
       return {
         round,
         index,
@@ -428,6 +461,8 @@ const HomeScreen = ({ navigation }) => {
         formattedDifference,
       };
     });
+    // console.log('-----3',newRound)
+    return newRound;
   };
 
   return (
@@ -455,76 +490,143 @@ const HomeScreen = ({ navigation }) => {
           </Box>
         </Pressable>
         {processedRounds?.map(
-          ({ round, index, startDate, formattedDifference }) => {
-            return (
-              <Button
-                key={index}
-                title={`Round ${index + 1}`}
-                onPress={() => {
-                  handleRoundPress(round._id, round.status);
-                }}
-                rounded="30"
-                mt="5"
-                width="80%"
-                height="100"
-                size="lg"
-                style={{
-                  borderWidth: 1, // This sets the width of the border
-                  borderColor: "#49a579", // This sets the color of the border
-                }}
-                backgroundColor={
-                  round.status === "P"
-                    ? "#606060"
-                    : round.status === "R"
-                    ? "#666ff"
-                    : round.status === "A"
-                    ? "#49a579"
-                    : round.status === "F"
-                    ? "rgba(0,0,0,0.4)"
-                    : "rgba(250,250,250,0.2)"
-                }
-                _pressed={{
-                  bg:
-                    round.status === "P"
-                      ? "#252525"
-                      : round.status === "R"
-                      ? "#323280"
-                      : round.status === "A"
-                      ? "173225"
-                      : round.status === "F"
-                      ? "C0C0C0"
-                      : "rgba(0, 0, 0, 0)", // default is transparent
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#FFFFFF",
-                    fontFamily: "Regular Semi Bold",
-                    fontSize: 20, // Use a number for fontSize instead of "lg"
-                  }}
-                >
-                  {round?.name}
-                </Text>
-                {(round.status === "P" || round.status === "R") && (
-                  <Text
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Regular Semi Bold",
-                      fontSize: 20, // Use a number for fontSize instead of "lg"
-                    }}
-                  >
-                    {formattedDifference} (
-                    {startDate.toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                    )
-                  </Text>
-                )}
-              </Button>
-            );
-          }
+          (item,index)=>
+                        <Button
+                        key={index}
+                        title={`Round ${index + 1}`}
+                        onPress={() => {
+                          handleRoundPress(item.round._id, item.round.status);
+                        }}
+                        rounded="30"
+                        mt="5"
+                        width="80%"
+                        height="100"
+                        size="lg"
+                        style={{
+                          borderWidth: 1, // This sets the width of the border
+                          borderColor: "#49a579", // This sets the color of the border
+                        }}
+                        backgroundColor={
+                          item.round.status === "P"
+                            ? "#606060"
+                            : item.round.status === "R"
+                            ? "#666ff"
+                            : item.round.status === "A"
+                            ? "#49a579"
+                            : item.round.status === "F"
+                            ? "rgba(0,0,0,0.4)"
+                            : "rgba(250,250,250,0.2)"
+                        }
+                        _pressed={{
+                          bg:
+                          item.round.status === "P"
+                              ? "#252525"
+                              : item.round.status === "R"
+                              ? "#323280"
+                              : item.round.status === "A"
+                              ? "173225"
+                              : item.round.status === "F"
+                              ? "C0C0C0"
+                              : "rgba(0, 0, 0, 0)", // default is transparent
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: "#FFFFFF",
+                            fontFamily: "Regular Semi Bold",
+                            fontSize: 20, // Use a number for fontSize instead of "lg"
+                          }}
+                        >
+                          {item.round?._id}
+                        </Text>
+                        {(item.round.status === "P" || item.round.status === "R") && (
+                          <Text
+                            style={{
+                              color: "#FFFFFF",
+                              fontFamily: "Regular Semi Bold",
+                              fontSize: 20, // Use a number for fontSize instead of "lg"
+                            }}
+                          >
+                            {item.formattedDifference} (
+                            {item.startDate.toLocaleDateString(undefined, {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                            )
+                          </Text>
+                        )}
+                      </Button>
+          // ({ round, index, startDate, formattedDifference }) => {
+          //   return (
+          //     <Button
+          //       key={index}
+          //       title={`Round ${index + 1}`}
+          //       onPress={() => {
+          //         handleRoundPress(round._id, round.status);
+          //       }}
+          //       rounded="30"
+          //       mt="5"
+          //       width="80%"
+          //       height="100"
+          //       size="lg"
+          //       style={{
+          //         borderWidth: 1, // This sets the width of the border
+          //         borderColor: "#49a579", // This sets the color of the border
+          //       }}
+          //       backgroundColor={
+          //         round.status === "P"
+          //           ? "#606060"
+          //           : round.status === "R"
+          //           ? "#666ff"
+          //           : round.status === "A"
+          //           ? "#49a579"
+          //           : round.status === "F"
+          //           ? "rgba(0,0,0,0.4)"
+          //           : "rgba(250,250,250,0.2)"
+          //       }
+          //       _pressed={{
+          //         bg:
+          //           round.status === "P"
+          //             ? "#252525"
+          //             : round.status === "R"
+          //             ? "#323280"
+          //             : round.status === "A"
+          //             ? "173225"
+          //             : round.status === "F"
+          //             ? "C0C0C0"
+          //             : "rgba(0, 0, 0, 0)", // default is transparent
+          //       }}
+          //     >
+          //       <Text
+          //         style={{
+          //           color: "#FFFFFF",
+          //           fontFamily: "Regular Semi Bold",
+          //           fontSize: 20, // Use a number for fontSize instead of "lg"
+          //         }}
+          //       >
+          //         {round?._id}
+          //       </Text>
+          //       {(round.status === "P" || round.status === "R") && (
+          //         <Text
+          //           style={{
+          //             color: "#FFFFFF",
+          //             fontFamily: "Regular Semi Bold",
+          //             fontSize: 20, // Use a number for fontSize instead of "lg"
+          //           }}
+          //         >
+          //           {formattedDifference} (
+          //           {startDate.toLocaleDateString(undefined, {
+          //             year: "numeric",
+          //             month: "short",
+          //             day: "numeric",
+          //           })}
+          //           )
+          //         </Text>
+          //       )}
+          //     </Button>
+          //   );
+          // }
         )}
 
         {/* Linda Sprint 4 Start a round*/}
