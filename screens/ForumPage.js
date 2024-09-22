@@ -104,13 +104,24 @@ const ForumPage = ({ route, navigation }) => {
     // setPosts(...post, postItem)
   };
 
+  // const formatDate = (timestamp) => {
+  //   // console.log(timestamp)
+  //   const date = new Date(timestamp);
+  //   const formattedDate = date.toISOString().split("T")[0];
+  //   const formattedTime = date.toISOString().split("T")[1].substring(0, 8);
+  //   const result = `${formattedDate} ${formattedTime}`;
+  //   // console.log(result)
+
+  //   return result;
+  // };
   const formatDate = (timestamp) => {
-    // console.log(timestamp)
     const date = new Date(timestamp);
-    const formattedDate = date.toISOString().split("T")[0];
-    const formattedTime = date.toISOString().split("T")[1].substring(0, 8);
+  
+    // Format the date and time according to the local time zone
+    const formattedDate = date.toLocaleDateString(); // Local date
+    const formattedTime = date.toLocaleTimeString(); // Local time
+  
     const result = `${formattedDate} ${formattedTime}`;
-    // console.log(result)
     return result;
   };
 
