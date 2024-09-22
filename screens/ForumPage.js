@@ -34,20 +34,20 @@ const ForumPage = ({ route, navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclose();
   const { id } = route.params;
-  const [roundFriends, setRoundFriends] = useState(roundData?.data.filter((item) => (item._id = id))[0]
+  const [roundFriends, setRoundFriends] = useState(roundData?.data.filter((item) => (item._id == id))[0]
   .roundFriends); 
   const scrollViewRef = useRef(null);
   useEffect(() => {
     const fetchForumMessages = async () => {
       await getForumMessages();
     };
-    setRoundFriends(roundData?.data.filter((item) => (item._id = id))[0]
+    setRoundFriends(roundData?.data.filter((item) => (item._id == id))[0]
     .roundFriends)
     fetchForumMessages();
   }, [route.params]);
 
   useEffect(() => {
-    setRoundFriends(roundData?.data.filter((item) => (item._id = id))[0]
+    setRoundFriends(roundData?.data.filter((item) => (item._id == id))[0]
     .roundFriends)
   }, [roundData]);
 

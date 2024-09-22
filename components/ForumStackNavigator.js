@@ -10,24 +10,28 @@ import { Feather } from "@expo/vector-icons";
 const Stack = createStackNavigator();
 export default function ForumStackNavigator({ route, navigation }) {
   const { activeRoundData } = useRound();
-  const roundId = route.params.id;
+  // const roundId = route.params.id;
+  const { id: roundId } = route.params || {};  // Use optional chaining to prevent crashes if params are missing
+
+  // console.log("Received roundId in stack:", roundId);
+  
   const activeRound = activeRoundData?.data.filter((item) => item.status === "A")[0];
-  console.log(activeRoundData);
+  // console.log(roundId,activeRound);
   const firstTwoFinishRounds = activeRoundData
     ?.data.filter((item) => item.status === "F")
     .slice(0, 2);
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="ForumPage">
       <Stack.Screen
         name="ForumDraft"
         component={ForumDraft}
         options={{
           headerBackTitleVisible: false,
-          title:
-            activeRound?._id === roundId
-              ? activeRound?.name
-              : firstTwoFinishRounds?.find((item) => item._id === roundId)
-                  ?.name,
+          // title:
+          //   activeRound?._id === roundId
+          //     ? activeRound?.name
+          //     : firstTwoFinishRounds?.find((item) => item._id === roundId)
+          //         ?.name,
           headerLeft: () => (
             <IconButton
               ml={3}
@@ -46,11 +50,12 @@ export default function ForumStackNavigator({ route, navigation }) {
         initialParams={{ id: roundId }}
         options={{
           headerBackTitleVisible: false,
-          title:
-          activeRound?._id === roundId
-          ? activeRound?.name
-          : firstTwoFinishRounds?.find((item) => item._id === roundId)
-              ?.name,
+          title:'test'+roundId,
+          // title:
+          // activeRound?._id === roundId
+          // ? activeRound?.name
+          // : firstTwoFinishRounds?.find((item) => item._id === roundId)
+          //     ?.name,
           headerLeft: () => (
             <IconButton
               ml={3}
