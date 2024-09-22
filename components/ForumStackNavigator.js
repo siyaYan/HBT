@@ -11,9 +11,7 @@ const Stack = createStackNavigator();
 export default function ForumStackNavigator({ route, navigation }) {
   const { activeRoundData } = useRound();
   // const roundId = route.params.id;
-  const { id: roundId } = route.params || {};  // Use optional chaining to prevent crashes if params are missing
-
-  // console.log("Received roundId in stack:", roundId);
+  const { id: roundId } = route.params.params || {};  // Use optional chaining to prevent crashes if params are missing
   
   const activeRound = activeRoundData?.data.filter((item) => item.status === "A")[0];
   // console.log(roundId,activeRound);
@@ -27,11 +25,11 @@ export default function ForumStackNavigator({ route, navigation }) {
         component={ForumDraft}
         options={{
           headerBackTitleVisible: false,
-          // title:
-          //   activeRound?._id === roundId
-          //     ? activeRound?.name
-          //     : firstTwoFinishRounds?.find((item) => item._id === roundId)
-          //         ?.name,
+          title:
+            activeRound?._id === roundId
+              ? activeRound?.name
+              : firstTwoFinishRounds?.find((item) => item._id === roundId)
+                  ?.name,
           headerLeft: () => (
             <IconButton
               ml={3}
@@ -50,12 +48,11 @@ export default function ForumStackNavigator({ route, navigation }) {
         initialParams={{ id: roundId }}
         options={{
           headerBackTitleVisible: false,
-          title:'test'+roundId,
-          // title:
-          // activeRound?._id === roundId
-          // ? activeRound?.name
-          // : firstTwoFinishRounds?.find((item) => item._id === roundId)
-          //     ?.name,
+          title:
+          activeRound?._id === roundId
+          ? activeRound?.name
+          : firstTwoFinishRounds?.find((item) => item._id === roundId)
+              ?.name,
           headerLeft: () => (
             <IconButton
               ml={3}

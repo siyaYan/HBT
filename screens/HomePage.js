@@ -89,12 +89,10 @@ const HomeScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
-    console.log('-------1',activeRoundData)
     // console.log("activeRoundData----", activeRoundData?.data[activeRoundData.data.length - 1]?.roundFriends);
     const processing = processRounds(activeRoundData.data, new Date());
     const sortedRounds = filterAndSortRounds(processing);
     setProcessedRounds(sortedRounds);
-    console.log("-------2",sortedRounds)
   }, [activeRoundData]);
   
 
@@ -166,7 +164,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleRoundPress = (roundId, status) => {
-    console.log('-----',roundId)
+    // console.log('-----',roundId)
     if (status === "A" || status === "F") {
       navigation.navigate("ForumStack", {
         screen: "ForumPage",
@@ -246,7 +244,6 @@ const HomeScreen = ({ navigation }) => {
           })
         );
 
-        // console.log('--------',filtered)
         // Once all promises are resolved, update the state
         setFilteredUsers({ filtered, filteredRound });
         // filteredUsers.filtered
