@@ -154,7 +154,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
             </HStack>
             <Text fontSize="md">Level: {round.level}</Text>
             <Text fontSize="md">
-              Start Date:{" "}
+              Start date:{" "}
               {new Date(round.startDate).toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "short",
@@ -162,7 +162,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
               })}
             </Text>
             <Text fontSize="md">
-              End Date:{" "}
+              End date:{" "}
               {endDate.toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "short",

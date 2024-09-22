@@ -1176,11 +1176,6 @@ export async function createRoundNotification(
   senderId,
   receiverId
 ) {
-  // console.log("------",roundId,"-----");
-  // console.log("------",token,"-----");
-  // console.log("------",senderId,"-----");
-
-  // console.log("------",receiverId,"-----");
 
   try {
     const response = await fetch(
@@ -1200,11 +1195,13 @@ export async function createRoundNotification(
     );
 
     if (!response.ok) {
+      Alert.alert("Oh,No!", "Failed to send round invitation request!");
       const errorText = await response.text();
       throw new Error(`HTTP error ${response.status}: ${errorText}`);
     }
 
     const data = await response.json();
+    Alert.alert("Success", "Send round invitation request to this friend!");
     console.log("Success:", data);
     return data;
   } catch (error) {

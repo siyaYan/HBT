@@ -34,6 +34,7 @@ export default function AuthenticatedScreens({navigation}) {
     console.log('This is main tab, note is :',note );
     updateNote()
   }, [updateNotes]);
+
   
   const onPress = (value) => {
     if (value.target.includes("Upload")) {
@@ -159,7 +160,7 @@ export default function AuthenticatedScreens({navigation}) {
             headerShown: false,
             tabBarButton: ({ accessibilityState, onPress }) => (
               <TouchableOpacity
-                              onPress={() => {
+                onPress={() => {
                 setIsModalVisible(false); // Reset showModal to false
                 onPress(); // Call the original onPress handler
               }}

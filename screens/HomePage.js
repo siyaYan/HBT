@@ -1,4 +1,5 @@
-import { useState, useEffect, useFocusEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   Box,
   Text,
@@ -43,7 +44,6 @@ function calculateEndDate(date, days) {
 }
 
 const HomeScreen = ({ navigation }) => {
-  const [thisRoundInfo, setThisRoundInfo] = useState(null); // State for round info
   const [isOpened, setIsOpened] = useState(false);
   const [scoreBoardOpen, setScoreBoardOpen] = useState(false);
   const [showRoundDetails, setShowRoundDetails] = useState(false);
@@ -54,11 +54,17 @@ const HomeScreen = ({ navigation }) => {
   const [rest, setRest] = useState([]);
   const [topThree, setTopThree] = useState([]);
   const [roundInvitationData, setRoundInvitationData] = useState(null);
- 
-  const [processedRounds, setProcessedRounds] = useState(null)
 
+  const [processedRounds, setProcessedRounds] = useState(null);
+
+  const [showRoundFriendValidation, setShowRoundFriendValidation] =
+    useState(false);
+
+  const handleCloseRoundFriendValidation = () => {
+    setShowRoundFriendValidation(false);
+  };
   const { userData, updateNotes } = useData();
-  const { activeRoundData, roundData, insertRoundData } = useRound();
+  const { activeRoundData, roundData, updateRounds } = useRound();
 
   // console.log("active round---", activeRoundData);
   // Get screen dimensions
@@ -73,21 +79,64 @@ const HomeScreen = ({ navigation }) => {
   const [show10PerRoundValidation, setShow10PerRoundValidation] =
     useState(false);
 
-  useEffect(() => {
-    console.log("Tab is in focus, userInfo:", userData);
-    getRoundInvitationData();
-  }, [userData]);
+  useFocusEffect(
+    useCallback(() => {
+      // This code runs when the tab comes into focus
+      // console.log("Tab is in focus, userInfo:------------", userData);
+      getRoundInvitationData();
+      getRoundData();
+    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
+  );
 
   useEffect(() => {
-    const processing=processRounds(activeRoundData.data,  new Date())
-    const sortedRounds = processing.sort((a, b) => b.startDate - a.startDate).slice(0,2);
+    // console.log("activeRoundData----", activeRoundData?.data[activeRoundData.data.length - 1]?.roundFriends);
+    const processing = processRounds(activeRoundData.data, new Date());
+    const sortedRounds = filterAndSortRounds(processing);
     setProcessedRounds(sortedRounds);
   }, [activeRoundData]);
+  
+
+
+  const filterAndSortRounds = (rounds) => {
+    
+    // Step 1: Filter out "F" rounds
+    const priorityRounds = rounds.filter((round) => round.round.status !== "F");
+    // Step 2: Sort by priority of statuses and then by startDate
+    const sortedPriorityRounds = priorityRounds.sort((a, b) => {
+      const statusPriority = { P: 1, A: 2 }; // Prioritize "P" and "A"
+      const statusA = statusPriority[a.status] || 3; // Default lower priority
+      const statusB = statusPriority[b.status] || 3;
+  
+      if (statusA !== statusB) {
+        return statusA - statusB; // Sort by status priority
+      }
+  
+      // If statuses are the same, sort by startDate
+      return new Date(a.startDate) - new Date(b.startDate);
+    });
+  
+    // Step 3: If we have less than 2 rounds, include "F" rounds as fallback
+    if (sortedPriorityRounds.length < 2) {
+      const fallbackRounds = rounds.filter((round) => round.round.status === "F");
+  
+      sortedPriorityRounds.push(...fallbackRounds.slice(0, 2 - sortedPriorityRounds.length));
+    }
+  
+    // Step 4: Return only the first 2 rounds
+    return sortedPriorityRounds.slice(0, 2);
+  };
+
+  // useEffect(() => {
+  //   // console.log("RoundData-------", roundData);
+  // }, [roundData]);
 
   const getRoundInvitationData = async () => {
     const res = await getRoundInvitation(userData.token);
-    console.log("--------", res);
     setRoundInvitationData(res);
+  };
+  const getRoundData = async () => {
+    const res = await getRoundInfo(userData.token, userData.data._id);
+    updateRounds(res);
   };
   const handle10PerRoundValidationClose = () => {
     setShow10PerRoundValidation(!show10PerRoundValidation);
@@ -98,7 +147,6 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const getExistScoreBoard = async (roundId) => {
-    // console.log(userData.token, roundId)
     const res = await getScoreBoard(userData.token, roundId);
     if (res) {
       const topThree = res.data.ranking.slice(0, 3);
@@ -116,10 +164,11 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleRoundPress = (roundId, status) => {
+    // console.log('-----',roundId)
     if (status === "A" || status === "F") {
       navigation.navigate("ForumStack", {
         screen: "ForumPage",
-        params: { id: roundId },
+        params: {id:  roundId },
       });
     } else {
       navigation.navigate("RoundStack", {
@@ -127,7 +176,7 @@ const HomeScreen = ({ navigation }) => {
         params: { roundId },
       });
     }
-    console.log("home page roundId", roundId);
+    // console.log("home page roundId", roundId);
   };
 
   const handlePress = () => {
@@ -154,9 +203,8 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundDetails(!showRoundDetails);
   };
 
-  //TODO:check
   const findPendingReceived = () => {
-    console.log("----roundInvitationData", roundInvitationData);
+    // console.log("----roundInvitationData", roundInvitationData);
     if (roundInvitationData && roundInvitationData.status === "success") {
       const pending = roundInvitationData.data.filter(
         (invitation) => invitation.status === "P"
@@ -166,37 +214,61 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const loadAllReceivedNotification = () => {
-    console.log("----roundInvitationData---notification", roundInvitationData);
+    // console.log("----roundInvitationData---notification", roundInvitationData);
     findPendingReceived();
   };
 
-  //TODO:
   useEffect(() => {
-    // console.log("Updated pendingReceived:", pendingReceived);
-    if (pendingReceived && pendingReceived.length > 0) {
-      const pendingSenderIds = pendingReceived.map(
-        (invitation) => invitation.senderId
-      );
-      // console.log(pendingReceived, "--------");
-      const filtered = pendingSenderIds.map((senderId) =>
-        roundInvitationData.users.find((user) => user._id === senderId)
-      );
-      setFilteredUsers(filtered);
-    }
-  }, [pendingReceived]);
+    // Define the async function inside the useEffect
+    const fetchData = async () => {
+      // console.log("Fetching data-----", pendingReceived);
+      // Ensure pendingReceived is valid and has data
+      if (pendingReceived && pendingReceived.length > 0) {
+        const pendingSenderIds = pendingReceived.map(
+          (invitation) => invitation.senderId
+        );
 
-  const fetchRoundInvitationInfo = async (i) => {
+        let filteredRound = [];
+
+        // Fetch invitation info and filter users
+        const filtered = await Promise.all(
+          pendingSenderIds.map(async (senderId, index) => {
+            // Fetch invitation info and add to filteredRound
+            const roundInfo = await fetchRoundInfo(index);
+            filteredRound.push(roundInfo);
+
+            // Find the user matching the senderId
+            return roundInvitationData.users.find(
+              (user) => user._id === senderId
+            );
+          })
+        );
+
+        // Once all promises are resolved, update the state
+        setFilteredUsers({ filtered, filteredRound });
+        // filteredUsers.filtered
+      }
+    };
+
+    // Call the async function immediately
+    fetchData();
+
+    // Optional clean-up function can be returned here if needed
+  }, [pendingReceived]); // The effect runs when pendingReceived changes
+
+  const fetchRoundInfo = async (i) => {
     const thisRoundId = roundInvitationData.data[i].roundId;
-    
-    const aRoundInfo = await getRoundInfo(userData.token, thisRoundId);
-    setThisRoundInfo(aRoundInfo);
-  };
-  const openRoundInvitationInfo = () =>{
-    setShowRoundDetails(!showRoundDetails);
-  }
 
-  const acceptRoundFriend = (i, thisRoundInfo) => {
-    console.log('thisRoundInfo calling acceptRoundFriend:', thisRoundInfo);
+    const aRoundInfo = await getRoundInfo(userData.token, thisRoundId);
+    // setThisRoundInfo(aRoundInfo);
+    return aRoundInfo;
+  };
+  const openRoundInvitationInfo = () => {
+    setShowRoundDetails(!showRoundDetails);
+  };
+
+  const acceptRoundFriend = async (i, thisRoundInfo) => {
+    console.log("thisRoundInfo calling acceptRoundFriend:", thisRoundInfo);
 
     // Validation first
     thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate);
@@ -204,7 +276,8 @@ const HomeScreen = ({ navigation }) => {
     // show warning message, then remove invitation(reject)
     const thisRoundLevelInt = parseInt(thisRoundInfo.data[0].level, 10);
     const endDate10Percent = new Date(
-      thisRoundStartDate.getTime() + thisRoundLevelInt * 24 * 60 * 60 * 1000 * 0.1
+      thisRoundStartDate.getTime() +
+        thisRoundLevelInt * 24 * 60 * 60 * 1000 * 0.1
     ); // Convert days to milliseconds
     const today = new Date();
 
@@ -214,14 +287,22 @@ const HomeScreen = ({ navigation }) => {
       return;
     }
     // 2 round already, then warning, keep the invitation
-    if (activeRoundData?.data.filter(item=>item.status=="A"||item.status=="P").length == 2) {
+    if (
+      activeRoundData?.data.filter(
+        (item) => item.status == "A" || item.status == "P"
+      ).length == 2
+    ) {
       setShowRoundValidation(!showRoundValidation);
       return;
     }
     // 1 active, check start date if it is before the active round ends
-    else if (activeRoundData?.data.filter(item=>item.status=="A"||item.status=="P").length == 1) {
+    else if (
+      activeRoundData?.data.filter(
+        (item) => item.status == "A" || item.status == "P"
+      ).length == 1
+    ) {
       const activeRound = activeRoundData[0];
-      if (activeRound.status == "A") {
+      if (activeRound?.status == "A") {
         const levelInt = parseInt(activeRound.level, 10);
         const startDate = new Date(activeRound.startDate);
         const endDate = new Date(
@@ -235,33 +316,68 @@ const HomeScreen = ({ navigation }) => {
     }
     // no active round
     console.log("accept round Friend,delete current notification");
-    setFilteredUsers((currentReceived) => [
-      ...currentReceived.slice(0, i - 1),
-      ...currentReceived.slice(i),
-    ]);
+    // setFilteredUsers((currentReceived) => [
+    //   ...currentReceived.slice(0, i - 1),
+    //   ...currentReceived.slice(i),
+    // ]);
+    setFilteredUsers((currentReceived) => ({
+      ...currentReceived, // Spread the current state
+      filtered: [
+        ...currentReceived.filtered.slice(0, i - 1), // Keep items before index i
+        ...currentReceived.filtered.slice(i), // Keep items after index i
+      ],
+      filteredRound: [
+        ...currentReceived.filteredRound.slice(0, i - 1), // Keep items before index i
+        ...currentReceived.filteredRound.slice(i), // Keep items after index i
+      ],
+    }));
     setPendingReceived((currentReceived) => [
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
     const id = pendingReceived[i - 1]._id;
-    reactRequest(id, "A"); //update round invitation data
+    const res = reactRequest(id, "A"); //update round invitation data
+    if (res) {
+      console.log("react request success");
+      const RoundInfoList = await getRoundInfo(
+        userData.token,
+        userData.data._id
+      );
+      console.log(
+        "last roundfrinedlist",
+        RoundInfoList.data[RoundInfoList.data.length - 1].roundFriends
+      );
+      updateRounds(RoundInfoList);
+    }
+    getRoundInvitationData();
     // show the new accepted round on it
     //Insert this new accepted round into round context directly
-    insertRoundData(thisRoundInfo.data[0]);
   };
 
   const rejectRoundFriend = (i) => {
     console.log("reject round Friend,delete current notification");
-    setFilteredUsers((currentReceived) => [
-      ...currentReceived.slice(0, i - 1),
-      ...currentReceived.slice(i),
-    ]);
+    // setFilteredUsers((currentReceived) => [
+    //   ...currentReceived.slice(0, i - 1),
+    //   ...currentReceived.slice(i),
+    // ]);
+    setFilteredUsers((currentReceived) => ({
+      ...currentReceived, // Spread the current state
+      filtered: [
+        ...currentReceived.filtered.slice(0, i - 1), // Keep items before index i
+        ...currentReceived.filtered.slice(i), // Keep items after index i
+      ],
+      filteredRound: [
+        ...currentReceived.filteredRound.slice(0, i - 1), // Keep items before index i
+        ...currentReceived.filteredRound.slice(i), // Keep items after index i
+      ],
+    }));
     setPendingReceived((currentReceived) => [
       ...currentReceived.slice(0, i - 1),
       ...currentReceived.slice(i),
     ]);
     const id = pendingReceived[i - 1]._id;
     reactRequest(id, "R");
+    getRoundInvitationData();
   };
 
   const reactRequest = async (id, react) => {
@@ -271,8 +387,10 @@ const HomeScreen = ({ navigation }) => {
     }
     if (response.status == "success") {
       console.log("react request success:", response);
+      return true;
     } else {
       console.error("react request failed:", response.message);
+      return false;
     }
   };
 
@@ -302,7 +420,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const processRounds = (rounds, today) => {
-    return rounds.map((round, index) => {
+    const newRound = rounds.map((round, index) => {
       const startDate = new Date(round.startDate);
       const timeDifference = startDate - today;
       const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
@@ -318,15 +436,18 @@ const HomeScreen = ({ navigation }) => {
         round.status !== "C"
       ) {
         updateStatusAndDate(round._id, "F");
-      }
-      else if(daysDifference <= 0 && endTimeDifference>0 && round.status !== "A") {
+      } else if (
+        daysDifference <= 0 &&
+        endTimeDifference > 0 &&
+        round.status !== "A"
+      ) {
+        // validate if there is any active friend
+        setShowRoundFriendValidation(!showRoundFriendValidation);
         updateStatusAndDate(round._id, "A");
-        
       }
 
       const prefix = timeDifference > 0 ? "D-" : "D+";
       const formattedDifference = `${prefix}${Math.abs(daysDifference)} days`;
-
       return {
         round,
         index,
@@ -334,8 +455,8 @@ const HomeScreen = ({ navigation }) => {
         formattedDifference,
       };
     });
+    return newRound;
   };
-  
 
   return (
     <NativeBaseProvider>
@@ -410,7 +531,7 @@ const HomeScreen = ({ navigation }) => {
                     fontSize: 20, // Use a number for fontSize instead of "lg"
                   }}
                 >
-                  {round.name}
+                  {round?.name}
                 </Text>
                 {(round.status === "P" || round.status === "R") && (
                   <Text
@@ -435,7 +556,10 @@ const HomeScreen = ({ navigation }) => {
         )}
 
         {/* Linda Sprint 4 Start a round*/}
-        {(!activeRoundData || activeRoundData?.data.filter(item=>item.status=="A"||item.status=="P").length < 2) && (
+        {(!activeRoundData ||
+          activeRoundData?.data.filter(
+            (item) => item.status == "A" || item.status == "P"
+          ).length < 2) && (
           <Button
             onPress={startRound}
             rounded="30"
@@ -457,7 +581,9 @@ const HomeScreen = ({ navigation }) => {
               bg: "#e5f5e5",
             }}
           >
-            {activeRoundData?.data.filter(item=>item.status=="A"||item.status=="P").length === 1
+            {activeRoundData?.data.filter(
+              (item) => item.status == "A" || item.status == "P"
+            ).length === 1
               ? "Plan the next round"
               : "Start a round"}
           </Button>
@@ -527,10 +653,9 @@ const HomeScreen = ({ navigation }) => {
           <Modal.Header>Received Invitations</Modal.Header>
           <Modal.Body>
             {/* <View style={[styles.modalContent, { width: width * 1 }]}> */}
-            {filteredUsers.length > 0 ? (
+            {filteredUsers?.filtered?.length > 0 ? (
               <Box w={"95%"}>
-                {filteredUsers.map((item, index) => {
-                  fetchRoundInvitationInfo(index);
+                {filteredUsers?.filtered?.map((item, index) => {
                   return (
                     <HStack
                       w={"100%"}
@@ -538,7 +663,6 @@ const HomeScreen = ({ navigation }) => {
                       justifyContent={"space-between"}
                       m={1}
                       key={index}
-                      item={item}
                     >
                       {item.profileImageUrl ? (
                         <Avatar
@@ -572,31 +696,45 @@ const HomeScreen = ({ navigation }) => {
                             <Modal.CloseButton />
                             <Modal.Header>Round Details</Modal.Header>
                             <Modal.Body>
-                              {thisRoundInfo && thisRoundInfo.data && (
-                                <>
-                                  <Text fontSize="md">
-                                    Round Name: {thisRoundInfo.data[0].name}
-                                  </Text>
+                              {filteredUsers.filteredRound[index] &&
+                                filteredUsers.filteredRound[index].data && (
+                                  <>
+                                    <Text fontSize="md">
+                                      Round Name:{" "}
+                                      {
+                                        filteredUsers.filteredRound[index]
+                                          .data[0].name
+                                      }
+                                    </Text>
 
-                                  <Text fontSize="md">
-                                    Start Date:{" "}
-                                    {new Date(
-                                      thisRoundInfo.data[0].startDate
-                                    ).toLocaleDateString(undefined, {
-                                      year: "numeric",
-                                      month: "short",
-                                      day: "numeric",
-                                    })}
-                                  </Text>
-                                  <Text fontSize="md">
-                                    Level: {thisRoundInfo.data[0].level}
-                                  </Text>
-                                  <Text fontSize="md">
-                                    Maximum Capacity:{" "}
-                                    {thisRoundInfo.data[0].maximum}
-                                  </Text>
-                                </>
-                              )}
+                                    <Text fontSize="md">
+                                      Start Date:{" "}
+                                      {new Date(
+                                        filteredUsers.filteredRound[
+                                          index
+                                        ].data[0].startDate
+                                      ).toLocaleDateString(undefined, {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      })}
+                                    </Text>
+                                    <Text fontSize="md">
+                                      Level:{" "}
+                                      {
+                                        filteredUsers.filteredRound[index]
+                                          .data[0].level
+                                      }
+                                    </Text>
+                                    <Text fontSize="md">
+                                      Maximum Capacity:{" "}
+                                      {
+                                        filteredUsers.filteredRound[index]
+                                          .data[0].maximum
+                                      }
+                                    </Text>
+                                  </>
+                                )}
                             </Modal.Body>
                           </Modal.Content>
                         </Modal>
@@ -636,7 +774,12 @@ const HomeScreen = ({ navigation }) => {
                           </Modal.Content>
                         </Modal>
                         <AntDesign
-                          onPress={() => acceptRoundFriend(1, thisRoundInfo)}
+                          onPress={() =>
+                            acceptRoundFriend(
+                              1,
+                              filteredUsers.filteredRound[index]
+                            )
+                          }
                           name="checksquareo"
                           size={30}
                           color="black"
@@ -930,6 +1073,25 @@ const HomeScreen = ({ navigation }) => {
               <Text fontSize="md">
                 The round is already 10% complete. You are no longer allowed to
                 join.
+              </Text>
+            </>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+
+      <Modal
+        isOpen={showRoundFriendValidation}
+        onClose={handleCloseRoundFriendValidation}
+      >
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header>Warning</Modal.Header>
+          <Modal.Body>
+            <>
+              <Text fontSize="md">
+                Your friend hasn't accepted the invitation yet. Without
+                participants, this round risks deletion. Please remind your
+                friend to accept the invitation to keep the round active.{" "}
               </Text>
             </>
           </Modal.Body>

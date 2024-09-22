@@ -25,11 +25,15 @@ import {
   Heading,
   Link,
   Text,
-  Image
+  Image,
 } from "native-base";
 // import ResetModal from "../components/ResetModal";
 import { Alert } from "react-native";
-import { loginUser, forgetSendEmail,getRoundInfo } from "../components/Endpoint";
+import {
+  loginUser,
+  forgetSendEmail,
+  getRoundInfo,
+} from "../components/Endpoint";
 import * as SecureStore from "expo-secure-store";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
@@ -71,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { userData, updateUserData } = useData();
-  const { roundData, updateRounds ,updateActiveRoundData} = useRound();
+  const { roundData, updateRounds, updateActiveRoundData } = useRound();
   const { user, setUser } = useState({ res: "" });
   const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
   const [errorT, setErrorT] = useState(false);
@@ -137,9 +141,12 @@ const LoginScreen = ({ navigation }) => {
     });
     if (submitValidation()) {
       const response = await loginUser(formData.id, formData.password);
-      console.log("response",response)
-      const roundInfo = await getRoundInfo(response.token,response.data.user._id);
-      console.log("login",roundInfo)
+      console.log("response", response);
+      const roundInfo = await getRoundInfo(
+        response.token,
+        response.data.user._id
+      );
+      console.log("login", roundInfo);
       if (response.token) {
         if (remember) {
           await saveCredentials(formData.id, formData.password);
@@ -149,12 +156,15 @@ const LoginScreen = ({ navigation }) => {
           data: response.data.user,
           avatar: {
             uri: response.data.user.profileImageUrl,
-          }
+          },
         });
-        updateRounds(roundInfo)
-        updateActiveRoundData(roundInfo)
-        console.log("round context",roundData)
+
+        updateRounds(roundInfo);
+        console.log("update userData", response.data.user._id);
+        updateActiveRoundData(roundInfo, response.data.user._id);
+        console.log("round context", roundData);
         navigation.navigate("MainStack", { screen: "Home" });
+
         // console.log(response.token);
       } else {
         console.log("login failed");
@@ -293,9 +303,13 @@ const LoginScreen = ({ navigation }) => {
                       // space={5}
                     >
                       {/* <img src="../assets/google_icon.png" alt="" /> */}
-                      <Image size={50} source={require("../assets/Buttonicons/google_icon.png")} alt='google icon'/>
+                      <Image
+                        size={50}
+                        source={require("../assets/Buttonicons/google_icon.png")}
+                        alt="google icon"
+                      />
                       <Text
-                      textAlign={"center"}
+                        textAlign={"center"}
                         fontFamily={"Regular Medium"}
                         fontSize={"lg"}
                         color={"#191919"}
@@ -311,7 +325,7 @@ const LoginScreen = ({ navigation }) => {
                       /> */}
                     </HStack>
                   </Button>
-                      
+
                   <Button
                     rounded={30}
                     shadow="6"
@@ -338,7 +352,13 @@ const LoginScreen = ({ navigation }) => {
                       </Text>
                     </HStack>
                   </Button>
-                  <Text fontFamily={"Regular Semi Bold"} fontSize={"lg"} textAlign="center">Or</Text>
+                  <Text
+                    fontFamily={"Regular Semi Bold"}
+                    fontSize={"lg"}
+                    textAlign="center"
+                  >
+                    Or
+                  </Text>
 
                   <FormControl isRequired isInvalid={"id" in errors}>
                     <Input
