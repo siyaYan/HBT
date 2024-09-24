@@ -36,7 +36,7 @@ export default function ForumStackNavigator({ route, navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.navigate("MainStack", { screen: "Home" });
+                navigation.goBack();
               }}
             />
           ),
@@ -59,7 +59,7 @@ export default function ForumStackNavigator({ route, navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.navigate("MainStack", { screen: "Home" });
+                navigation.goBack();
               }}
             />
           ),

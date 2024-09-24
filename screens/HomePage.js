@@ -694,8 +694,8 @@ const HomeScreen = ({ navigation }) => {
                         >
                           <Modal.Content maxWidth="400px">
                             <Modal.CloseButton />
-                            <Modal.Header>Round Details</Modal.Header>
-                            <Modal.Body>
+                            {/* <Modal.Header>Round Details</Modal.Header> */}
+                            <Modal.Body style={{marginHorizontal:10, marginVertical:20}}>
                               {filteredUsers.filteredRound[index] &&
                                 filteredUsers.filteredRound[index].data && (
                                   <>

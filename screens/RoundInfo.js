@@ -22,6 +22,8 @@ import { leaveRound, getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
+  const { roundData, updateRounds, deleteRoundData, updateActiveRoundData } =
+    useRound();
   const { roundId } = route.params || {}; // Safe access to route params
 
   if (!roundId) {
@@ -30,10 +32,17 @@ const RoundInfoScreen = ({ route, navigation }) => {
     return null; // Render nothing while navigating back
   }
 
-  const { roundData, updateRounds, deleteRoundData , updateActiveRoundData} = useRound();
+  // useEffect(()=>{
+  //   console.log("round context", roundData.data[0].roundFriends[0].habit);
+  // },roundData)
+
   // console.log("round context", roundData);
 
   const round = roundData.data.find((r) => r._id === roundId);
+
+  const myhabit = round.roundFriends.filter(
+    (item) => item.id == userData.data._id
+  )[0].habit;
   // console.log("roundinfo page round data:", round);
 
   // Update round info to RoundContext and DB
@@ -53,13 +62,13 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const handleLeaveRound = () => {
     setLeaveModalVisible(true);
   };
-  
+
   const updateRoundContext = async () => {
     const newRoundData = await getRoundInfo(userData.token, userData.data._id); // Fetch latest round data
     // updateRoundData(newRoundData); // Update context with new data
     console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
-    updateActiveRoundData(newRoundData)
+    updateActiveRoundData(newRoundData);
     // const {roundData} = useRound();
     console.log("-----home page round context", roundData.data);
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
@@ -91,7 +100,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const handleCancelLeave = () => {
     setLeaveModalVisible(false);
   };
-  const friendsList = round?round.roundFriends:[];
+  const friendsList = round ? round.roundFriends : [];
   // console.log("round friend list:", round.roundFriends);
 
   // Navigate to invite friend page
@@ -116,8 +125,8 @@ const RoundInfoScreen = ({ route, navigation }) => {
     });
   };
 
-  const levelInt = round?parseInt(round.level, 10):0;
-  const startDate = round?new Date(round.startDate):new Date();
+  const levelInt = round ? parseInt(round.level, 10) : 0;
+  const startDate = round ? new Date(round.startDate) : new Date();
   const endDate = new Date(
     startDate.getTime() + levelInt * 24 * 60 * 60 * 1000
   ); // Convert days to milliseconds
@@ -163,6 +172,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
               })}
             </Text>
             <Divider my="2" />
+            <Text style={{textAlign:"center"}}>My habit: { myhabit }</Text>
             <Button
               onPress={() => {
                 goHabit();

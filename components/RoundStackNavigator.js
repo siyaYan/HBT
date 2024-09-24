@@ -120,7 +120,7 @@ export default function RoundStackNavigator({ navigation }) {
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
                 // navigation.goBack();
-                navigation.navigate("MainStack", { screen: "Home" }); // Navigate to Home if round is not found
+                navigation.goBack(); 
               }}
             />
           ),

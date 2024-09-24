@@ -71,8 +71,17 @@ export const RoundProvider = ({ children }) => {
 
   // insert new round
   const insertRoundData = (newRound) => {
-    const updatedData = [...roundData.data, newRound];
-    const newRoundList = { ...roundData, data: updatedData };
+  // Check if newRound already exists, update it; otherwise, append it
+  const updatedData = roundData.data.map(round => 
+    round._id === newRound._id ? newRound : round
+  );
+
+  // If newRound was not found, append it
+  if (!updatedData.some(round => round._id === newRound._id)) {
+    updatedData.push(newRound);
+  }
+
+  const newRoundList = { ...roundData, data: updatedData };
     console.log("Insert new round data", newRoundList);
     updateRounds(newRoundList);
   };
