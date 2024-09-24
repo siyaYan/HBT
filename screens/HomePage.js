@@ -173,7 +173,7 @@ const HomeScreen = ({ navigation }) => {
     } else {
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { roundId },
+        params: { id: roundId },
       });
     }
     // console.log("home page roundId", roundId);

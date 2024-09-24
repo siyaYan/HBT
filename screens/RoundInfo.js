@@ -22,10 +22,11 @@ import { leaveRound, getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
-  const { roundId } = route.params || {}; // Safe access to route params
-
+  const  roundId  = route.params.id; // Safe access to route params
+  // const { roundId } = route.params;
   if (!roundId) {
-    console.error("roundId is not defined");
+    console.log("routeeeee",route);
+    console.error("roundId is not defined roundinfo page");
     navigation.goBack(); // Navigate back if roundId is not available
     return null; // Render nothing while navigating back
   }
@@ -98,28 +99,28 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const inviteFriend = () => {
     navigation.navigate("RoundStack", {
       screen: "RoundInviteFriend",
-      params: { roundId: roundId },
+      params: { id: roundId },
     });
   };
 
   const goHabit = () => {
     navigation.navigate("RoundStack", {
       screen: "RoundHabit",
-      params: { roundId: roundId },
+      params: { id: roundId },
     });
   };
 
   const goScoreBoard = () => {
     navigation.navigate("RoundStack", {
       screen: "RoundScore",
-      params: { roundId: roundId },
+      params: { id: roundId },
     });
   }
   // Navigate to Round Config page
   const goRoundConfig = () => {
     navigation.navigate("RoundStack", {
       screen: "RoundConfig",
-      params: { emptyState: false, roundId: roundId, source: "info" },
+      params: { emptyState: false, id: roundId, source: "info" },
     });
   };
 

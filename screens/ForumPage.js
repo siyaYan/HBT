@@ -35,7 +35,7 @@ const ForumPage = ({ route, navigation }) => {
   const { isOpen, onOpen, onClose } = useDisclose();
   const { id } = route.params;
   const [roundFriends, setRoundFriends] = useState(roundData?.data.filter((item) => (item._id == id))[0]
-  .roundFriends); 
+  ?.roundFriends); 
   const scrollViewRef = useRef(null);
   useEffect(() => {
     const fetchForumMessages = async () => {
