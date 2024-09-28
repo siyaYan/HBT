@@ -9,13 +9,16 @@ import InviteScreen from "../screens/InviteFriends";
 import RoundHabit from "../screens/RoundHabit";
 import RoundScoreScreen from "../screens/RoundScore";
 import { useRound } from "../context/RoundContext";
+import { useData } from "../context/DataContext";
 import { Feather } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 
 export default function RoundStackNavigator({ route, navigation }) {
   const { id: roundId ,state: newState} = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
-  const { roundData } =useRound()
+  const { roundData } = useRound()
+  const { userData } = useData()
+  const thisRound= roundData.data.filter(item=>item._id === roundId)[0]
   const handleRoundNavigation = (roundId, navigation) => {
     if (!roundId) {
       // If roundId is empty, navigate back
@@ -160,7 +163,7 @@ export default function RoundStackNavigator({ route, navigation }) {
         initialParams={{ id: roundId }}
         options={({ navigation }) => ({
           headerBackTitleVisible: false,
-          title: roundData.data.filter(item=>item._id === roundId)[0]?.name,
+          title: thisRound?.name,
           headerStyle: {
             backgroundColor: "rgba(255,255,255,0)",
           },
@@ -178,7 +181,8 @@ export default function RoundStackNavigator({ route, navigation }) {
               }}
             />
           ),
-          headerRight: () =>
+          headerRight: () =>{
+            return thisRound.userId==userData.data._id ? (
               <IconButton
                 mr={3}
                 marginY={0}
@@ -186,11 +190,15 @@ export default function RoundStackNavigator({ route, navigation }) {
                 onPress={() => {
                   navigation.navigate("RoundStack", {
                     screen: "RoundConfig",
-                    params: { emptyState: false, id: roundId, source: "info"  },
+                    params: { emptyState: false, id: roundId, source: "info" },
                   });
                 }}
               />
-        })}
+            ) : null;
+          }
+
+        })
+      }
       />
     </Stack.Navigator>
   );
