@@ -62,7 +62,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     isAllowed: false,
   });
   // const [startDateError, setStartDateError] = useState("");
-  const acceptRound = acceptRoundData?.data.find((r) => r.status === "A"||r.status==="P");
+  const acceptRound = acceptRoundData?.data.find(
+    (r) => r.status === "A" || r.status === "P"
+  );
 
   // Initialization
   const { userData } = useData();
@@ -70,7 +72,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const emptyState = route.params.emptyState;
   const source = route.params.source;
   const roundId = route.params.id;
-  
+
   //TODO: change it to RoundContext with index
 
   const round = acceptRoundData?.data.find((r) => r._id === roundId);
@@ -140,7 +142,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     }
   };
 
-
   const handleUpdateRound = async () => {
     if (emptyState) {
       const newRoundData = {
@@ -158,7 +159,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { id: response.data._id, state:emptyState },
+        params: { id: response.data._id, state: emptyState },
       });
     } else {
       const newRoundData = {
@@ -174,7 +175,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       const response = await updateRoundInfo(userData.token, newRoundData);
 
       if (response.status == "success") {
-        insertRoundData(newRoundData)
+        insertRoundData(newRoundData);
       }
     }
   };
@@ -216,7 +217,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       if (response) {
         await deleteRoundData(roundId); // round invitation is deleted in backend as well.
         navigation.navigate("MainStack", { screen: "Home" });
-
       } else {
         // Handle case when response is not as expected
         Alert.alert("Error", "Failed to delete the round");
@@ -352,44 +352,46 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       </Text>
                     </VStack>
 
-                    {new Date() < startDate ?                  
-                    <View style={{ padding: 20, alignSelf: "flex-end" }}>
-                      <ZStack alignSelf="flex-end" mr="15%" mt="10%">
-                        <Box alignSelf="flex-end">
-                          <Menu
-                            mt="-50%"
-                            // mr="10"
-                            w="280"
-                            trigger={(triggerProps) => {
-                              return (
-                                <Pressable
-                                  accessibilityLabel="Date picker"
-                                  {...triggerProps}
-                                >
-                                  <AntDesign
-                                    name="calendar"
-                                    size={24}
-                                    color="black"
-                                  />
-                                </Pressable>
-                              );
-                            }}
-                          >
-                            <DateTimePicker
-                              mode="single"
-                              date={startDate}
-                              // minDate={minDaysFromNow}
-                              minDate={datePickerMin}
-                              onChange={(params) => {
-                                setDate(new Date(params.date));
+                    {new Date() < startDate ? (
+                      <View style={{ padding: 20, alignSelf: "flex-end" }}>
+                        <ZStack alignSelf="flex-end" mr="15%" mt="10%">
+                          <Box alignSelf="flex-end">
+                            <Menu
+                              mt="-50%"
+                              // mr="10"
+                              w="280"
+                              trigger={(triggerProps) => {
+                                return (
+                                  <Pressable
+                                    accessibilityLabel="Date picker"
+                                    {...triggerProps}
+                                  >
+                                    <AntDesign
+                                      name="calendar"
+                                      size={24}
+                                      color="black"
+                                    />
+                                  </Pressable>
+                                );
                               }}
-                            />
-
-                          </Menu>
-                        </Box>
-                      </ZStack>
-                    </View>:null}
-
+                            >
+                                <DateTimePicker
+                                  mode="single"
+                                  date={startDate}
+                                  colorScheme="green"
+                                  // minDate={minDaysFromNow}
+                                  minDate={datePickerMin}
+                                  onChange={(params) => {
+                                    setDate(new Date(params.date));
+                                  }}
+                                  selectedItemColor= "#49a579"
+                                  // timePickerContainerStyle={{width: "50%", height: "80%"}}
+                                />
+                            </Menu>
+                          </Box>
+                        </ZStack>
+                      </View>
+                    ) : null}
                   </HStack>
                 </FormControl>
                 {/* Maximum capacity */}

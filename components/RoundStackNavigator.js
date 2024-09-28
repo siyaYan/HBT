@@ -182,7 +182,7 @@ export default function RoundStackNavigator({ route, navigation }) {
             />
           ),
           headerRight: () =>{
-            return thisRound.userId==userData.data._id ? (
+            return thisRound?.userId==userData.data._id ? (
               <IconButton
                 mr={3}
                 marginY={0}
