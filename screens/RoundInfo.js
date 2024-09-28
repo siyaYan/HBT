@@ -129,6 +129,15 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const endDate = new Date(
     startDate.getTime() + levelInt * 24 * 60 * 60 * 1000
   ); // Convert days to milliseconds
+  const today = new Date();
+  
+  // Calculate the 10% point
+  const tenPercentDuration = levelInt * 0.1;
+  const tenPercentDate = new Date(
+    startDate.getTime() + tenPercentDuration * 24 * 60 * 60 * 1000
+  );
+
+  const hasPassedTenPercent = today > tenPercentDate;
 
   return (
     <NativeBaseProvider>
@@ -203,12 +212,10 @@ const RoundInfoScreen = ({ route, navigation }) => {
             >
               My habit
             </Button>
-            {round.isAllowedInvite || round.userId == userData.data._id ? (
+             {/* Conditionally render the Invite Friend button */}
+             {!hasPassedTenPercent && (round.isAllowedInvite || round.userId == userData.data._id) && (
               <Button
-                onPress={() => {
-                  inviteFriend();
-                  // console.log("Calendar icon pressed. info:", startDate,level,roundName,allowOthers,userData.data._id);
-                }}
+                onPress={inviteFriend}
                 mt="5"
                 width="100%"
                 size="lg"
@@ -221,8 +228,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
               >
                 Invite friend
               </Button>
-            ) : (
-              ""
             )}
 
             {userData.data._id !== round.userId && (
