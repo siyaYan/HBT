@@ -31,7 +31,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
     return null; // Render nothing while navigating back
   }
 
-  const { roundData, updateRounds, deleteRoundData , updateActiveRoundData} = useRound();
+  const { roundData, updateRounds, deleteRoundData , updateacceptRoundData} = useRound();
   // console.log("round context", roundData);
 
   const round = roundData.data.find((r) => r._id === roundId);
@@ -60,7 +60,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
     // updateRoundData(newRoundData); // Update context with new data
     console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
-    updateActiveRoundData(newRoundData)
+    updateacceptRoundData(newRoundData)
     // const {roundData} = useRound();
     console.log("-----home page round context", roundData.data);
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));

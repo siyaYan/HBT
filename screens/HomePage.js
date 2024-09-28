@@ -88,9 +88,9 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundFriendValidation(false);
   };
   const { userData, updateNotes } = useData();
-  const { activeRoundData, roundData, updateRounds } = useRound();
+  const { acceptRoundData, roundData, updateRounds } = useRound();
 
-  // console.log("active round---", activeRoundData);
+  // console.log("active round---", acceptRoundData);
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
 
@@ -113,11 +113,11 @@ const HomeScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
-    // console.log("activeRoundData----", activeRoundData?.data[activeRoundData.data.length - 1]?.roundFriends);
-    const processing = processRounds(activeRoundData.data, new Date());
+    // console.log("acceptRoundData----", acceptRoundData?.data[acceptRoundData.data.length - 1]?.roundFriends);
+    const processing = processRounds(acceptRoundData.data, new Date());
     const sortedRounds = filterAndSortRounds(processing);
     setProcessedRounds(sortedRounds);
-  }, [activeRoundData]);
+  }, [acceptRoundData]);
   
 
 
@@ -335,7 +335,7 @@ const HomeScreen = ({ navigation }) => {
     }
     // 2 round already, then warning, keep the invitation
     if (
-      activeRoundData?.data.filter(
+      acceptRoundData?.data.filter(
         (item) => item.status == "A" || item.status == "P"
       ).length == 2
     ) {
@@ -344,11 +344,11 @@ const HomeScreen = ({ navigation }) => {
     }
     // 1 active, check start date if it is before the active round ends
     else if (
-      activeRoundData?.data.filter(
+      acceptRoundData?.data.filter(
         (item) => item.status == "A" || item.status == "P"
       ).length == 1
     ) {
-      const activeRound = activeRoundData[0];
+      const activeRound = acceptRoundData[0];
       if (activeRound?.status == "A") {
         const levelInt = parseInt(activeRound.level, 10);
         const startDate = new Date(activeRound.startDate);
@@ -603,8 +603,8 @@ const HomeScreen = ({ navigation }) => {
         )}
 
         {/* Linda Sprint 4 Start a round*/}
-        {(!activeRoundData ||
-          activeRoundData?.data.filter(
+        {(!acceptRoundData ||
+          acceptRoundData?.data.filter(
             (item) => item.status == "A" || item.status == "P"
           ).length < 2) && (
           <Button
@@ -628,7 +628,7 @@ const HomeScreen = ({ navigation }) => {
               bg: "#e5f5e5",
             }}
           >
-            {activeRoundData?.data.filter(
+            {acceptRoundData?.data.filter(
               (item) => item.status == "A" || item.status == "P"
             ).length === 1
               ? "Plan the next round"

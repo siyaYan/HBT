@@ -29,7 +29,7 @@ export const RoundProvider = ({ children }) => {
   const { userData } = useData();
 
   const [roundData, setRoundData] = useState([]);
-  const [activeRoundData, setActiveRoundData] = useState([]);
+  const [acceptRoundData, setacceptRoundData] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -38,7 +38,7 @@ export const RoundProvider = ({ children }) => {
         console.log("FirstGetData:", savedRoundData);
         if (savedRoundData && savedRoundData.data?.length > 0) {
           setRoundData(JSON.parse(savedRoundData));
-          updateActiveRoundData(JSON.parse(savedRoundData));
+          updateacceptRoundData(JSON.parse(savedRoundData));
         }
       } catch (error) {
         console.error("Error loading user data:", error);
@@ -60,11 +60,11 @@ export const RoundProvider = ({ children }) => {
     saveData();
   }, [roundData]);
 
-  const updateActiveRoundData = (newRounds, userId = userData.data._id) => {
+  const updateacceptRoundData = (newRounds, userId = userData.data._id) => {
     const res = newRounds.data.filter((round) =>
       isRoundAccepted(round, userId)
     );
-    setActiveRoundData((prevRoundData) => {
+    setacceptRoundData((prevRoundData) => {
       return { ...prevRoundData, data: res };
     });
   };
@@ -85,7 +85,7 @@ export const RoundProvider = ({ children }) => {
   //     if (prevRoundData && prevRoundData.data) {
   //       // console.log("round context previous Round Data", prevRoundData.data);
   //       const updatedData = [...prevRoundData.data, updatedRound];
-  //       setActiveRoundData(
+  //       setacceptRoundData(
   //         updatedRound.data.filter((round) =>
   //           isRoundAccepted(round, userData.data._id)
   //         )
@@ -140,9 +140,9 @@ export const RoundProvider = ({ children }) => {
       }
     });
 
-    // Immediately update activeRoundData after roundData has been updated
-    setActiveRoundData((prevActiveRoundData) => {
-      const updatedActiveRounds = prevActiveRoundData.data.map((round) => {
+    // Immediately update acceptRoundData after roundData has been updated
+    setacceptRoundData((prevacceptRoundData) => {
+      const updatedActiveRounds = prevacceptRoundData.data.map((round) => {
         if (round._id === roundId) {
           // Check if the friend is already in the round
           const friendExists = round.roundFriends.some(
@@ -161,7 +161,7 @@ export const RoundProvider = ({ children }) => {
         return round;
       });
 
-      return { ...prevActiveRoundData, data: updatedActiveRounds };
+      return { ...prevacceptRoundData, data: updatedActiveRounds };
     });
 
     console.log("Updated roundData:", updatedData);
@@ -172,7 +172,7 @@ export const RoundProvider = ({ children }) => {
   const updateRounds = (newRounds) => {
     // console.log("round context------", newRounds);
     setRoundData(newRounds);
-    updateActiveRoundData(newRounds);
+    updateacceptRoundData(newRounds);
   };
 
   // delete a round
@@ -188,7 +188,7 @@ export const RoundProvider = ({ children }) => {
     console.log("After delete round data:", newRoundList);
 
     // Step 3: Update active round data
-    updateActiveRoundData(newRoundList);
+    updateacceptRoundData(newRoundList);
 
     // Step 4: Set the new round data state
     setRoundData(newRoundList);
@@ -241,7 +241,7 @@ export const RoundProvider = ({ children }) => {
           }
         });
         console.log("round context updated before return", updatedRoundData);
-        // setActiveRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
+        // setacceptRoundData(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
 
         return updatedRoundData;
       } else {
@@ -266,9 +266,9 @@ export const RoundProvider = ({ children }) => {
     <RoundContext.Provider
       value={{
         roundData,
-        activeRoundData,
-        setActiveRoundData,
-        updateActiveRoundData,
+        acceptRoundData,
+        setacceptRoundData,
+        updateacceptRoundData,
         updateRounds,
         insertRoundData,
         deleteRoundData,

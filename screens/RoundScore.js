@@ -13,12 +13,12 @@ function calculateEndDate(date, days) {
 
 const RoundScoreScreen = ({ route, navigation }) => {
   const { userData } = useData();
-  const { activeRoundData } = useRound();
+  const { acceptRoundData } = useRound();
   const roundId = route.params.id; // Safe access to route params
   const [sortedUsers, setSortedUsers] = useState([]);
   const [currentUserRank, setCurrentUserRank] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state
-  const round = activeRoundData.data.find((r) => r._id === roundId);
+  const round = acceptRoundData.data.find((r) => r._id === roundId);
   const startDate = new Date(round.startDate);
   const endDate = calculateEndDate(startDate, parseInt(round.level, 10));
 

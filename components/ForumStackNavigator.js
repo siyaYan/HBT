@@ -9,13 +9,13 @@ import { Feather } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 export default function ForumStackNavigator({ route, navigation }) {
-  const { activeRoundData } = useRound();
+  const { acceptRoundData } = useRound();
   // const roundId = route.params.id;
   const { id: roundId } = route.params.params || {};  // Use optional chaining to prevent crashes if params are missing
   
-  const activeRound = activeRoundData?.data.filter((item) => item.status === "A")[0];
+  const activeRound = acceptRoundData?.data.filter((item) => item.status === "A")[0];
   // console.log(roundId,activeRound);
-  const firstTwoFinishRounds = activeRoundData
+  const firstTwoFinishRounds = acceptRoundData
     ?.data.filter((item) => item.status === "F")
     .slice(0, 2);
   return (
