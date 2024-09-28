@@ -8,12 +8,28 @@ import { useRound } from "../context/RoundContext";
 const RoundHabit= ({ route, navigation }) => {
   const [text, setText] = useState('');
   const { userData } = useData();
-  const { roundData } = useRound();
-  const { id: roundId } = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
+  const { roundData, insertRoundData} = useRound();
 
+  const { id: roundId } = route.params || {}; // Use optional chaining to prevent crashes if params are missing
+
+  const thisRoundData=roundData.data.filter(item=>item._id==roundId)[0]
+  const meInrRund=thisRoundData.roundFriends.filter(item=>item.id==userData.data._id)[0]
+  const myhabit=meInrRund.habit
   const handleSubmit = async () => {
-    console.log("round habit",route);
-    const res= await updateRoundhabit(userData.token, roundData.data[0]._id,text);
+    const res= await updateRoundhabit(userData.token, thisRoundData._id,text);
+    const updatedUser = {
+      ...meInrRund,
+      habit: text
+    };
+    const updatedRoundFriends = thisRoundData.roundFriends.map(friend =>
+      friend.id === updatedUser.id ? updatedUser : friend
+    );
+    const updatedRound = {
+      ...thisRoundData,
+      roundFriends: updatedRoundFriends
+    };
+    console.log(updatedRound)
+    insertRoundData(updatedRound)
   };
   return (
     <View style={styles.container}>
@@ -22,7 +38,7 @@ const RoundHabit= ({ route, navigation }) => {
         style={styles.input}
         value={text}
         onChangeText={setText}
-        placeholder="Type here"
+        placeholder={myhabit}
       />
       <Button  variant="info" onPress={handleSubmit}>
       Submit</Button>

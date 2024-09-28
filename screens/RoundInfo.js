@@ -22,10 +22,11 @@ import { leaveRound, getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
+  const { roundData, updateRounds, deleteRoundData, updateacceptRoundData } =
+    useRound();
   const  roundId  = route.params.id; // Safe access to route params
   // const { roundId } = route.params;
   if (!roundId) {
-    console.log("routeeeee",route);
     console.error("roundId is not defined roundinfo page");
     navigation.goBack(); // Navigate back if roundId is not available
     return null; // Render nothing while navigating back
@@ -35,32 +36,22 @@ const RoundInfoScreen = ({ route, navigation }) => {
   // console.log("round context", roundData);
 
   const round = roundData.data.find((r) => r._id === roundId);
-  // console.log("roundinfo page round data:", round);
 
-  // Update round info to RoundContext and DB
+  const myhabit = round?.roundFriends?.filter(
+    (item) => item.id == userData.data._id
+  )[0]?.habit;
 
-  // useEffect(() => {
-  //   if (!round) {
-  //     console.error("Round not found in roundData");
-  //     navigation.navigate("MainStack", { screen: "Home" }); // Navigate to Home if round is not found
-  //   }
-  // }, [round]);
-
-  // if (!round) {
-  //   return null; // Render nothing if round is not found
-  // }
-  // Leave round
   const [isLeaveModalVisible, setLeaveModalVisible] = useState(false);
   const handleLeaveRound = () => {
     setLeaveModalVisible(true);
   };
-  
+
   const updateRoundContext = async () => {
     const newRoundData = await getRoundInfo(userData.token, userData.data._id); // Fetch latest round data
     // updateRoundData(newRoundData); // Update context with new data
     console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
-    updateacceptRoundData(newRoundData)
+    updateacceptRoundData(newRoundData);
     // const {roundData} = useRound();
     console.log("-----home page round context", roundData.data);
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
@@ -92,7 +83,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const handleCancelLeave = () => {
     setLeaveModalVisible(false);
   };
-  const friendsList = round?round.roundFriends:[];
+  const friendsList = round ? round.roundFriends : [];
   // console.log("round friend list:", round.roundFriends);
 
   // Navigate to invite friend page
@@ -117,15 +108,15 @@ const RoundInfoScreen = ({ route, navigation }) => {
     });
   }
   // Navigate to Round Config page
-  const goRoundConfig = () => {
-    navigation.navigate("RoundStack", {
-      screen: "RoundConfig",
-      params: { emptyState: false, id: roundId, source: "info" },
-    });
-  };
+  // const goRoundConfig = () => {
+  //   navigation.navigate("RoundStack", {
+  //     screen: "RoundConfig",
+  //     params: { emptyState: false, id: roundId, source: "info" },
+  //   });
+  // };
 
-  const levelInt = round?parseInt(round.level, 10):0;
-  const startDate = round?new Date(round.startDate):new Date();
+  const levelInt = round ? parseInt(round.level, 10) : 0;
+  const startDate = round ? new Date(round.startDate) : new Date();
   const endDate = new Date(
     startDate.getTime() + levelInt * 24 * 60 * 60 * 1000
   ); // Convert days to milliseconds
@@ -141,26 +132,24 @@ const RoundInfoScreen = ({ route, navigation }) => {
 
   return (
     <NativeBaseProvider>
-      {/* <Center w="100%"> */}
       <Background />
       <Box flex={1} p={4}>
         {round ? (
           <VStack space={4}>
             <HStack>
-              <Heading size="lg" color="coolGray.800">
+              {/* <Heading size="lg" color="coolGray.800">
                 {round.name}
-              </Heading>
+              </Heading> */}
               {/* Edit round, which leads to Round Config page */}
-              {round.userId == userData.data._id ? (
+              {/* {round.userId == userData.data._id ? (
                 <Box alignItems="center" justifyContent="center">
                   <Button p={0} variant="unstyled" onPress={goRoundConfig}>
                     <Icon name="pencil" size={24} color="#000" />{" "}
-                    {/* Pen icon */}
                   </Button>
                 </Box>
               ) : (
                 ""
-              )}
+              )} */}
             </HStack>
             <Text fontSize="md">Level: {round.level}</Text>
             <Text fontSize="md">
@@ -180,22 +169,8 @@ const RoundInfoScreen = ({ route, navigation }) => {
               })}
             </Text>
             <Divider my="2" />
-            {round.status=="A"?(<Button
-              onPress={() => {
-                goScoreBoard();
-              }}
-              mt="5"
-              width="100%"
-              size="lg"
-              bg="#49a579"
-              _text={{
-                color: "#f9f8f2",
-                fontFamily: "Regular Medium",
-                fontSize: "lg",
-              }}
-            >
-              Score Board
-            </Button>):("")}
+            <Text style={{textAlign:"center"}}>My habit: { myhabit }</Text>            
+
             <Button
               onPress={() => {
                 goHabit();
@@ -212,6 +187,22 @@ const RoundInfoScreen = ({ route, navigation }) => {
             >
               My habit
             </Button>
+            {round.status=="A"?(<Button
+              onPress={() => {
+                goScoreBoard();
+              }}
+              mt="5"
+              width="100%"
+              size="lg"
+              bg="#49a579"
+              _text={{
+                color: "#f9f8f2",
+                fontFamily: "Regular Medium",
+                fontSize: "lg",
+              }}
+            >
+              Score Board
+            </Button>):("")}
              {/* Conditionally render the Invite Friend button */}
              {!hasPassedTenPercent && (round.isAllowedInvite || round.userId == userData.data._id) && (
               <Button

@@ -74,7 +74,8 @@ const HomeScreen = ({ navigation }) => {
   const [pendingReceived, setPendingReceived] = useState([]);
   const [showRoundValidation, setShowRoundValidation] = useState(false);
   const [showRoundValidationDate, setShowRoundValidationDate] = useState(false);
-  const [showRoundCompleteValidation, setShowRoundCompleteValidation]=useState(false);
+  const [showRoundCompleteValidation, setShowRoundCompleteValidation] =
+    useState(false);
   const [rest, setRest] = useState([]);
   const [topThree, setTopThree] = useState([]);
   const [roundInvitationData, setRoundInvitationData] = useState(null);
@@ -115,14 +116,13 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     // console.log("acceptRoundData----", acceptRoundData?.data[acceptRoundData.data.length - 1]?.roundFriends);
     const processing = processRounds(acceptRoundData.data, new Date());
+    // console.log("acceptRoundData----", acceptRoundData?.data[acceptRoundData.data.length - 1]?.roundFriends);
+    const processing = processRounds(acceptRoundData.data, new Date());
     const sortedRounds = filterAndSortRounds(processing);
     setProcessedRounds(sortedRounds);
   }, [acceptRoundData]);
-  
-
 
   const filterAndSortRounds = (rounds) => {
-    
     // Step 1: Filter out "F" rounds
     const priorityRounds = rounds.filter((round) => round.round.status !== "F");
     // Step 2: Sort by priority of statuses and then by startDate
@@ -130,22 +130,26 @@ const HomeScreen = ({ navigation }) => {
       const statusPriority = { P: 1, A: 2 }; // Prioritize "P" and "A"
       const statusA = statusPriority[a.status] || 3; // Default lower priority
       const statusB = statusPriority[b.status] || 3;
-  
+
       if (statusA !== statusB) {
         return statusA - statusB; // Sort by status priority
       }
-  
+
       // If statuses are the same, sort by startDate
       return new Date(a.startDate) - new Date(b.startDate);
     });
-  
+
     // Step 3: If we have less than 2 rounds, include "F" rounds as fallback
     if (sortedPriorityRounds.length < 2) {
-      const fallbackRounds = rounds.filter((round) => round.round.status === "F");
-  
-      sortedPriorityRounds.push(...fallbackRounds.slice(0, 2 - sortedPriorityRounds.length));
+      const fallbackRounds = rounds.filter(
+        (round) => round.round.status === "F"
+      );
+
+      sortedPriorityRounds.push(
+        ...fallbackRounds.slice(0, 2 - sortedPriorityRounds.length)
+      );
     }
-  
+
     // Step 4: Return only the first 2 rounds
     return sortedPriorityRounds.slice(0, 2);
   };
@@ -165,7 +169,7 @@ const HomeScreen = ({ navigation }) => {
   const handle10PerRoundValidationClose = () => {
     setShow10PerRoundValidation(!show10PerRoundValidation);
   };
-  const handleCloseRoundCompleteValidation= () => {
+  const handleCloseRoundCompleteValidation = () => {
     setShowRoundCompleteValidation(!showRoundCompleteValidation);
   };
 
@@ -312,14 +316,15 @@ const HomeScreen = ({ navigation }) => {
   const acceptRoundFriend = async (i, thisRoundInfo) => {
     console.log("thisRoundInfo calling acceptRoundFriend:", thisRoundInfo);
 
-    // Validation first
-    if(thisRoundInfo.data[0].status =="F"){
+    // 1. validate the new round status
+    if (thisRoundInfo.data[0].status == "F") {
       setShowRoundCompleteValidation(!showRoundCompleteValidation);
       rejectRoundFriend(i);
       return;
     }
     thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate);
-    // check the round info, if it starts more than 10% of level:
+
+    // 2. validate the new round 10%
     // show warning message, then remove invitation(reject)
     const thisRoundLevelInt = parseInt(thisRoundInfo.data[0].level, 10);
     const endDate10Percent = new Date(
@@ -333,80 +338,70 @@ const HomeScreen = ({ navigation }) => {
       rejectRoundFriend(i);
       return;
     }
+
+    // 3. validate owned rounds
+    unFinishedRound = acceptRoundData?.data.filter(
+      (item) => item.status == "A" || item.status == "P"
+    );
     // 2 round already, then warning, keep the invitation
-    if (
-      acceptRoundData?.data.filter(
-        (item) => item.status == "A" || item.status == "P"
-      ).length == 2
-    ) {
+    if (unFinishedRound.length >= 2) {
       setShowRoundValidation(!showRoundValidation);
       return;
-    }
-    // 1 active, check start date if it is before the active round ends
-    else if (
-      acceptRoundData?.data.filter(
-        (item) => item.status == "A" || item.status == "P"
-      ).length == 1
-    ) {
-      const activeRound = acceptRoundData[0];
-      if (activeRound?.status == "A") {
-        const levelInt = parseInt(activeRound.level, 10);
-        const startDate = new Date(activeRound.startDate);
+    } else {
+      // 1 active or pending round, check Start date if it is before the active round ends
+      if (unFinishedRound.length == 1) {
+        const acceptRound = unFinishedRound[0];
+        //no matter active or pending round, both validate the time overlap
+        const levelInt = parseInt(acceptRound.level, 10);
+        const startDate = new Date(acceptRound.startDate);
         const endDate = new Date(
           startDate.getTime() + levelInt * 24 * 60 * 60 * 1000
-        ); // Convert days to milliseconds
+        );
         if (thisRoundStartDate < endDate) {
           setShowRoundValidationDate(!showRoundValidationDate);
           return;
         }
       }
+      // no accept round
+      console.log("accept round Friend,delete current notification");
+      // 4. accept the round invitation
+      setFilteredUsers((currentReceived) => ({
+        ...currentReceived, // Spread the current state
+        filtered: [
+          ...currentReceived.filtered.slice(0, i - 1), // Keep items before index i
+          ...currentReceived.filtered.slice(i), // Keep items after index i
+        ],
+        filteredRound: [
+          ...currentReceived.filteredRound.slice(0, i - 1), // Keep items before index i
+          ...currentReceived.filteredRound.slice(i), // Keep items after index i
+        ],
+      }));
+
+      setPendingReceived((currentReceived) => [
+        ...currentReceived.slice(0, i - 1),
+        ...currentReceived.slice(i),
+      ]);
+
+      const id = pendingReceived[i - 1]._id;
+      const res = reactRequest(id, "A"); //update round invitation data
+      if (res) {
+        console.log("react request success");
+        const RoundInfoList = await getRoundInfo(
+          userData.token,
+          userData.data._id
+        );
+        console.log(
+          "last roundfrinedlist",
+          RoundInfoList.data[RoundInfoList.data.length - 1].roundFriends
+        );
+        updateRounds(RoundInfoList);
+      }
+      getRoundInvitationData();
     }
-    // no active round
-    console.log("accept round Friend,delete current notification");
-    // setFilteredUsers((currentReceived) => [
-    //   ...currentReceived.slice(0, i - 1),
-    //   ...currentReceived.slice(i),
-    // ]);
-    setFilteredUsers((currentReceived) => ({
-      ...currentReceived, // Spread the current state
-      filtered: [
-        ...currentReceived.filtered.slice(0, i - 1), // Keep items before index i
-        ...currentReceived.filtered.slice(i), // Keep items after index i
-      ],
-      filteredRound: [
-        ...currentReceived.filteredRound.slice(0, i - 1), // Keep items before index i
-        ...currentReceived.filteredRound.slice(i), // Keep items after index i
-      ],
-    }));
-    setPendingReceived((currentReceived) => [
-      ...currentReceived.slice(0, i - 1),
-      ...currentReceived.slice(i),
-    ]);
-    const id = pendingReceived[i - 1]._id;
-    const res = reactRequest(id, "A"); //update round invitation data
-    if (res) {
-      console.log("react request success");
-      const RoundInfoList = await getRoundInfo(
-        userData.token,
-        userData.data._id
-      );
-      console.log(
-        "last roundfrinedlist",
-        RoundInfoList.data[RoundInfoList.data.length - 1].roundFriends
-      );
-      updateRounds(RoundInfoList);
-    }
-    getRoundInvitationData();
-    // show the new accepted round on it
-    //Insert this new accepted round into round context directly
   };
 
   const rejectRoundFriend = (i) => {
     console.log("reject round Friend,delete current notification");
-    // setFilteredUsers((currentReceived) => [
-    //   ...currentReceived.slice(0, i - 1),
-    //   ...currentReceived.slice(i),
-    // ]);
     setFilteredUsers((currentReceived) => ({
       ...currentReceived, // Spread the current state
       filtered: [
@@ -741,13 +736,18 @@ const HomeScreen = ({ navigation }) => {
                         >
                           <Modal.Content maxWidth="400px">
                             <Modal.CloseButton />
-                            <Modal.Header>Round Details</Modal.Header>
-                            <Modal.Body>
+                            {/* <Modal.Header>Round Details</Modal.Header> */}
+                            <Modal.Body
+                              style={{
+                                marginHorizontal: 10,
+                                marginVertical: 20,
+                              }}
+                            >
                               {filteredUsers.filteredRound[index] &&
                                 filteredUsers.filteredRound[index].data && (
                                   <>
                                     <Text fontSize="md">
-                                      Round Name:{" "}
+                                      Round name:{" "}
                                       {
                                         filteredUsers.filteredRound[index]
                                           .data[0]?.name
@@ -755,7 +755,7 @@ const HomeScreen = ({ navigation }) => {
                                     </Text>
 
                                     <Text fontSize="md">
-                                      Start Date:{" "}
+                                      Start date:{" "}
                                       {new Date(
                                         filteredUsers.filteredRound[
                                           index
@@ -774,7 +774,7 @@ const HomeScreen = ({ navigation }) => {
                                       }
                                     </Text>
                                     <Text fontSize="md">
-                                      Maximum Capacity:{" "}
+                                      Maximum capacity:{" "}
                                       {
                                         filteredUsers.filteredRound[index]
                                           .data[0]?.maximum
@@ -1153,9 +1153,7 @@ const HomeScreen = ({ navigation }) => {
           <Modal.Header>Warning</Modal.Header>
           <Modal.Body>
             <>
-              <Text fontSize="md">
-                This round is complete.{" "}
-              </Text>
+              <Text fontSize="md">This round is complete. </Text>
             </>
           </Modal.Body>
         </Modal.Content>

@@ -194,7 +194,7 @@ export async function resetProfile(userId, token, nickname, username) {
 
     const data = await response.json();
     if (data.status == "success") {
-      Alert.alert("Success", "Update your profile");
+      Alert.alert("Success", "Profile updated");
     } else {
       Alert.alert("Unsuccessful", data.message || "Reset profile unsuccessful");
     }
@@ -1089,7 +1089,7 @@ export async function updateRoundhabit(token, roundId, newHabit) {
 
     const data = await response.json();
     if (data.status === "success") {
-      Alert.alert("Success", "Update your habit");
+      Alert.alert("Success", "Habit updated");
     } else {
       Alert.alert("Unsuccessful", data.message || "Update habit unsuccessful");
     }

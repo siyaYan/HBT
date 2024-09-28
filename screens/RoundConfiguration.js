@@ -36,11 +36,11 @@ function calculateEndDate(date, days) {
   return result;
 }
 
-function calculateDatePickerMin(activeRound) {
-  if (activeRound) {
+function calculateDatePickerMin(acceptRound) {
+  if (acceptRound) {
     const endDatePlus1 = calculateEndDate(
-      activeRound.startDate,
-      parseInt(activeRound.level, 10)
+      acceptRound.startDate,
+      parseInt(acceptRound.level, 10)
     );
 
     return endDatePlus1;
@@ -62,7 +62,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     isAllowed: false,
   });
   // const [startDateError, setStartDateError] = useState("");
-  const activeRound = acceptRoundData?.data.find((r) => r.status === "A"||r.status==="P");
+  const acceptRound = acceptRoundData?.data.find(
+    (r) => r.status === "A" || r.status === "P"
+  );
 
   // Initialization
   const { userData } = useData();
@@ -70,13 +72,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const emptyState = route.params.emptyState;
   const source = route.params.source;
   const roundId = route.params.id;
-  
+
   //TODO: change it to RoundContext with index
 
   const round = acceptRoundData?.data.find((r) => r._id === roundId);
   const ButtonUpdateRound = source === "home" ? "Create round" : "Update round";
 
-  const datePickerMin = calculateDatePickerMin(activeRound);
+  const datePickerMin = calculateDatePickerMin(acceptRound);
   const datePickerMinPlus1 = new Date(datePickerMin);
   datePickerMinPlus1.setDate(datePickerMinPlus1.getDate() + 1);
 
@@ -140,7 +142,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     }
   };
 
-
   const handleUpdateRound = async () => {
     if (emptyState) {
       const newRoundData = {
@@ -158,7 +159,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { id: response.data._id },
+        params: { id: response.data._id, state: emptyState },
       });
     } else {
       const newRoundData = {
@@ -174,7 +175,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       const response = await updateRoundInfo(userData.token, newRoundData);
 
       if (response.status == "success") {
-        insertRoundData(newRoundData)
+        insertRoundData(newRoundData);
       }
     }
   };
@@ -216,7 +217,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       if (response) {
         await deleteRoundData(roundId); // round invitation is deleted in backend as well.
         navigation.navigate("MainStack", { screen: "Home" });
-
       } else {
         // Handle case when response is not as expected
         Alert.alert("Error", "Failed to delete the round");
@@ -230,9 +230,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const handleCancelDelete = () => {
     setModalVisible(false);
   };
-  useEffect(() => {
-    // Effect code
-  }, [isModalVisible]);
+  // useEffect(() => {
+  //   // Effect code
+  // }, [isModalVisible]);
 
   return (
     <KeyboardAvoidingView
@@ -253,7 +253,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
           <Center w="90%" h="100%">
             <VStack w="100%" h="100%" space={6}>
               <VStack w="100%" space={6}>
-                {/* Round Name */}
+                {/* Round name */}
                 <FormControl isInvalid={isInvalid.roundName}>
                   <FormControl.Label
                     ml={1}
@@ -263,7 +263,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Round Name
+                    Round name
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -272,13 +272,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     size="lg"
                     mr={3}
                     w="93%"
-                    placeholder="Enter Round Name"
+                    placeholder="Enter Round name"
                     value={roundName}
                     onChangeText={setRoundName}
                   />
                   {isInvalid.roundName && (
                     <FormControl.ErrorMessage>
-                      Round Name is required.
+                      Round name is required.
                     </FormControl.ErrorMessage>
                   )}
                 </FormControl>
@@ -316,7 +316,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     </FormControl.ErrorMessage>
                   </FormControl>
                 )}
-                {/* Start Date */}
+                {/* Start date */}
                 <FormControl>
                   <HStack
                     space={2}
@@ -332,7 +332,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                           color: "#191919",
                         }}
                       >
-                        Start Date
+                        Start date
                       </FormControl.Label>
                       <Text
                         ml={1}
@@ -352,45 +352,49 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       </Text>
                     </VStack>
 
-                    <View style={{ padding: 20, alignSelf: "flex-end" }}>
-                      <ZStack alignSelf="flex-end" mr="15%" mt="10%">
-                        <Box alignSelf="flex-end">
-                          <Menu
-                            mt="-50%"
-                            // mr="10"
-                            w="280"
-                            trigger={(triggerProps) => {
-                              return (
-                                <Pressable
-                                  accessibilityLabel="Date picker"
-                                  {...triggerProps}
-                                >
-                                  <AntDesign
-                                    name="calendar"
-                                    size={24}
-                                    color="black"
-                                  />
-                                </Pressable>
-                              );
-                            }}
-                          >
-                            <DateTimePicker
-                              mode="single"
-                              date={startDate}
-                              // minDate={minDaysFromNow}
-                              minDate={datePickerMin}
-                              onChange={(params) => {
-                                setDate(new Date(params.date));
+                    {new Date() < startDate ? (
+                      <View style={{ padding: 20, alignSelf: "flex-end" }}>
+                        <ZStack alignSelf="flex-end" mr="15%" mt="10%">
+                          <Box alignSelf="flex-end">
+                            <Menu
+                              mt="-50%"
+                              // mr="10"
+                              w="280"
+                              trigger={(triggerProps) => {
+                                return (
+                                  <Pressable
+                                    accessibilityLabel="Date picker"
+                                    {...triggerProps}
+                                  >
+                                    <AntDesign
+                                      name="calendar"
+                                      size={24}
+                                      color="black"
+                                    />
+                                  </Pressable>
+                                );
                               }}
-                            />
-
-                          </Menu>
-                        </Box>
-                      </ZStack>
-                    </View>
+                            >
+                                <DateTimePicker
+                                  mode="single"
+                                  date={startDate}
+                                  colorScheme="green"
+                                  // minDate={minDaysFromNow}
+                                  minDate={datePickerMin}
+                                  onChange={(params) => {
+                                    setDate(new Date(params.date));
+                                  }}
+                                  selectedItemColor= "#49a579"
+                                  // timePickerContainerStyle={{width: "50%", height: "80%"}}
+                                />
+                            </Menu>
+                          </Box>
+                        </ZStack>
+                      </View>
+                    ) : null}
                   </HStack>
                 </FormControl>
-                {/* Maximum Capacity */}
+                {/* Maximum capacity */}
                 <FormControl isInvalid={isInvalid.maxCapacity}>
                   <FormControl.Label
                     ml={1}
@@ -400,7 +404,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Max Capacity
+                    Max capacity
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -409,13 +413,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     size="lg"
                     mr={3}
                     w="93%"
-                    placeholder="Enter Max Capacity"
+                    placeholder="Enter Max capacity"
                     value={maxCapacity}
                     onChangeText={validateMaxCapacity}
                   />
                   {isInvalid.maxCapacity && (
                     <FormControl.ErrorMessage>
-                      Max Capacity must be between 2 and 50.
+                      Max capacity must be between 2 and 50.
                     </FormControl.ErrorMessage>
                   )}
                 </FormControl>

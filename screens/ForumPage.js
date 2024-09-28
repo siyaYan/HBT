@@ -27,6 +27,7 @@ import {
   deleteMessage,
 } from "../components/Endpoint";
 import AddImage from "../components/AddImage";
+import { useIsFocused } from '@react-navigation/native';
 
 const ForumPage = ({ route, navigation }) => {
   const { userData } = useData();
@@ -37,6 +38,7 @@ const ForumPage = ({ route, navigation }) => {
   const [roundFriends, setRoundFriends] = useState(roundData?.data.filter((item) => (item._id == id))[0]
   ?.roundFriends); 
   const scrollViewRef = useRef(null);
+  const isFocused = useIsFocused();
   useEffect(() => {
     const fetchForumMessages = async () => {
       await getForumMessages();
@@ -50,6 +52,7 @@ const ForumPage = ({ route, navigation }) => {
     setRoundFriends(roundData?.data.filter((item) => (item._id == id))[0]
     .roundFriends)
   }, [roundData]);
+
 
   const [post, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -314,10 +317,10 @@ const ForumPage = ({ route, navigation }) => {
             )}
           </ScrollView>
         </View>
-        {!isModalVisible &&
+        {!isModalVisible && 
           (acceptRoundData?.data.filter(
             (item) => item._id == id && item.status == "A"
-          ).length > 0 ? (
+          ).length > 0 && isFocused ? (
             <Fab
               onPress={() => handleUpload()}
               m={6}
