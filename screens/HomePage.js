@@ -35,6 +35,8 @@ import {
 } from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Add this at the top of your file
+
 
 // Function to add days to a date
 function calculateEndDate(date, days) {
@@ -42,6 +44,27 @@ function calculateEndDate(date, days) {
   result.setDate(result.getDate() + days);
   return result;
 }
+
+function shouldRedirectToScoreBoard(startDate, level) {
+  const start = new Date(startDate);
+  const today = new Date();
+  const duration = parseInt(level, 10);
+
+  // Calculate halfway point and 1 week before end date
+  const halfwayDate = new Date(start.getTime() + (duration / 2) * 24 * 60 * 60 * 1000);
+  const endDate = new Date(start.getTime() + duration * 24 * 60 * 60 * 1000);
+  const oneWeekBeforeEndDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  // Check if today is Monday
+  const isMonday = today.getDay() === 1; // 1 represents Monday
+
+  // Check if today is halfway through, Monday, or 1 week before end
+  const isHalfway = today.toDateString() === halfwayDate.toDateString();
+  const isOneWeekLeft = today.toDateString() === oneWeekBeforeEndDate.toDateString();
+
+  return isMonday || isHalfway || isOneWeekLeft;
+}
+
 
 const HomeScreen = ({ navigation }) => {
   const [isOpened, setIsOpened] = useState(false);
@@ -167,21 +190,36 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
-  const handleRoundPress = (roundId, status) => {
-    // console.log('-----',roundId)
-    if (status === "A" || status === "F") {
-      navigation.navigate("ForumStack", {
-        screen: "ForumPage",
-        params: {id:  roundId },
-      });
-    } else {
-      navigation.navigate("RoundStack", {
-        screen: "RoundInfo",
-        params: { id: roundId },
-      });
+  const handleRoundPress = async (roundId, status, startDate, level) => {
+    try {
+      const today = new Date().toDateString(); // Get today's date as a string
+      const lastCheckedDate = await AsyncStorage.getItem(`lastCheck_${roundId}`);
+  
+      if (shouldRedirectToScoreBoard(startDate, level) && lastCheckedDate !== today) {
+        // If it's Monday, halfway, or 1 week left, and hasn't been checked today
+        await AsyncStorage.setItem(`lastCheck_${roundId}`, today); // Store today's date
+        navigation.navigate("RoundStack", {
+          screen: "RoundScore", // Navigate to ScoreBoard
+          params: { id: roundId },
+        });
+      } else if (status === "A" || status === "F") {
+        // Navigate to the forum for active rounds
+        navigation.navigate("ForumStack", {
+          screen: "ForumPage",
+          params: { id: roundId },
+        });
+      } else {
+        // Otherwise, navigate to the round info page
+        navigation.navigate("RoundStack", {
+          screen: "RoundInfo",
+          params: { id: roundId },
+        });
+      }
+    } catch (error) {
+      console.error("Error handling round press:", error);
     }
-    // console.log("home page roundId", roundId);
   };
+  
 
   const handlePress = () => {
     console.log("UserData", userData);
@@ -498,7 +536,7 @@ const HomeScreen = ({ navigation }) => {
                 key={index}
                 title={`Round ${index + 1}`}
                 onPress={() => {
-                  handleRoundPress(round._id, round.status);
+                  handleRoundPress(round._id, round.status, round.startDate, round.level);
                 }}
                 rounded="30"
                 mt="5"
