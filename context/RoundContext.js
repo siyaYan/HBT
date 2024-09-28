@@ -85,6 +85,7 @@ export const RoundProvider = ({ children }) => {
     console.log("Insert new round data", newRoundList);
     updateRounds(newRoundList);
   };
+  
 
   // TODO: update partcially round data
   // const updateRoundData = (updatedRound) => {
@@ -174,6 +175,7 @@ export const RoundProvider = ({ children }) => {
 
     console.log("Updated roundData:", updatedData);
   };
+  
 
   // Update the entire roundData array
   const updateRounds = (newRounds) => {

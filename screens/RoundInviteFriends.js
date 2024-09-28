@@ -34,7 +34,7 @@ import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 const RoundInviteFriendsScreen = ({ route, navigation }) => {
   const [friends, setFriends] = useState([]);
   const { userData, updateUserData } = useData();
-  const roundId = route.params.roundId;
+  const roundId = route.params.id;
   const { roundData, insertRoundFriendList } = useRound();
   const [round, setRound] = useState(
     roundData.data.find((r) => r._id === roundId)

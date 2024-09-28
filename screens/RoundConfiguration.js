@@ -69,7 +69,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
   const emptyState = route.params.emptyState;
   const source = route.params.source;
-  const roundId = route.params.roundId;
+  const roundId = route.params.id;
   
   //TODO: change it to RoundContext with index
 
@@ -158,7 +158,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { roundId: response.data._id },
+        params: { id: response.data._id },
       });
     } else {
       const newRoundData = {

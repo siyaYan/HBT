@@ -51,6 +51,7 @@ const HomeScreen = ({ navigation }) => {
   const [pendingReceived, setPendingReceived] = useState([]);
   const [showRoundValidation, setShowRoundValidation] = useState(false);
   const [showRoundValidationDate, setShowRoundValidationDate] = useState(false);
+  const [showRoundCompleteValidation, setShowRoundCompleteValidation]=useState(false);
   const [rest, setRest] = useState([]);
   const [topThree, setTopThree] = useState([]);
   const [roundInvitationData, setRoundInvitationData] = useState(null);
@@ -141,6 +142,9 @@ const HomeScreen = ({ navigation }) => {
   const handle10PerRoundValidationClose = () => {
     setShow10PerRoundValidation(!show10PerRoundValidation);
   };
+  const handleCloseRoundCompleteValidation= () => {
+    setShowRoundCompleteValidation(!showRoundCompleteValidation);
+  };
 
   const handleAvatarPress = () => {
     navigation.navigate("AccountStack", { screen: "Account" });
@@ -173,7 +177,7 @@ const HomeScreen = ({ navigation }) => {
     } else {
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { roundId },
+        params: { id: roundId },
       });
     }
     // console.log("home page roundId", roundId);
@@ -271,6 +275,11 @@ const HomeScreen = ({ navigation }) => {
     console.log("thisRoundInfo calling acceptRoundFriend:", thisRoundInfo);
 
     // Validation first
+    if(thisRoundInfo.data[0].status =="F"){
+      setShowRoundCompleteValidation(!showRoundCompleteValidation);
+      rejectRoundFriend(i);
+      return;
+    }
     thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate);
     // check the round info, if it starts more than 10% of level:
     // show warning message, then remove invitation(reject)
@@ -703,7 +712,7 @@ const HomeScreen = ({ navigation }) => {
                                       Round Name:{" "}
                                       {
                                         filteredUsers.filteredRound[index]
-                                          .data[0].name
+                                          .data[0]?.name
                                       }
                                     </Text>
 
@@ -712,7 +721,7 @@ const HomeScreen = ({ navigation }) => {
                                       {new Date(
                                         filteredUsers.filteredRound[
                                           index
-                                        ].data[0].startDate
+                                        ].data[0]?.startDate
                                       ).toLocaleDateString(undefined, {
                                         year: "numeric",
                                         month: "short",
@@ -723,14 +732,14 @@ const HomeScreen = ({ navigation }) => {
                                       Level:{" "}
                                       {
                                         filteredUsers.filteredRound[index]
-                                          .data[0].level
+                                          .data[0]?.level
                                       }
                                     </Text>
                                     <Text fontSize="md">
                                       Maximum Capacity:{" "}
                                       {
                                         filteredUsers.filteredRound[index]
-                                          .data[0].maximum
+                                          .data[0]?.maximum
                                       }
                                     </Text>
                                   </>
@@ -1092,6 +1101,22 @@ const HomeScreen = ({ navigation }) => {
                 Your friend hasn't accepted the invitation yet. Without
                 participants, this round risks deletion. Please remind your
                 friend to accept the invitation to keep the round active.{" "}
+              </Text>
+            </>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={showRoundCompleteValidation}
+        onClose={handleCloseRoundCompleteValidation}
+      >
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header>Warning</Modal.Header>
+          <Modal.Body>
+            <>
+              <Text fontSize="md">
+                This round is complete.{" "}
               </Text>
             </>
           </Modal.Body>

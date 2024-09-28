@@ -7,17 +7,40 @@ import RoundInfoScreen from "../screens/RoundInfo";
 import RoundInviteFriendsScreen from "../screens/RoundInviteFriends";
 import InviteScreen from "../screens/InviteFriends";
 import RoundHabit from "../screens/RoundHabit";
-// import HomeScreen from '../screens/HomePage';
-
+import RoundScoreScreen from "../screens/RoundScore";
 const Stack = createStackNavigator();
 
-export default function RoundStackNavigator({ navigation }) {
+export default function RoundStackNavigator({ route, navigation }) {
+  const { id: roundId } = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
+  const handleRoundNavigation = (roundId, navigation) => {
+    if (!roundId) {
+      // If roundId is empty, navigate back
+      navigation.goBack();
+    } else {
+      // If roundId is not empty, navigate to the RoundInfo screen
+      navigation.navigate("RoundStack", {
+        screen: "RoundInfo",
+        params: { id: roundId },
+      });
+    }
+  };
+  const goRoundInfo = (roundId, navigation) => {
+    console.log("roundId in Stack",roundId);
+      // If roundId is not empty, navigate to the RoundInfo screen
+      navigation.navigate("RoundStack", {
+        screen: "RoundInfo",
+        params: { id: roundId },
+      });
+    
+  };
+
   return (
     <Stack.Navigator>
       {/* <Stack.Screen name="HomeScreen" component={HomeScreen} /> */}
-    <Stack.Screen
+      <Stack.Screen
         name="RoundInviteFriend"
         component={RoundInviteFriendsScreen}
+        initialParams={{ id: roundId }}
         options={{
           headerBackTitleVisible: false,
           title: "",
@@ -30,11 +53,7 @@ export default function RoundStackNavigator({ navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.goBack(); //TODO, navigate to round info page, rather than home page
-      //           navigation.navigate("RoundStack", {
-      //   screen: "RoundInfo",
-      //   params: { roundId},
-      // });
+                handleRoundNavigation(roundId, navigation);
               }}
             />
           ),
@@ -43,6 +62,7 @@ export default function RoundStackNavigator({ navigation }) {
       <Stack.Screen
         name="GlobalAddFriend"
         component={InviteScreen}
+        initialParams={{ id: roundId }}
         options={{
           headerBackTitleVisible: false,
           title: "",
@@ -62,9 +82,34 @@ export default function RoundStackNavigator({ navigation }) {
         }}
       />
       {/* Round Habit */}
-       <Stack.Screen
+      <Stack.Screen
         name="RoundHabit"
         component={RoundHabit}
+        initialParams={{ id: roundId }}
+        options={{
+          headerBackTitleVisible: false,
+          title: "",
+          headerStyle: {
+            backgroundColor: "rgba(255,255,255,0)",
+          },
+          headerLeft: () => (
+            <IconButton
+              ml={3}
+              marginY={0}
+              icon={<Ionicons name="arrow-back" size={28} color="black" />}
+              onPress={() => {
+                console.log("----stack roundId",roundId);
+                goRoundInfo(roundId, navigation);
+              }}
+            />
+          ),
+        }}
+      />
+      {/* Round Score */}
+      <Stack.Screen
+        name="RoundScore"
+        component={RoundScoreScreen}
+        initialParams={{ id: roundId }}
         options={{
           headerBackTitleVisible: false,
           title: "",
@@ -86,7 +131,8 @@ export default function RoundStackNavigator({ navigation }) {
       <Stack.Screen
         name="RoundConfig"
         component={RoundConfigurationScreen}
-        options={({navigation})=>({
+        // initialParams={{ id: roundId }}
+        options={({ navigation }) => ({
           headerBackTitleVisible: false,
           title: "",
           headerStyle: {
@@ -98,7 +144,7 @@ export default function RoundStackNavigator({ navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.goBack();
+                handleRoundNavigation(roundId, navigation);
               }}
             />
           ),
@@ -107,7 +153,8 @@ export default function RoundStackNavigator({ navigation }) {
       <Stack.Screen
         name="RoundInfo"
         component={RoundInfoScreen}
-        options={({ navigation }) =>({
+        initialParams={{ id: roundId }}
+        options={({ navigation }) => ({
           headerBackTitleVisible: false,
           // title: navigation.params,
           headerStyle: {
@@ -126,7 +173,6 @@ export default function RoundStackNavigator({ navigation }) {
           ),
         })}
       />
-      
     </Stack.Navigator>
   );
 }

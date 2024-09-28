@@ -24,10 +24,11 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
   const { roundData, updateRounds, deleteRoundData, updateActiveRoundData } =
     useRound();
-  const { roundId } = route.params || {}; // Safe access to route params
-
+  const  roundId  = route.params.id; // Safe access to route params
+  // const { roundId } = route.params;
   if (!roundId) {
-    console.error("roundId is not defined");
+    console.log("routeeeee",route);
+    console.error("roundId is not defined roundinfo page");
     navigation.goBack(); // Navigate back if roundId is not available
     return null; // Render nothing while navigating back
   }
@@ -107,21 +108,28 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const inviteFriend = () => {
     navigation.navigate("RoundStack", {
       screen: "RoundInviteFriend",
-      params: { roundId: roundId },
+      params: { id: roundId },
     });
   };
 
   const goHabit = () => {
     navigation.navigate("RoundStack", {
       screen: "RoundHabit",
-      params: { roundId: roundId },
+      params: { id: roundId },
     });
   };
+
+  const goScoreBoard = () => {
+    navigation.navigate("RoundStack", {
+      screen: "RoundScore",
+      params: { id: roundId },
+    });
+  }
   // Navigate to Round Config page
   const goRoundConfig = () => {
     navigation.navigate("RoundStack", {
       screen: "RoundConfig",
-      params: { emptyState: false, roundId: roundId, source: "info" },
+      params: { emptyState: false, id: roundId, source: "info" },
     });
   };
 
@@ -172,7 +180,23 @@ const RoundInfoScreen = ({ route, navigation }) => {
               })}
             </Text>
             <Divider my="2" />
-            <Text style={{textAlign:"center"}}>My habit: { myhabit }</Text>
+            <Text style={{textAlign:"center"}}>My habit: { myhabit }</Text>            
+            {round.status=="A"?(<Button
+              onPress={() => {
+                goScoreBoard();
+              }}
+              mt="5"
+              width="100%"
+              size="lg"
+              bg="#49a579"
+              _text={{
+                color: "#f9f8f2",
+                fontFamily: "Regular Medium",
+                fontSize: "lg",
+              }}
+            >
+              Score Board
+            </Button>):("")}
             <Button
               onPress={() => {
                 goHabit();

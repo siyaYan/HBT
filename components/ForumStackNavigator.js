@@ -72,7 +72,7 @@ export default function ForumStackNavigator({ route, navigation }) {
                 onPress={() => {
                   navigation.navigate("RoundStack", {
                     screen: "RoundInfo",
-                    params: { roundId: roundId },
+                    params: { id: roundId },
                   });
                 }}
               />
