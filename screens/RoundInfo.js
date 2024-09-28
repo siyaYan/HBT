@@ -41,7 +41,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
 
   const round = roundData.data.find((r) => r._id === roundId);
 
-  const myhabit = round.roundFriends.filter(
+  const myhabit = round?.roundFriends?.filter(
     (item) => item.id == userData.data._id
   )[0].habit;
   // console.log("roundinfo page round data:", round);
@@ -181,22 +181,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
             </Text>
             <Divider my="2" />
             <Text style={{textAlign:"center"}}>My habit: { myhabit }</Text>            
-            {round.status=="A"?(<Button
-              onPress={() => {
-                goScoreBoard();
-              }}
-              mt="5"
-              width="100%"
-              size="lg"
-              bg="#49a579"
-              _text={{
-                color: "#f9f8f2",
-                fontFamily: "Regular Medium",
-                fontSize: "lg",
-              }}
-            >
-              Score Board
-            </Button>):("")}
+
             <Button
               onPress={() => {
                 goHabit();
@@ -213,6 +198,22 @@ const RoundInfoScreen = ({ route, navigation }) => {
             >
               My habit
             </Button>
+            {round.status=="A"?(<Button
+              onPress={() => {
+                goScoreBoard();
+              }}
+              mt="5"
+              width="100%"
+              size="lg"
+              bg="#49a579"
+              _text={{
+                color: "#f9f8f2",
+                fontFamily: "Regular Medium",
+                fontSize: "lg",
+              }}
+            >
+              Score Board
+            </Button>):("")}
             {round.isAllowedInvite || round.userId == userData.data._id ? (
               <Button
                 onPress={() => {

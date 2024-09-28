@@ -9,11 +9,12 @@ const RoundHabit= ({ route, navigation }) => {
   const [text, setText] = useState('');
   const { userData } = useData();
   const { roundData, insertRoundData} = useRound();
+
+  const { id: roundId } = route.params || {}; // Use optional chaining to prevent crashes if params are missing
+
   const thisRoundData=roundData.data.filter(item=>item._id==roundId)[0]
   const meInrRund=thisRoundData.roundFriends.filter(item=>item.id==userData.data._id)[0]
   const myhabit=meInrRund.habit
-  const { id: roundId } = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
-
   const handleSubmit = async () => {
     const res= await updateRoundhabit(userData.token, thisRoundData._id,text);
     const updatedUser = {

@@ -11,7 +11,7 @@ import RoundScoreScreen from "../screens/RoundScore";
 const Stack = createStackNavigator();
 
 export default function RoundStackNavigator({ route, navigation }) {
-  const { id: roundId } = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
+  const { id: roundId ,state: newState} = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
   const handleRoundNavigation = (roundId, navigation) => {
     if (!roundId) {
       // If roundId is empty, navigate back
@@ -167,6 +167,9 @@ export default function RoundStackNavigator({ route, navigation }) {
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
                 // navigation.goBack();
+                if(newState){{
+                  navigation.navigate("MainStack", { screen: "Home" });
+                }}
                 navigation.goBack(); 
               }}
             />
