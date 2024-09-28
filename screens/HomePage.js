@@ -304,7 +304,7 @@ const HomeScreen = ({ navigation }) => {
       setShowRoundValidation(!showRoundValidation);
       return;
     }
-    // 1 active, check start date if it is before the active round ends
+    // 1 active, check Start date if it is before the active round ends
     else if (
       activeRoundData?.data.filter(
         (item) => item.status == "A" || item.status == "P"
@@ -709,7 +709,7 @@ const HomeScreen = ({ navigation }) => {
                                 filteredUsers.filteredRound[index].data && (
                                   <>
                                     <Text fontSize="md">
-                                      Round Name:{" "}
+                                      Round name:{" "}
                                       {
                                         filteredUsers.filteredRound[index]
                                           .data[0]?.name
@@ -717,7 +717,7 @@ const HomeScreen = ({ navigation }) => {
                                     </Text>
 
                                     <Text fontSize="md">
-                                      Start Date:{" "}
+                                      Start date:{" "}
                                       {new Date(
                                         filteredUsers.filteredRound[
                                           index
@@ -736,7 +736,7 @@ const HomeScreen = ({ navigation }) => {
                                       }
                                     </Text>
                                     <Text fontSize="md">
-                                      Maximum Capacity:{" "}
+                                      Maximum capacity:{" "}
                                       {
                                         filteredUsers.filteredRound[index]
                                           .data[0]?.maximum

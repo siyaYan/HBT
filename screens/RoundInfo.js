@@ -27,38 +27,18 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const  roundId  = route.params.id; // Safe access to route params
   // const { roundId } = route.params;
   if (!roundId) {
-    console.log("routeeeee",route);
     console.error("roundId is not defined roundinfo page");
     navigation.goBack(); // Navigate back if roundId is not available
     return null; // Render nothing while navigating back
   }
 
-  // useEffect(()=>{
-  //   console.log("round context", roundData.data[0].roundFriends[0].habit);
-  // },roundData)
-
-  // console.log("round context", roundData);
 
   const round = roundData.data.find((r) => r._id === roundId);
 
   const myhabit = round?.roundFriends?.filter(
     (item) => item.id == userData.data._id
-  )[0].habit;
-  // console.log("roundinfo page round data:", round);
+  )[0]?.habit;
 
-  // Update round info to RoundContext and DB
-
-  // useEffect(() => {
-  //   if (!round) {
-  //     console.error("Round not found in roundData");
-  //     navigation.navigate("MainStack", { screen: "Home" }); // Navigate to Home if round is not found
-  //   }
-  // }, [round]);
-
-  // if (!round) {
-  //   return null; // Render nothing if round is not found
-  // }
-  // Leave round
   const [isLeaveModalVisible, setLeaveModalVisible] = useState(false);
   const handleLeaveRound = () => {
     setLeaveModalVisible(true);
@@ -141,26 +121,24 @@ const RoundInfoScreen = ({ route, navigation }) => {
 
   return (
     <NativeBaseProvider>
-      {/* <Center w="100%"> */}
       <Background />
       <Box flex={1} p={4}>
         {round ? (
           <VStack space={4}>
             <HStack>
-              <Heading size="lg" color="coolGray.800">
+              {/* <Heading size="lg" color="coolGray.800">
                 {round.name}
-              </Heading>
+              </Heading> */}
               {/* Edit round, which leads to Round Config page */}
-              {round.userId == userData.data._id ? (
+              {/* {round.userId == userData.data._id ? (
                 <Box alignItems="center" justifyContent="center">
                   <Button p={0} variant="unstyled" onPress={goRoundConfig}>
                     <Icon name="pencil" size={24} color="#000" />{" "}
-                    {/* Pen icon */}
                   </Button>
                 </Box>
               ) : (
                 ""
-              )}
+              )} */}
             </HStack>
             <Text fontSize="md">Level: {round.level}</Text>
             <Text fontSize="md">

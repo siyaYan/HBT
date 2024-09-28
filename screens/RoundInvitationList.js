@@ -4,7 +4,7 @@ import { Avatar, Code } from "native-base"
 // Back Button
 // Bulk delete (brush icon)
 // Button:
-// Round Name
+// Round name
 // Round Level Color Code
 // Owner Avatar
 // Start date

@@ -253,7 +253,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
           <Center w="90%" h="100%">
             <VStack w="100%" h="100%" space={6}>
               <VStack w="100%" space={6}>
-                {/* Round Name */}
+                {/* Round name */}
                 <FormControl isInvalid={isInvalid.roundName}>
                   <FormControl.Label
                     ml={1}
@@ -263,7 +263,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Round Name
+                    Round name
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -272,13 +272,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     size="lg"
                     mr={3}
                     w="93%"
-                    placeholder="Enter Round Name"
+                    placeholder="Enter Round name"
                     value={roundName}
                     onChangeText={setRoundName}
                   />
                   {isInvalid.roundName && (
                     <FormControl.ErrorMessage>
-                      Round Name is required.
+                      Round name is required.
                     </FormControl.ErrorMessage>
                   )}
                 </FormControl>
@@ -316,7 +316,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     </FormControl.ErrorMessage>
                   </FormControl>
                 )}
-                {/* Start Date */}
+                {/* Start date */}
                 <FormControl>
                   <HStack
                     space={2}
@@ -332,7 +332,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                           color: "#191919",
                         }}
                       >
-                        Start Date
+                        Start date
                       </FormControl.Label>
                       <Text
                         ml={1}
@@ -390,7 +390,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     </View>
                   </HStack>
                 </FormControl>
-                {/* Maximum Capacity */}
+                {/* Maximum capacity */}
                 <FormControl isInvalid={isInvalid.maxCapacity}>
                   <FormControl.Label
                     ml={1}
@@ -400,7 +400,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       color: "#191919",
                     }}
                   >
-                    Max Capacity
+                    Max capacity
                   </FormControl.Label>
                   <Input
                     borderColor="#49a579"
@@ -409,13 +409,13 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     size="lg"
                     mr={3}
                     w="93%"
-                    placeholder="Enter Max Capacity"
+                    placeholder="Enter Max capacity"
                     value={maxCapacity}
                     onChangeText={validateMaxCapacity}
                   />
                   {isInvalid.maxCapacity && (
                     <FormControl.ErrorMessage>
-                      Max Capacity must be between 2 and 50.
+                      Max capacity must be between 2 and 50.
                     </FormControl.ErrorMessage>
                   )}
                 </FormControl>
