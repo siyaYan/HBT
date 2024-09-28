@@ -106,12 +106,12 @@ const RoundInfoScreen = ({ route, navigation }) => {
     });
   }
   // Navigate to Round Config page
-  const goRoundConfig = () => {
-    navigation.navigate("RoundStack", {
-      screen: "RoundConfig",
-      params: { emptyState: false, id: roundId, source: "info" },
-    });
-  };
+  // const goRoundConfig = () => {
+  //   navigation.navigate("RoundStack", {
+  //     screen: "RoundConfig",
+  //     params: { emptyState: false, id: roundId, source: "info" },
+  //   });
+  // };
 
   const levelInt = round ? parseInt(round.level, 10) : 0;
   const startDate = round ? new Date(round.startDate) : new Date();

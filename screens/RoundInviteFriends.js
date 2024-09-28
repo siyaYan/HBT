@@ -28,11 +28,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   const [friends, setFriends] = useState([]);
   const { userData, updateUserData } = useData();
   const roundId = route.params.id;
-  const { roundData, insertRoundFriendList } = useRound();
+  const { roundData, insertRoundData } = useRound();
   const [round, setRound] = useState(
     roundData.data.find((r) => r._id === roundId)
   );
-  const [localSend, setLocalSend] = useState(false);
 
   console.log("Round Friend List", round.roundFriends);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -89,7 +88,6 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       });
       setFriends(newFriends);
       console.log("newfriends:", newFriends);
-      console.log("friends: ", friends);
     } else {
       console.error("get friends failed:", response.message);
     }
@@ -112,21 +110,18 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
         score: 0,
       };
       handleInviteFriendToRound(newFriend);
-      setLocalSend(true);
     }
   };
   const handleInviteFriendToRound = async (newFriend) => {
-    // 2. update roundContext
-    insertRoundFriendList(roundId, newFriend);
-
-    // 3. create round invitation
     const responseCR = await createRoundNotification(
       roundId,
       userData.token,
       userData.data._id,
       newFriend.id
     );
-    console.log("responseCR", responseCR);
+    if(responseCR.data){
+      insertRoundData(responseCR?.data?.newRound);
+    }
   };
 
   const addFriend = () => {
@@ -143,16 +138,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
             {friends.length > 0 ? (
               <Box w={"95%"}>
                 {friends.map((item, index) => {
-                  const isFriendInRound = round.roundFriends.some(
-                    (friend) => friend.id === item._id
-                  );
-                  // Find the friend object in roundFriends to access its status
-                  const friendInRound = round.roundFriends.find(
-                    (friend) => friend.id === item._id
-                  );
-                  const friendStatus = friendInRound
-                    ? friendInRound.status
-                    : null;
+                    const friendInRound = round.roundFriends.find(
+                      (friend) => friend.id === item._id
+                    );
+                    const friendStatus = friendInRound?.status || null;
                   return (
                     <HStack
                       w={"100%"}
@@ -179,10 +168,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                         {item.nickname}
                       </Text>
                       {/* If already active, then hide invite button, show as linked */}
-                      {isFriendInRound ? (
+                      {friendInRound ? (
                         friendStatus === "A" ? (
                           <Feather name="link" size={30} color="black" />
-                        ) : friendStatus === "P" || localSend ? (
+                        ) : friendStatus === "P" ? (
                           <Feather name="refresh-cw" size={30} color="black" />
                         ) : (
                           <Pressable
@@ -197,9 +186,12 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                             </Text>
                           </Pressable>
                         )
-                      ) : localSend ? (
-                        <Feather name="refresh-cw" size={30} color="black" />
-                      ) : (
+                      ) 
+                      :  
+                      // (
+                      //   <Feather name="refresh-cw" size={30} color="black" />
+                      // ) :
+                       (
                         <Pressable
                           onPress={() => {
                             console.log("item", item);

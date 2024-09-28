@@ -230,9 +230,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const handleCancelDelete = () => {
     setModalVisible(false);
   };
-  useEffect(() => {
-    // Effect code
-  }, [isModalVisible]);
+  // useEffect(() => {
+  //   // Effect code
+  // }, [isModalVisible]);
 
   return (
     <KeyboardAvoidingView
@@ -352,6 +352,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                       </Text>
                     </VStack>
 
+                    {new Date() < startDate ?                  
                     <View style={{ padding: 20, alignSelf: "flex-end" }}>
                       <ZStack alignSelf="flex-end" mr="15%" mt="10%">
                         <Box alignSelf="flex-end">
@@ -387,7 +388,8 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                           </Menu>
                         </Box>
                       </ZStack>
-                    </View>
+                    </View>:null}
+
                   </HStack>
                 </FormControl>
                 {/* Maximum capacity */}

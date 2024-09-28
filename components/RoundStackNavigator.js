@@ -160,7 +160,7 @@ export default function RoundStackNavigator({ route, navigation }) {
         initialParams={{ id: roundId }}
         options={({ navigation }) => ({
           headerBackTitleVisible: false,
-          title: roundData.data.filter(item=>item._id === roundId)[0].name,
+          title: roundData.data.filter(item=>item._id === roundId)[0]?.name,
           headerStyle: {
             backgroundColor: "rgba(255,255,255,0)",
           },
@@ -186,7 +186,7 @@ export default function RoundStackNavigator({ route, navigation }) {
                 onPress={() => {
                   navigation.navigate("RoundStack", {
                     screen: "RoundConfig",
-                    params: { id: roundId },
+                    params: { emptyState: false, id: roundId, source: "info"  },
                   });
                 }}
               />

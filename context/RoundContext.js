@@ -110,7 +110,7 @@ export const RoundProvider = ({ children }) => {
   // };
 
   //add new to the round friend list (existing round)
-  const insertRoundFriendList = (roundId, newFriend, isFriendInRound) => {
+  const insertRoundFriendList = (roundId, newFriend) => {
     console.log("Insert or update friend in round context", newFriend);
 
     let updatedData;
