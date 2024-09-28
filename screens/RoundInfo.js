@@ -32,7 +32,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
     return null; // Render nothing while navigating back
   }
 
-  const { roundData, updateRounds, deleteRoundData , updateacceptRoundData} = useRound();
   // console.log("round context", roundData);
 
   const round = roundData.data.find((r) => r._id === roundId);
@@ -169,7 +168,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
               })}
             </Text>
             <Divider my="2" />
-            <Text style={{textAlign:"center"}}>My habit: { myhabit }</Text>            
 
             <Button
               onPress={() => {

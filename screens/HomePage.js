@@ -116,8 +116,6 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     // console.log("acceptRoundData----", acceptRoundData?.data[acceptRoundData.data.length - 1]?.roundFriends);
     const processing = processRounds(acceptRoundData.data, new Date());
-    // console.log("acceptRoundData----", acceptRoundData?.data[acceptRoundData.data.length - 1]?.roundFriends);
-    const processing = processRounds(acceptRoundData.data, new Date());
     const sortedRounds = filterAndSortRounds(processing);
     setProcessedRounds(sortedRounds);
   }, [acceptRoundData]);
