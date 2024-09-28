@@ -65,9 +65,9 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundFriendValidation(false);
   };
   const { userData, updateNotes } = useData();
-  const { activeRoundData, roundData, updateRounds } = useRound();
+  const { acceptRoundData, roundData, updateRounds } = useRound();
 
-  // console.log("active round---", activeRoundData);
+  // console.log("active round---", acceptRoundData);
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
 
@@ -90,11 +90,11 @@ const HomeScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
-    // console.log("activeRoundData----", activeRoundData?.data[activeRoundData.data.length - 1]?.roundFriends);
-    const processing = processRounds(activeRoundData.data, new Date());
+    // console.log("acceptRoundData----", acceptRoundData?.data[acceptRoundData.data.length - 1]?.roundFriends);
+    const processing = processRounds(acceptRoundData.data, new Date());
     const sortedRounds = filterAndSortRounds(processing);
     setProcessedRounds(sortedRounds);
-  }, [activeRoundData]);
+  }, [acceptRoundData]);
   
 
 
@@ -274,14 +274,15 @@ const HomeScreen = ({ navigation }) => {
   const acceptRoundFriend = async (i, thisRoundInfo) => {
     console.log("thisRoundInfo calling acceptRoundFriend:", thisRoundInfo);
 
-    // Validation first
+    // 1. validate the new round status
     if(thisRoundInfo.data[0].status =="F"){
       setShowRoundCompleteValidation(!showRoundCompleteValidation);
       rejectRoundFriend(i);
       return;
     }
     thisRoundStartDate = new Date(thisRoundInfo.data[0].startDate);
-    // check the round info, if it starts more than 10% of level:
+    
+    // 2. validate the new round 10%
     // show warning message, then remove invitation(reject)
     const thisRoundLevelInt = parseInt(thisRoundInfo.data[0].level, 10);
     const endDate10Percent = new Date(
@@ -295,25 +296,28 @@ const HomeScreen = ({ navigation }) => {
       rejectRoundFriend(i);
       return;
     }
+
+    // 3. validate owned rounds
     // 2 round already, then warning, keep the invitation
     if (
-      activeRoundData?.data.filter(
+      acceptRoundData?.data.filter(
         (item) => item.status == "A" || item.status == "P"
       ).length == 2
     ) {
       setShowRoundValidation(!showRoundValidation);
       return;
     }
+
     // 1 active, check Start date if it is before the active round ends
     else if (
-      activeRoundData?.data.filter(
+      acceptRoundData?.data.filter(
         (item) => item.status == "A" || item.status == "P"
       ).length == 1
     ) {
-      const activeRound = activeRoundData[0];
-      if (activeRound?.status == "A") {
-        const levelInt = parseInt(activeRound.level, 10);
-        const startDate = new Date(activeRound.startDate);
+      const acceptRound = acceptRoundData[0];
+      if (acceptRound?.status == "A") {
+        const levelInt = parseInt(acceptRound.level, 10);
+        const startDate = new Date(acceptRound.startDate);
         const endDate = new Date(
           startDate.getTime() + levelInt * 24 * 60 * 60 * 1000
         ); // Convert days to milliseconds
@@ -325,10 +329,8 @@ const HomeScreen = ({ navigation }) => {
     }
     // no active round
     console.log("accept round Friend,delete current notification");
-    // setFilteredUsers((currentReceived) => [
-    //   ...currentReceived.slice(0, i - 1),
-    //   ...currentReceived.slice(i),
-    // ]);
+
+    // 4. accept the round invitation
     setFilteredUsers((currentReceived) => ({
       ...currentReceived, // Spread the current state
       filtered: [
@@ -360,15 +362,11 @@ const HomeScreen = ({ navigation }) => {
     }
     getRoundInvitationData();
     // show the new accepted round on it
-    //Insert this new accepted round into round context directly
+    // Insert this new accepted round into round context directly
   };
 
   const rejectRoundFriend = (i) => {
     console.log("reject round Friend,delete current notification");
-    // setFilteredUsers((currentReceived) => [
-    //   ...currentReceived.slice(0, i - 1),
-    //   ...currentReceived.slice(i),
-    // ]);
     setFilteredUsers((currentReceived) => ({
       ...currentReceived, // Spread the current state
       filtered: [
@@ -565,8 +563,8 @@ const HomeScreen = ({ navigation }) => {
         )}
 
         {/* Linda Sprint 4 Start a round*/}
-        {(!activeRoundData ||
-          activeRoundData?.data.filter(
+        {(!acceptRoundData ||
+          acceptRoundData?.data.filter(
             (item) => item.status == "A" || item.status == "P"
           ).length < 2) && (
           <Button
@@ -590,7 +588,7 @@ const HomeScreen = ({ navigation }) => {
               bg: "#e5f5e5",
             }}
           >
-            {activeRoundData?.data.filter(
+            {acceptRoundData?.data.filter(
               (item) => item.status == "A" || item.status == "P"
             ).length === 1
               ? "Plan the next round"

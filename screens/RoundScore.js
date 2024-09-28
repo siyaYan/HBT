@@ -8,7 +8,7 @@ import Background from "../components/Background";
 
 const RoundScoreScreen = ({ route, navigation }) => {
   const { userData } = useData();
-  const { activeRoundData } = useRound();
+  const { acceptRoundData } = useRound();
   const roundId = route.params.id; // Safe access to route params
   const [sortedUsers, setSortedUsers] = useState([]);
   const [currentUserRank, setCurrentUserRank] = useState(null);

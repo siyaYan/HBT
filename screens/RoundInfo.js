@@ -22,7 +22,7 @@ import { leaveRound, getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
-  const { roundData, updateRounds, deleteRoundData, updateActiveRoundData } =
+  const { roundData, updateRounds, deleteRoundData, updateacceptRoundData } =
     useRound();
   const  roundId  = route.params.id; // Safe access to route params
   // const { roundId } = route.params;
@@ -49,7 +49,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
     // updateRoundData(newRoundData); // Update context with new data
     console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
-    updateActiveRoundData(newRoundData);
+    updateacceptRoundData(newRoundData);
     // const {roundData} = useRound();
     console.log("-----home page round context", roundData.data);
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));

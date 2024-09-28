@@ -31,7 +31,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 const ForumPage = ({ route, navigation }) => {
   const { userData } = useData();
-  const { activeRoundData, roundData } = useRound();
+  const { acceptRoundData, roundData } = useRound();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclose();
   const { id } = route.params;
@@ -318,7 +318,7 @@ const ForumPage = ({ route, navigation }) => {
           </ScrollView>
         </View>
         {!isModalVisible && 
-          (activeRoundData?.data.filter(
+          (acceptRoundData?.data.filter(
             (item) => item._id == id && item.status == "A"
           ).length > 0 && isFocused ? (
             <Fab

@@ -36,11 +36,11 @@ function calculateEndDate(date, days) {
   return result;
 }
 
-function calculateDatePickerMin(activeRound) {
-  if (activeRound) {
+function calculateDatePickerMin(acceptRound) {
+  if (acceptRound) {
     const endDatePlus1 = calculateEndDate(
-      activeRound.startDate,
-      parseInt(activeRound.level, 10)
+      acceptRound.startDate,
+      parseInt(acceptRound.level, 10)
     );
 
     return endDatePlus1;
@@ -53,7 +53,7 @@ function calculateDatePickerMin(activeRound) {
 }
 
 const RoundConfigurationScreen = ({ route, navigation }) => {
-  const { activeRoundData, insertRoundData, deleteRoundData } = useRound();
+  const { acceptRoundData, insertRoundData, deleteRoundData } = useRound();
   // validation
   const [isInvalid, setIsInvalid] = useState({
     roundName: false,
@@ -62,7 +62,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
     isAllowed: false,
   });
   // const [startDateError, setStartDateError] = useState("");
-  const activeRound = activeRoundData?.data.find((r) => r.status === "A"||r.status==="P");
+  const acceptRound = acceptRoundData?.data.find((r) => r.status === "A"||r.status==="P");
 
   // Initialization
   const { userData } = useData();
@@ -73,10 +73,10 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   
   //TODO: change it to RoundContext with index
 
-  const round = activeRoundData?.data.find((r) => r._id === roundId);
+  const round = acceptRoundData?.data.find((r) => r._id === roundId);
   const ButtonUpdateRound = source === "home" ? "Create round" : "Update round";
 
-  const datePickerMin = calculateDatePickerMin(activeRound);
+  const datePickerMin = calculateDatePickerMin(acceptRound);
   const datePickerMinPlus1 = new Date(datePickerMin);
   datePickerMinPlus1.setDate(datePickerMinPlus1.getDate() + 1);
 

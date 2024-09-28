@@ -75,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { userData, updateUserData } = useData();
-  const { roundData, updateRounds, updateActiveRoundData } = useRound();
+  const { roundData, updateRounds, updateacceptRoundData } = useRound();
   const { user, setUser } = useState({ res: "" });
   const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
   const [errorT, setErrorT] = useState(false);
@@ -161,7 +161,7 @@ const LoginScreen = ({ navigation }) => {
 
         updateRounds(roundInfo);
         console.log("update userData", response.data.user._id);
-        updateActiveRoundData(roundInfo, response.data.user._id);
+        updateacceptRoundData(roundInfo, response.data.user._id);
         console.log("round context", roundData);
         navigation.navigate("MainStack", { screen: "Home" });
 

@@ -37,7 +37,7 @@ export const navigationRef = React.createRef();
 export default function AppContainer() {
   // const navigationRef = useRef();
   const { userData, updateUserData } = useData();
-  const { roundData,updateActiveRoundData, updateRounds, activeRoundData } = useRound();
+  const { roundData,updateacceptRoundData, updateRounds, acceptRoundData } = useRound();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -69,8 +69,8 @@ export default function AppContainer() {
             },
           });
           updateRounds(roundInfo)
-          updateActiveRoundData(roundInfo)
-          // console.log("saved Cren rounddata",activeRoundData)
+          updateacceptRoundData(roundInfo)
+          // console.log("saved Cren rounddata",acceptRoundData)
 
           // console.log(userData);
           setIsAuthenticated(true);
