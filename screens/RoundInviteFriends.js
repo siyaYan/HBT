@@ -1,31 +1,24 @@
 import React from "react";
 import {
   Box,
-  Heading,
-  IconButton,
   Text,
   Pressable,
   Button,
   NativeBaseProvider,
-  Flex,
   VStack,
-  Divider,
   HStack,
-  Image,
   ScrollView,
   Modal,
-  View,
 } from "native-base";
-import { updateRoundFriendList } from "../components/Endpoint";
 import { Avatar } from "native-base";
-import { Foundation, Feather } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import Background from "../components/Background";
 import { getFriends, createRoundNotification } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRound } from "../context/RoundContext";
-import { StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 
 // functions:
 // 1. add global friends into this round
@@ -39,6 +32,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   const [round, setRound] = useState(
     roundData.data.find((r) => r._id === roundId)
   );
+  const [localSend, setLocalSend] = useState(false);
 
   console.log("Round Friend List", round.roundFriends);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -49,9 +43,6 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     setRound(roundData.data.find((r) => r._id === roundId));
-    // console.log("friends updated:", friends);
-    // console.log("round data updated:", roundData);
-    // console.log("round data friend list: ", round.roundFriends);
   }, [roundData]);
 
   const countCurrentRoundFriends = (round) => {
@@ -83,7 +74,6 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       console.log("get friends failed");
     }
     if (response.status == "success") {
-      // console.log('get friends success:',response.data);
       //TODO round/id/friendlist/add, add a single friend into the round
       let newFriends = [];
       console.log("end point get friends response:", response);
@@ -97,9 +87,6 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
         };
         newFriends.push(newFriend);
       });
-      // response.data.map((data, index) => {
-      //   newFriends[index]._id = data._id;
-      // });
       setFriends(newFriends);
       console.log("newfriends:", newFriends);
       console.log("friends: ", friends);
@@ -111,8 +98,6 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
   // Round friends
   // update round info friend list
   const handlePressInvite = (item) => {
-    // console.log("counttttting:", currentRoundFriendCount);
-    // console.log("maxx", round.maximum);
     if (currentRoundFriendCount >= round.maximum) {
       console.log(true);
       setModalVisible(true);
@@ -127,26 +112,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
         score: 0,
       };
       handleInviteFriendToRound(newFriend);
+      setLocalSend(true);
     }
   };
   const handleInviteFriendToRound = async (newFriend) => {
-    // 1. update database
-    // 1.1 check existing friends
-    console.log("new friend", newFriend);
-    console.log("new friend checking before sending to endpoint", newFriend);
-    // const response = await updateRoundFriendList(
-    //   userData.token,
-    //   roundId,
-    //   newFriend
-    // );
-
-    // // console.log("newRoundFriendList", newRoundFriendList);
-    // console.log("update friend response", response);
-    // if (response.status === "success") {
-    //   console.log("connect!!");
-    // } else {
-    //   console.log("fail!!");
-    // }
     // 2. update roundContext
     insertRoundFriendList(roundId, newFriend);
 
@@ -164,17 +133,8 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
     navigation.navigate("Invite");
   };
 
-  const checkIfAlreadyActive = (friendId) => {
-    const friendExists = round.roundFriends.some(
-      (roundFriend) => roundFriend.id === friendId
-    );
-
-    return friendExists;
-  };
-
   return (
     <NativeBaseProvider>
-      {/* <Center w="100%"> */}
       <Background />
 
       <Box flex={1} p={5}>
@@ -183,9 +143,6 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
             {friends.length > 0 ? (
               <Box w={"95%"}>
                 {friends.map((item, index) => {
-                  {
-                    /* setStatusCreateNotification("") */
-                  }
                   const isFriendInRound = round.roundFriends.some(
                     (friend) => friend.id === item._id
                   );
@@ -225,7 +182,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                       {isFriendInRound ? (
                         friendStatus === "A" ? (
                           <Feather name="link" size={30} color="black" />
-                        ) : friendStatus === "P" ? (
+                        ) : friendStatus === "P" || localSend ? (
                           <Feather name="refresh-cw" size={30} color="black" />
                         ) : (
                           <Pressable
@@ -240,6 +197,8 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                             </Text>
                           </Pressable>
                         )
+                      ) : localSend ? (
+                        <Feather name="refresh-cw" size={30} color="black" />
                       ) : (
                         <Pressable
                           onPress={() => {
