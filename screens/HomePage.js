@@ -56,7 +56,7 @@ function shouldRedirectToScoreBoard(startDate, level) {
   const oneWeekBeforeEndDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
   // Check if today is Monday
-  const isMonday = today.getDay() === 2; // 1 represents Monday
+  const isMonday = today.getDay() === 1; // 1 represents Monday
 
   // Check if today is halfway through, Monday, or 1 week before end
   const isHalfway = today.toDateString() === halfwayDate.toDateString();
