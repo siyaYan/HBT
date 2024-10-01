@@ -1,14 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import {
-  Center,
   Pressable,
   Divider,
   Box,
-  Heading,
   HStack,
   VStack,
-  IconButton,
   Button,
   NativeBaseProvider,
   Flex,
@@ -20,6 +17,7 @@ import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import { Ionicons } from "@expo/vector-icons";
 import Background2 from "../components/Background2";
+import Feather from "@expo/vector-icons/Feather";
 
 const SettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
@@ -111,8 +109,9 @@ const SettingScreen = ({ navigation }) => {
             <Box alignItems="center" justifyContent="center">
               <Button p={0} variant="unstyled" onPress={goAccountSetting}>
                 <HStack>
-                  <Avatar bg="white" size={6} borderWidth={2}>
-                    <AntDesign name="user" size={15} color="black" />
+                  <Avatar bg="white" size={7} borderWidth={2}>
+                    <Feather name="user" size={20} color="black" />
+                    {/* <AntDesign name="user" size={15} color="black" /> */}
                     <Avatar.Badge
                       bg="white"
                       position="absolute"
@@ -142,7 +141,29 @@ const SettingScreen = ({ navigation }) => {
             <Box alignItems="center" justifyContent="center">
               <Button onPress={logout} size="md" p={0} variant="unstyled">
                 <HStack>
-                  <AntDesign name="logout" size={24} color="black" />
+                  <Feather name="archive" size={26} color="black" />
+                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
+                    Archived rounds
+                  </Text>
+                </HStack>
+              </Button>
+            </Box>
+
+            <Divider
+              my="2"
+              _light={{
+                bg: "muted.800",
+              }}
+              _dark={{
+                bg: "muted.50",
+              }}
+            />
+
+            <Box alignItems="center" justifyContent="center">
+              <Button onPress={logout} size="md" p={0} variant="unstyled">
+                <HStack>
+                  {/* <AntDesign name="logout" size={24} color="black" /> */}
+                  <Feather name="log-out" size={26} color="black" />
                   <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
                     Log out
                   </Text>

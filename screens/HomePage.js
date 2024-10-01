@@ -152,21 +152,20 @@ const HomeScreen = ({ navigation }) => {
     return sortedPriorityRounds.slice(0, 2);
   };
 
-  // useEffect(() => {
-  //   // console.log("RoundData-------", roundData);
-  // }, [roundData]);
-
   const getRoundInvitationData = async () => {
     const res = await getRoundInvitation(userData.token);
     setRoundInvitationData(res);
   };
+
   const getRoundData = async () => {
     const res = await getRoundInfo(userData.token, userData.data._id);
     updateRounds(res);
   };
+
   const handle10PerRoundValidationClose = () => {
     setShow10PerRoundValidation(!show10PerRoundValidation);
   };
+
   const handleCloseRoundCompleteValidation = () => {
     setShowRoundCompleteValidation(!showRoundCompleteValidation);
   };
@@ -680,11 +679,6 @@ const HomeScreen = ({ navigation }) => {
         <Icon name="envelope" size={300} color="#606060" />
       </TouchableOpacity>
 
-      {/* <View style={styles.envelopeContainer}> */}
-
-      {/* <TouchableOpacity onPress={handlePress}>
-          <Icon name="envelope" size={50} color="#666" />
-        </TouchableOpacity> */}
 
       {/* Modal 1: round invitation notification */}
       <Modal isOpen={isOpened} onClose={handleClose}>
