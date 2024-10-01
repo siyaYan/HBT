@@ -28,9 +28,6 @@ export default function AuthenticatedScreens({navigation}) {
     }
  }
   useEffect(() => {
-    // Fetch or update avatar dynamically
-    // userData=useData().useData
-    // console.log(userData.notes, "tab-----");
     console.log('This is main tab, note is :',note );
     updateNote()
   }, [updateNotes]);

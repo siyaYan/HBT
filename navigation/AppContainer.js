@@ -12,8 +12,8 @@ import { loginUser,getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
 import InviteScreen from "../screens/InviteFriends";
+import ArchivePage from '../screens/ArchivePage';
 import SplashAnimationScreen from "../components/SplashAnimation";
-import LoadingAnimationScreen from "../components/LoadingAnimation";
 import { IconButton } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { useRound } from "../context/RoundContext";
@@ -95,6 +95,24 @@ export default function AppContainer() {
       >
         <Stack.Screen name="Splash" component={SplashAnimationScreen} />
         <Stack.Screen name="Home" component={AppHomeScreen} />
+        <Stack.Screen name="Archive" component={ArchivePage} 
+                  options={{
+                    headerShown: true,
+            title: "Archived",
+            headerStyle: {
+              backgroundColor: "rgba(255,255,255,0)",
+            },
+                    headerLeft: () => (
+                      <IconButton
+                        ml={3}
+                        marginY={0}
+                        icon={<Ionicons name="arrow-back" size={28} color="black" />}
+                        onPress={() => {
+                            navigationRef.current?.goBack();
+                        }}
+                      />
+                    ),
+                  }}/>
         <Stack.Screen
           name="Invite"
           component={InviteScreen}

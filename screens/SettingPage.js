@@ -58,6 +58,10 @@ const SettingScreen = ({ navigation }) => {
       // Error clearing the credentials
     }
   };
+
+  const goArchivePage = async () => {
+      navigation.navigate("Archive");
+  };
   return (
     <NativeBaseProvider>
       <Background2 />
@@ -139,7 +143,7 @@ const SettingScreen = ({ navigation }) => {
             />
 
             <Box alignItems="center" justifyContent="center">
-              <Button onPress={logout} size="md" p={0} variant="unstyled">
+              <Button onPress={goArchivePage} size="md" p={0} variant="unstyled">
                 <HStack>
                   <Feather name="archive" size={26} color="black" />
                   <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
