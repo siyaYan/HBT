@@ -15,7 +15,7 @@ import { Feather } from "@expo/vector-icons";
 const Stack = createStackNavigator();
 
 export default function RoundStackNavigator({ route, navigation }) {
-  const { id: roundId ,state: newState} = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
+  const { id: roundId ,state: newState,isFromHome:isFromHome} = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
   const { roundData } = useRound()
   const { userData } = useData()
   const thisRound= roundData.data.filter(item=>item._id === roundId)[0]
@@ -39,6 +39,18 @@ export default function RoundStackNavigator({ route, navigation }) {
         params: { id: roundId },
       });
     
+  };
+  const handleScoreNavigation= (isFromHome, roundId, navigation) => {
+    if (isFromHome) {
+      // If roundId is empty, navigate back
+      navigation.navigate("ForumStack", { screen: "ForumPage" });
+    } else {
+      // If roundId is not empty, navigate to the RoundInfo screen
+      navigation.navigate("RoundStack", {
+        screen: "RoundInfo",
+        params: { id: roundId },
+      });
+    }
   };
 
   return (
@@ -129,8 +141,7 @@ export default function RoundStackNavigator({ route, navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                navigation.goBack();
-              }}
+                handleScoreNavigation (isFromHome, roundId, navigation)              }}
             />
           ),
         }}

@@ -44,13 +44,13 @@ const ForumPage = ({ route, navigation }) => {
       await getForumMessages();
     };
     setRoundFriends(roundData?.data.filter((item) => (item._id == id))[0]
-    .roundFriends)
+    ?.roundFriends)
     fetchForumMessages();
   }, [route.params]);
 
   useEffect(() => {
     setRoundFriends(roundData?.data.filter((item) => (item._id == id))[0]
-    .roundFriends)
+    ?.roundFriends)
   }, [roundData]);
 
 
