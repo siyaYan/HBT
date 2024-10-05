@@ -6,6 +6,7 @@ import ForumPage from "../screens/ForumPage";
 import ForumDraft from "../screens/ForumDraft";
 import { useRound } from "../context/RoundContext";
 import { Feather } from "@expo/vector-icons";
+import { Text, View } from "react-native";
 
 const Stack = createStackNavigator();
 export default function ForumStackNavigator({ route, navigation }) {
@@ -20,6 +21,19 @@ export default function ForumStackNavigator({ route, navigation }) {
   const firstTwoFinishRounds = acceptRoundData?.data
     .filter((item) => item.status === "F")
     .slice(0, 2);
+  // Calculate how many days are left
+  const today = new Date();
+  const startDate = new Date(activeRound?.startDate);
+
+  // Get the difference in milliseconds
+  const timeDifference = Math.abs(today - startDate);
+
+  // Convert milliseconds to days
+  const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+
+  // Adjust daysLeft based on level if needed
+  const finalDaysLeft = Math.abs(daysLeft - activeRound?.level);
+  // console.log(finalDaysLeft);
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -27,7 +41,22 @@ export default function ForumStackNavigator({ route, navigation }) {
         component={ForumDraft}
         options={{
           headerBackTitleVisible: false,
-          title:activeRound?.name,
+          headerTitle: () => (
+            <View style={{ alignItems: "center" }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                {activeRound?.name}
+              </Text>
+              <Text style={{ fontSize: 14, textAlign: "center" }}>
+                {finalDaysLeft} days to go
+              </Text>
+            </View>
+          ),
           headerLeft: () => (
             <IconButton
               ml={3}
@@ -47,7 +76,7 @@ export default function ForumStackNavigator({ route, navigation }) {
                 onPress={() => {
                   navigation.navigate("RoundStack", {
                     screen: "RoundInfo",
-                    params: { id: activeRound._id},
+                    params: { id: activeRound._id },
                   });
                 }}
               />
@@ -62,11 +91,30 @@ export default function ForumStackNavigator({ route, navigation }) {
         initialParams={{ id: roundId }}
         options={{
           headerBackTitleVisible: false,
-          title:
-            activeRound?._id === roundId
-              ? activeRound?.name
-              : firstTwoFinishRounds?.find((item) => item._id === roundId)
-                  ?.name,
+          headerTitle: () => (
+            <View style={{ alignItems: "center" }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                {activeRound?._id === roundId
+                  ? activeRound.name
+                  : firstTwoFinishRounds?.find((item) => item._id === roundId)
+                      ?.name}
+              </Text>
+              {activeRound?._id === roundId?<Text style={{ fontSize: 14, textAlign: "center" }}>
+                {finalDaysLeft + " days to go"}
+              </Text>:('')}
+            </View>
+          ),
+          // title:
+          //   activeRound?._id === roundId
+          //     ? activeRound?.name
+          //     : firstTwoFinishRounds?.find((item) => item._id === roundId)
+          //         ?.name,
           headerLeft: () => (
             <IconButton
               ml={3}
