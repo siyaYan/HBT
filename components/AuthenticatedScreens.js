@@ -12,6 +12,8 @@ import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { getNoteUpdate } from "../components/Endpoint";
 import { useDisclose } from "native-base";
+import { useRound } from "../context/RoundContext";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +21,10 @@ export default function AuthenticatedScreens({navigation}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();
   const { isOpen, onOpen, onClose } = useDisclose();
-
+  const { acceptRoundData } = useRound();
+  const activeRound = acceptRoundData?.data.filter(
+    (item) => item.status === "A"
+  )[0];
   const updateNote = async ()=>{
     const res=await getNoteUpdate(userData.token,userData.data.email)
     if(res>0){
@@ -37,7 +42,7 @@ export default function AuthenticatedScreens({navigation}) {
 
   
   const onPress = (value) => {
-    if (value.target.includes("Upload")) {
+    if (value.target.includes("Upload") && activeRound) {
       setIsModalVisible(true);
       onOpen()
     } else {
@@ -138,9 +143,11 @@ export default function AuthenticatedScreens({navigation}) {
                   backgroundColor: accessibilityState.selected
                     ? "#e7e5e4"
                     : "#d6d3d1", // Change colors accordingly
+                    borderRadius:10
                 }}
               >
-                <Feather name="plus-circle" size={30} color="black" />
+                <AntDesign name={activeRound?"pluscircleo":"pluscircle"} size={32} color={activeRound?"black":"darkgray"} />
+                {/* <Feather name="plus-circle" size={35} color={activeRound?"black":"darkgray"} backgroundColor={activeRound?"transparent":"gray"} borderRadius={50}/> */}
               </TouchableOpacity>
             ),
             tabBarStyle: {
