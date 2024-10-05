@@ -194,14 +194,14 @@ const HomeScreen = ({ navigation }) => {
   const handleRoundPress = async (roundId, status, startDate, level) => {
     try {
       const today = new Date().toDateString(); // Get today's date as a string
-      const lastCheckedDate = await AsyncStorage.getItem(`lastCheck_${roundId}`);
+      const lastCheckedDate = await AsyncStorage.getItem(`lastCheck_5${roundId}`);
   
       if (shouldRedirectToScoreBoard(startDate, level) && lastCheckedDate !== today) {
         // If it's Monday, halfway, or 1 week left, and hasn't been checked today
-        await AsyncStorage.setItem(`lastCheck_${roundId}`, today); // Store today's date
+        await AsyncStorage.setItem(`lastCheck_5${roundId}`, today); // Store today's date
         navigation.navigate("RoundStack", {
           screen: "RoundScore", // Navigate to ScoreBoard
-          params: { id: roundId },
+          params: { id: roundId,isFromHome:true },
         });
       } else if (status === "A" || status === "F") {
         // Navigate to the forum for active rounds
