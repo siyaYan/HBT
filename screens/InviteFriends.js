@@ -54,7 +54,7 @@ const InviteScreen = ({ navigation }) => {
       setFind({
         user: response.data.user
       });
-      //     console.log(  response.data.user._id,
+      // console.log(  response.data.user._id,
       // userData.data._id);
       const res = await getRelationByUserId(
         userData.token,
@@ -256,7 +256,7 @@ const InviteScreen = ({ navigation }) => {
                             </Text>
                           </Pressable>
                         ) : pend!=false ? (
-                          pend.senderId==userData.data._id?(
+                          pend.data.senderId==userData.data._id?(
                             <Pressable onPress={handleCancel}>
                             {/* <Feather name="cancel" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
