@@ -10,8 +10,8 @@ import {
   ScrollView,
 } from "native-base";
 // import { Image } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
+// import { MaterialIcons } from "@expo/vector-icons";
+// import { AntDesign } from "@expo/vector-icons";
 import Svg, { G, Path } from "react-native-svg";
 import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -270,7 +270,7 @@ const LoginScreen = ({ navigation }) => {
                           fontSize={"lg"}
                           color="#49a579"
                         >
-                          Sign Up
+                          Sign up
                         </Text>
                       </Pressable>
                       <Text fontFamily={"Regular"} fontSize={"lg"}>
