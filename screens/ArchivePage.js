@@ -18,11 +18,12 @@ const ArchivePage = ({ navigation }) => {
     const roundList = [];
     finishedRound.map((item) => {
       const archivedItem = {
-        id: item._id,
+        _id: item._id,
         name: item.name,
+        userId: item.userId,
         startData: formatDate(item.startDate),
         num: item.roundFriends.filter((people) => people.status == "A").length,
-        timeframe: item.updatedAt,
+        timeframe: item.level,
       };
       roundList.push(archivedItem);
     });
@@ -61,22 +62,21 @@ const ArchivePage = ({ navigation }) => {
   return (
     <Center w="100%">
       <Background />
-      <Flex direction="column" alignItems="center">
-
+      <Flex direction="column" justifyContent="flex-start">
           <ScrollView
             ref={scrollViewRef}
             h={"100%"}
             w={"100%"}
-            contentContainerStyle={{ flexGrow: 1 }}
+            contentContainerStyle={{ flexGrow: 1 ,marginVertical: 5}}
             onContentSizeChange={handleContentSizeChange}
           >
             {archivedRounds.length > 0 ? (
               archivedRounds.map((item, index) => (
-                <View
+              <View
                   key={index}
                   w={'100%'}
                   minWidth='320'
-                  style={{ flex: 1, marginVertical: 15}}
+                  style={{ marginVertical: 15}}
                 >
               <Button
               key={index}
@@ -103,46 +103,32 @@ const ArchivePage = ({ navigation }) => {
                     color: "#FFFFFF",
                     fontFamily: "Regular Semi Bold",
                     fontSize: 20, // Use a number for fontSize instead of "lg"
+                    alignSelf:'center',
+                    paddingHorizontal:10
                   }}
                 >
                   {item?.name}
                 </Text>
+                <Text
+                  style={{
+                    color: "#FFFFFF",
+                    fontFamily: "Regular Semi Bold",
+                    fontSize: 20, // Use a number for fontSize instead of "lg"
+                    alignSelf:'center'
+                  }}
+                >
+                  Num:{item?.num}
+                </Text>
+                <Text
+                  style={{
+                    color: "#FFFFFF",
+                    fontFamily: "Regular Semi Bold",
+                    fontSize: 20, // Use a number for fontSize instead of "lg"
+                  }}
+                >
+{item?.startData}+{item?.timeframe}Days
+                </Text>
               </Button>
-
-                  {/* <Card
-                    style={{
-                      backgroundColor:
-                        item.userId == userData.data._id
-                          ? "#6666ff"
-                          : "#f9f8f2",
-                    }}
-                    onPress={() => handleRoundPress(item._id)}
-                  >
-                    <Card.Body style={{ flexDirection: "col", padding: 8 }}>
-                      <Text>Name:{item.name}</Text>
-                      <Text>Participants:{item.num}</Text>
-                    </Card.Body>
-                    <Card.Footer
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        paddingVertical: 5,
-                        paddingHorizontal: 20,
-                      }}
-                      content={
-                        <Text
-                          style={{
-                            color:
-                              item.userId == userData.data._id
-                                ? "#f9f8f2"
-                                : "#191919",
-                          }}
-                        >
-                          {item.timeframe}
-                        </Text>
-                      }
-                    />
-                  </Card> */}
                 </View>
               ))
             ) : (
