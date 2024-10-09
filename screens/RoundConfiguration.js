@@ -301,6 +301,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   open={open}
                   value={level}
                   items={items}
+                  disabled={round.status=="A"}
                   setOpen={setOpen}
                   setValue={(callback) => {
                     setValue(callback);
