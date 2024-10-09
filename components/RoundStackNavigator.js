@@ -41,7 +41,7 @@ export default function RoundStackNavigator({ route, navigation }) {
     return finalDaysLeft;
   };
 
-  const isThisActiveRound = thisRound.status == "A" ? calculateDaysLeft() : "";
+  const isThisActiveRound = thisRound?.status == "A" ? calculateDaysLeft() : "";
 
   const handleRoundNavigation = (roundId, navigation) => {
     if (!roundId) {

@@ -28,8 +28,8 @@ const ResetPassword = ({ navigation }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showCurrent, setShowCurrent] = useState(false);
   const [errors, setErrors] = useState({
-    email: true,
-    username: true,
+    // email: true,
+    // username: true,
     confirmPassword: true,
     password: true,
     current: true,
@@ -110,7 +110,7 @@ const ResetPassword = ({ navigation }) => {
 
   const handleSubmit = () => {
     const hasErrors = Object.values(errors).some((error) => error == false);
-    if (!hasErrors) {
+    if (!hasErrors&&formData.password&&formData.current&&formData.confirmPassword) {
       console.log("submitted");
       handlePasswordReset();
     } else {
@@ -392,12 +392,16 @@ const ResetPassword = ({ navigation }) => {
                 </FormControl>
                 <Button
                   onPress={handleSubmit}
+                  disabled={!(formData.password&&formData.current&&formData.confirmPassword)|| Object.values(errors).some((error) => error == false)}
                   mt="5"
                   width="100%"
                   size="lg"
-                  bg="#49a579"
+                  // bg={!(formData.password&&formData.current&&formData.confirmPassword)?"#49a579":"gray"}
+                  style={{
+                    backgroundColor:!(formData.password&&formData.current&&formData.confirmPassword)|| Object.values(errors).some((error) => error == false)?"rgba(73,165,121,0.4)":"#49a579"
+                  }}
                   _text={{
-                    color: "#f9f8f2",
+                    color: "rgba(249 248 242,0.4)",
                     fontFamily: "Regular Medium",
                     fontSize: "lg",
                   }}
