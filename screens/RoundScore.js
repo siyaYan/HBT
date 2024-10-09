@@ -20,7 +20,7 @@ const RoundScoreScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true); // Loading state
   const round = acceptRoundData.data.find((r) => r._id === roundId);
   const startDate = new Date(round.startDate);
-  const endDate = calculateEndDate(startDate, parseInt(round.level, 10));
+  const endDate = calculateEndDate(startDate, parseInt(round.level, 10)-1);
 
 const calculateDaysLeft = (endDate) => {
   console.log("end date",endDate);
@@ -28,7 +28,7 @@ const calculateDaysLeft = (endDate) => {
   const end = new Date(endDate); // Parse the end date into a Date object
 
   // Calculate the time difference in milliseconds
-  const timeDifference = end.getTime() - today.getTime();
+  const timeDifference = end.getTime() - today.getTime()-1;
 
   // Convert the time difference from milliseconds to days
   const daysLeft = Math.ceil(timeDifference / (1000 * 3600 * 24));

@@ -37,7 +37,7 @@ export default function RoundStackNavigator({ route, navigation }) {
     const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
     // Adjust daysLeft based on level if needed
-    const finalDaysLeft = Math.abs(daysLeft - thisRound?.level);
+    const finalDaysLeft = Math.abs(daysLeft - thisRound?.level)-1;
     return finalDaysLeft;
   };
 
@@ -66,7 +66,7 @@ export default function RoundStackNavigator({ route, navigation }) {
   const handleScoreNavigation = (isFromHome, roundId, navigation) => {
     if (isFromHome) {
       // If roundId is empty, navigate back
-      navigation.navigate("ForumStack", { screen: "ForumPage" });
+      navigation.navigate("ForumStack", { screen: "ForumPage" , params: { id: roundId ,isFromHome:isFromHome }});
     } else {
       // If roundId is not empty, navigate to the RoundInfo screen
       navigation.navigate("RoundStack", {

@@ -194,11 +194,11 @@ const HomeScreen = ({ navigation }) => {
   const handleRoundPress = async (roundId, status, startDate, level) => {
     try {
       const today = new Date().toDateString(); // Get today's date as a string
-      const lastCheckedDate = await AsyncStorage.getItem(`lastCheck_5${roundId}`);
+      const lastCheckedDate = await AsyncStorage.getItem(`lastCheck_1${roundId}`);
   
       if (shouldRedirectToScoreBoard(startDate, level) && lastCheckedDate !== today) {
         // If it's Monday, halfway, or 1 week left, and hasn't been checked today
-        await AsyncStorage.setItem(`lastCheck_5${roundId}`, today); // Store today's date
+        await AsyncStorage.setItem(`lastCheck_1${roundId}`, today); // Store today's date
         navigation.navigate("RoundStack", {
           screen: "RoundScore", // Navigate to ScoreBoard
           params: { id: roundId,isFromHome:true },
@@ -207,7 +207,7 @@ const HomeScreen = ({ navigation }) => {
         // Navigate to the forum for active rounds
         navigation.navigate("ForumStack", {
           screen: "ForumPage",
-          params: { id: roundId },
+          params: { id: roundId , isFromHome:true },
         });
       } else {
         // Otherwise, navigate to the round info page
@@ -1136,6 +1136,7 @@ const HomeScreen = ({ navigation }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
+
       <Modal
         isOpen={showRoundCompleteValidation}
         onClose={handleCloseRoundCompleteValidation}
@@ -1150,6 +1151,7 @@ const HomeScreen = ({ navigation }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
+
     </NativeBaseProvider>
   );
 };
