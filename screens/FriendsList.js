@@ -60,11 +60,6 @@ const FriendsScreen = ({ navigation }) => {
       updateNote();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
-  //   useEffect(() => {
-  //   // Fetch or update avatar dynamically
-  //   updateNote()
-  //   console.log('This is friendlist :',note );
-  // }, [note]);
 
   const updateNote = async () => {
     const res = await getNoteUpdate(userData.token, userData.data.email);

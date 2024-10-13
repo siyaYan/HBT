@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, FlatList,ScrollView } from "react-native";
+import { StyleSheet, FlatList, ScrollView } from "react-native";
 import { Text, NativeBaseProvider, View } from "native-base";
 import { getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
@@ -20,28 +20,27 @@ const RoundScoreScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true); // Loading state
   const round = acceptRoundData.data.find((r) => r._id === roundId);
   const startDate = new Date(round.startDate);
-  const endDate = calculateEndDate(startDate, parseInt(round.level, 10)-1);
+  const endDate = calculateEndDate(startDate, parseInt(round.level, 10) - 1);
 
-const calculateDaysLeft = (endDate) => {
-  console.log("end date",endDate);
-  const today = new Date(); // Get today's date
-  const end = new Date(endDate); // Parse the end date into a Date object
+  const calculateDaysLeft = (endDate) => {
+    console.log("end date", endDate);
+    const today = new Date(); // Get today's date
+    const end = new Date(endDate); // Parse the end date into a Date object
 
-  // Calculate the time difference in milliseconds
-  const timeDifference = end.getTime() - today.getTime()-1;
+    // Calculate the time difference in milliseconds
+    const timeDifference = end.getTime() - today.getTime() - 1;
 
-  // Convert the time difference from milliseconds to days
-  const daysLeft = Math.ceil(timeDifference / (1000 * 3600 * 24));
+    // Convert the time difference from milliseconds to days
+    const daysLeft = Math.ceil(timeDifference / (1000 * 3600 * 24));
 
-  return daysLeft;
-};
+    return daysLeft;
+  };
 
-const daysLeft = calculateDaysLeft(endDate);
-
+  const daysLeft = calculateDaysLeft(endDate);
 
   const currentUserId = userData.data._id; // Assuming userData contains the current user's id
 
-  const getScoreBoard = async (roundId) => {
+  const getTempScoreBoard = async (roundId) => {
     try {
       console.log("Fetching round score:", userData.token, roundId);
       const res = await getRoundInfo(userData.token, roundId);
@@ -70,39 +69,37 @@ const daysLeft = calculateDaysLeft(endDate);
 
   useEffect(() => {
     // Fetch scoreboard data on component mount
-    getScoreBoard(roundId);
+    getTempScoreBoard(roundId);
   }, [roundId]);
 
   return (
     <NativeBaseProvider>
       <Background />
-      
-       {/* Round Info Header */}
-       <View style={styles.roundInfoCard}>
+      {/* Round Info Header */}
+      <View style={styles.roundInfoCard}>
         {/* <Text style={styles.roundName}>{round.name}</Text> */}
         <Text style={styles.daysLeftText}>Days left: {daysLeft}</Text>
       </View>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-
-      {/* Entire List as a Single Card */}
-      <View style={styles.cardContainer}>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : (
-          <FlatList
-            data={sortedUsers}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <View style={styles.userItem}>
-                <Text style={styles.userNickname}>
-                  {index + 1 + ". " + item.nickname}
-                </Text>
-                <Text style={styles.userScore}>{item.score}</Text>
-              </View>
-            )}
-          />
-        )}
-      </View>
+        {/* Entire List as a Single Card */}
+        <View style={styles.cardContainer}>
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <FlatList
+              data={sortedUsers}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
+                <View style={styles.userItem}>
+                  <Text style={styles.userNickname}>
+                    {index + 1 + ". " + item.nickname}
+                  </Text>
+                  <Text style={styles.userScore}>{item.score}</Text>
+                </View>
+              )}
+            />
+          )}
+        </View>
       </ScrollView>
 
       {currentUserRank && (

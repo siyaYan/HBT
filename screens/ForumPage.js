@@ -7,7 +7,6 @@ import {
   Image,
   Avatar,
   Badge,
-  Button,
   Modal,
   Icon,
 } from "native-base";
@@ -28,6 +27,7 @@ import {
 } from "../components/Endpoint";
 import AddImage from "../components/AddImage";
 import { useIsFocused } from '@react-navigation/native';
+import ScoreBoardModal from "../components/ScoreBoard";
 
 const ForumPage = ({ route, navigation }) => {
   const { userData } = useData();
@@ -39,6 +39,16 @@ const ForumPage = ({ route, navigation }) => {
   ?.roundFriends); 
   const scrollViewRef = useRef(null);
   const isFocused = useIsFocused();
+  const roundActive=acceptRoundData?.data.filter(
+    (item) => item._id == id && item.status == "A"
+  ).length > 0?true:false
+
+  const roundFinished=acceptRoundData?.data.filter(
+    (item) => item._id == id && item.status == "F"
+  )?.[0]._id
+
+  const [scoreBoardOpen, setScoreBoardOpen] = useState(roundFinished?true:false);
+
   useEffect(() => {
     const fetchForumMessages = async () => {
       await getForumMessages();
@@ -48,17 +58,12 @@ const ForumPage = ({ route, navigation }) => {
     fetchForumMessages();
   }, [route.params]);
 
-  useEffect(() => {
-    setRoundFriends(roundData?.data.filter((item) => (item._id == id))[0]
-    ?.roundFriends)
-  }, [roundData]);
-
-
   const [post, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [habit, setHabit] = useState();
   const [score, setScore] = useState();
   const [contentHeight, setContentHeight] = useState(0);
+
   const getForumMessages = async () => {
     const res = await getForum(id, userData.token);
     if (res.status === "success") {
@@ -91,7 +96,6 @@ const ForumPage = ({ route, navigation }) => {
     const res = await deleteMessage(id, messageId, userData.token);
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== messageId));
   };
-
   const generateItem = (data, user) => {
     const postItem = {
       id: data._id,
@@ -106,17 +110,6 @@ const ForumPage = ({ route, navigation }) => {
     return postItem;
     // setPosts(...post, postItem)
   };
-
-  // const formatDate = (timestamp) => {
-  //   // console.log(timestamp)
-  //   const date = new Date(timestamp);
-  //   const formattedDate = date.toISOString().split("T")[0];
-  //   const formattedTime = date.toISOString().split("T")[1].substring(0, 8);
-  //   const result = `${formattedDate} ${formattedTime}`;
-  //   // console.log(result)
-
-  //   return result;
-  // };
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
   
@@ -150,6 +143,11 @@ const ForumPage = ({ route, navigation }) => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollToEnd({ animated: false });
     }
+  };
+
+  const handleClose = () => {
+    setScoreBoardOpen(false);
+    // console.log("isOpened", isOpened);
   };
   return (
     <Center w="100%">
@@ -211,7 +209,7 @@ const ForumPage = ({ route, navigation }) => {
                             <AspectRatio w="100%" ratio={5 / 7}>
                               <View paddingY={5} alignItems={"center"}>
                                 <Pressable
-                                  onPress={() => handleModal(item.userId)}
+                                  onPress={() => roundActive && handleModal(item.userId)}
                                 >
                                   <Avatar
                                     bg="pink.600"
@@ -282,7 +280,7 @@ const ForumPage = ({ route, navigation }) => {
                       <AntDesign
                         style={{ display: "flex", alignSelf: "flex-end" }}
                         onPress={() => {
-                          handleLikeMessage(item.id, item.like);
+                          roundActive && handleLikeMessage(item.id, item.like);
                         }}
                         name="heart"
                         size={24}
@@ -303,7 +301,7 @@ const ForumPage = ({ route, navigation }) => {
                     >
                       <AntDesign
                         style={{ display: "flex", alignSelf: "flex-end" }}
-                        onPress={() => handleDeleteMessage(item.id)}
+                        onPress={() => roundActive && handleDeleteMessage(item.id)}
                         name="delete"
                         size={24}
                         color="red"
@@ -318,9 +316,7 @@ const ForumPage = ({ route, navigation }) => {
           </ScrollView>
         </View>
         {!isModalVisible && 
-          (acceptRoundData?.data.filter(
-            (item) => item._id == id && item.status == "A"
-          ).length > 0 && isFocused ? (
+          ( roundActive && isFocused ? (
             <Fab
               onPress={() => handleUpload()}
               m={6}
@@ -341,6 +337,12 @@ const ForumPage = ({ route, navigation }) => {
             </Modal.Body>
           </Modal.Content>
         </Modal>
+
+        {roundFinished&&
+      <ScoreBoardModal
+        scoreBoardOpen={scoreBoardOpen}
+        handleClose={handleClose} 
+        roundId={roundFinished}/>}
       </Box>
     </Center>
   );

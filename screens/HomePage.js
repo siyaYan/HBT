@@ -6,9 +6,7 @@ import {
   Button,
   NativeBaseProvider,
   Flex,
-  View,
   Avatar,
-  Badge,
   Modal,
   HStack,
 } from "native-base";
@@ -17,16 +15,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  FlatList,
-  ScrollView,
 } from "react-native";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import Background from "../components/Background";
 import {
-  getScoreBoard,
   getNoteUpdate,
   getRoundInfo,
   getRoundInvitation,
@@ -36,7 +30,7 @@ import {
 import { useRound } from "../context/RoundContext";
 import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Add this at the top of your file
-
+import ScoreBoardModal from "../components/ScoreBoard";
 
 // Function to add days to a date
 function calculateEndDate(date, days) {
@@ -51,20 +45,24 @@ function shouldRedirectToScoreBoard(startDate, level) {
   const duration = parseInt(level, 10);
 
   // Calculate halfway point and 1 week before end date
-  const halfwayDate = new Date(start.getTime() + (duration / 2) * 24 * 60 * 60 * 1000);
+  const halfwayDate = new Date(
+    start.getTime() + (duration / 2) * 24 * 60 * 60 * 1000
+  );
   const endDate = new Date(start.getTime() + duration * 24 * 60 * 60 * 1000);
-  const oneWeekBeforeEndDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const oneWeekBeforeEndDate = new Date(
+    endDate.getTime() - 7 * 24 * 60 * 60 * 1000
+  );
 
   // Check if today is Monday
   const isMonday = today.getDay() === 1; // 1 represents Monday
 
   // Check if today is halfway through, Monday, or 1 week before end
   const isHalfway = today.toDateString() === halfwayDate.toDateString();
-  const isOneWeekLeft = today.toDateString() === oneWeekBeforeEndDate.toDateString();
+  const isOneWeekLeft =
+    today.toDateString() === oneWeekBeforeEndDate.toDateString();
 
   return isMonday || isHalfway || isOneWeekLeft;
 }
-
 
 const HomeScreen = ({ navigation }) => {
   const [isOpened, setIsOpened] = useState(false);
@@ -76,8 +74,8 @@ const HomeScreen = ({ navigation }) => {
   const [showRoundValidationDate, setShowRoundValidationDate] = useState(false);
   const [showRoundCompleteValidation, setShowRoundCompleteValidation] =
     useState(false);
-  const [rest, setRest] = useState([]);
-  const [topThree, setTopThree] = useState([]);
+  // const [rest, setRest] = useState([]);
+  // const [topThree, setTopThree] = useState([]);
   const [roundInvitationData, setRoundInvitationData] = useState(null);
 
   const [processedRounds, setProcessedRounds] = useState(null);
@@ -94,22 +92,30 @@ const HomeScreen = ({ navigation }) => {
   // console.log("active round---", acceptRoundData);
   // Get screen dimensions
   const { width, height } = Dimensions.get("window");
+  const [showFinalScore, setShowFinalScore] = useState(null);
 
-  const medalColors = {
-    Gold: "rgb(255, 215, 0)", // Gold in RGB
-    Silver: "rgb(192, 192, 192)", // Silver in RGB
-    Bronze: "rgb(205, 127, 50)", // Bronze in RGB
-  };
+  // const medalColors = {
+  //   Gold: "rgb(255, 215, 0)", // Gold in RGB
+  //   Silver: "rgb(192, 192, 192)", // Silver in RGB
+  //   Bronze: "rgb(205, 127, 50)", // Bronze in RGB
+  // };
 
   const [show10PerRoundValidation, setShow10PerRoundValidation] =
     useState(false);
 
+  const updateNote = async () => {
+    const res = await getNoteUpdate(userData.token, userData.data.email);
+    // if (res > 0) {
+    updateNotes(res);
+    // }
+  };
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
       // console.log("Tab is in focus, userInfo:------------", userData);
       getRoundInvitationData();
       getRoundData();
+      // updateNote();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
 
@@ -174,15 +180,15 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate("AccountStack", { screen: "Account" });
   };
 
-  const getExistScoreBoard = async (roundId) => {
-    const res = await getScoreBoard(userData.token, roundId);
-    if (res) {
-      const topThree = res.data.ranking.slice(0, 3);
-      const rest = res.data.ranking.slice(3);
-      setRest(rest);
-      setTopThree(topThree);
-    }
-  };
+  // const getExistScoreBoard = async (roundId) => {
+  //   const res = await getScoreBoard(userData.token, roundId);
+  //   if (res) {
+  //     const topThree = res.data.ranking.slice(0, 3);
+  //     const rest = res.data.ranking.slice(3);
+  //     setRest(rest);
+  //     setTopThree(topThree);
+  //   }
+  // };
 
   const startRound = () => {
     navigation.navigate("RoundStack", {
@@ -194,20 +200,25 @@ const HomeScreen = ({ navigation }) => {
   const handleRoundPress = async (roundId, status, startDate, level) => {
     try {
       const today = new Date().toDateString(); // Get today's date as a string
-      const lastCheckedDate = await AsyncStorage.getItem(`lastCheck_1${roundId}`);
-  
-      if (shouldRedirectToScoreBoard(startDate, level) && lastCheckedDate !== today) {
+      const lastCheckedDate = await AsyncStorage.getItem(
+        `lastCheck_1${roundId}`
+      );
+
+      if (
+        shouldRedirectToScoreBoard(startDate, level) &&
+        lastCheckedDate !== today
+      ) {
         // If it's Monday, halfway, or 1 week left, and hasn't been checked today
         await AsyncStorage.setItem(`lastCheck_1${roundId}`, today); // Store today's date
         navigation.navigate("RoundStack", {
           screen: "RoundScore", // Navigate to ScoreBoard
-          params: { id: roundId,isFromHome:true },
+          params: { id: roundId, isFromHome: true },
         });
       } else if (status === "A" || status === "F") {
         // Navigate to the forum for active rounds
         navigation.navigate("ForumStack", {
           screen: "ForumPage",
-          params: { id: roundId , isFromHome:true },
+          params: { id: roundId, isFromHome: true },
         });
       } else {
         // Otherwise, navigate to the round info page
@@ -220,7 +231,6 @@ const HomeScreen = ({ navigation }) => {
       console.error("Error handling round press:", error);
     }
   };
-  
 
   const handlePress = () => {
     console.log("UserData", userData);
@@ -448,7 +458,8 @@ const HomeScreen = ({ navigation }) => {
       //If this is a newly finsihed round, calculate the scoreboard and show up
       if (newStatus === "F") {
         console.log("Round finished, get scoreboard");
-        getExistScoreBoard(roundId);
+        // getExistScoreBoard(roundId);
+        setShowFinalScore(roundId)
         setScoreBoardOpen(true);
       }
 
@@ -528,7 +539,12 @@ const HomeScreen = ({ navigation }) => {
                 key={index}
                 title={`Round ${index + 1}`}
                 onPress={() => {
-                  handleRoundPress(round._id, round.status, round.startDate, round.level);
+                  handleRoundPress(
+                    round._id,
+                    round.status,
+                    round.startDate,
+                    round.level
+                  );
                 }}
                 rounded="30"
                 mt="5"
@@ -628,37 +644,6 @@ const HomeScreen = ({ navigation }) => {
           </Button>
         )}
 
-        {/* Just for testing TODO: this button need to be on Round card */}
-        {/* <Box py="5" px="2" alignItems="center" justifyContent="center">
-          {round ? (
-            <Button
-              onPress={() => {
-                getExistScoreBoard(round._id);
-              }}
-              rounded="30"
-              mt="5"
-              width="80%"
-              size="lg"
-              style={{
-                borderWidth: 1, // This sets the width of the border
-                borderColor: "#49a579", // This sets the color of the border
-              }}
-              backgroundColor={"rgba(250,250,250,0.2)"}
-              _text={{
-                color: "#191919",
-                fontFamily: "Regular Semi Bold",
-                fontSize: "lg",
-              }}
-              _pressed={{
-                bg: "#e5f5e5",
-              }}
-            >
-              checkScoreBoard
-            </Button>
-          ) : (
-            ""
-          )}
-        </Box> */}
       </Flex>
       {/* Linda Sprint 4 Show round/s*/}
       {/* <Flex direction="column" alignItems="center">
@@ -678,7 +663,6 @@ const HomeScreen = ({ navigation }) => {
       >
         <Icon name="envelope" size={300} color="#606060" />
       </TouchableOpacity>
-
 
       {/* Modal 1: round invitation notification */}
       <Modal isOpen={isOpened} onClose={handleClose}>
@@ -848,9 +832,13 @@ const HomeScreen = ({ navigation }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-
+     {showFinalScore&&
+      <ScoreBoardModal
+        scoreBoardOpen={scoreBoardOpen}
+        handleClose={handleClose} 
+        roundId={showFinalScore}/>}
       {/* Modal 2: score board of Finished Round */}
-      <Modal
+      {/* <Modal
         isOpen={scoreBoardOpen}
         onClose={handleClose}
         size="full"
@@ -1098,7 +1086,7 @@ const HomeScreen = ({ navigation }) => {
             </View>
           </Modal.Body>
         </Modal.Content>
-      </Modal>
+      </Modal> */}
 
       <Modal
         isOpen={show10PerRoundValidation}
@@ -1151,7 +1139,6 @@ const HomeScreen = ({ navigation }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-
     </NativeBaseProvider>
   );
 };
