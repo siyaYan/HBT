@@ -1,9 +1,8 @@
-import { Center, Box, Flex, Text, View, Button } from "native-base";
+import { Center, Box, Flex, Text, View, Button, HStack } from "native-base";
 import { useState, useEffect } from "react";
 import React, { useRef } from "react";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
-import { Card } from "@ant-design/react-native";
 import Background from "../components/Background";
 import { ScrollView } from "react-native";
 
@@ -105,32 +104,35 @@ const ArchivePage = ({ navigation }) => {
                     item.userId == userData.data._id ? "#49a579" : "#6666ff"
                   }
                 >
+                  <HStack justifyContent={"space-between"} marginY={2}>
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontFamily: "Regular Semi Bold",
+                        fontSize: 20, // Use a number for fontSize instead of "lg"
+                        alignSelf: "center",
+                        paddingHorizontal: 10,
+                      }}
+                    >
+                      {item?.name}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#FFFFFF",
+                        fontFamily: "Regular Semi Bold",
+                        fontSize: 20, // Use a number for fontSize instead of "lg"
+                        alignSelf: "center",
+                      }}
+                    >
+                      Num: {item?.num}
+                    </Text>
+                  </HStack>
                   <Text
                     style={{
                       color: "#FFFFFF",
                       fontFamily: "Regular Semi Bold",
                       fontSize: 20, // Use a number for fontSize instead of "lg"
-                      alignSelf: "center",
-                      paddingHorizontal: 10,
-                    }}
-                  >
-                    {item?.name}
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Regular Semi Bold",
-                      fontSize: 20, // Use a number for fontSize instead of "lg"
-                      alignSelf: "center",
-                    }}
-                  >
-                    Participants: {item?.num}
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#FFFFFF",
-                      fontFamily: "Regular Semi Bold",
-                      fontSize: 20, // Use a number for fontSize instead of "lg"
+  
                     }}
                   >
                     {item?.startData} ---- {item?.timeframe}
@@ -142,257 +144,6 @@ const ArchivePage = ({ navigation }) => {
             <Text>No Round History</Text>
           )}
         </ScrollView>
-
-        {/* Modal 2: score board of Finished Round */}
-        {/* <Modal
-        isOpen={scoreBoardOpen}
-        onClose={handleClose}
-        size="full"
-        style={{ marginTop: "15%", overflow: "hidden", flex: 1 }}
-      >
-        <Modal.Content maxWidth="400px" width="90%" height={"95%"}>
-          <Modal.CloseButton />
-          <Modal.Body>
-            <View>
-              <Box height={"25%"}>
-                <View style={styles.topThreeContainer}>
-                  <View style={styles.stageContainer}>
-                    {topThree[1] ? (
-                      <View
-                        style={[
-                          styles.stage,
-                          topThree[1].rank == 1
-                            ? styles.firstPlace
-                            : topThree[1].rank == 2
-                            ? styles.secondPlace
-                            : topThree[1].rank == 3
-                            ? styles.thirdPlace
-                            : styles.restPlcae,
-                        ]}
-                      >
-                        <Text>{topThree[1]?.nickname}</Text>
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: topThree[1]?.avatar }}
-                          style={{
-                            position: "relative",
-                            right: 5,
-                          }}
-                        />
-                        <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
-                          style={{
-                            position: "absolute",
-                            bottom: 30,
-                            right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
-                          }}
-                        >
-                          <AntDesign
-                            name="Trophy"
-                            size={30}
-                            color={medalColors[topThree[1].medal] || "#49a579"}
-                          />
-                        </Badge>
-                        <Text>
-                          {topThree[1]?.score} | {topThree[2]?.credit}
-                        </Text>
-                      </View>
-                    ) : (
-                      ""
-                    )}
-                  </View>
-                  <View style={styles.stageContainer}>
-                    {topThree[0] ? (
-                      <View
-                        style={[
-                          styles.stage,
-                          topThree[0].rank == 1
-                            ? styles.firstPlace
-                            : topThree[0].rank == 2
-                            ? styles.secondPlace
-                            : topThree[0].rank == 3
-                            ? styles.thirdPlace
-                            : styles.restPlcae,
-                        ]}
-                      >
-                        <Text>{topThree[0]?.nickname}</Text>
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: topThree[0]?.avatar }}
-                          style={{
-                            position: "relative",
-                            right: 5,
-                          }}
-                        />
-                        <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
-                          style={{
-                            position: "absolute",
-                            bottom: 30,
-                            right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
-                          }}
-                        >
-                          <AntDesign
-                            name="Trophy"
-                            size={30}
-                            color={medalColors[topThree[0].medal] || "#49a579"}
-                          />
-                        </Badge>
-                        <Text>
-                          {topThree[0]?.score} | {topThree[0]?.credit}
-                        </Text>
-                      </View>
-                    ) : (
-                      ""
-                    )}
-                  </View>
-                  <View style={styles.stageContainer}>
-                    {topThree[2] ? (
-                      <View
-                        style={[
-                          styles.stage,
-                          topThree[2].rank == 1
-                            ? styles.firstPlace
-                            : topThree[2].rank == 2
-                            ? styles.secondPlace
-                            : topThree[2].rank == 3
-                            ? styles.thirdPlace
-                            : styles.restPlcae,
-                        ]}
-                      >
-                        <Text>{topThree[2]?.nickname}</Text>
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: topThree[2]?.avatar }}
-                          style={{
-                            position: "relative",
-                            right: 5,
-                          }}
-                        />
-                        <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
-                          style={{
-                            position: "absolute",
-                            bottom: 30,
-                            right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
-                          }}
-                        >
-                          <AntDesign
-                            name="Trophy"
-                            size={30}
-                            color={medalColors[topThree[2].medal] || "#49a579"}
-                          />
-                        </Badge>
-
-                        <Text>
-                          {topThree[2]?.score} | {topThree[2]?.credit}
-                        </Text>
-                      </View>
-                    ) : (
-                      ""
-                    )}
-                  </View>
-                </View>
-              </Box>
-              <Box height={"60%"}>
-                <ScrollView style={styles.listContainer}>
-                  <FlatList
-                    data={rest}
-                    keyExtractor={(item) => item.nickname}
-                    renderItem={({ item, index }) => (
-                      <View key={index} style={styles.playerItem}>
-                        <View>
-                          <Text style={styles.rankText}>{item.rank}th</Text>
-                          <MaterialCommunityIcons
-                            name="medal-outline"
-                            size={25}
-                            color={medalColors[item.medal] || "#49a579"}
-                          />
-                        </View>
-
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: item?.avatar }}
-                        />
-                        <Text>{item.nickname}</Text>
-                        <Text>
-                          {item.score} | {item.credit}
-                        </Text>
-                      </View>
-                    )}
-                  />
-                </ScrollView>
-              </Box>
-              <Box height={"15%"}>
-                {
-                  rest.filter((item) => item.id === userData.data._id).length >
-                  0
-                    ? rest
-                        .filter((item) => item.id === userData.data._id)
-                        .map((item, index) => (
-                          <View key={index} style={styles.placementContainer}>
-                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
-                              {item.nickname}
-                            </Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${index + 1}th  place`}</Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${item.score} | ${item.credit} `}</Text>
-                          </View>
-                        ))
-                    : topThree
-                        .filter((item) => item.id === userData.data._id)
-                        .map((item, index) => (
-                          <View key={index} style={styles.placementContainer}>
-                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
-                              {item.nickname}
-                            </Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${index + 1}th  place`}</Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${item.score} | ${item.credit} `}</Text>
-                          </View>
-                        )) // or you can replace null with some fallback JSX if needed
-                }
-              </Box>
-            </View>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal> */}
       </Flex>
     </Center>
   );
