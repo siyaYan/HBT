@@ -11,8 +11,8 @@ import { useRound } from "../context/RoundContext";
 const ForumDraft = ({ navigation, route }) => {
   const { res } = route.params;
   const { userData } = useData();
-  const { roundData, acceptRoundData } = useRound();
-  const [post, setPost] = useState({image:route.params.res})
+  const { acceptRoundData } = useRound();
+  const [post, setPost] = useState({image:route.params.res,text:""})
   useEffect(() => {
     console.log(res, "add new post");
   }, []);

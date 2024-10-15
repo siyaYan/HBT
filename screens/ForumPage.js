@@ -260,7 +260,7 @@ const ForumPage = ({ route, navigation }) => {
                                   : "#191919",
                             }}
                           >
-                            {item.text}
+                            {item.text?item.text:""}
                           </Text>
                         }
                       />
