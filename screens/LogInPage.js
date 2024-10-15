@@ -9,9 +9,11 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "native-base";
+import { View } from 'react-native';
+
 // import { Image } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
+// import { MaterialIcons } from "@expo/vector-icons";
+// import { AntDesign } from "@expo/vector-icons";
 import Svg, { G, Path } from "react-native-svg";
 import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -270,7 +272,7 @@ const LoginScreen = ({ navigation }) => {
                           fontSize={"lg"}
                           color="#49a579"
                         >
-                          Sign Up
+                          Sign up
                         </Text>
                       </Pressable>
                       <Text fontFamily={"Regular"} fontSize={"lg"}>
@@ -304,12 +306,13 @@ const LoginScreen = ({ navigation }) => {
                     >
                       {/* <img src="../assets/google_icon.png" alt="" /> */}
                       <Image
-                        size={50}
+                        size={45}
+                        right='5'
                         source={require("../assets/Buttonicons/google_icon.png")}
                         alt="google icon"
                       />
                       <Text
-                        textAlign={"center"}
+                        textAlign={"left"}
                         fontFamily={"Regular Medium"}
                         fontSize={"lg"}
                         color={"#191919"}
@@ -341,7 +344,7 @@ const LoginScreen = ({ navigation }) => {
                     backgroundColor="rgb(26,119,242)"
                   >
                     <HStack space={3}>
-                      <FontAwesome name="facebook-f" size={26} color="white" />
+                    <FontAwesome name="facebook-f" size={26} color="white" style={{ right: '10' }} />
                       <Text
                         textAlign={"center"}
                         fontFamily={"Regular Medium"}
@@ -350,6 +353,7 @@ const LoginScreen = ({ navigation }) => {
                       >
                         Continue with Facebook
                       </Text>
+
                     </HStack>
                   </Button>
                   <Text
@@ -536,7 +540,8 @@ const LoginScreen = ({ navigation }) => {
                   <Pressable onPress={handleSubmit}>
                     <Image
                       source={require("../assets/UIicons/LogIn.png")}
-                      style={{ width: 100, height: 100 }}
+                      style={{ width: 120, height: 120 }}
+                      bottom ='5'
                       alt="image"
                     />
                   </Pressable>
