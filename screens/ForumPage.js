@@ -45,7 +45,7 @@ const ForumPage = ({ route, navigation }) => {
 
   const roundFinished=acceptRoundData?.data.filter(
     (item) => item._id == id && item.status == "F"
-  )?.[0]._id
+  )?.[0]?._id
 
   const [scoreBoardOpen, setScoreBoardOpen] = useState(roundFinished?true:false);
 
