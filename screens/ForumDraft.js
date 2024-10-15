@@ -11,17 +11,19 @@ import { useRound } from "../context/RoundContext";
 const ForumDraft = ({ navigation, route }) => {
   const { res } = route.params;
   const { userData } = useData();
-  const { roundData } = useRound();
+  const { roundData, acceptRoundData } = useRound();
   const [post, setPost] = useState({image:route.params.res})
   useEffect(() => {
     console.log(res, "add new post");
   }, []);
   const handlePost = async ()=>{
     setPost({...post, image:res})
-    const activeRound = roundData.data.filter(item=>item.status === "A")
-    console.log(activeRound)
+    const activeRound = acceptRoundData?.data.filter(
+      (item) => item.status === "A"
+    )[0];
+    // console.log(activeRound)
     //get RoundId
-    const id=activeRound[0]._id
+    const id=activeRound._id
     const res=await addPost(id,post,userData.token)
 
     if(res.status=='success'){
