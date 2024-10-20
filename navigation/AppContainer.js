@@ -56,8 +56,7 @@ export default function AppContainer() {
           storedCredentials.id,
           storedCredentials.password
         );
-        console.log('response',response);
-
+        // console.log('response',response);
         if (response.token) {
           const roundInfo = await getRoundInfo(response.token, response.data.user._id);
 

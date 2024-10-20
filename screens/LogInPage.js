@@ -9,11 +9,6 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "native-base";
-import { View } from 'react-native';
-
-// import { Image } from "react-native";
-// import { MaterialIcons } from "@expo/vector-icons";
-// import { AntDesign } from "@expo/vector-icons";
 import Svg, { G, Path } from "react-native-svg";
 import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -35,17 +30,14 @@ import {
   loginUser,
   forgetSendEmail,
   getRoundInfo,
+  verifyEmail,
 } from "../components/Endpoint";
 import * as SecureStore from "expo-secure-store";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
 
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 import { initializeApp } from "firebase/app";
 import {
@@ -54,6 +46,7 @@ import {
   signInWithCredential,
 } from "firebase/auth";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
+import OTPInput from "../components/OTPInput";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCUcdfsmB6eqkaUPQ0xH2ELm4mqA9MhHJ4",
@@ -70,6 +63,8 @@ const app = initializeApp(firebaseConfig);
 
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [verifyToken, setVerifyToken] = useState("");
   const [show, setShow] = useState(false);
   const [formData, setData] = useState();
   const [remember, setRemember] = useState(true);
@@ -144,12 +139,11 @@ const LoginScreen = ({ navigation }) => {
     if (submitValidation()) {
       const response = await loginUser(formData.id, formData.password);
       console.log("response", response);
-      const roundInfo = await getRoundInfo(
-        response.token,
-        response.data.user._id
-      );
-      console.log("login", roundInfo);
       if (response.token) {
+        const roundInfo = await getRoundInfo(
+          response.token,
+          response.data.user._id
+        );
         if (remember) {
           await saveCredentials(formData.id, formData.password);
         }
@@ -166,10 +160,12 @@ const LoginScreen = ({ navigation }) => {
         updateacceptRoundData(roundInfo, response.data.user._id);
         console.log("round context", roundData);
         navigation.navigate("MainStack", { screen: "Home" });
-
-        // console.log(response.token);
       } else {
         console.log("login failed");
+        if (response.message.includes("Email varify")) {
+          console.log("need to verify email....");
+          setShowVerifyModal(true);
+        }
       }
     }
   }
@@ -191,6 +187,15 @@ const LoginScreen = ({ navigation }) => {
       setEmail(""); // Clear the email state after successful submission
       setError(true);
       // Keep the modal open and display the error message
+    }
+  };
+
+  const handleVerify = async () => {
+    const res = await verifyEmail(formData.id, verifyToken);
+    setVerifyToken("");
+    if (res.status == "success") {
+      setShowVerifyModal(false);
+      handleSubmit();
     }
   };
 
@@ -307,7 +312,7 @@ const LoginScreen = ({ navigation }) => {
                       {/* <img src="../assets/google_icon.png" alt="" /> */}
                       <Image
                         size={45}
-                        right='5'
+                        right="5"
                         source={require("../assets/Buttonicons/google_icon.png")}
                         alt="google icon"
                       />
@@ -344,7 +349,12 @@ const LoginScreen = ({ navigation }) => {
                     backgroundColor="rgb(26,119,242)"
                   >
                     <HStack space={3}>
-                    <FontAwesome name="facebook-f" size={26} color="white" style={{ right: '10' }} />
+                      <FontAwesome
+                        name="facebook-f"
+                        size={26}
+                        color="white"
+                        style={{ right: "10" }}
+                      />
                       <Text
                         textAlign={"center"}
                         fontFamily={"Regular Medium"}
@@ -353,7 +363,6 @@ const LoginScreen = ({ navigation }) => {
                       >
                         Continue with Facebook
                       </Text>
-
                     </HStack>
                   </Button>
                   <Text
@@ -521,6 +530,68 @@ const LoginScreen = ({ navigation }) => {
                           </Modal.Footer>
                         </Modal.Content>
                       </Modal>
+                      <Modal
+                        isOpen={showVerifyModal}
+                        onClose={() => setShowVerifyModal(false)}
+                      >
+                        <Modal.Content maxWidth="300px">
+                          <Modal.CloseButton />
+                          <Modal.Header>
+                            <Text fontFamily={"Regular Medium"} fontSize="xl">
+                              Verify your email
+                            </Text>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <FormControl mt="3" isRequired>
+                              {/* <Input
+                                rounded={30}
+                                size="2xl"
+                                fontFamily={"Regular Medium"}
+                                fontSize="md"
+                                value={verifyToken}
+                                onChangeText={setVerifyToken}
+                                placeholder="Please input your 6 digit code"
+                              /> */}
+                              <OTPInput
+                                value={verifyToken}
+                                onChange={setVerifyToken}
+                              />
+                            </FormControl>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button.Group w={"90%"} marginX={"5"} space={2}>
+                              <Button
+                                rounded={30}
+                                shadow="7"
+                                width="50%"
+                                size={"md"}
+                                _text={{
+                                  color: "#f9f8f2",
+                                }}
+                                colorScheme="blueGray"
+                                onPress={() => {
+                                  setShowVerifyModal(false);
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                rounded={30}
+                                shadow="7"
+                                width="50%"
+                                size={"md"}
+                                _text={{
+                                  color: "#f9f8f2",
+                                }}
+                                backgroundColor={"#49a579"}
+                                onPress={handleVerify}
+                              >
+                                Submit
+                              </Button>
+                            </Button.Group>
+                          </Modal.Footer>
+                        </Modal.Content>
+                      </Modal>
                     </Link>
                   </VStack>
                   {/* <Button
@@ -541,7 +612,7 @@ const LoginScreen = ({ navigation }) => {
                     <Image
                       source={require("../assets/UIicons/LogIn.png")}
                       style={{ width: 120, height: 120 }}
-                      bottom ='5'
+                      bottom="5"
                       alt="image"
                     />
                   </Pressable>

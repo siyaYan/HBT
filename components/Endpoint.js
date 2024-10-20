@@ -70,6 +70,32 @@ export async function loginUser(id, password) {
   }
 }
 
+export async function verifyEmail(id, token) {
+  try {
+    const response = await fetch(
+      `http://3.27.94.77:8000/habital/v1/users/${id}/verify-email/${token}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      }
+    );
+
+    const data = await response.json();
+    if (data.status == "success") {
+      Alert.alert('Success', 'Email verified');
+    } else {
+      Alert.alert("Unsuccessful", data.message || "Verify email failed");
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in verify email:", error);
+    Alert.alert("Unsuccessful", "Verify email failed. Please try again later");
+    // Decide how to handle the error. You may want to re-throw it or return a specific value.
+  }
+}
+
 export async function tokenResetPassword(password, passwordConfirm, code) {
   try {
     const response = await fetch(
