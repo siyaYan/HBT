@@ -75,6 +75,9 @@ export default function AppContainer() {
           setIsAuthenticated(true);
           navigationRef.current?.navigate("MainStack", { screen: "Home" });
           // console.log(response.token);
+        }else{
+          setIsAuthenticated(false);
+          navigationRef.current?.navigate("Home");
         }
       } else {
         setIsAuthenticated(false);

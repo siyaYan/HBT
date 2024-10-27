@@ -31,6 +31,7 @@ import {
   forgetSendEmail,
   getRoundInfo,
   verifyEmail,
+  loginUserThirdParty
 } from "../components/Endpoint";
 import * as SecureStore from "expo-secure-store";
 import { useData } from "../context/DataContext";
@@ -74,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const { roundData, updateRounds, updateacceptRoundData } = useRound();
   const { user, setUser } = useState({ res: "" });
-  const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
+  // const [thirdPartyUserData, setThirdPartyUserData] = useState(false);
   const [errorT, setErrorT] = useState(false);
   useEffect(() => {
     GoogleSignin.configure({
@@ -89,7 +90,9 @@ const LoginScreen = ({ navigation }) => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo);
-      setThirdPartyUserData(userInfo);
+      const response = await loginUserThirdParty(userInfo.idToken, userInfo.user);
+      // setThirdPartyUserData(userInfo);
+      await afterLogin(response);
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
@@ -108,7 +111,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const logout = () => {
-    setThirdPartyUserData();
+    // setThirdPartyUserData();
     GoogleSignin.revokeAccess();
     GoogleSignin.signOut();
   };
@@ -130,7 +133,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   // Method to handle login
-  async function handleSubmit() {
+  const handleSubmit = async () => {
     console.log({
       id: formData.id,
       password: formData.password,
@@ -138,34 +141,38 @@ const LoginScreen = ({ navigation }) => {
     });
     if (submitValidation()) {
       const response = await loginUser(formData.id, formData.password);
-      console.log("response", response);
-      if (response.token) {
-        const roundInfo = await getRoundInfo(
-          response.token,
-          response.data.user._id
-        );
-        if (remember) {
-          await saveCredentials(formData.id, formData.password);
-        }
-        updateUserData({
-          token: response.token,
-          data: response.data.user,
-          avatar: {
-            uri: response.data.user.profileImageUrl,
-          },
-        });
+      await afterLogin(response);
+    }
+  }
 
-        updateRounds(roundInfo);
-        console.log("update userData", response.data.user._id);
-        updateacceptRoundData(roundInfo, response.data.user._id);
-        console.log("round context", roundData);
-        navigation.navigate("MainStack", { screen: "Home" });
-      } else {
-        console.log("login failed");
-        if (response.message.includes("Email varify")) {
-          console.log("need to verify email....");
-          setShowVerifyModal(true);
-        }
+  const afterLogin = async(response)=>{
+    console.log("response", response);
+    if (response.token) {
+      const roundInfo = await getRoundInfo(
+        response.token,
+        response.data.user._id
+      );
+      if (remember&&formData?.id&&formData?.password) {
+        await saveCredentials(formData.id, formData.password);
+      }
+      updateUserData({
+        token: response.token,
+        data: response.data.user,
+        avatar: {
+          uri: response.data.user.profileImageUrl,
+        },
+      });
+
+      updateRounds(roundInfo);
+      console.log("update userData", response.data.user._id);
+      updateacceptRoundData(roundInfo, response.data.user._id);
+      console.log("round context", roundData);
+      navigation.navigate("MainStack", { screen: "Home" });
+    } else {
+      console.log("login failed");
+      if (response.message.includes("Email varify")) {
+        console.log("need to verify email....");
+        setShowVerifyModal(true);
       }
     }
   }

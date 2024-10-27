@@ -70,6 +70,33 @@ export async function loginUser(id, password) {
   }
 }
 
+export async function loginUserThirdParty(idToken,user) {
+  try {
+    const response = await fetch(
+      "http://3.27.94.77:8000/habital/v1/google",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idToken, user }),
+      }
+    );
+
+    const data = await response.json();
+    if (data.status == "success") {
+      // Alert.alert('Success', 'Login successful');
+    } else {
+      Alert.alert("Unsuccessful", data.message || "Login failed");
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in loginUser:", error);
+    Alert.alert("Unsuccessful", "Login failed. Please try again later");
+    // Decide how to handle the error. You may want to re-throw it or return a specific value.
+  }
+}
+
 export async function verifyEmail(id, token) {
   try {
     const response = await fetch(
