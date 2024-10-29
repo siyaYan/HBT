@@ -1,6 +1,6 @@
 // Mock API functions for testing without a backend
 import { Alert } from "react-native";
-import RNFS from "react-native-fs";
+// import RNFS from "react-native-fs";
 export async function registerUser(
   username,
   nickname,
@@ -70,10 +70,12 @@ export async function loginUser(id, password) {
   }
 }
 
-export async function loginUserThirdParty(idToken,user) {
+export async function loginUserThirdParty(idToken, user, type='google') {
+  const google="http://3.27.94.77:8000/habital/v1/google"
+  const facebook="http://3.27.94.77:8000/habital/v1/facebook"
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/google",
+      type=='google'?google:facebook,
       {
         method: "POST",
         headers: {

@@ -31,7 +31,7 @@ import {
   forgetSendEmail,
   getRoundInfo,
   verifyEmail,
-  loginUserThirdParty
+  loginUserThirdParty,
 } from "../components/Endpoint";
 import * as SecureStore from "expo-secure-store";
 import { useData } from "../context/DataContext";
@@ -84,13 +84,16 @@ const LoginScreen = ({ navigation }) => {
     });
   }, []);
 
-  const signIn = async () => {
+  const loginGoogle = async () => {
     try {
       console.log("Signing in...");
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo);
-      const response = await loginUserThirdParty(userInfo.idToken, userInfo.user);
+      const response = await loginUserThirdParty(
+        userInfo.idToken,
+        userInfo.user
+      );
       // setThirdPartyUserData(userInfo);
       await afterLogin(response);
     } catch (error) {
@@ -100,20 +103,33 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const loginFb = async () => {
-    await LoginManager.logInWithPermissions(["public_profile", "email"]);
-    const data = await AccessToken.getCurrentAccessToken();
-    const facebookCredential = FacebookAuthProvider.credential(
-      data.accessToken
-    );
-    const auth = getAuth();
-    const res = await signInWithCredential(auth, facebookCredential);
-    console.log(res._tokenResponse);
-  };
-
-  const logout = () => {
-    // setThirdPartyUserData();
-    GoogleSignin.revokeAccess();
-    GoogleSignin.signOut();
+    try {
+      console.log("Signing in...");
+      await LoginManager.logInWithPermissions(["public_profile", "email"]);
+      const data = await AccessToken.getCurrentAccessToken();
+      const facebookCredential = FacebookAuthProvider.credential(
+        data.accessToken
+      );
+      const auth = getAuth();
+      const res = await signInWithCredential(auth, facebookCredential);
+      console.log(res._tokenResponse);
+      const user = {
+        email: res._tokenResponse.email,
+        name: res._tokenResponse.displayName,
+        photo: res._tokenResponse.photoUrl,
+        emailVerified: res._tokenResponse.emailVerified,
+      };
+      const response = await loginUserThirdParty(
+        res._tokenResponse.oauthAccessToken,
+        user,
+        "facebook"
+      );
+      console.log(response);
+      await afterLogin(response);
+    } catch (error) {
+      console.log(error);
+      setErrorT(error.code);
+    }
   };
 
   const saveCredentials = async (id, password) => {
@@ -143,16 +159,16 @@ const LoginScreen = ({ navigation }) => {
       const response = await loginUser(formData.id, formData.password);
       await afterLogin(response);
     }
-  }
+  };
 
-  const afterLogin = async(response)=>{
+  const afterLogin = async (response) => {
     console.log("response", response);
     if (response.token) {
       const roundInfo = await getRoundInfo(
         response.token,
         response.data.user._id
       );
-      if (remember&&formData?.id&&formData?.password) {
+      if (remember && formData?.id && formData?.password) {
         await saveCredentials(formData.id, formData.password);
       }
       updateUserData({
@@ -175,7 +191,7 @@ const LoginScreen = ({ navigation }) => {
         setShowVerifyModal(true);
       }
     }
-  }
+  };
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -230,6 +246,12 @@ const LoginScreen = ({ navigation }) => {
       });
       return false;
     }
+  };
+
+  const logout = () => {
+    // setThirdPartyUserData();
+    GoogleSignin.revokeAccess();
+    GoogleSignin.signOut();
   };
 
   return (
@@ -301,7 +323,7 @@ const LoginScreen = ({ navigation }) => {
                     shadow="6"
                     size="lg"
                     height="15%"
-                    onPress={() => signIn()}
+                    onPress={() => loginGoogle()}
                     padding={0}
                     bg={"white"}
                     _pressed={{
