@@ -13,7 +13,6 @@ import { useState, useEffect } from "react";
 import { Avatar } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
 import {
   VStack,
   HStack,
@@ -30,7 +29,6 @@ import {
   resetSendEmail,
 } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
-import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
@@ -39,12 +37,11 @@ const AccountSettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const { isOpen, onOpen, onClose } = useDisclose();
   const [selectedImage, setSelectedImage] = useState(null);
-  const [inputChange, setInputChange] =useState({
-    nick :false,
-    user:false,
-    email:false
-  }
-  )
+  const [inputChange, setInputChange] = useState({
+    nick: false,
+    user: false,
+    email: false,
+  });
 
   useEffect(() => {
     (async () => {
@@ -82,10 +79,11 @@ const AccountSettingScreen = ({ navigation }) => {
       constrain1: true,
       constrain2: true,
       constrain3: true,
+      constrain4: true,
     },
     password: false,
     confirmPassword: "Please confirm your password.",
-    textProp: "Input your username start with character.",
+    textProp: "Input your username start with charactor.",
   });
 
   const handleChooseImage = async () => {
@@ -149,8 +147,8 @@ const AccountSettingScreen = ({ navigation }) => {
   const validateEmail = (text) => {
     setInputChange({
       ...inputChange,
-      email:true
-    })
+      email: true,
+    });
     setData({
       ...formData,
       email: text,
@@ -167,17 +165,16 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   };
   const validateUsername = (text) => {
-
-    if(text==userData.data.username){
+    if (text == userData.data.username) {
       setInputChange({
         ...inputChange,
-        user:false
-      })
-    }else{
+        user: false,
+      });
+    } else {
       setInputChange({
         ...inputChange,
-        user:true
-      })
+        user: true,
+      });
     }
 
     setData({
@@ -191,12 +188,12 @@ const AccountSettingScreen = ({ navigation }) => {
       let Prop = "";
       if (!/(?=.*\d)[A-Za-z\d]/.test(text)) {
         Prop = "It should contain at least one digit.";
-      }
-      if (!(text.length <= 20 && text.length >= 5)) {
+      } else if (!(text.length <= 20 && text.length >= 5)) {
         Prop = "Length should be between 5 to 20 characters.";
-      }
-      if (!/^(?=.*[A-Za-z])/.test(text)) {
+      } else if (!/^(?=.*[A-Za-z])/.test(text)) {
         Prop = "It should start with a letter.";
+      } else if (!/\s/.test(text)) {
+        Prop = "It should not contain space.";
       }
       setShowMessage({
         ...showMessage,
@@ -204,38 +201,58 @@ const AccountSettingScreen = ({ navigation }) => {
           constrain1: /^(?=.*[A-Za-z])/.test(text),
           constrain2: text.length <= 20 && text.length >= 5,
           constrain3: /(?=.*\d)[A-Za-z\d]/.test(text),
+          constrain4: /^\S+$/.test(text),
         },
         textProp: Prop,
       }),
         setErrors({
           ...errors,
-          username: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(text),
+          username:
+            showMessage.username.constrain1 &&
+            showMessage.username.constrain2 &&
+            showMessage.username.constrain3 &&
+            showMessage.username.constrain4,
         });
       console.log(showMessage.username);
       // console.log(showMessage.textProp,'in');
       return (
         showMessage.username.constrain1 &&
         showMessage.username.constrain2 &&
-        showMessage.username.constrain3
+        showMessage.username.constrain3 &&
+        showMessage.username.constrain4
       );
+    } else {
+      setErrors({
+        ...errors,
+        username: false,
+      });
+      return false;
     }
   };
   const validateNickname = (text) => {
-    setInputChange({
-      ...inputChange,
-      nick:true
-    })
-    setData({
-      ...formData,
-      nickname: text,
-    });
-    if (text) {
-      console.log(text, "nickname");
-      setErrors({
-        ...errors,
-        nickname: false,
+    if (text && text !== "") {
+      setInputChange({
+        ...inputChange,
+        nick: true,
       });
-      return true;
+      setData({
+        ...formData,
+        nickname: text,
+      });
+      // console.log(text, "nickname");
+      if (formData.nickname.trim() != "") {
+        setErrors({
+          ...errors,
+          nickname: false,
+        });
+        return true;
+      } else {
+        setErrors({
+          ...errors,
+          nickname: "Nickname can not be empty.",
+        });
+        return false;
+      }
     } else {
       setErrors({
         ...errors,
@@ -245,7 +262,12 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   };
   async function saveNickName() {
-    if(inputChange.nick){
+    if (
+      inputChange.nick &&
+      !errors.nickname &&
+      formData.nickname &&
+      formData.nickname.trim() != ""
+    ) {
       const response = await resetProfile(
         userData.data.email,
         userData.token,
@@ -267,10 +289,12 @@ const AccountSettingScreen = ({ navigation }) => {
         });
       }
     }
-
   }
   async function saveUsername() {
-    if(inputChange.user){
+    if (
+      inputChange.user &&
+      !Object.values(showMessage.username).some((value) => value === false)
+    ) {
       const response = await resetProfile(
         userData.data.email,
         userData.token,
@@ -292,7 +316,6 @@ const AccountSettingScreen = ({ navigation }) => {
         });
       }
     }
-
   }
 
   async function saveEmail() {
@@ -315,16 +338,16 @@ const AccountSettingScreen = ({ navigation }) => {
       await updateUserData({
         ...userData,
         data: response.data.user,
-        avatar:{
-          uri:response.data.user.profileImageUrl,
-        } 
+        avatar: {
+          uri: response.data.user.profileImageUrl,
+        },
       });
       console.log(userData);
     }
   }
 
   async function sendToken() {
-    if(inputChange.email){
+    if (inputChange.email) {
       const response = await resetSendEmail(
         userData.token,
         userData.data.email,
@@ -347,7 +370,6 @@ const AccountSettingScreen = ({ navigation }) => {
         });
       }
     }
-
   }
 
   const goResetPassword = () => {
@@ -397,9 +419,12 @@ const AccountSettingScreen = ({ navigation }) => {
               )}
             </Box>
           </Pressable>
-          <VStack space={3} mt="10" style={{justifyContent: 'center'}} >
-
-            <FormControl isInvalid={errors.nickname}>
+          <VStack space={3} mt="10" style={{ justifyContent: "center" }}>
+            <FormControl
+              isInvalid={
+                errors.nickname && inputChange.nick && formData.nickname
+              }
+            >
               <FormControl.Label
                 ml={1}
                 _text={{
@@ -424,7 +449,17 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <IconButton
                   icon={
-                    <Ionicons name="save-outline" size={30} color={inputChange.nick?"black":"grey"} />
+                    <Ionicons
+                      name="save-outline"
+                      size={30}
+                      color={
+                        inputChange.nick &&
+                        !errors.nickname &&
+                        formData.nickname
+                          ? "black"
+                          : "grey"
+                      }
+                    />
                   }
                   p={0}
                   onPress={saveNickName}
@@ -437,7 +472,15 @@ const AccountSettingScreen = ({ navigation }) => {
               </Box>
             </FormControl>
 
-            <FormControl isInvalid={!errors.username}>
+            <FormControl
+              isInvalid={
+                Object.values(showMessage.username).some(
+                  (value) => value === false
+                ) &&
+                inputChange.user &&
+                formData.username
+              }
+            >
               <FormControl.Label
                 ml={1}
                 _text={{
@@ -462,7 +505,19 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <IconButton
                   icon={
-                    <Ionicons name="save-outline" size={30} color={inputChange.user?"black":"grey"} />
+                    <Ionicons
+                      name="save-outline"
+                      size={30}
+                      color={
+                        formData.username &&
+                        inputChange.user &&
+                        !Object.values(showMessage.username).some(
+                          (value) => value === false
+                        )
+                          ? "black"
+                          : "grey"
+                      }
+                    />
                   }
                   p={0}
                   onPress={saveUsername}
@@ -507,7 +562,7 @@ const AccountSettingScreen = ({ navigation }) => {
                     <MaterialCommunityIcons
                       name="email-search-outline"
                       size={30}
-                      color={inputChange.email?"black":"grey"}
+                      color={inputChange.email ? "black" : "grey"}
                     />
                   }
                   p={0}
@@ -575,7 +630,7 @@ const AccountSettingScreen = ({ navigation }) => {
               size="lg"
               style={{
                 borderWidth: 1, // This sets the width of the border
-                borderColor: '#49a579', // This sets the color of the border
+                borderColor: "#49a579", // This sets the color of the border
               }}
               // bg="#f5f5f5"
               backgroundColor={"rgba(250,250,250,0.2)"}
@@ -592,7 +647,7 @@ const AccountSettingScreen = ({ navigation }) => {
                 // },
               }}
             >
-              🗝  Change your password
+              🗝 Change your password
             </Button>
           </VStack>
         </Box>

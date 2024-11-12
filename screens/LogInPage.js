@@ -81,7 +81,8 @@ const LoginScreen = ({ navigation }) => {
     GoogleSignin.configure({
       webClientId:
         "720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com", // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
-    });
+      offlineAccess: true,
+      });
   }, []);
 
   const loginGoogle = async () => {
@@ -92,10 +93,11 @@ const LoginScreen = ({ navigation }) => {
       console.log(userInfo);
       const response = await loginUserThirdParty(
         userInfo.idToken,
-        userInfo.user
+        userInfo.user,
+        "google"
       );
       // setThirdPartyUserData(userInfo);
-      await afterLogin(response);
+      await afterLogin(response,1);
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
@@ -125,7 +127,7 @@ const LoginScreen = ({ navigation }) => {
         "facebook"
       );
       console.log(response);
-      await afterLogin(response);
+      await afterLogin(response,2);
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
@@ -137,6 +139,22 @@ const LoginScreen = ({ navigation }) => {
       await SecureStore.setItemAsync(
         "userData",
         JSON.stringify({ id, password })
+      );
+    } catch (error) {
+      console.error("Failed to store the credentials securely", error);
+      // Handle the error, like showing an alert to the user
+      Alert.alert(
+        "Error",
+        "Failed to securely save your credentials. You may need to login again next time."
+      );
+    }
+  };
+
+  const saveCredentialsThirdParty = async (idToken,type=1) => {
+    try {
+      await SecureStore.setItemAsync(
+        "userData",
+        JSON.stringify({ idToken,type })
       );
     } catch (error) {
       console.error("Failed to store the credentials securely", error);
@@ -161,7 +179,7 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const afterLogin = async (response) => {
+  const afterLogin = async (response, type=0) => {
     console.log("response", response);
     if (response.token) {
       const roundInfo = await getRoundInfo(
@@ -170,6 +188,9 @@ const LoginScreen = ({ navigation }) => {
       );
       if (remember && formData?.id && formData?.password) {
         await saveCredentials(formData.id, formData.password);
+      }else{
+        const id=type==1?response.data.user.googleId:response.data.user.facebookId
+        await saveCredentialsThirdParty(id,response.data.user.email,type)
       }
       updateUserData({
         token: response.token,

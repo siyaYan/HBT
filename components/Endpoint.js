@@ -8,6 +8,11 @@ export async function registerUser(
   password,
   confirmPassword
 ) {
+  console.log("123",  username,
+    nickname,
+    email,
+    password,
+    confirmPassword);
   try {
     const response = await fetch(
       "http://3.27.94.77:8000/habital/v1/signup",
@@ -87,7 +92,8 @@ export async function loginUserThirdParty(idToken, user, type='google') {
 
     const data = await response.json();
     if (data.status == "success") {
-      // Alert.alert('Success', 'Login successful');
+      const res=type=='google'?"Google!":"Facebook!"
+      Alert.alert('Success', "Login successful with "+ res);
     } else {
       Alert.alert("Unsuccessful", data.message || "Login failed");
     }

@@ -115,10 +115,8 @@ const RegisterScreen = ({ navigation }) => {
             showMessage.username.constrain2 &&
             showMessage.username.constrain3 &&
             showMessage.username.constrain4,
-          // /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/.test(text) &&
-          // /^\S+$/.test(text),
         });
-      console.log(showMessage.username);
+      // console.log(showMessage.username);
       // console.log(showMessage.textProp,'in');
       return (
         showMessage.username.constrain1 &&
@@ -270,7 +268,7 @@ const RegisterScreen = ({ navigation }) => {
                   </Text>
                 </VStack>
                 <VStack w="100%" space={4}>
-                  <FormControl isRequired isInvalid={!errors.username}>
+                  <FormControl isRequired isInvalid={!errors.username&&showMessage.textProp}>
                     <Input
                       size="lg"
                       placeholder="Username"
