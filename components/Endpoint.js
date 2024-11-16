@@ -33,13 +33,10 @@ export async function registerUser(
     );
 
     const data = await response.json();
-    if (data.status == "success") {
-      Alert.alert("Success", "Please check your email inbox");
-    } else {
+    if (data.status != "success") {
       Alert.alert("Oh,No!", data.message || "Registration unsuccessful");
       // console.log(data.message);
     }
-
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in register user:", error);

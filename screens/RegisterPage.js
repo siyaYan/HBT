@@ -4,6 +4,7 @@ import {
   Pressable,
   Center,
   IconButton,
+  Modal,
   ScrollView,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -21,10 +22,22 @@ import {
   KeyboardAvoidingView,
 } from "native-base";
 
-import { registerUser } from "../components/Endpoint";
+import {
+  registerUser,
+  loginUser,
+  getRoundInfo,
+  verifyEmail,
+  loginUserThirdParty,
+} from "../components/Endpoint";
+import * as SecureStore from "expo-secure-store";
+import { useData } from "../context/DataContext";
+import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
+import OTPInput from "../components/OTPInput";
 
 const RegisterScreen = ({ navigation }) => {
+  const { roundData, updateRounds, updateacceptRoundData } = useRound();
+  const { userData, updateUserData } = useData();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [formData, setData] = useState({});
@@ -46,6 +59,89 @@ const RegisterScreen = ({ navigation }) => {
     textProp: "Input your username start with charactor.",
   });
 
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [verifyToken, setVerifyToken] = useState("");
+  const handleVerify = async () => {
+    const res = await verifyEmail(formData.email, verifyToken);
+    setVerifyToken("");
+    if (res.status == "success") {
+      setShowVerifyModal(false);
+      handleSubmitLogin();
+    }
+  };
+  const handleSubmitLogin = async () => {
+    const response = await loginUser(formData.email, formData.password);
+    await afterLogin(response);
+  };
+
+  const afterLogin = async (response, type = 0) => {
+    console.log("response", response);
+    if (response.token) {
+      const roundInfo = await getRoundInfo(
+        response.token,
+        response.data.user._id
+      );
+      if (formData?.id && formData?.password) {
+        await saveCredentials(formData.id, formData.password);
+      } else {
+        const id =
+          type == 1
+            ? response.data.user.googleId
+            : response.data.user.facebookId;
+        await saveCredentialsThirdParty(id, response.data.user.email, type);
+      }
+      updateUserData({
+        token: response.token,
+        data: response.data.user,
+        avatar: {
+          uri: response.data.user.profileImageUrl,
+        },
+      });
+      updateRounds(roundInfo);
+      console.log("update userData", response.data.user._id);
+      updateacceptRoundData(roundInfo, response.data.user._id);
+      console.log("round context", roundData);
+      navigation.navigate("MainStack", { screen: "Home" });
+    } else {
+      console.log("login failed");
+      if (response.message.includes("Email varify")) {
+        console.log("need to verify email....");
+        setShowVerifyModal(true);
+      }
+    }
+  };
+
+  const saveCredentials = async (id, password) => {
+    try {
+      await SecureStore.setItemAsync(
+        "userData",
+        JSON.stringify({ id, password })
+      );
+    } catch (error) {
+      console.error("Failed to store the credentials securely", error);
+      // Handle the error, like showing an alert to the user
+      Alert.alert(
+        "Error",
+        "Failed to securely save your credentials. You may need to login again next time."
+      );
+    }
+  };
+
+  const saveCredentialsThirdParty = async (idToken, type = 1) => {
+    try {
+      await SecureStore.setItemAsync(
+        "userData",
+        JSON.stringify({ idToken, type })
+      );
+    } catch (error) {
+      console.error("Failed to store the credentials securely", error);
+      // Handle the error, like showing an alert to the user
+      Alert.alert(
+        "Error",
+        "Failed to securely save your credentials. You may need to login again next time."
+      );
+    }
+  };
   //Implement show corresponding messages for each input field
   // Handle focus for password field
   const handlePasswordFocus = () => {
@@ -110,9 +206,9 @@ const RegisterScreen = ({ navigation }) => {
       }),
         setErrors({
           ...errors,
-          username:Prop?false:true
+          username: Prop ? false : true,
         });
-      return Prop?false:true;
+      return Prop ? false : true;
     } else {
       setErrors({
         ...errors,
@@ -176,7 +272,7 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    console.log(errors)
+    console.log(errors);
     const hasErrors = Object.values(errors).some((error) => error == false);
 
     if (!hasErrors) {
@@ -193,19 +289,19 @@ const RegisterScreen = ({ navigation }) => {
       console.log("error!!");
     }
 
-    console.log({
-      username: formData.username,
-      nickname: formData.nickname,
-      email: formData.email,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
-    });
-    console.log("error", {
-      username: errors.username,
-      email: errors.email,
-      password: errors.password,
-      confirm: errors.confirmPassword,
-    });
+    // console.log({
+    //   username: formData.username,
+    //   nickname: formData.nickname,
+    //   email: formData.email,
+    //   password: formData.password,
+    //   confirmPassword: formData.confirmPassword,
+    // });
+    // console.log("error", {
+    //   username: errors.username,
+    //   email: errors.email,
+    //   password: errors.password,
+    //   confirm: errors.confirmPassword,
+    // });
   };
 
   async function handleRegister() {
@@ -218,8 +314,8 @@ const RegisterScreen = ({ navigation }) => {
       formData.confirmPassword
     );
     // Handle success or error response
-    if (response.token) {
-      navigation.navigate("LoginStack", { screen: "Login" });
+    if (response.status == "success") {
+      setShowVerifyModal(true);
     }
   }
 
@@ -258,7 +354,10 @@ const RegisterScreen = ({ navigation }) => {
                   </Text>
                 </VStack>
                 <VStack w="100%" space={4}>
-                  <FormControl isRequired isInvalid={!errors.username&&showMessage.textProp}>
+                  <FormControl
+                    isRequired
+                    isInvalid={!errors.username && showMessage.textProp}
+                  >
                     <Input
                       size="lg"
                       placeholder="Username"
@@ -393,14 +492,14 @@ const RegisterScreen = ({ navigation }) => {
                           <Icon size="5" viewBox="0 0 50 50">
                             {errors.letterAndNumber ? (
                               <Path
-                              fill="#49a579"
-                              d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
-                            />
-                          ) : (
-                            <Path
-                              fill="#606060"
-                              d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
-                            />
+                                fill="#49a579"
+                                d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                              />
+                            ) : (
+                              <Path
+                                fill="#606060"
+                                d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                              />
                             )}
                           </Icon>
                           <Text fontFamily={"Regular"} fontSize="sm">
@@ -411,14 +510,14 @@ const RegisterScreen = ({ navigation }) => {
                           <Icon size="5" viewBox="0 0 50 50">
                             {errors.noSpaces ? (
                               <Path
-                              fill="#49a579"
-                              d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
-                            />
-                          ) : (
-                            <Path
-                              fill="#606060"
-                              d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
-                            />
+                                fill="#49a579"
+                                d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                              />
+                            ) : (
+                              <Path
+                                fill="#606060"
+                                d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                              />
                             )}
                           </Icon>
                           <Text fontFamily={"Regular"} fontSize="sm">
@@ -429,14 +528,14 @@ const RegisterScreen = ({ navigation }) => {
                           <Icon size="5" viewBox="0 0 50 50">
                             {errors.specialChars ? (
                               <Path
-                              fill="#49a579"
-                              d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
-                            />
-                          ) : (
-                            <Path
-                              fill="#606060"
-                              d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
-                            />
+                                fill="#49a579"
+                                d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                              />
+                            ) : (
+                              <Path
+                                fill="#606060"
+                                d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                              />
                             )}
                           </Icon>
                           <Text fontFamily={"Regular"} fontSize="sm">
@@ -448,7 +547,7 @@ const RegisterScreen = ({ navigation }) => {
                       <HStack>
                         <Icon ml={3} mt={1} size="5" viewBox="0 0 50 50">
                           {errors.password && formData.password ? (
-                              <Path
+                            <Path
                               fill="#49a579"
                               d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
                             />
@@ -513,15 +612,15 @@ const RegisterScreen = ({ navigation }) => {
                     <HStack>
                       <Icon ml={3} mt={1} size="5" viewBox="0 0 50 50">
                         {errors.confirmPassword && formData.confirmPassword ? (
-                              <Path
-                              fill="#49a579"
-                              d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
-                            />
-                          ) : (
-                            <Path
-                              fill="#606060"
-                              d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
-                            />
+                          <Path
+                            fill="#49a579"
+                            d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                          />
+                        ) : (
+                          <Path
+                            fill="#606060"
+                            d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                          />
                         )}
                       </Icon>
 
@@ -583,6 +682,59 @@ const RegisterScreen = ({ navigation }) => {
                     </Pressable>
                   </HStack>
                 </VStack>
+                <Modal
+                  isOpen={showVerifyModal}
+                  onClose={() => setShowVerifyModal(false)}
+                >
+                  <Modal.Content maxWidth="300px">
+                    <Modal.CloseButton />
+                    <Modal.Header>
+                      <Text fontFamily={"Regular Medium"} fontSize="xl">
+                        Verify your email
+                      </Text>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <FormControl mt="3" isRequired>
+                        <OTPInput
+                          value={verifyToken}
+                          onChange={setVerifyToken}
+                        />
+                      </FormControl>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button.Group w={"90%"} marginX={"5"} space={2}>
+                        <Button
+                          rounded={30}
+                          shadow="7"
+                          width="50%"
+                          size={"md"}
+                          _text={{
+                            color: "#f9f8f2",
+                          }}
+                          colorScheme="blueGray"
+                          onPress={() => {
+                            setShowVerifyModal(false);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          rounded={30}
+                          shadow="7"
+                          width="50%"
+                          size={"md"}
+                          _text={{
+                            color: "#f9f8f2",
+                          }}
+                          backgroundColor={"#49a579"}
+                          onPress={handleVerify}
+                        >
+                          Submit
+                        </Button>
+                      </Button.Group>
+                    </Modal.Footer>
+                  </Modal.Content>
+                </Modal>
               </VStack>
             </Center>
           </Box>
