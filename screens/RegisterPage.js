@@ -258,7 +258,7 @@ const RegisterScreen = ({ navigation }) => {
                   </Text>
                 </VStack>
                 <VStack w="100%" space={4}>
-                  <FormControl isRequired isInvalid={showMessage.textProp}>
+                  <FormControl isRequired isInvalid={!errors.username&&showMessage.textProp}>
                     <Input
                       size="lg"
                       placeholder="Username"
