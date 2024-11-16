@@ -110,20 +110,9 @@ const RegisterScreen = ({ navigation }) => {
       }),
         setErrors({
           ...errors,
-          username:
-            showMessage.username.constrain1 &&
-            showMessage.username.constrain2 &&
-            showMessage.username.constrain3 &&
-            showMessage.username.constrain4,
+          username:Prop?false:true
         });
-      // console.log(showMessage.username);
-      // console.log(showMessage.textProp,'in');
-      return (
-        showMessage.username.constrain1 &&
-        showMessage.username.constrain2 &&
-        showMessage.username.constrain3 &&
-        showMessage.username.constrain4
-      );
+      return Prop?false:true;
     } else {
       setErrors({
         ...errors,
@@ -187,6 +176,7 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
+    console.log(errors)
     const hasErrors = Object.values(errors).some((error) => error == false);
 
     if (!hasErrors) {
@@ -268,7 +258,7 @@ const RegisterScreen = ({ navigation }) => {
                   </Text>
                 </VStack>
                 <VStack w="100%" space={4}>
-                  <FormControl isRequired isInvalid={!errors.username&&showMessage.textProp}>
+                  <FormControl isRequired isInvalid={showMessage.textProp}>
                     <Input
                       size="lg"
                       placeholder="Username"
