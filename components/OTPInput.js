@@ -14,28 +14,52 @@ const OTPInput = ({ value, onChange }) => {
 
     // Combine the OTP array into a single string and pass it back via onChange
     onChange && onChange(newOtp.join(""));
-    // Automatically focus on next input
+
+    // Focus logic
     if (text.length === 1 && index < 5) {
-      refs[index + 1].focus();
+      // Move to next input
+      refs[index + 1]?.focus();
+    } else if (text.length === 0 && index > 0) {
+      // Move to previous input when cleared
+      refs[index - 1]?.focus();
     }
   };
 
   const refs = [];
 
   return (
-    <View style={styles.container}>
-      {otp.map((digit, index) => (
-        <TextInput
-          key={index}
-          style={styles.input}
-          value={digit}
-          onChangeText={(text) => handleChange(text, index)}
-          keyboardType="number-pad"
-          maxLength={1}
-          ref={(ref) => (refs[index] = ref)}
-        />
-      ))}
-    </View>
+    // <View style={styles.container}>
+    //   {otp.map((digit, index) => (
+    //     <TextInput
+    //       key={index}
+    //       style={styles.input}
+    //       value={digit}
+    //       onChangeText={(text) => handleChange(text, index)}
+    //       keyboardType="number-pad"
+    //       maxLength={1}
+    //       ref={(ref) => (refs[index] = ref)}
+    //     />
+    //   ))}
+    // </View>
+        <View style={styles.container}>
+        {otp.map((digit, index) => (
+          <TextInput
+            key={index}
+            style={styles.input}
+            value={digit}
+            onChangeText={(text) => handleChange(text, index)}
+            keyboardType="number-pad"
+            maxLength={1}
+            ref={(ref) => (refs[index] = ref)} // Assign refs for each input
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === "Backspace" && !otp[index]) {
+                // Handle backspace manually if the input is empty
+                refs[index - 1]?.focus();
+              }
+            }}
+          />
+        ))}
+      </View>
   );
 };
 
