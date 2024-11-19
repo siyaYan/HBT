@@ -288,20 +288,6 @@ const RegisterScreen = ({ navigation }) => {
     } else {
       console.log("error!!");
     }
-
-    // console.log({
-    //   username: formData.username,
-    //   nickname: formData.nickname,
-    //   email: formData.email,
-    //   password: formData.password,
-    //   confirmPassword: formData.confirmPassword,
-    // });
-    // console.log("error", {
-    //   username: errors.username,
-    //   email: errors.email,
-    //   password: errors.password,
-    //   confirm: errors.confirmPassword,
-    // });
   };
 
   async function handleRegister() {

@@ -72,17 +72,6 @@ const InviteScreen = ({ navigation }) => {
         setLink(false);
         setPend(false);
       }
-      // if (friendsRes.users.length > 0) {
-      //   const res = friendsRes.users.filter(
-      //     (user) => user.email == formData.userId.toLowerCase()
-      //   );
-      //   // console.log('res',res)
-      //   if (res.length > 0) {
-      //     setLink(true)
-      //   }else{
-      //     setLink(false)
-      //   }
-      // }
     } else {
       setErrors({
         userId: false,
@@ -132,8 +121,8 @@ const InviteScreen = ({ navigation }) => {
 
       <Flex direction="column" alignItems="center">
         <Box safeArea py="2" w="100%" maxW="320">
-          <VStack space={3} alignItems="center">
-            <Box py="5" alignSelf={"center"}>
+          <VStack paddingY={10} alignItems="center">
+            {/* <Box py="5" alignSelf={"center"}>
               {userData.avatar && userData.avatar.uri ? (
                 <Avatar
                   bg="white"
@@ -149,9 +138,11 @@ const InviteScreen = ({ navigation }) => {
               <Text fontFamily={"Regular"} fontSize="lg">
                 {userData.data.nickname}
               </Text>
-            </Box>
-            <Box w="100%" maxW="300" alignItems="center">
+            </Box> */}
+            {/* Code for InviteFriend section */}
+            <Box w="100%" h="95%" maxW="300" alignItems="center" marginTop={'50%'}>
               <VStack space={5} alignItems="center" w={"100%"}>
+                {/* Code for title: find a friend */}
                 <FormControl isInvalid={!errors.userId}>
                   <FormControl.Label
                     ml={1}
@@ -184,6 +175,7 @@ const InviteScreen = ({ navigation }) => {
                   </FormControl.ErrorMessage>
                 </FormControl>
 
+                {/* Code for search friend button*/}
                 {formData.userId &&
                 (formData.userId.toLowerCase() == userData.data.email ||
                   formData.userId == userData.data.username) ? (
@@ -215,6 +207,7 @@ const InviteScreen = ({ navigation }) => {
                   </Button>
                 )}
 
+                {/* Code for showing search friend result*/}
                 {findUser.user.profileImageUrl &&
                 !(
                   formData.userId.toLowerCase() == userData.data.email ||

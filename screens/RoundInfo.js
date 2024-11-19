@@ -290,7 +290,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
               </Modal.Content>
             </Modal>
             {/* Friend list*/}
-            {friendsList.length > 0 ? (
+            {friendsList?.length > 0 ? (
               <View>
                 <Text fontSize="lg" bold>
                   Friends List
