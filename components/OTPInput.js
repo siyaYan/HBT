@@ -2,32 +2,39 @@ import React, { useState } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 
 const OTPInput = ({ value, onChange }) => {
-  // Split the value into an array of digits if verifyToken has value, otherwise an empty array
   const [otp, setOtp] = useState(
     value ? value.split("") : new Array(6).fill("")
   );
 
+  const refs = [];
+
   const handleChange = (text, index) => {
-    let newOtp = [...otp];
-    newOtp[index] = text;
+    const newOtp = [...otp];
+    newOtp[index] = text.charAt(0); // Ensure only the first character is stored
     setOtp(newOtp);
 
     // Combine the OTP array into a single string and pass it back via onChange
     onChange && onChange(newOtp.join(""));
 
-    // Focus logic
-    if (text.length === 1 && index < 5) {
-      // Move to next input
+    // Automatically focus the next input if not on the last one
+    if (text.length === 1 && index < otp.length - 1) {
       refs[index + 1]?.focus();
-    } else if (text.length === 0 && index > 0) {
-      // Move to previous input when cleared
-      refs[index - 1]?.focus();
     }
   };
 
-  const refs = [];
-
-  return (
+  const handleKeyPress = ({ nativeEvent }, index) => {
+    if (nativeEvent.key === "Backspace" && !otp[index]) {
+      // Move to the previous input if current one is empty
+      if (index > 0) {
+        refs[index - 1]?.focus();
+        const newOtp = [...otp];
+        newOtp[index - 1] = ""; // Clear the previous input
+        setOtp(newOtp);
+        onChange && onChange(newOtp.join(""));
+      }
+    }
+  };
+    return (
     // <View style={styles.container}>
     //   {otp.map((digit, index) => (
     //     <TextInput
@@ -61,7 +68,7 @@ const OTPInput = ({ value, onChange }) => {
         ))}
       </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
