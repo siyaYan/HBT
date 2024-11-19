@@ -45,6 +45,7 @@ const InviteScreen = ({ navigation }) => {
       userData.token,
       formData.userId
     );
+    console.log(response);
     // const friendsRes = await getFriends(userData.token);
     if (response.status === "success") {
       // console.log("find!!!!");
@@ -82,14 +83,14 @@ const InviteScreen = ({ navigation }) => {
     }
   };
   const handleConnect = async () => {
-    // console.log("connect", findUser);
+    console.log("connect", findUser);
     // console.log(userData.data._id, findUser.user._id);
     const response = await connectByUserId(
       userData.token,
       userData.data._id,
       findUser.user._id
     );
-    if (response.status === "success") {
+    if (response?.status === "success") {
       console.log("connect!!");
     } else {
       console.log("fail!!");

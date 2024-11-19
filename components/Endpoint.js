@@ -406,16 +406,16 @@ export async function connectByUserId(token, senderId, receiverId) {
     );
     // console.log(response)
     const data = await response.json();
-    // console.log(data);
-    if (data.status == "success") {
+    console.log(data);
+    if (data?.status == "success") {
       Alert.alert("Success", "Send link request to this friend!");
     } else {
-      Alert.alert("Oh,No!", data.message || "Failed to connect!");
+      Alert.alert("Oh,No!", data?.message || "Failed to connect!");
       // console.log(data.message);
     }
     return data;
   } catch (e) {
-    console.error("Unsuccessful in connect server:", error);
+    console.error("Unsuccessful in connect server:", e);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }
