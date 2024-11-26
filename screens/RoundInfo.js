@@ -24,7 +24,8 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
   const { roundData, updateRounds, deleteRoundData, updateacceptRoundData } =
     useRound();
-  const  roundId  = route.params.id; // Safe access to route params
+  const roundId = route.params.id;
+  const { state: state, gohabit: gohabit } = route.params || {}; // Safe access to route params
   // const { roundId } = route.params;
   if (!roundId) {
     console.error("roundId is not defined roundinfo page");
@@ -93,10 +94,10 @@ const RoundInfoScreen = ({ route, navigation }) => {
     });
   };
 
-  const goHabit = () => {
+  const goHabit = (newState) => {
     navigation.navigate("RoundStack", {
       screen: "RoundHabit",
-      params: { id: roundId },
+      params: { id: roundId, state: newState },
     });
   };
 
@@ -105,7 +106,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
       screen: "RoundScore",
       params: { id: roundId },
     });
-  }
+  };
   // Navigate to Round Config page
   // const goRoundConfig = () => {
   //   navigation.navigate("RoundStack", {
@@ -113,6 +114,9 @@ const RoundInfoScreen = ({ route, navigation }) => {
   //     params: { emptyState: false, id: roundId, source: "info" },
   //   });
   // };
+  if (gohabit) {
+    goHabit(true);
+  }
 
   const levelInt = round ? parseInt(round.level, 10) : 0;
   const startDate = round ? new Date(round.startDate) : new Date();
@@ -120,7 +124,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
     startDate.getTime() + levelInt * 24 * 60 * 60 * 1000
   ); // Convert days to milliseconds
   const today = new Date();
-  
+
   // Calculate the 10% point
   const tenPercentDuration = levelInt * 0.1;
   const tenPercentDate = new Date(
@@ -171,7 +175,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
 
             <Button
               onPress={() => {
-                goHabit();
+                goHabit(false);
               }}
               mt="5"
               width="100%"
@@ -185,26 +189,11 @@ const RoundInfoScreen = ({ route, navigation }) => {
             >
               My habit
             </Button>
-            {round.status=="A"?(<Button
-              onPress={() => {
-                goScoreBoard();
-              }}
-              mt="5"
-              width="100%"
-              size="lg"
-              bg="#49a579"
-              _text={{
-                color: "#f9f8f2",
-                fontFamily: "Regular Medium",
-                fontSize: "lg",
-              }}
-            >
-              Score Board
-            </Button>):("")}
-             {/* Conditionally render the Invite Friend button */}
-             {!hasPassedTenPercent && (round.isAllowedInvite || round.userId == userData.data._id) && (
+            {round.status == "A" ? (
               <Button
-                onPress={inviteFriend}
+                onPress={() => {
+                  goScoreBoard();
+                }}
                 mt="5"
                 width="100%"
                 size="lg"
@@ -215,9 +204,29 @@ const RoundInfoScreen = ({ route, navigation }) => {
                   fontSize: "lg",
                 }}
               >
-                Invite friend
+                Score Board
               </Button>
+            ) : (
+              ""
             )}
+            {/* Conditionally render the Invite Friend button */}
+            {!hasPassedTenPercent &&
+              (round.isAllowedInvite || round.userId == userData.data._id) && (
+                <Button
+                  onPress={inviteFriend}
+                  mt="5"
+                  width="100%"
+                  size="lg"
+                  bg="#49a579"
+                  _text={{
+                    color: "#f9f8f2",
+                    fontFamily: "Regular Medium",
+                    fontSize: "lg",
+                  }}
+                >
+                  Invite friend
+                </Button>
+              )}
 
             {userData.data._id !== round.userId && (
               <Button
