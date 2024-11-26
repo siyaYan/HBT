@@ -492,7 +492,9 @@ const HomeScreen = ({ navigation }) => {
         round.status !== "A"
       ) {
         // validate if there is any active friend
-        setShowRoundFriendValidation(!showRoundFriendValidation);
+        // console.log('-----111',round)
+        const activeFriend=round.roundFriends.filter(item=>item.id!=round.userId&&item.status=="A").length
+        if(activeFriend==0)setShowRoundFriendValidation(true);
         updateStatusAndDate(round._id, "A");
       }
 

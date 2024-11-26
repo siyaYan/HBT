@@ -8,6 +8,7 @@ import {
   Avatar,
   Badge,
   Modal,
+  HStack,
   Icon,
 } from "native-base";
 import { Fab, useDisclose } from "native-base";
@@ -26,7 +27,7 @@ import {
   deleteMessage,
 } from "../components/Endpoint";
 import AddImage from "../components/AddImage";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 import ScoreBoardModal from "../components/ScoreBoard";
 
 const ForumPage = ({ route, navigation }) => {
@@ -35,26 +36,32 @@ const ForumPage = ({ route, navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclose();
   const { id } = route.params;
-  const [roundFriends, setRoundFriends] = useState(roundData?.data.filter((item) => (item._id == id))[0]
-  ?.roundFriends); 
+  const [roundFriends, setRoundFriends] = useState(
+    roundData?.data.filter((item) => item._id == id)[0]?.roundFriends
+  );
   const scrollViewRef = useRef(null);
   const isFocused = useIsFocused();
-  const roundActive=acceptRoundData?.data.filter(
-    (item) => item._id == id && item.status == "A"
-  ).length > 0?true:false
+  const roundActive =
+    acceptRoundData?.data.filter((item) => item._id == id && item.status == "A")
+      .length > 0
+      ? true
+      : false;
 
-  const roundFinished=acceptRoundData?.data.filter(
+  const roundFinished = acceptRoundData?.data.filter(
     (item) => item._id == id && item.status == "F"
-  )?.[0]?._id
+  )?.[0]?._id;
 
-  const [scoreBoardOpen, setScoreBoardOpen] = useState(roundFinished?true:false);
+  const [scoreBoardOpen, setScoreBoardOpen] = useState(
+    roundFinished ? true : false
+  );
 
   useEffect(() => {
     const fetchForumMessages = async () => {
       await getForumMessages();
     };
-    setRoundFriends(roundData?.data.filter((item) => (item._id == id))[0]
-    ?.roundFriends)
+    setRoundFriends(
+      roundData?.data.filter((item) => item._id == id)[0]?.roundFriends
+    );
     fetchForumMessages();
   }, [route.params]);
 
@@ -77,7 +84,9 @@ const ForumPage = ({ route, navigation }) => {
   const handleLikeMessage = async (messageId, like) => {
     setPosts((prevPosts) =>
       prevPosts.map((post) =>
-        post.id === messageId ? { ...post, like: !post.like } : post
+        post.id === messageId
+          ? { ...post, like: !post.like, likes: (post.likes += like ? -1 : 1) }
+          : post
       )
     );
     if (like) {
@@ -103,6 +112,7 @@ const ForumPage = ({ route, navigation }) => {
       image: data.image,
       text: data.text,
       like: data.react.includes(userData.data._id),
+      likes: data.react.length,
       date: formatDate(data.updatedAt),
       nickname: user.nickname,
       profileImageUrl: user.profileImageUrl,
@@ -112,11 +122,11 @@ const ForumPage = ({ route, navigation }) => {
   };
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
-  
+
     // Format the date and time according to the local time zone
     const formattedDate = date.toLocaleDateString(); // Local date
     const formattedTime = date.toLocaleTimeString(); // Local time
-  
+
     const result = `${formattedDate} ${formattedTime}`;
     return result;
   };
@@ -209,7 +219,9 @@ const ForumPage = ({ route, navigation }) => {
                             <AspectRatio w="100%" ratio={5 / 7}>
                               <View paddingY={5} alignItems={"center"}>
                                 <Pressable
-                                  onPress={() => roundActive && handleModal(item.userId)}
+                                  onPress={() =>
+                                    roundActive && handleModal(item.userId)
+                                  }
                                 >
                                   <Avatar
                                     bg="pink.600"
@@ -260,7 +272,7 @@ const ForumPage = ({ route, navigation }) => {
                                   : "#191919",
                             }}
                           >
-                            {item.text?item.text:""}
+                            {item.text ? item.text : ""}
                           </Text>
                         }
                       />
@@ -269,7 +281,7 @@ const ForumPage = ({ route, navigation }) => {
                       colorScheme="danger"
                       rounded="full"
                       mt={-5}
-                      mr={-2}
+                      mr={5}
                       zIndex={2}
                       variant="outline"
                       alignSelf="flex-end"
@@ -277,36 +289,47 @@ const ForumPage = ({ route, navigation }) => {
                         fontSize: 24,
                       }}
                     >
-                      <AntDesign
-                        style={{ display: "flex", alignSelf: "flex-end" }}
-                        onPress={() => {
-                          roundActive && handleLikeMessage(item.id, item.like);
-                        }}
-                        name="heart"
-                        size={24}
-                        color={item.like ? "red" : "lightgray"}
-                      />
+                      <HStack>
+                        <AntDesign
+                          style={{
+                            marginRight: 5, // Adds spacing between the icon and the number
+                          }}
+                          onPress={() => {
+                            roundActive &&
+                              handleLikeMessage(item.id, item.like);
+                          }}
+                          name="heart"
+                          size={24}
+                          color={item.like ? "red" : "lightgray"}
+                        />
+                        <Text fontSize={16}>{item.likes}</Text>
+                      </HStack>
                     </Badge>
                     {item.userId == userData.data._id ? (
-                    <Badge
-                      colorScheme="danger"
-                      rounded="full"
-                      mt={-7}
-                      mr={12}
-                      zIndex={5}
-                      alignSelf="flex-end"
-                      _text={{
-                        fontSize: 24,
-                      }}
-                    >
-                      <AntDesign
-                        style={{ display: "flex", alignSelf: "flex-end" }}
-                        onPress={() => roundActive && handleDeleteMessage(item.id)}
-                        name="delete"
-                        size={24}
-                        color="red"
-                      />
-                    </Badge>):("")}
+                      <Badge
+                        colorScheme="danger"
+                        rounded="full"
+                        mt={-7}
+                        mr={12}
+                        zIndex={5}
+                        alignSelf="flex-end"
+                        _text={{
+                          fontSize: 24,
+                        }}
+                      >
+                        <AntDesign
+                          style={{ display: "flex", alignSelf: "flex-end" }}
+                          onPress={() =>
+                            roundActive && handleDeleteMessage(item.id)
+                          }
+                          name="delete"
+                          size={24}
+                          color="red"
+                        />
+                      </Badge>
+                    ) : (
+                      ""
+                    )}
                   </WingBlank>
                 </View>
               ))
@@ -315,8 +338,8 @@ const ForumPage = ({ route, navigation }) => {
             )}
           </ScrollView>
         </View>
-        {!isModalVisible && 
-          ( roundActive && isFocused ? (
+        {!isModalVisible &&
+          (roundActive && isFocused ? (
             <Fab
               onPress={() => handleUpload()}
               m={6}
@@ -338,11 +361,13 @@ const ForumPage = ({ route, navigation }) => {
           </Modal.Content>
         </Modal>
 
-        {roundFinished&&
-      <ScoreBoardModal
-        scoreBoardOpen={scoreBoardOpen}
-        handleClose={handleClose} 
-        roundId={roundFinished}/>}
+        {roundFinished && (
+          <ScoreBoardModal
+            scoreBoardOpen={scoreBoardOpen}
+            handleClose={handleClose}
+            roundId={roundFinished}
+          />
+        )}
       </Box>
     </Center>
   );
