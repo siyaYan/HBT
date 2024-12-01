@@ -18,6 +18,7 @@ import OptionMenu from "../components/OptionMenu";
 import { Ionicons } from "@expo/vector-icons";
 import Background2 from "../components/Background2";
 import Feather from "@expo/vector-icons/Feather";
+import { deleteUser } from "../components/Endpoint";
 
 const SettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
@@ -59,8 +60,21 @@ const SettingScreen = ({ navigation }) => {
     }
   };
 
+  const deleteAccount = async () => {
+    // console.log(userData.data._id,userData.token)
+    try {
+      const data= await deleteUser(userData.data._id,userData.token)
+      if (data.status == "success") {
+        navigation.navigate("LoginStack", { screen: "Login" });
+        await deleteCredentials();
+      }
+    } catch (error) {
+      // Error clearing the credentials
+    }
+  };
+
   const goArchivePage = async () => {
-      navigation.navigate("Archive");
+    navigation.navigate("Archive");
   };
   return (
     <NativeBaseProvider>
@@ -143,7 +157,12 @@ const SettingScreen = ({ navigation }) => {
             />
 
             <Box alignItems="center" justifyContent="center">
-              <Button onPress={goArchivePage} size="md" p={0} variant="unstyled">
+              <Button
+                onPress={goArchivePage}
+                size="md"
+                p={0}
+                variant="unstyled"
+              >
                 <HStack>
                   <Feather name="archive" size={26} color="black" />
                   <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
@@ -175,6 +194,26 @@ const SettingScreen = ({ navigation }) => {
               </Button>
             </Box>
 
+            <Divider
+              my="2"
+              _light={{
+                bg: "muted.800",
+              }}
+              _dark={{
+                bg: "muted.50",
+              }}
+            />
+            <Box alignItems="center" justifyContent="center">
+              <Button onPress={deleteAccount} size="md" p={0} variant="unstyled">
+                <HStack>
+                  {/* <Ionicons name="remove-circle-outline" size={30} color="red" /> */}
+                  <Ionicons name="person-remove-outline" size={26} color="red" />
+                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg" style={{color:'red'}}>
+                    Delete
+                  </Text>
+                </HStack>
+              </Button>
+            </Box>
             <Divider
               my="2"
               _light={{

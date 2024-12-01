@@ -262,6 +262,34 @@ export async function resetProfile(userId, token, nickname, username) {
     Alert.alert("Unsuccessful", "Reset profile failed. Please try again later");
   }
 }
+export async function deleteUser(id, token) {
+  try {
+    const response = await fetch(
+      "http://3.27.94.77:8000/habital/v1/delete",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          'userId':id,
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (data.status == "success") {
+      Alert.alert("Success", "Account deleted");
+    } else {
+      Alert.alert("Unsuccessful", data.message || "Delete account unsuccessful");
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "Connect server error. Please try again later");
+  }
+}
 
 export async function resetSendEmail(token, userId, email) {
   try {
