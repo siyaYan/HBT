@@ -45,6 +45,7 @@ const InviteScreen = ({ navigation }) => {
       userData.token,
       formData.userId
     );
+    console.log(response);
     // const friendsRes = await getFriends(userData.token);
     if (response.status === "success") {
       // console.log("find!!!!");
@@ -72,17 +73,6 @@ const InviteScreen = ({ navigation }) => {
         setLink(false);
         setPend(false);
       }
-      // if (friendsRes.users.length > 0) {
-      //   const res = friendsRes.users.filter(
-      //     (user) => user.email == formData.userId.toLowerCase()
-      //   );
-      //   // console.log('res',res)
-      //   if (res.length > 0) {
-      //     setLink(true)
-      //   }else{
-      //     setLink(false)
-      //   }
-      // }
     } else {
       setErrors({
         userId: false,
@@ -93,14 +83,14 @@ const InviteScreen = ({ navigation }) => {
     }
   };
   const handleConnect = async () => {
-    // console.log("connect", findUser);
+    console.log("connect", findUser);
     // console.log(userData.data._id, findUser.user._id);
     const response = await connectByUserId(
       userData.token,
       userData.data._id,
       findUser.user._id
     );
-    if (response.status === "success") {
+    if (response?.status === "success") {
       console.log("connect!!");
     } else {
       console.log("fail!!");
@@ -131,11 +121,28 @@ const InviteScreen = ({ navigation }) => {
       <Background />
       <Flex direction="column" alignItems="center">
         <Box safeArea py="2" w="100%" maxW="320">
-          <VStack space={3} alignItems="center">
-            <Box py="5" alignSelf={"center"}>
-            </Box>
-            <Box w="100%" maxW="300" alignItems="center">
+          <VStack paddingY={10} alignItems="center">
+            {/* <Box py="5" alignSelf={"center"}>
+              {userData.avatar && userData.avatar.uri ? (
+                <Avatar
+                  bg="white"
+                  mb="1"
+                  size="md"
+                  source={{ uri: userData.avatar.uri }}
+                />
+              ) : (
+                <Avatar bg="white" mb="1" size="md" borderWidth={2}>
+                  <AntDesign name="user" size={30} color="black" />
+                </Avatar>
+              )}
+              <Text fontFamily={"Regular"} fontSize="lg">
+                {userData.data.nickname}
+              </Text>
+            </Box> */}
+            {/* Code for InviteFriend section */}
+            <Box w="100%" h="95%" maxW="300" alignItems="center" marginTop={'50%'}>
               <VStack space={5} alignItems="center" w={"100%"}>
+                {/* Code for title: find a friend */}
                 <FormControl isInvalid={!errors.userId}>
                   <FormControl.Label
                     ml={1}
@@ -168,6 +175,7 @@ const InviteScreen = ({ navigation }) => {
                   </FormControl.ErrorMessage>
                 </FormControl>
 
+                {/* Code for search friend button*/}
                 {formData.userId &&
                 (formData.userId.toLowerCase() == userData.data.email ||
                   formData.userId == userData.data.username) ? (
@@ -199,6 +207,7 @@ const InviteScreen = ({ navigation }) => {
                   </Button>
                 )}
 
+                {/* Code for showing search friend result*/}
                 {findUser.user.profileImageUrl &&
                 !(
                   formData.userId.toLowerCase() == userData.data.email ||

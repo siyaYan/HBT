@@ -55,12 +55,12 @@ export default function RoundStackNavigator({ route, navigation }) {
       });
     }
   };
-  const goRoundInfo = (roundId, navigation) => {
+  const goRoundInfo = (roundId, newInfoState, navigation) => {
     console.log("roundId in Stack", roundId);
     // If roundId is not empty, navigate to the RoundInfo screen
     navigation.navigate("RoundStack", {
       screen: "RoundInfo",
-      params: { id: roundId },
+      params: { id: roundId , state:newInfoState},
     });
   };
   const handleScoreNavigation = (isFromHome, roundId, navigation) => {
@@ -140,8 +140,13 @@ export default function RoundStackNavigator({ route, navigation }) {
               marginY={0}
               icon={<Ionicons name="arrow-back" size={28} color="black" />}
               onPress={() => {
-                console.log("----stack roundId", roundId);
-                goRoundInfo(roundId, navigation);
+                if(newState){
+                  console.log("should back info wiht home", roundId);
+                  goRoundInfo(roundId, true, navigation);
+                }else{
+                  console.log("----stack roundId", roundId);
+                  goRoundInfo(roundId, false, navigation);
+                }
               }}
             />
           ),

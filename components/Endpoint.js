@@ -33,13 +33,10 @@ export async function registerUser(
     );
 
     const data = await response.json();
-    if (data.status == "success") {
-      Alert.alert("Success", "Please check your email inbox");
-    } else {
+    if (data.status != "success") {
       Alert.alert("Oh,No!", data.message || "Registration unsuccessful");
       // console.log(data.message);
     }
-
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in register user:", error);
@@ -265,6 +262,34 @@ export async function resetProfile(userId, token, nickname, username) {
     Alert.alert("Unsuccessful", "Reset profile failed. Please try again later");
   }
 }
+export async function deleteUser(id, token) {
+  try {
+    const response = await fetch(
+      "http://3.27.94.77:8000/habital/v1/delete",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          'userId':id,
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (data.status == "success") {
+      Alert.alert("Success", "Account deleted");
+    } else {
+      Alert.alert("Unsuccessful", data.message || "Delete account unsuccessful");
+    }
+    return data; // Make sure you return the data here
+  } catch (error) {
+    console.error("Unsuccessful in connect server:", error);
+    Alert.alert("Unsuccessful", "Connect server error. Please try again later");
+  }
+}
 
 export async function resetSendEmail(token, userId, email) {
   try {
@@ -409,16 +434,16 @@ export async function connectByUserId(token, senderId, receiverId) {
     );
     // console.log(response)
     const data = await response.json();
-    // console.log(data);
-    if (data.status == "success") {
+    console.log(data);
+    if (data?.status == "success") {
       Alert.alert("Success", "Send link request to this friend!");
     } else {
-      Alert.alert("Oh,No!", data.message || "Failed to connect!");
+      Alert.alert("Oh,No!", data?.message || "Failed to connect!");
       // console.log(data.message);
     }
     return data;
   } catch (e) {
-    console.error("Unsuccessful in connect server:", error);
+    console.error("Unsuccessful in connect server:", e);
     Alert.alert("Unsuccessful", "can not connect to server");
   }
 }

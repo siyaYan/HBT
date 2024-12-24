@@ -471,7 +471,6 @@ const AccountSettingScreen = ({ navigation }) => {
                 </FormControl.ErrorMessage>
               </Box>
             </FormControl>
-
             <FormControl
               isInvalid={
                 Object.values(showMessage.username).some(
@@ -533,7 +532,6 @@ const AccountSettingScreen = ({ navigation }) => {
                 </FormControl.ErrorMessage>
               </Box>
             </FormControl>
-
             <FormControl isInvalid={!errors.email}>
               <FormControl.Label
                 ml={1}
@@ -621,6 +619,7 @@ const AccountSettingScreen = ({ navigation }) => {
             ) : (
               ""
             )}
+            {(userData.data?.googleId||userData.data?.facebookId)?(''):(
             <Button
               onPress={goResetPassword}
               rounded="30"
@@ -648,7 +647,7 @@ const AccountSettingScreen = ({ navigation }) => {
               }}
             >
               🗝 Change your password
-            </Button>
+            </Button>)}
           </VStack>
         </Box>
         <Actionsheet isOpen={isOpen} onClose={onClose} size="full">

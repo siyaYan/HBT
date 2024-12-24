@@ -159,7 +159,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { id: response.data._id, state: emptyState },
+        params: { id: response.data._id, state: emptyState , gohabit:true},
       });
     } else {
       const newRoundData = {

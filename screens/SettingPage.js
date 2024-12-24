@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import {
   Pressable,
@@ -10,6 +10,7 @@ import {
   NativeBaseProvider,
   Flex,
   Text,
+  Modal,
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
@@ -18,9 +19,11 @@ import OptionMenu from "../components/OptionMenu";
 import { Ionicons } from "@expo/vector-icons";
 import Background2 from "../components/Background2";
 import Feather from "@expo/vector-icons/Feather";
+import { deleteUser } from "../components/Endpoint";
 
 const SettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     // Fetch or update avatar dynamically
     // userData=useData().useData
@@ -59,8 +62,21 @@ const SettingScreen = ({ navigation }) => {
     }
   };
 
+  const deleteAccount = async () => {
+    // console.log(userData.data._id,userData.token)
+    try {
+      const data = await deleteUser(userData.data._id, userData.token);
+      if (data.status == "success") {
+        navigation.navigate("LoginStack", { screen: "Login" });
+        await deleteCredentials();
+      }
+    } catch (error) {
+      // Error clearing the credentials
+    }
+  };
+
   const goArchivePage = async () => {
-      navigation.navigate("Archive");
+    navigation.navigate("Archive");
   };
   return (
     <NativeBaseProvider>
@@ -143,7 +159,12 @@ const SettingScreen = ({ navigation }) => {
             />
 
             <Box alignItems="center" justifyContent="center">
-              <Button onPress={goArchivePage} size="md" p={0} variant="unstyled">
+              <Button
+                onPress={goArchivePage}
+                size="md"
+                p={0}
+                variant="unstyled"
+              >
                 <HStack>
                   <Feather name="archive" size={26} color="black" />
                   <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
@@ -184,7 +205,88 @@ const SettingScreen = ({ navigation }) => {
                 bg: "muted.50",
               }}
             />
+            <Box alignItems="center" justifyContent="center">
+              <Button
+                onPress={()=>setModalVisible(true)}
+                size="md"
+                p={0}
+                variant="unstyled"
+              >
+                <HStack>
+                  {/* <Ionicons name="remove-circle-outline" size={30} color="red" /> */}
+                  <Ionicons
+                    name="person-remove-outline"
+                    size={26}
+                    color="red"
+                  />
+                  <Text
+                    ml={2}
+                    fontFamily={"Regular Medium"}
+                    fontSize="lg"
+                    style={{ color: "red" }}
+                  >
+                    Delete
+                  </Text>
+                </HStack>
+              </Button>
+            </Box>
+
+            <Divider
+              my="2"
+              _light={{
+                bg: "muted.800",
+              }}
+              _dark={{
+                bg: "muted.50",
+              }}
+            />
           </VStack>
+          <Modal
+              isOpen={modalVisible}
+              onClose={setModalVisible}
+              animationPreset="fade"
+            >
+              <Modal.Content maxWidth="400px">
+                <Modal.CloseButton />
+                <Modal.Header>
+                  <Text fontFamily={"Regular Medium"} fontSize="xl">
+                    Delete Account
+                  </Text>
+                </Modal.Header>
+                <Modal.Body>
+                  <Text>
+                    Are you sure? It will delete everything of this account
+                  </Text>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button.Group space={2}>
+                    <Button
+                      rounded={30}
+                      shadow="7"
+                      width="50%"
+                      size={"md"}
+                      _text={{
+                        color: "#f9f8f2",
+                      }}
+                      colorScheme="blueGray"
+                      onPress={()=>setModalVisible(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      rounded={30}
+                      shadow="7"
+                      width="50%"
+                      size={"md"}
+                      colorScheme="danger"
+                      onPress={deleteAccount}
+                    >
+                      Delete
+                    </Button>
+                  </Button.Group>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
         </Box>
       </Flex>
     </NativeBaseProvider>

@@ -40,7 +40,7 @@ const ResetPassword = ({ navigation }) => {
       ...formData,
       password: text,
     });
-    const res = text === formData.confirmPassword;
+    // const res = text === formData.confirmPassword;
     if (text) {
       setErrors({
         ...errors,
@@ -52,7 +52,7 @@ const ResetPassword = ({ navigation }) => {
           /^(?=.*[A-Za-z].*[0-9]|[0-9].*[A-Za-z])(?=\S{8,20})(?=.*[!@#%&_?#=-])/.test(
             text
           ),
-        confirmPassword: res,
+        // confirmPassword: res,
       });
       return (
         errors.length &&
@@ -401,7 +401,7 @@ const ResetPassword = ({ navigation }) => {
                     backgroundColor:!(formData.password&&formData.current&&formData.confirmPassword)|| Object.values(errors).some((error) => error == false)?"rgba(73,165,121,0.4)":"#49a579"
                   }}
                   _text={{
-                    color: "rgba(249 248 242,0.4)",
+                    color: "rgba(249,248,242,0.4)",
                     fontFamily: "Regular Medium",
                     fontSize: "lg",
                   }}
