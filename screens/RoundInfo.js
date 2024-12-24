@@ -192,7 +192,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
               mt="5"
               width="100%"
               size="lg"
-              bg="#49a579"
+              rounded="30"
               _text={{
                 color: "#f9f8f2",
                 fontFamily: "Regular Medium",

@@ -129,26 +129,10 @@ const InviteScreen = ({ navigation }) => {
   return (
     <NativeBaseProvider>
       <Background />
-
       <Flex direction="column" alignItems="center">
         <Box safeArea py="2" w="100%" maxW="320">
           <VStack space={3} alignItems="center">
             <Box py="5" alignSelf={"center"}>
-              {userData.avatar && userData.avatar.uri ? (
-                <Avatar
-                  bg="white"
-                  mb="1"
-                  size="md"
-                  source={{ uri: userData.avatar.uri }}
-                />
-              ) : (
-                <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                  <AntDesign name="user" size={30} color="black" />
-                </Avatar>
-              )}
-              <Text fontFamily={"Regular"} fontSize="lg">
-                {userData.data.nickname}
-              </Text>
             </Box>
             <Box w="100%" maxW="300" alignItems="center">
               <VStack space={5} alignItems="center" w={"100%"}>
