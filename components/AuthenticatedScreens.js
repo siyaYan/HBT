@@ -246,8 +246,8 @@ const styles = StyleSheet.create({
   tabBarStyle: {
     backgroundColor: "#f9f8f2",
     borderTopColor: "transparent",
-    borderTopLeftRadius: 10, // Rounds the top-left corner
-    borderTopRightRadius: 10, // Rounds the top-right corner
+    borderTopLeftRadius: 13, // Rounds the top-left corner
+    borderTopRightRadius: 13, // Rounds the top-right corner
     height: 65, // Optional height adjustment
     position: "absolute",
     left: 3,
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     elevation: 10, // Adds shadow for depth (Android)
     shadowColor: "#191919", // Shadow properties (iOS)
     shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowRadius: 10,
   },
 });

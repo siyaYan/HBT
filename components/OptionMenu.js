@@ -22,7 +22,7 @@ export default OptionMenu = ({ navigation }) => {
               );
             }}
           >
-            {/* Use custom SVG in menu item */}
+            {/* Use SVG in menu item */}
             <Menu.Item px="0" onPress={inviteFriend}>
               <SvgXml xml={addUserSvg} width={24} height={24} /> Add a friend
             </Menu.Item>
