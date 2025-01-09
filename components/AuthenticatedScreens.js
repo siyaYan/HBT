@@ -82,8 +82,8 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={homeSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={35}
+                  height={35}
                 />
               </TouchableOpacity>
             ),
@@ -111,8 +111,8 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={circleSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={35}
+                  height={35}
                   top={0}
                 />
               </TouchableOpacity>
@@ -144,8 +144,8 @@ export default function AuthenticatedScreens({ navigation }) {
                     xml={uploadSvg(
                       accessibilityState.selected ? "#49a579" : "#191919"
                     )}
-                    width={30}
-                    height={30}
+                    width={35}
+                    height={35}
                     top={0}
                   />
                 </TouchableOpacity>
@@ -153,8 +153,8 @@ export default function AuthenticatedScreens({ navigation }) {
                 <Button disabled style={styles.tabButton(true)}>
                   <SvgXml
                     xml={uploadSvg("lightgray")}
-                    width={30}
-                    height={30}
+                    width={35}
+                    height={35}
                     top={0}
                   />
                 </Button>
@@ -214,8 +214,8 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={settingsSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={35}
+                  height={35}
                   top={0}
                 />
               </TouchableOpacity>
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     borderTopColor: "transparent",
     borderTopLeftRadius: 13, // Rounds the top-left corner
     borderTopRightRadius: 13, // Rounds the top-right corner
-    height: 65, // Optional height adjustment
+    height: 100, // Optional height adjustment
     position: "absolute",
     left: 3,
     right: 3,
