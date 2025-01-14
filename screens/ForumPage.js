@@ -314,14 +314,16 @@ const ForumPage = ({ route, navigation }) => {
                           />
                         </Pressable>
                         <Text
-                              style={{fontSize:16,
-                                color:"#191919"
-                                  // item.userId == userData.data._id
-                                  //   ? "#f9f8f2"
-                                  //   : "#191919",
-                              }}
-                            >{item.likes}</Text>
-                 
+                          style={{
+                            fontSize: 16,
+                            color: "#191919",
+                            // item.userId == userData.data._id
+                            //   ? "#f9f8f2"
+                            //   : "#191919",
+                          }}
+                        >
+                          {item.likes}
+                        </Text>
                       </HStack>
                     </Badge>
                     {item.userId == userData.data._id ? (
@@ -359,13 +361,70 @@ const ForumPage = ({ route, navigation }) => {
         </View>
         {!isModalVisible &&
           (roundActive && isFocused ? (
+            // <Fab
+            //   onPress={() => handleUpload()}
+            //   m={6}
+            //   // bg={"#6666ff"}
+            //   backgroundColor={"transparent"}
+            //   size="75"
+            //   shadow={5} // Add a shadow for the floating effect
+
+            //   // icon={<Icon color="white" size={35} as={AntDesign} name="plus" />}
+            //   icon={
+            //     <Pressable
+            //       accessibilityLabel="Upload button"
+            //       onPress={() => handleUpload()}
+            //     >
+            //       <SvgXml
+            //         xml={UploadPost}
+            //         width={35}
+            //         height={35}
+            //         style={{
+            //           fill: "#FFD700", // Ensures the fill color applies
+            //         }}
+            //       />
+            //     </Pressable>
+            //   }
+            // />
             <Fab
-              onPress={() => handleUpload()}
-              m={6}
-              bg={"#6666ff"}
-              size="75"
-              icon={<Icon color="white" size={35} as={AntDesign} name="plus" />}
-            />
+            onPress={() => handleUpload()}
+            m={6}
+            backgroundColor="white" // Solid white background
+            size="75"
+            shadow={5} // Light shadow for floating effect
+            icon={
+              <Pressable
+                accessibilityLabel="Upload button"
+                onPress={() => handleUpload()}
+              >
+                <SvgXml
+                  xml={UploadPost}
+                  width={35}
+                  height={35}
+                  style={{
+                    fill: "#6666ff", // Dark icon for contrast against the white background
+                  }}
+                />
+              </Pressable>
+            }
+            style={{
+              borderWidth: 0, // No border
+              borderColor: "transparent", // Transparent border
+              borderRadius: 50, // Fully rounded bubble shape
+              elevation: 12, // Increased elevation for better depth (floating effect)
+              shadowColor: "#000", // Shadow color
+              shadowOffset: { width: 0, height: 10 }, // Offset for floating shadow
+              shadowOpacity: 0.4, // Increased opacity for a stronger shadow
+              shadowRadius: 20, // Larger blur for the floating effect
+              padding: 15, // Add more padding for a thicker bubble
+              transform: [{ scale: 1.2 }], // Increase scale for a more prominent bubble
+              position: "absolute", // Position the Fab button absolutely
+              right: 0.1, // Set it to the right edge with a small margin
+              bottom: 0.1, // Set it to the bottom edge with a small margin
+            }}
+          />
+              
+
           ) : (
             ""
           ))}
@@ -402,7 +461,29 @@ const styles = StyleSheet.create({
 export default ForumPage;
 
 const DeleteIndi = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M37.01,15.62c0,3.38,0,6.62,0,9.86,0,4.89,0,9.78,0,14.67,0,2.66-.94,3.61-3.53,3.62-5.77.01-11.54.02-17.31,0-2.14,0-3.26-1.03-3.26-3.06-.03-8.08-.01-16.15,0-24.23,0-.26.06-.52.1-.85h24ZM17.18,29.81c0,2.25,0,4.49,0,6.74,0,1.17.31,2.17,1.67,2.14,1.26-.03,1.57-1,1.57-2.09,0-4.6,0-9.21,0-13.81,0-1.16-.29-2.16-1.68-2.13-1.28.03-1.56.98-1.56,2.08,0,2.36,0,4.71,0,7.07ZM23.38,29.64c0,2.36,0,4.73,0,7.09,0,1.07.36,1.91,1.52,1.96,1.28.05,1.66-.85,1.65-1.98,0-4.67,0-9.35,0-14.02,0-1.11-.3-2.05-1.6-2.03-1.29.01-1.58.95-1.57,2.06.01,2.31,0,4.62,0,6.93ZM32.73,29.65c0-2.35,0-4.71,0-7.06,0-1.06-.34-1.9-1.52-1.94-1.29-.04-1.65.85-1.65,1.97,0,4.71,0,9.42,0,14.13,0,1.05.33,1.92,1.51,1.94,1.26.03,1.66-.83,1.65-1.97-.01-2.35,0-4.71,0-7.06Z"/><path class="cls-1" d="M29.24,9.65c1.26,0,2.56,0,3.87,0q2.62,0,3.15,2.41,2.55.43,2.51,1.96H11.36q-.29-1.51,2.35-1.97c.42-2.35.47-2.4,2.97-2.4,1.31,0,2.62,0,3.49,0,3.02,0,6.05,0,9.07,0ZM26.12,6.91"/><path class="cls-1" d="M24.62,6.22c-1.89,0-3.42,1.53-3.42,3.42h1.56c0-1.03.83-1.86,1.86-1.86s1.86.83,1.86,1.86h1.56c0-1.89-1.53-3.42-3.42-3.42Z"/></svg>`;
-const Support = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M35.4,44.3l-7.19-5.11c-1.51-1.07-3.54-1.05-5.02,0.05l-7.08,5.26c-2.28,1.69-5.4-0.52-4.55-3.23l2.63-8.42
+const Support = `<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 28.3.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#93D8C5;}
+	.st1{fill:none;stroke:#93D8C5;stroke-width:2;stroke-miterlimit:10;}
+	.st2{fill:none;stroke:#231F20;stroke-miterlimit:10;}
+	.st3{fill:#231F20;}
+	.st4{fill:#FFFFFF;}
+	.st5{fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}
+	.st6{stroke:#000000;stroke-miterlimit:10;}
+	.st7{fill:#FF061E;}
+	.st8{fill:#BDDB6B;}
+	.st9{fill:#49A579;}
+	.st10{fill:#6666FF;}
+	.st11{fill:#191919;}
+	.st12{fill:#F9F8F2;}
+</style>
+<path d="M35.4,44.3l-7.19-5.11c-1.51-1.07-3.54-1.05-5.02,0.05l-7.08,5.26c-2.28,1.69-5.4-0.52-4.55-3.23l2.63-8.42
 	c0.55-1.77-0.09-3.69-1.6-4.76L5.39,23c-2.32-1.64-1.17-5.29,1.67-5.32l8.82-0.1c1.85-0.02,3.48-1.23,4.03-2.99l2.63-8.42
 	c0.85-2.71,4.67-2.75,5.58-0.06l2.82,8.36c0.59,1.75,2.24,2.93,4.09,2.91l8.82-0.1c2.84-0.03,4.06,3.59,1.78,5.28l-7.08,5.26
-	c-1.48,1.1-2.09,3.04-1.5,4.79l2.82,8.36C40.78,43.66,37.71,45.94,35.4,44.3z"/></svg>`;
+	c-1.48,1.1-2.09,3.04-1.5,4.79l2.82,8.36C40.78,43.66,37.71,45.94,35.4,44.3z"/>
+</svg>`;
+
+const UploadPost = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M46.62,31.09c0-5.63-3.58-10.43-8.57-12.28-.52-6.75-6.17-12.08-13.05-12.08s-12.53,5.33-13.05,12.08c-5,1.85-8.57,6.65-8.57,12.28,0,.01,0,.03,0,.04h0v.85c0,1.56,1.27,2.83,2.83,2.83h10.47c1.02,0,1.84-.82,1.84-1.84s-.82-1.84-1.84-1.84H7.06s0-.03,0-.04c0-3.66,2.11-6.84,5.17-8.39,1.08-.55,2.28-.89,3.54-.99-.12-.61-.19-1.23-.19-1.88s.06-1.22.18-1.8c.84-4.33,4.67-7.62,9.24-7.62s8.4,3.28,9.24,7.62c.11.58.18,1.19.18,1.8s-.07,1.27-.19,1.88c1.27.09,2.46.44,3.54.99,3.06,1.56,5.17,4.73,5.17,8.39,0,.01,0,.03,0,.04h-9.62c-1.02,0-1.84.82-1.84,1.84s.82,1.84,1.84,1.84h10.47c1.56,0,2.83-1.27,2.83-2.83v-.85h0s0-.03,0-.04Z"/><path class="cls-1" d="M32.64,27.81c.79-.64.9-1.8.26-2.59l-6.76-8.24c-.36-.44-.9-.69-1.46-.67-.56.01-1.09.28-1.43.73l-6.2,8.24c-.61.81-.45,1.97.36,2.58.33.25.72.37,1.1.37.56,0,1.11-.25,1.47-.73l3.17-4.21v17.2c0,1.02.82,1.84,1.84,1.84s1.84-.82,1.84-1.84v-16.84l3.21,3.92c.64.79,1.8.9,2.59.26Z"/></svg>`;
