@@ -5,7 +5,7 @@ import LottieView from "lottie-react-native";
 const LoadingAnimationScreen = ({ navigation }) => {
   return (
     // <NativeBaseProvider>
-    <View Loadingstyle={styles.animationContainer}>
+    <View Loadingstyle={stylis.animationContainer}>
       <LottieView
         autoPlay
         style={{

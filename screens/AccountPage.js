@@ -24,6 +24,8 @@ import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
+import { SvgXml } from "react-native-svg";
+
 
 const AccountScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
@@ -155,7 +157,7 @@ const AccountScreen = ({ navigation }) => {
               alignItems="center"
               justifyContent="center"
             >
-              <Text style={{ fontSize: 18 , fontFamily:"Semi Bold" }}>
+              <Text style={{ fontSize: 18, fontFamily: "Semi Bold" }}>
                 Credits: {userData.data.credit}
               </Text>
               <View
@@ -163,9 +165,9 @@ const AccountScreen = ({ navigation }) => {
                   width: "90%",
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent:"space-between",
+                  justifyContent: "space-between",
                   paddingHorizontal: '10%',
-                  marginVertical:'10%'
+                  marginVertical: '10%'
                 }}
               >
                 <View>
