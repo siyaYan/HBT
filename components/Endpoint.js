@@ -1030,11 +1030,7 @@ export async function getRoundInfo(token, Id) {
     const data = await response.json();
     console.log("getRoundInfo", data);
     return data; // Make sure you return the data here
-    // const dummyRounds = [
-    //   { id: 1, roundName: 'Round 1', level: '21', startDate: '2024-05-14T17:00:00Z', maxCapacity: 20, allowOthers: true, status:'active',endDate: '2024-06-14T17:00:00Z'},
-    //   { id: 2, name: 'Round 2', level: '35', startDate: '2024-08-14T17:00:00Z', maxCapacity: 15, allowOthers: false, status:'pending' },
-    // ];
-    // return dummyRounds;
+
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
     Alert.alert("Unsuccessful", "can not connect to server");
@@ -1044,8 +1040,6 @@ export async function getRoundInfo(token, Id) {
 // Chapter 4: Function to update round information
 export async function updateRoundInfo(token, newRoundData) {
   try {
-    // console.log("round id",newRoundData._id)
-    // console.log("Pass to Endpoint", newRoundData);
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/round/${newRoundData._id}`,
       {
@@ -1058,10 +1052,8 @@ export async function updateRoundInfo(token, newRoundData) {
           name: newRoundData.name,
           maximum: parseInt(newRoundData.maxCapacity, 10),
           level: newRoundData.level,
-          startDate: newRoundData.startDate.toISOString(),
-          updatedAt: new Date().toISOString(),
+          startDate: newRoundData.status=='A'?null:newRoundData.startDate,
           isAllowedInvite: newRoundData.isAllowedInvite,
-          status:newRoundData.status,
         }),
       }
     );

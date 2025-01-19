@@ -154,9 +154,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
       };
 
       const response = await createRound(newRoundData, userData.token);
-
       insertRoundData(response.data);
-
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
         params: { id: response.data._id, state: emptyState , gohabit:true},
@@ -170,8 +168,8 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
         startDate: startDate,
         maxCapacity: maxCapacity,
         isAllowedInvite: allowOthers,
+        status:round.status
       };
-
       const response = await updateRoundInfo(userData.token, newRoundData);
 
       if (response.status == "success") {
