@@ -121,7 +121,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const levelInt = round ? parseInt(round.level, 10) : 0;
   const startDate = round ? new Date(round.startDate) : new Date();
   const endDate = new Date(
-    startDate.getTime() + levelInt * 24 * 60 * 60 * 1000
+    startDate.getTime() + (levelInt-1) * 24 * 60 * 60 * 1000
   ); // Convert days to milliseconds
   const today = new Date();
 
@@ -164,7 +164,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
               })}
             </Text>
             <Text fontSize="md">
-              End date:{" "}
+              Last date:{" "}
               {endDate.toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "short",

@@ -34,8 +34,8 @@ export default function ForumStackNavigator({ route, navigation }) {
     const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
     // Adjust daysLeft based on level if needed
-    const finalDaysLeft = Math.abs(daysLeft - thisRound?.level)-1;
-    return finalDaysLeft;
+    const finalDaysLeft = Math.abs(daysLeft - thisRound?.level);
+    return finalDaysLeft==0?"Last day":finalDaysLeft+" days to go";
   };
 
   const isThisActiveRound = thisRound?.status == "A" ? calculateDaysLeft() : "";
@@ -61,7 +61,7 @@ export default function ForumStackNavigator({ route, navigation }) {
               </Text>
               {isThisActiveRound ? (
                 <Text style={{ fontSize: 14, textAlign: "center" }}>
-                  {isThisActiveRound + " days to go"}
+                  {isThisActiveRound}
                 </Text>
               ) : (
                 ""
@@ -112,7 +112,7 @@ export default function ForumStackNavigator({ route, navigation }) {
               </Text>
               {isThisActiveRound ? (
                 <Text style={{ fontSize: 14, textAlign: "center" }}>
-                  {isThisActiveRound + " days to go"}
+                  {isThisActiveRound}
                 </Text>
               ) : (
                 ""
