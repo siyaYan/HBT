@@ -33,7 +33,7 @@ const RoundHabit= ({ route, navigation }) => {
     if(fromNew){
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { id: roundId },
+        params: { id: roundId , state: true},
       });
     }
   };
