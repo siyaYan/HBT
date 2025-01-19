@@ -10,7 +10,7 @@ const RoundHabit= ({ route, navigation }) => {
   const { userData } = useData();
   const { roundData, insertRoundData} = useRound();
 
-  const { id: roundId} = route.params || {}; // Use optional chaining to prevent crashes if params are missing
+  const { id: roundId, state: fromNew} = route.params || {}; // Use optional chaining to prevent crashes if params are missing
 
   const thisRoundData=roundData.data.filter(item=>item._id==roundId)[0]
   const meInrRund=thisRoundData.roundFriends.filter(item=>item.id==userData.data._id)[0]
@@ -30,6 +30,12 @@ const RoundHabit= ({ route, navigation }) => {
     };
     console.log(updatedRound)
     insertRoundData(updatedRound)
+    if(fromNew){
+      navigation.navigate("RoundStack", {
+        screen: "RoundInfo",
+        params: { id: roundId },
+      });
+    }
   };
   return (
     <View style={styles.container}>
