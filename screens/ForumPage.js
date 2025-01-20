@@ -11,6 +11,7 @@ import {
   HStack,
   Icon,
 } from "native-base";
+import DraggableFAB from "../components/DraggableFAB";
 import { SvgXml } from "react-native-svg"; // Import SvgXml to use custom SVGs
 
 import { Fab, useDisclose } from "native-base";
@@ -181,250 +182,195 @@ const ForumPage = ({ route, navigation }) => {
               />
             </View>
           )}
-          <ScrollView
-            ref={scrollViewRef}
-            w={"100%"}
-            h={"100%"}
-            contentContainerStyle={{ flexGrow: 1 }}
-            onContentSizeChange={handleContentSizeChange}
-          >
-            {post.length > 0 ? (
-              post.map((item, index) => (
-                <View
-                  key={index}
-                  style={{ flex: 1, marginVertical: 15, marginHorizontal: 10 }}
-                >
-                  <WingBlank>
-                    <Badge
-                      mb={-7}
-                      mr={0}
-                      zIndex={10}
-                      variant="subtle"
-                      alignSelf="flex-end"
-                      _text={{
-                        fontSize: 14,
-                      }}
-                    >
-                      <Text>{item.date}</Text>
-                    </Badge>
-                    <Card
-                      style={{
-                        backgroundColor:
-                          item.userId == userData.data._id
-                            ? "#6666ff"
-                            : "#f9f8f2",
-                      }}
-                    >
-                      <Card.Body style={{ flexDirection: "row", padding: 8 }}>
-                        <Card width="35%">
-                          <View>
-                            <AspectRatio w="100%" ratio={5 / 7}>
-                              <View paddingY={5} alignItems={"center"}>
-                                <Pressable
-                                  onPress={() =>
-                                    roundActive && handleModal(item.userId)
-                                  }
-                                >
-                                  <Avatar
-                                    bg="pink.600"
-                                    alignSelf="center"
-                                    size="xl"
-                                    source={{
-                                      uri: item.profileImageUrl,
-                                    }}
-                                  ></Avatar>
-                                  <Text style={{ textAlign: "center" }}>
-                                    {item.nickname}
-                                  </Text>
-                                </Pressable>
-                              </View>
-                            </AspectRatio>
-                          </View>
-                        </Card>
-                        <Card width="65%">
-                          <View style={{ alignSelf: "center", height: "30%" }}>
-                            <Image
-                              source={{
-                                uri: item.image,
-                              }}
-                              style={{
-                                width: "100%", // or any specific width
-                                height: undefined,
-                                aspectRatio: 1.3, // adjust this value to match the aspect ratio of your image
-                              }}
-                              alt="Alternate Text"
-                              resizeMode="cover"
-                            />
-                          </View>
-                        </Card>
-                      </Card.Body>
-                      <Card.Footer
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          paddingVertical: 5,
-                          paddingHorizontal: 20,
+          <View style={{ flex: 1 }}>
+            {isModalVisible && (
+              <View style={styles.modalContainer}>
+                <AddImage
+                  isOpen={isOpen}
+                  onOpen={onOpen}
+                  onClose={() => handleUploadClose()}
+                  navigation={navigation}
+                />
+              </View>
+            )}
+            <ScrollView
+              ref={scrollViewRef}
+              w={"100%"}
+              h={"100%"}
+              contentContainerStyle={{
+                flexGrow: 1, // Ensures the content stretches to fill the screen
+              }}
+            >
+              {post.length > 0 ? (
+                post.map((item, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      flex: 1,
+                      marginVertical: 10, // Consistent gap between rows
+                      paddingHorizontal: 10, // Optional: Add uniform horizontal padding
+                    }}
+                  >
+                    <WingBlank>
+                      <Badge
+                        mb={-7}
+                        mr={0}
+                        zIndex={10}
+                        variant="subtle"
+                        alignSelf="flex-end"
+                        _text={{
+                          fontSize: 14,
                         }}
-                        content={
-                          <View>
-                            {/* Text Content */}
-                            <Text
-                              style={{
-                                color:
-                                  item.userId == userData.data._id
-                                    ? "#f9f8f2"
-                                    : "#191919",
-                              }}
+                      >
+                        <Text>{item.date}</Text>
+                      </Badge>
+                      <Card
+                        style={{
+                          backgroundColor:
+                            item.userId == userData.data._id
+                              ? "#6666ff"
+                              : "#f9f8f2",
+                        }}
+                      >
+                        <Card.Body style={{ flexDirection: "row", padding: 8 }}>
+                          <Card width="35%">
+                            <View>
+                              <AspectRatio w="100%" ratio={5 / 7}>
+                                <View paddingY={5} alignItems={"center"}>
+                                  <Pressable
+                                    onPress={() =>
+                                      roundActive && handleModal(item.userId)
+                                    }
+                                  >
+                                    <Avatar
+                                      bg="pink.600"
+                                      alignSelf="center"
+                                      size="xl"
+                                      source={{
+                                        uri: item.profileImageUrl,
+                                      }}
+                                    />
+                                    <Text style={{ textAlign: "center" }}>
+                                      {item.nickname}
+                                    </Text>
+                                  </Pressable>
+                                </View>
+                              </AspectRatio>
+                            </View>
+                          </Card>
+                          <Card width="65%">
+                            <View
+                              style={{ alignSelf: "center", height: "30%" }}
                             >
-                              {item.text ? item.text : ""}
-                            </Text>
-                            {/* Blank Row */}
-                            <View style={{ height: 5 }} />
-                          </View>
-                        }
-                      />
-                    </Card>
-                    <Badge
-                      colorScheme="danger"
-                      rounded="full"
-                      mt={-5}
-                      mr={5}
-                      zIndex={2}
-                      variant="outline"
-                      alignSelf="flex-end"
-                      _text={{
-                        fontSize: 24,
-                      }}
-                      borderColor="transparent"
-                      backgroundColor={"#f9f8f2"}
-                    >
-                      <HStack>
-                        <Pressable
-                          accessibilityLabel="Like button"
-                          onPress={() => {
-                            roundActive &&
-                              handleLikeMessage(item.id, item.like);
-                          }}
-                        >
-                          <SvgXml
-                            xml={Support}
-                            width={30}
-                            height={30}
-                            fill={item.like ? "#FFD700" : "lightgray"}
-                          />
-                        </Pressable>
-                        <Text
+                              <Image
+                                source={{
+                                  uri: item.image,
+                                }}
+                                style={{
+                                  width: "100%",
+                                  height: undefined,
+                                  aspectRatio: 1.3,
+                                }}
+                                alt="Alternate Text"
+                                resizeMode="cover"
+                              />
+                            </View>
+                          </Card>
+                        </Card.Body>
+                        <Card.Footer
                           style={{
-                            fontSize: 16,
-                            color: "#191919",
-                            // item.userId == userData.data._id
-                            //   ? "#f9f8f2"
-                            //   : "#191919",
+                            display: "flex",
+                            alignItems: "center",
+                            paddingVertical: 5,
+                            paddingHorizontal: 20,
                           }}
-                        >
-                          {item.likes}
-                        </Text>
-                      </HStack>
-                    </Badge>
-                    {item.userId == userData.data._id ? (
+                          content={
+                            <View>
+                              <Text
+                                style={{
+                                  color:
+                                    item.userId == userData.data._id
+                                      ? "#f9f8f2"
+                                      : "#191919",
+                                }}
+                              >
+                                {item.text || ""}
+                              </Text>
+                              <View style={{ height: 5 }} />
+                            </View>
+                          }
+                        />
+                      </Card>
                       <Badge
                         colorScheme="danger"
                         rounded="full"
-                        mt={-7}
-                        mr={12}
-                        zIndex={5}
-                        alignSelf="flex-start"
+                        mt={-5}
+                        mr={5}
+                        zIndex={2}
+                        variant="outline"
+                        alignSelf="flex-end"
                         _text={{
                           fontSize: 24,
                         }}
+                        borderColor="transparent"
                         backgroundColor={"#f9f8f2"}
                       >
-                        <Pressable
-                          accessibilityLabel="Delete button"
-                          onPress={() =>
-                            roundActive && handleDeleteMessage(item.id)
-                          }
-                        >
-                          <SvgXml xml={DeleteIndi} width={30} height={30} />
-                        </Pressable>
+                        <HStack>
+                          <Pressable
+                            accessibilityLabel="Like button"
+                            onPress={() => {
+                              roundActive &&
+                                handleLikeMessage(item.id, item.like);
+                            }}
+                          >
+                            <SvgXml
+                              xml={Support}
+                              width={30}
+                              height={30}
+                              fill={item.like ? "#FFD700" : "lightgray"}
+                            />
+                          </Pressable>
+                          <Text style={{ fontSize: 16, color: "#191919" }}>
+                            {item.likes}
+                          </Text>
+                        </HStack>
                       </Badge>
-                    ) : (
-                      ""
-                    )}
-                  </WingBlank>
-                </View>
-              ))
-            ) : (
-              <Text>No Post</Text>
-            )}
-          </ScrollView>
+                      {item.userId == userData.data._id && (
+                        <Badge
+                          colorScheme="danger"
+                          rounded="full"
+                          mt={-7}
+                          mr={12}
+                          zIndex={5}
+                          alignSelf="flex-start"
+                          _text={{
+                            fontSize: 24,
+                          }}
+                          backgroundColor={"#f9f8f2"}
+                        >
+                          <Pressable
+                            accessibilityLabel="Delete button"
+                            onPress={() =>
+                              roundActive && handleDeleteMessage(item.id)
+                            }
+                          >
+                            <SvgXml xml={DeleteIndi} width={30} height={30} />
+                          </Pressable>
+                        </Badge>
+                      )}
+                    </WingBlank>
+                  </View>
+                ))
+              ) : (
+                <Text>No Post</Text>
+              )}
+            </ScrollView>
+          </View>
         </View>
+
         {!isModalVisible &&
           (roundActive && isFocused ? (
-            // <Fab
-            //   onPress={() => handleUpload()}
-            //   m={6}
-            //   // bg={"#6666ff"}
-            //   backgroundColor={"transparent"}
-            //   size="75"
-            //   shadow={5} // Add a shadow for the floating effect
-
-            //   // icon={<Icon color="white" size={35} as={AntDesign} name="plus" />}
-            //   icon={
-            //     <Pressable
-            //       accessibilityLabel="Upload button"
-            //       onPress={() => handleUpload()}
-            //     >
-            //       <SvgXml
-            //         xml={UploadPost}
-            //         width={35}
-            //         height={35}
-            //         style={{
-            //           fill: "#FFD700", // Ensures the fill color applies
-            //         }}
-            //       />
-            //     </Pressable>
-            //   }
-            // />
-            <Fab
-            onPress={() => handleUpload()}
-            m={6}
-            backgroundColor="white" // Solid white background
-            size="75"
-            shadow={5} // Light shadow for floating effect
-            icon={
-              <Pressable
-                accessibilityLabel="Upload button"
-                onPress={() => handleUpload()}
-              >
-                <SvgXml
-                  xml={UploadPost}
-                  width={35}
-                  height={35}
-                  style={{
-                    fill: "#6666ff", // Dark icon for contrast against the white background
-                  }}
-                />
-              </Pressable>
-            }
-            style={{
-              borderWidth: 0, // No border
-              borderColor: "transparent", // Transparent border
-              borderRadius: 50, // Fully rounded bubble shape
-              elevation: 12, // Increased elevation for better depth (floating effect)
-              shadowColor: "#000", // Shadow color
-              shadowOffset: { width: 0, height: 10 }, // Offset for floating shadow
-              shadowOpacity: 0.4, // Increased opacity for a stronger shadow
-              shadowRadius: 20, // Larger blur for the floating effect
-              padding: 15, // Add more padding for a thicker bubble
-              transform: [{ scale: 1.2 }], // Increase scale for a more prominent bubble
-              position: "absolute", // Position the Fab button absolutely
-              right: 0.1, // Set it to the right edge with a small margin
-              bottom: 0.1, // Set it to the bottom edge with a small margin
-            }}
-          />
-              
-
+              <DraggableFAB onUpload={handleUpload} />
           ) : (
             ""
           ))}
