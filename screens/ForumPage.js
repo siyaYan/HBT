@@ -125,15 +125,27 @@ const ForumPage = ({ route, navigation }) => {
   };
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
-
-    // Format the date and time according to the local time zone
-    const formattedDate = date.toLocaleDateString(); // Local date
-    const formattedTime = date.toLocaleTimeString(); // Local time
-
-    const result = `${formattedDate} ${formattedTime}`;
-    return result;
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+  
+    const isToday = date.toDateString() === today.toDateString();
+    const isYesterday = date.toDateString() === yesterday.toDateString();
+  
+    // Format the time without seconds
+    const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+    if (isToday) {
+      return `Today ${formattedTime}`;
+    } else if (isYesterday) {
+      return `Yesterday ${formattedTime}`;
+    } else {
+      // Format the date and time for earlier dates
+      const formattedDate = date.toLocaleDateString(); // Local date
+      return `${formattedDate} ${formattedTime}`;
+    }
   };
-
+  
   const handleUpload = () => {
     setIsModalVisible(true);
     onOpen();
@@ -232,9 +244,9 @@ const ForumPage = ({ route, navigation }) => {
                               : "#f9f8f2",
                         }}
                       >
-                        <Card.Body style={{ flexDirection: "row", padding: 8 }}>
+                        {/* <Card.Body style={{ flexDirection: "row", padding: 8 }}>
                           <Card width="35%">
-                            <View>
+                            <View >
                               <AspectRatio w="100%" ratio={5 / 7}>
                                 <View paddingY={5} alignItems={"center"}>
                                   <Pressable
@@ -259,6 +271,7 @@ const ForumPage = ({ route, navigation }) => {
                             </View>
                           </Card>
                           <Card width="65%">
+            
                             <View
                               style={{ alignSelf: "center", height: "30%" }}
                             >
@@ -276,36 +289,74 @@ const ForumPage = ({ route, navigation }) => {
                               />
                             </View>
                           </Card>
-                        </Card.Body>
-                        <Card.Footer
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            paddingVertical: 5,
-                            paddingHorizontal: 20,
-                          }}
-                          content={
-                            <View>
-                              <Text
-                                style={{
-                                  color:
-                                    item.userId == userData.data._id
-                                      ? "#f9f8f2"
-                                      : "#191919",
-                                }}
-                              >
-                                {item.text || ""}
-                              </Text>
-                              <View style={{ height: 5 }} />
-                            </View>
-                          }
-                        />
+                        </Card.Body> */}
+                        <Card.Body style={{ flexDirection: "row", padding: 8 }}>
+  {/* Right-hand side: Image */}
+  <Card width="100%">
+    <View style={{ alignSelf: "center" }}>
+      <Image
+        source={{
+          uri: item.image,
+        }}
+        style={{
+          width: "100%",
+          height: undefined,
+          aspectRatio: 1.3, // You can adjust the aspect ratio as needed
+        }}
+        alt="Alternate Text"
+        resizeMode="cover"
+      />
+    </View>
+  </Card>
+</Card.Body>
+
+<Card.Footer
+  style={{
+    display: "flex",
+    alignItems: "center",
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+  }}
+  content={
+    <View style={{ flexDirection: "row", alignItems: "center" }}>
+      {/* Left Part: Avatar */}
+      <View style={{ flexDirection: "column", alignItems: "center", marginRight: 10 }}>
+        <Pressable onPress={() => roundActive && handleModal(item.userId)}>
+          <Avatar
+            bg="pink.600"
+            size="md" // You can adjust the size as needed
+            source={{ uri: item.profileImageUrl }}
+          />
+        </Pressable>
+       
+      </View>
+
+      {/* Right Part:  Nickname and Text */}
+      <View style={{ flex: 1 }}>
+      <Text style={{ textAlign: "left", marginTop: 5 }}>
+          {item.nickname}
+        </Text>
+        <Text
+          style={{
+            color: item.userId == userData.data._id ? "#f9f8f2" : "#191919",
+            flexWrap: 'wrap', // Allow text to wrap if necessary
+          }}
+        >
+          {item.text || ""}
+        </Text>
+      </View>
+    </View>
+  }
+/>
+
                       </Card>
+                              {/* Right Aligned Like Badge */}
+
                       <Badge
                         colorScheme="danger"
                         rounded="full"
                         mt={-5}
-                        mr={5}
+                        // mr={5}
                         zIndex={2}
                         variant="outline"
                         alignSelf="flex-end"
@@ -334,6 +385,8 @@ const ForumPage = ({ route, navigation }) => {
                             {item.likes}
                           </Text>
                         </HStack>
+                                {/* Left Aligned Delete Badge */}
+
                       </Badge>
                       {item.userId == userData.data._id && (
                         <Badge
