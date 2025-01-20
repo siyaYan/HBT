@@ -37,8 +37,8 @@ export default function RoundStackNavigator({ route, navigation }) {
     const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
     // Adjust daysLeft based on level if needed
-    const finalDaysLeft = Math.abs(daysLeft - thisRound?.level)-1;
-    return finalDaysLeft;
+    const finalDaysLeft = Math.abs(daysLeft - thisRound?.level);
+    return finalDaysLeft==0?"Last day":finalDaysLeft+" days to go";
   };
 
   const isThisActiveRound = thisRound?.status == "A" ? calculateDaysLeft() : "";
@@ -215,9 +215,13 @@ export default function RoundStackNavigator({ route, navigation }) {
               >
                 {thisRound?.name}
               </Text>
-              {isThisActiveRound?<Text style={{ fontSize: 14, textAlign: "center" }}>
-                {isThisActiveRound + " days to go"}
-              </Text>:('')}
+              {isThisActiveRound ? (
+                <Text style={{ fontSize: 14, textAlign: "center" }}>
+                  {isThisActiveRound}
+                </Text>
+              ) : (
+                ""
+              )}
               
             </View>
           ),
