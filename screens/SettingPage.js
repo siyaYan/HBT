@@ -105,29 +105,22 @@ const SettingScreen = ({ navigation }) => {
               </Avatar>
             )}
           </Pressable>
-          <Text fontFamily={"Regular"} fontSize="lg">
+          <Text fontFamily={"Regular"} fontSize="md">
             {userData.data.nickname}
           </Text>
         </Box>
 
-        <Box mt="5" w="90%" px="2">
+        <Box mt="2" w="90%" px="2">
           <VStack space={1} alignItems="left">
-            <Text mt={1} ml={1} fontFamily={"Regular Semi Bold"} fontSize="3xl">
+            <Text mt={1} fontFamily={"Regular Semi Bold"} fontSize="3xl">
               System settings
             </Text>
+          </VStack>
+        </Box>
 
-            <Divider
-              mt="10"
-              my="2"
-              _light={{
-                bg: "muted.300",
-              }}
-              _dark={{
-                bg: "muted.700",
-              }}
-            />
-
-            <Box alignItems="center" justifyContent="center">
+        <Box mt="5" w="100%" px="2"bg="#f9f8f2" rounded="md">
+        <VStack space={1} alignItems="left">
+            <Box mt="3" alignItems="center" justifyContent="center">
               <Button p={0} variant="unstyled" onPress={goAccountSetting}>
                 <HStack>
                   {/* <Avatar bg="white" size={7} borderWidth={2}>
@@ -142,16 +135,19 @@ const SettingScreen = ({ navigation }) => {
                       <Ionicons name="settings-sharp" size={8} color="black" />
                     </Avatar.Badge>
                   </Avatar> */}
-                  <SvgXml xml={accountSettingSVG("#191919")} width={30} height={30} />
-                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
-                    Account settings
-                  </Text>
+                  <SvgXml xml={accountSettingSVG("#191919")} width={25} height={25} style={{ marginLeft: 20 }} />
+                  <Text ml={4}  fontFamily={"Regular Medium"} fontSize="lg">
+                    Account settings</Text>
+                  <SvgXml xml={backSvg("606060")} width={20} height={20} style={{ marginLeft: 150, marginTop: 6,  transform: [{ scaleX: -1 }] }} />
                 </HStack>
               </Button>
+              
             </Box>
 
             <Divider
-              my="1"
+              my="2"
+              width="90%"
+              alignSelf="center"
               _light={{
                 bg: "muted.300",
               }}
@@ -161,24 +157,22 @@ const SettingScreen = ({ navigation }) => {
             />
 
             <Box alignItems="center" justifyContent="center">
-              <Button
-                onPress={goArchivePage}
-                size="md"
-                p={0}
-                variant="unstyled"
-              >
+            <Button onPress={logout} size="md" p={0} variant="unstyled">
                 <HStack>
                   {/* <Feather name="archive" size={26} color="black" /> */}
-                  <SvgXml xml={archiveSVG("#191919")} width={30} height={30} />
-                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
+                  <SvgXml xml={archiveSVG("#191919")} width={25} height={25} style={{ marginLeft: 20 }}/>
+                  <Text ml={4} fontFamily={"Regular Medium"} fontSize="lg">
                     Archived rounds
                   </Text>
+                  <SvgXml xml={backSvg("#606060")} width={20} height={20} style={{ marginLeft: 152, marginTop: 6,  transform: [{ scaleX: -1 }] }} />
                 </HStack>
               </Button>
             </Box>
 
             <Divider
-              my="1"
+              my="2"
+              width="90%"
+              alignSelf="center"            
               _light={{
                 bg: "muted.300",
               }}
@@ -190,18 +184,19 @@ const SettingScreen = ({ navigation }) => {
             <Box alignItems="center" justifyContent="center">
               <Button onPress={logout} size="md" p={0} variant="unstyled">
                 <HStack>
-                  {/* <AntDesign name="logout" size={24} color="black" /> */}
-                  {/* <Feather name="log-out" size={26} color="black" /> */}
-                  <SvgXml xml={logOutSVG("#191919")} width={30} height={30} />
-                  <Text ml={2} fontFamily={"Regular Medium"} fontSize="lg">
+                  <SvgXml xml={logOutSVG("#191919")} width={25} height={25} style={{ marginLeft: 20 }}/>
+                  <Text ml={4} fontFamily={"Regular Medium"} fontSize="lg">
                     Log out
                   </Text>
+                  <SvgXml xml={backSvg("#606060")} width={20} height={20} style={{ marginLeft: 217, marginTop: 6,  transform: [{ scaleX: -1 }] }} />
                 </HStack>
               </Button>
             </Box>
 
             <Divider
-              my="1"
+              my="2"
+              width="90%"
+              alignSelf="center"          
               _light={{
                 bg: "muted.300",
               }}
@@ -209,7 +204,7 @@ const SettingScreen = ({ navigation }) => {
                 bg: "muted.700",
               }}
             />
-            <Box alignItems="center" justifyContent="center">
+            <Box mb="3" alignItems="center" justifyContent="center">
               <Button
                 onPress={()=>setModalVisible(true)}
                 size="md"
@@ -223,24 +218,16 @@ const SettingScreen = ({ navigation }) => {
                     size={26}
                     color="red"
                   /> */}
-                  <SvgXml xml={deleteSVG("#191919")} width={33} height={33} />
-                  <Text ml={1} fontFamily={"Regular Medium"} fontSize="lg"
+                  <SvgXml xml={deleteSVG("#191919")} width={28} height={28} style={{ marginLeft: 20 }}/>
+                  <Text ml={3} fontFamily={"Regular Medium"} fontSize="lg"
                   >                   
                     Delete account
                   </Text>
+                  <SvgXml xml={backSvg("#606060")} width={20} height={20} style={{ marginLeft: 159, marginTop: 6,  transform: [{ scaleX: -1 }] }} />
                 </HStack>
               </Button>
             </Box>
 
-            <Divider
-              my="1"
-              _light={{
-                bg: "muted.300",
-              }}
-              _dark={{
-                bg: "muted.700",
-              }}
-            />
           </VStack>
           <Modal
               isOpen={modalVisible}
@@ -321,6 +308,15 @@ const archiveSVG = () => `
     <path class="cls-1" d="M29.24,9.65c1.26,0,2.56,0,3.87,0q2.62,0,3.15,2.41,2.55.43,2.51,1.96H11.36q-.29-1.51,2.35-1.97c.42-2.35.47-2.4,2.97-2.4,1.31,0,2.62,0,3.49,0,3.02,0,6.05,0,9.07,0ZM26.12,6.91"/>
     <path class="cls-1" d="M24.62,6.22c-1.89,0-3.42,1.53-3.42,3.42h1.56c0-1.03.83-1.86,1.86-1.86s1.86.83,1.86,1.86h1.56c0-1.89-1.53-3.42-3.42-3.42Z"/>
   </svg>`;
+
+  const backSvg = () => `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+    <defs>
+      <style>.cls-1{fill:#000;stroke-width:0px;}</style>
+    </defs>
+    <path class="cls-1" d="M36.43,42.47c-.46,0-.93-.13-1.34-.39L10.01,26.04c-.74-.47-1.18-1.3-1.15-2.18.03-.88.52-1.68,1.29-2.11l25.07-13.9c1.21-.67,2.73-.23,3.4.97.67,1.21.23,2.73-.97,3.4l-21.4,11.87 21.54,13.77c1.16.74,1.5,2.29.76,3.45-.48.75-1.28,1.15-2.11,1.15Z"/>
+  </svg>`;
+
 
 
 export default SettingScreen;

@@ -323,11 +323,7 @@ const FriendsScreen = ({ navigation }) => {
         <Box mt="9" w="85%">
           <VStack space={1} alignItems="left">
             <HStack>
-              <Image
-                size={30}
-                source={require("../assets/Buttonicons/PaperPlaneRight.png")}
-                alt="received"
-              />
+              <SvgXml xml={incomingRequestSVG("#191919")} width={35} height={35}/>
               <Text fontFamily={"Regular"} fontSize="lg">
                 {received?.length > 0 ? received.length : ""}
               </Text>
@@ -365,17 +361,17 @@ const FriendsScreen = ({ navigation }) => {
                       {received[0].nickname}
                     </Text>
                     <HStack space="3">
-                      <AntDesign
+                      <SvgXml
                         onPress={() => acceptFriend(1)}
-                        name="checksquareo"
-                        size={30}
-                        color="black"
+                        xml={acceptSvg()}
+                        width={30}
+                        height={30}
                       />
-                      <AntDesign
+                      <SvgXml
                         onPress={() => rejectFriend(1)}
-                        name="closesquareo"
-                        size={30}
-                        color="black"
+                        xml={declineSvg()}
+                        width={30}
+                        height={30}
                       />
                     </HStack>
                   </HStack>
@@ -405,18 +401,17 @@ const FriendsScreen = ({ navigation }) => {
                         {received[1].nickname}
                       </Text>
                       <HStack space="3">
-                        <AntDesign
+                        <SvgXml
                           onPress={() => acceptFriend(2)}
-                          name="checksquareo"
-                          size={30}
-                          color="black"
+                          xml={acceptSvg()}
+                          width={30}
+                          height={30}
                         />
-
-                        <AntDesign
+                        <SvgXml
                           onPress={() => rejectFriend(2)}
-                          name="closesquareo"
-                          size={30}
-                          color="black"
+                          xml={declineSvg()}
+                          width={30}
+                          height={30}
                         />
                       </HStack>
                     </HStack>
@@ -426,32 +421,29 @@ const FriendsScreen = ({ navigation }) => {
                 </VStack>
               ) : (
                 <Text
-                  fontFamily={"Regular"}
+                marginTop={"-10%"}
+                fontFamily={"Regular"}
                   fontSize="xl"
                   textAlign={"center"}
                 >
                   You are all caught up :D
-                </Text>
+                  </Text>
               )}
             </Box>
 
             <Divider
               m="2"
               _light={{
-                bg: "muted.800",
+                bg: "muted.300",
               }}
               _dark={{
-                bg: "muted.50",
+                bg: "muted.700",
               }}
               alignSelf={"center"}
               w="90%"
             />
             <HStack>
-              <Image
-                size={30}
-                source={require("../assets/Buttonicons/PaperPlaneTilt.png")}
-                alt="sent"
-              />
+              <SvgXml xml={outGoingRequestSVG("#191919")} width={35} height={35}/>              
               <Text fontFamily={"Regular"} fontSize="lg">
                 {sent?.length > 0 ? sent.length : ""}
               </Text>
@@ -489,11 +481,11 @@ const FriendsScreen = ({ navigation }) => {
                       {sent[0].nickname}
                     </Text>
                     <VStack justifyContent={"center"} alignItems={"center"}>
-                      <Entypo
+                      <SvgXml
                         onPress={() => deleteCurrent("sent", 1)}
-                        name="back-in-time"
-                        size={30}
-                        color="black"
+                        xml={widthdrawSvg()}
+                        width={30}
+                        height={30}
                       />
                       <Text fontFamily={"Regular"} fontSize="10">
                         Withdraw
@@ -526,6 +518,7 @@ const FriendsScreen = ({ navigation }) => {
                         {sent[1].nickname}
                       </Text>
 
+                      <VStack justifyContent={"center"} alignItems={"center"}></VStack>
                       <VStack justifyContent={"center"} alignItems={"center"}>
                         <Entypo
                           onPress={() => deleteCurrent("sent", 2)}
@@ -544,6 +537,7 @@ const FriendsScreen = ({ navigation }) => {
                 </VStack>
               ) : (
                 <Text
+                  marginTop={"-10%"}
                   fontFamily={"Regular"}
                   fontSize="xl"
                   textAlign={"center"}
@@ -555,10 +549,10 @@ const FriendsScreen = ({ navigation }) => {
             <Divider
               m="2"
               _light={{
-                bg: "muted.800",
+                bg: "muted.300",
               }}
               _dark={{
-                bg: "muted.50",
+                bg: "muted.700",
               }}
               alignSelf={"center"}
               w="90%"
@@ -569,11 +563,12 @@ const FriendsScreen = ({ navigation }) => {
               justifyContent={"space-between"}
             >
               <HStack>
-                <Image
+                {/* <Image
                   size={30}
                   source={require("../assets/Buttonicons/UsersThree.png")}
                   alt="friends"
-                />
+                /> */}
+              <SvgXml xml={myCircleSVG("#191919")} width={35} height={35}/>                
                 <Text fontFamily={"Regular"} fontSize="lg">
                   {friends?.length > 0 ? friends.length : ""}
                 </Text>
@@ -584,6 +579,7 @@ const FriendsScreen = ({ navigation }) => {
                 size={24}
                 color="black"
               /> */}
+              
               {/* TODO:update to slide item */}
             </HStack>
             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -649,14 +645,19 @@ const FriendsScreen = ({ navigation }) => {
                     ))}
                   </Box>
                 ) : (
-                  <Text
-                    marginTop={"30%"}
-                    fontFamily={"Regular"}
-                    fontSize="xl"
-                    textAlign={"center"}
-                  >
-                    No friends data
-                  </Text>
+                  <><Text
+                      marginTop={"20%"}
+                      fontFamily={"Regular"}
+                      fontSize="xl"
+                      textAlign={"center"}
+                    >
+                      Add friends to start a round!
+                    </Text><Image
+                        source={require('../assets/Animations/Test2.gif')} // Update the path to your GIF file
+                        alt="Add Friends GIF"
+                        style={{ alignSelf: "center", width: 100, height: 100 }} // Adjust the size and margin as needed
+                      /></>
+                  
                 )}
               </ScrollView>
             </Box>

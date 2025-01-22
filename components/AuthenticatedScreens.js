@@ -188,7 +188,7 @@ export default function AuthenticatedScreens({ navigation }) {
                   color={note > 0 ? "#49a579" : "#191919"}
                 /> */}
 
-                <SvgXml xml={notificationSvg(note > 0 ? "#49a579" : "#191919")} width={30} height={30} />
+                <SvgXml xml={notificationSvg(note > 0 ? "#ff061e" : "#191919")} width={30} height={30} />
                 <Text style={styles.tabLabelUpdates(accessibilityState.selected)}>Activity</Text>
               </TouchableOpacity>
             ),

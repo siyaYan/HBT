@@ -11,11 +11,10 @@ export default OptionMenu = ({ navigation }) => {
         navigation.navigate("Invite");
     }
 
-
     return (
-      <ZStack alignSelf="flex-end" mr="17%" mt="17%">
+      <ZStack alignSelf="flex-end" mr="15%" mt="15%">
         <Box alignItems="flex-start" shadow={2}>
-          <Menu shadow={2} ml="-100" mt="-10%" w="160" borderRadius="15" trigger={(triggerProps) => {
+          <Menu ml="-110" mt="-45%" w="160" borderRadius="15" trigger={(triggerProps) => {
               return (
                 <Pressable accessibilityLabel="Options menu" {...triggerProps}>
                   <SvgXml xml={plusSvg} width={30} height={30} />
