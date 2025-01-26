@@ -33,6 +33,8 @@ import {
   clearAllFriendRequests,
   getNoteUpdate
 } from "../components/Endpoint";
+import { SvgXml } from "react-native-svg";
+
 
 const NotificationScreen = ({ navigation }) => {
   useFocusEffect(
@@ -283,11 +285,11 @@ const NotificationScreen = ({ navigation }) => {
                 {friendRequest?.length > 0 ? (
                   <Box>
 
-                    {/* <Image
+                     <Image
                       size={30}
                       source={require("../assets/Buttonicons/Users.png")}
                       alt="received"
-                    /> */}
+                    /> 
                     <SvgXml xml={myCircleSVG("#191919")} width={35} height={35}/>                
                    
                     <Badge // bg="red.400"
@@ -315,14 +317,16 @@ const NotificationScreen = ({ navigation }) => {
                   />
                   
                 )}
-
+{/* 
                 <AntDesign
                   name="checkcircleo"
                   size={30}
                   color="black"
                   onPress={() => clearAll("friendrequests")}
-                />
+                /> */}
                 {/* <AntDesign name="delete" size={30} color="black" /> */}
+                <SvgXml xml={readAllSvg("#191919")} width={35} height={35}/>                
+
               </HStack>
               <Box
                 h="24%"
@@ -363,6 +367,7 @@ const NotificationScreen = ({ navigation }) => {
                                       color="black"
                                     />
                                   </Avatar>
+                                  
                                 )}
                                 <Text fontFamily={"Regular"} fontSize="lg">
                                   {item.username}
@@ -448,8 +453,9 @@ const NotificationScreen = ({ navigation }) => {
                     </Box>
                   ) : (
                     <Text
+                      // marginTop={"-10%"}
                       fontFamily={"Regular"}
-                      fontSize="2xl"
+                      fontSize="xl"
                       textAlign={"center"}
                       margin={"12"}
                     >
@@ -460,16 +466,16 @@ const NotificationScreen = ({ navigation }) => {
               </Box>
 
               <Divider
-                my="3"
-                _light={{
-                  bg: "muted.800",
-                }}
-                _dark={{
-                  bg: "muted.50",
-                }}
-                alignSelf={"center"}
-                w="95%"
-              />
+              mt="-3"
+              _light={{
+                bg: "muted.300",
+              }}
+              _dark={{
+                bg: "muted.700",
+              }}
+              alignSelf={"center"}
+              w="90%"
+            />
 
               <HStack w={"100%"} justifyContent={"space-between"}>
                 {notificates?.length ? (
@@ -503,13 +509,9 @@ const NotificationScreen = ({ navigation }) => {
                     alt="notificate"
                   />
                 )}
-                <AntDesign
-                  name="checkcircleo"
-                  size={30}
-                  color="black"
-                  onPress={() => clearAll("notification")}
-                />
-                {/* <AntDesign name="delete" size={30} color="black" /> */}
+                <SvgXml xml={readAllSvg("#191919")} width={35} height={35}/>                
+
+
               </HStack>
 
               <Box
@@ -553,13 +555,14 @@ const NotificationScreen = ({ navigation }) => {
                             size={30}
                             color="black"
                           />
+
                         </HStack>
                       ))}
                     </Box>
                   ) : (
                     <Text
                       fontFamily={"Regular"}
-                      fontSize="2xl"
+                      fontSize="xl"
                       textAlign={"center"}
                       margin={"10"}
                     >
@@ -570,16 +573,17 @@ const NotificationScreen = ({ navigation }) => {
               </Box>
 
               {/* <Divider
-                marginb="2"
-                _light={{
-                  bg: "muted.800",
-                }}
-                _dark={{
-                  bg: "muted.50",
-                }}
-                alignSelf={"center"}
-                w="90%"
-              /> */}
+              m="2"
+              _light={{
+                bg: "muted.300",
+              }}
+              _dark={{
+                bg: "muted.700",
+              }}
+              alignSelf={"center"}
+              w="90%"
+            /> */}
+
 
               <HStack w={"100%"} mt={"5"} justifyContent={"space-between"}>
                 <Text mt={"1"} fontFamily={"Regular Semi Bold"} fontSize="2xl">
@@ -622,10 +626,10 @@ const NotificationScreen = ({ navigation }) => {
                     <Text
                       marginTop={"20%"}
                       fontFamily={"Regular"}
-                      fontSize="2xl"
+                      fontSize="xl"
                       textAlign={"center"}
                     >
-                      No previous data
+                      No past notifications
                     </Text>
                   )}
                 </ScrollView>

@@ -14,7 +14,7 @@ export default OptionMenu = ({ navigation }) => {
     return (
       <ZStack alignSelf="flex-end" mr="15%" mt="15%">
         <Box alignItems="flex-start" shadow={2}>
-          <Menu ml="-110" mt="-45%" w="160" borderRadius="15" trigger={(triggerProps) => {
+          <Menu ml="-110" mt="-10%" w="160" borderRadius="15" trigger={(triggerProps) => {
               return (
                 <Pressable accessibilityLabel="Options menu" {...triggerProps}>
                   <SvgXml xml={plusSvg} width={30} height={30} />

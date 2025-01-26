@@ -228,9 +228,10 @@ const InviteScreen = ({ navigation }) => {
                           mb="1"
                           size={"md"}
                           source={{ uri: findUser.user.profileImageUrl }}
+                          rounded={100}
                         />
                       ) : (
-                        <Avatar bg="white" mb="1" size="md" borderWidth={2}>
+                        <Avatar bg="white" mb="2" size="md" borderWidth={2}>
                           <AntDesign name="user" size={20} color="black" />
                         </Avatar>
                       )}

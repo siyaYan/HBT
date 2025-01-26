@@ -660,7 +660,7 @@ const LoginScreen = ({ navigation }) => {
                  </Button> */}
                   <Pressable onPress={handleSubmit}>
                     <Image
-                      source={require("../assets/UIicons/LogIn.png")}
+                      source={require("../assets/UIicons/Login.gif")}
                       style={{ width: 120, height: 120 }}
                       bottom="5"
                       alt="image"
