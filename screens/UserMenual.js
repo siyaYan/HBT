@@ -28,6 +28,7 @@ const ReactToRoundSVG = () => `
 
 const UserManual = ({ navigation }) => {
   return (
+  
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Welcome to RoundMaster! 🎯</Text>
       <Text style={styles.subtitle}>Master the game in 3 steps:</Text>
