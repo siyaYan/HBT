@@ -38,7 +38,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { SvgXml } from "react-native-svg";
 
-
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();
@@ -323,7 +322,11 @@ const FriendsScreen = ({ navigation }) => {
         <Box mt="9" w="85%">
           <VStack space={1} alignItems="left">
             <HStack>
-              <SvgXml xml={incomingRequestSVG("#191919")} width={35} height={35}/>
+              <SvgXml
+                xml={incomingRequestSVG("#191919")}
+                width={35}
+                height={35}
+              />
               <Text ml={2} fontFamily={"Regular"} fontSize="lg">
                 {received?.length > 0 ? received.length : ""}
               </Text>
@@ -421,13 +424,13 @@ const FriendsScreen = ({ navigation }) => {
                 </VStack>
               ) : (
                 <Text
-                marginTop={"-10%"}
-                fontFamily={"Regular"}
+                  marginTop={"-10%"}
+                  fontFamily={"Regular"}
                   fontSize="xl"
                   textAlign={"center"}
                 >
                   You are all caught up :D
-                  </Text>
+                </Text>
               )}
             </Box>
 
@@ -443,7 +446,11 @@ const FriendsScreen = ({ navigation }) => {
               w="90%"
             />
             <HStack>
-              <SvgXml xml={outGoingRequestSVG("#191919")} width={35} height={35}/>              
+              <SvgXml
+                xml={outGoingRequestSVG("#191919")}
+                width={35}
+                height={35}
+              />
               <Text fontFamily={"Regular"} fontSize="lg">
                 {sent?.length > 0 ? sent.length : ""}
               </Text>
@@ -518,7 +525,10 @@ const FriendsScreen = ({ navigation }) => {
                         {sent[1].nickname}
                       </Text>
 
-                      <VStack justifyContent={"center"} alignItems={"center"}></VStack>
+                      <VStack
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      ></VStack>
                       <VStack justifyContent={"center"} alignItems={"center"}>
                         <Entypo
                           onPress={() => deleteCurrent("sent", 2)}
@@ -563,35 +573,34 @@ const FriendsScreen = ({ navigation }) => {
               justifyContent={"space-between"}
             >
               <HStack>
-              <SvgXml xml={myCircleSVG("#191919")} width={35} height={35}/>                
+                <SvgXml xml={myCircleSVG("#191919")} width={35} height={35} />
                 <Text fontFamily={"Regular"} fontSize="md">
                   {friends?.length > 0 ? friends.length : ""}
                 </Text>
-              </HStack>           
+              </HStack>
               {/* TODO:update to slide item */}
             </HStack>
             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
               <Modal.Content maxWidth="400px">
-                <Modal.Header>Did you want to proceed to unlink?                </Modal.Header>
+                <Modal.Header>Did you want to proceed to unlink? </Modal.Header>
                 <Modal.Footer>
                   <Button.Group justifyContent={"center"}>
                     <Button
-                    rounded={30}
-                    shadow="7"
+                      rounded={30}
+                      shadow="7"
                       width="40%"
-                       size={"md"}
-                        _text={{
-                          color: "#f9f8f2",
-                          }}
-                          backgroundColor={"#49a579"}
-
+                      size={"md"}
+                      _text={{
+                        color: "#f9f8f2",
+                      }}
+                      backgroundColor={"#49a579"}
                       onPress={() => {
                         deleteCurrent("friend");
-                        }}
-                      >
-                        Ok
-                      </Button>
-                      <Button
+                      }}
+                    >
+                      Ok
+                    </Button>
+                    <Button
                       rounded={30}
                       shadow="7"
                       width="40%"
@@ -601,7 +610,7 @@ const FriendsScreen = ({ navigation }) => {
                       }}
                       colorScheme="blueGray"
                       alignSelf="center"
-                        onPress={() => {
+                      onPress={() => {
                         setShowModal(false);
                       }}
                     >
@@ -633,8 +642,11 @@ const FriendsScreen = ({ navigation }) => {
                           />
                         ) : (
                           // <FontAwesome name="check" size={24} color="black" />
-                          <SvgXml xml={acceptSvg("#191919")} width={35} height={35}/>                
-                          
+                          <SvgXml
+                            xml={acceptSvg("#191919")}
+                            width={35}
+                            height={35}
+                          />
                         )}
                         <Text fontFamily={"Regular"} fontSize="md">
                           {item.username}
@@ -652,19 +664,21 @@ const FriendsScreen = ({ navigation }) => {
                     ))}
                   </Box>
                 ) : (
-                  <><Image
-                  source={require('../assets/Animations/AddFriends.gif')} 
-                  alt="Add Friends GIF"
-                  style={{ alignSelf: "center", width: 100, height: 100 }}
-                /><Text
+                  <>
+                    <Image
+                      source={require("../assets/Animations/AddFriends.gif")}
+                      alt="Add Friends GIF"
+                      style={{ alignSelf: "center", width: 100, height: 100 }}
+                    />
+                    <Text
                       // marginTop={"20%"}
                       fontFamily={"Regular"}
                       fontSize="xl"
                       textAlign={"center"}
                     >
                       Add friends to start a round!
-                    </Text></>
-                  
+                    </Text>
+                  </>
                 )}
               </ScrollView>
             </Box>
@@ -689,7 +703,7 @@ const outGoingRequestSVG = () => `
     <path class="cls-1" d="M7.76,9.8l4.37,15.57c.04.15,4.01,15.69,4.01,15.69.15.59.59,1.03,1.18,1.19.53.14,1.07.02,1.48-.32l6.06-15.76-7.04-7.04c-.39-.39-.39-1.01,0-1.4s1.01-.39,1.4,0l7.05,7.05,15.67-5.98c.34-.41.46-.95.32-1.48-.16-.59-.6-1.03-1.19-1.18l-15.66-4-15.59-4.37c-.58-.16-1.19,0-1.62.42s-.59,1.04-.42,1.62Z"/>
   </svg>`;
 
-  const incomingRequestSVG = () => `
+const incomingRequestSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
       <style>.cls-1{fill:#000;stroke-width:0px;}</style>
@@ -697,7 +711,7 @@ const outGoingRequestSVG = () => `
     <path class="cls-1" d="M39.84,23.55l-14.1-7.92c-.13-.08-13.92-8.26-13.92-8.26-.52-.31-1.15-.31-1.68,0-.47.27-.77.74-.82,1.27l6.86,15.43h9.96c.55,0,.99.44.99.99s-.44.99-.99.99h-9.96s-6.86,15.31-6.86,15.31c.05.53.35,1,.82,1.27.53.3,1.15.3,1.67,0l13.9-8.25,14.12-7.93c.53-.3.85-.84.85-1.45s-.32-1.15-.85-1.45Z"/>
   </svg>`;
 
-  const myCircleSVG = () => `
+const myCircleSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
       <style>
@@ -714,7 +728,7 @@ const outGoingRequestSVG = () => `
     <path class="cls-1" d="M44.93,43.35h-14.61c-.55,0-.99-.44-.99-.99s.44-.99.99-.99h14.61c.55,0,.99.44.99.99s-.44.99-.99.99Z"/>
   </svg>`;
 
-  const unlinkSvg = () => `
+const unlinkSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
       <style>.cls-1{fill:#000;stroke-width:0px;}</style>
@@ -728,7 +742,7 @@ const outGoingRequestSVG = () => `
     <polygon class="cls-1" points="26.67 20.11 26.67 20.11 26.67 20.11 26.67 20.11"/>
   </svg>`;
 
-  const acceptSvg = () => `
+const acceptSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
       <style>.cls-1{fill:#000;stroke-width:0px;}</style>
@@ -736,7 +750,7 @@ const outGoingRequestSVG = () => `
     <path class="cls-1" d="M25,4.53C13.71,4.53,4.53,13.72,4.53,25s9.18,20.47,20.47,20.47,20.47-9.18,20.47-20.47S36.29,4.53,25,4.53ZM34.27,19.72l-10.14,13.05c-.69.89-1.97,1.05-2.85.36-.16-.13-.29-.27-.4-.43l-5.05-5.72c-.74-.84-.66-2.13.18-2.87.84-.74,2.13-.66,2.87.18l3.56,4.04,8.62-11.09c.69-.89,1.97-1.05,2.85-.36s1.05,1.97.36,2.85Z"/>
   </svg>`;
 
-  const declineSvg = () => `
+const declineSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
       <style>.cls-1{fill:#000;stroke-width:0px;}</style>
@@ -745,8 +759,8 @@ const outGoingRequestSVG = () => `
     <rect class="cls-1" x="14.7" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(24.81 60.35) rotate(-134.69)"/>
     <rect class="cls-1" x="14.7" y="22.9" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(60.31 25.08) rotate(135.31)"/>
   </svg>`;
- 
-  const widthdrawSvg = () => `
+
+const widthdrawSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
       <style>.cls-1{fill:#000;stroke-width:0px;}</style>
@@ -754,8 +768,5 @@ const outGoingRequestSVG = () => `
     <path class="cls-1" d="M10.46,32.72c-.38.68-1.35.68-1.74,0l-2.98-5.3s-3.1-5.23-3.1-5.23c-.4-.67.09-1.51.87-1.5l6.08.07,6.08-.07c.78,0,1.26.83.87,1.5,0,0-3.1,5.23-3.1,5.23s-2.98,5.3-2.98,5.3Z"/>
     <path class="cls-1" d="M27.03,4.53C15.58,4.53,6.29,13.99,6.57,25.5h.02s4.42-4.25,4.42-4.25c1.84-7.85,9.29-13.56,17.88-12.61,7.54.84,13.65,6.93,14.49,14.47,1.11,9.92-6.66,18.36-16.36,18.36-4.33,0-8.27-1.7-11.21-4.44l-2.88,2.78c3.69,3.52,8.68,5.69,14.17,5.67,10.73-.04,19.79-8.63,20.36-19.35.63-11.79-8.78-21.58-20.44-21.58Z"/>
   </svg>`;
-
-
-
 
 export default FriendsScreen;

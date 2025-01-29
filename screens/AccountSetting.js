@@ -34,7 +34,6 @@ import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import { SvgXml } from "react-native-svg";
 
-
 const AccountSettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const { isOpen, onOpen, onClose } = useDisclose();
@@ -452,9 +451,7 @@ const AccountSettingScreen = ({ navigation }) => {
                 <Pressable onPress={saveNickName}>
                   <SvgXml
                     xml={SaveButtonSVG(
-                      inputChange.nick &&
-                        !errors.nickname &&
-                        formData.nickname
+                      inputChange.nick && !errors.nickname && formData.nickname
                         ? "black"
                         : "grey"
                     )}
@@ -505,7 +502,9 @@ const AccountSettingScreen = ({ navigation }) => {
                     xml={SaveButtonSVG(
                       formData.username &&
                         inputChange.user &&
-                        !Object.values(showMessage.username).some((value) => value === false)
+                        !Object.values(showMessage.username).some(
+                          (value) => value === false
+                        )
                         ? "black"
                         : "grey"
                     )}
@@ -516,7 +515,9 @@ const AccountSettingScreen = ({ navigation }) => {
               </Box>
               <Box ml={1}>
                 <FormControl.ErrorMessage>
-                  {Object.values(showMessage.username).some((value) => value === false)
+                  {Object.values(showMessage.username).some(
+                    (value) => value === false
+                  )
                     ? showMessage.textProp
                     : ""}
                 </FormControl.ErrorMessage>
@@ -590,9 +591,7 @@ const AccountSettingScreen = ({ navigation }) => {
                   />
                   <Pressable onPress={saveEmail}>
                     <SvgXml
-                      xml={SaveButtonSVG(
-                        formData.token ? "black" : "grey"
-                      )}
+                      xml={SaveButtonSVG(formData.token ? "black" : "grey")}
                       width={40}
                       height={40}
                     />
@@ -607,7 +606,9 @@ const AccountSettingScreen = ({ navigation }) => {
             ) : (
               ""
             )}
-            {(userData.data?.googleId || userData.data?.facebookId) ? ('') : (
+            {userData.data?.googleId || userData.data?.facebookId ? (
+              ""
+            ) : (
               <Button
                 onPress={goResetPassword}
                 rounded="30"
@@ -630,7 +631,11 @@ const AccountSettingScreen = ({ navigation }) => {
               >
                 <HStack alignItems="center" space={2}>
                   <SvgXml xml={ChangePasswordSVG()} width={24} height={24} />
-                  <Text color="#191919" fontFamily="Regular Semi Bold" fontSize="lg">
+                  <Text
+                    color="#191919"
+                    fontFamily="Regular Semi Bold"
+                    fontSize="lg"
+                  >
                     Change your password
                   </Text>
                 </HStack>
@@ -683,7 +688,6 @@ const SaveButtonSVG = () => `
     <path class="cls-1" d="M11.13,24.99c0-4.89,0-9.77,0-14.66,0-2.03.79-2.84,2.81-2.84,7.37,0,14.74,0,22.11,0,2.02,0,2.82.8,2.82,2.83,0,9.81,0,19.62.01,29.43,0,1.06-.25,1.94-1.21,2.48-.97.54-1.86.28-2.73-.32-2.72-1.84-5.48-3.63-8.19-5.5-1.2-.83-2.28-.83-3.48,0-2.68,1.85-5.41,3.61-8.1,5.44-.9.61-1.8.95-2.82.38-1.02-.56-1.23-1.5-1.22-2.59.02-4.89.01-9.77.01-14.66Z"/>
   </svg>`;
 
-
 const SavedButtonSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <path class="cls-1" d="M11.13,24.99c0-4.89,0-9.77,0-14.66,0-2.03.79-2.84,2.81-2.84,7.37,0,14.74,0,22.11,0,2.02,0,2.82.8,2.82,2.83,0,9.81,0,19.62.01,29.43,0,1.06-.25,1.94-1.21,2.48-.97.54-1.86.28-2.73-.32-2.72-1.84-5.48-3.63-8.19-5.5-1.2-.83-2.28-.83-3.48,0-2.68,1.85-5.41,3.61-8.1,5.44-.9.61-1.8.95-2.82.38-1.02-.56-1.23-1.5-1.22-2.59.02-4.89.01-9.77.01-14.66Z"/>
@@ -696,7 +700,5 @@ const ChangePasswordSVG = () => `
     <path class="cls-1" d="M24.97,37.76c-2.3,0-4.61,0-6.91,0-2.5,0-4.19-1.69-4.19-4.18,0-2.93,0-5.87,0-8.8,0-1.59.66-2.78,1.98-3.64.14-.09.25-.36.25-.54-.02-1.43.12-2.82.67-4.17,1.47-3.62,5.3-5.97,9.04-5.52,4.17.5,7.37,3.5,7.96,7.51.11.73.06,1.48.13,2.22.02.19.13.43.28.53,1.29.84,1.95,2.01,1.95,3.56,0,2.96,0,5.93,0,8.89,0,2.44-1.71,4.14-4.13,4.14-2.34,0-4.67,0-7.01,0ZM25,23.53c-2.32,0-4.64,0-6.96,0-.91,0-1.28.38-1.28,1.3,0,2.91,0,5.83,0,8.74,0,.89.4,1.28,1.31,1.28,4.61,0,9.21,0,13.82,0,.96,0,1.33-.38,1.33-1.35,0-2.87,0-5.73,0-8.6,0-1.02-.35-1.37-1.36-1.38-2.29,0-4.57,0-6.86,0ZM30.93,20.61c.31-2.49-.91-4.88-3.07-6.08-2.13-1.19-4.77-.94-6.69.63-1.59,1.3-2.58,3.87-2.09,5.45h11.84Z"/>
     <path class="cls-1" d="M23.54,29.17c0-.34-.01-.68,0-1.01.04-.8.66-1.41,1.43-1.42.77,0,1.42.59,1.45,1.39.03.71.03,1.42,0,2.13-.03.79-.69,1.4-1.45,1.4-.76,0-1.4-.63-1.43-1.42-.02-.35,0-.71,0-1.06Z"/>
   </svg>`;
-
-
 
 export default AccountSettingScreen;

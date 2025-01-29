@@ -10,7 +10,7 @@ import {
   FormControl,
   Flex,
   Input,
-  Pressable
+  Pressable,
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
@@ -21,7 +21,7 @@ import {
   getFriends,
   reactReceivedRequest,
   getRelationByUserId,
-  deleteFriendOrWithdrawRequestById
+  deleteFriendOrWithdrawRequestById,
 } from "../components/Endpoint";
 import Background from "../components/Background";
 import { Feather } from "@expo/vector-icons";
@@ -53,7 +53,7 @@ const InviteScreen = ({ navigation }) => {
         userId: true,
       });
       setFind({
-        user: response.data.user
+        user: response.data.user,
       });
       // console.log(  response.data.user._id,
       // userData.data._id);
@@ -62,7 +62,7 @@ const InviteScreen = ({ navigation }) => {
         response.data.user._id,
         userData.data._id
       );
-      console.log(res,userData.data);
+      console.log(res, userData.data);
       if (res.result == "A") {
         setLink(true);
         setPend(false);
@@ -95,26 +95,26 @@ const InviteScreen = ({ navigation }) => {
     } else {
       console.log("fail!!");
     }
-    handleSearch()
+    handleSearch();
   };
   const handleCancel = async () => {
     // console.log("connect", findUser);
     // console.log(userData.data._id, findUser.user._id);
-      console.log("delete current item");
-      // const id=sent[i-1]._id
-      const id=pend.data._id
-      // console.log(pend.data._id)
-      deleteFriendOrWithdrawRequestById(userData.token, id);
-      handleSearch()
-  };
-  const handleAccept =async ()=>{
-    console.log("accept current item");
-    const id=pend.data._id
+    console.log("delete current item");
+    // const id=sent[i-1]._id
+    const id = pend.data._id;
     // console.log(pend.data._id)
-    reactReceivedRequest(userData.token, id, 'A');
-    setPend(false)
-    handleSearch()
-  }
+    deleteFriendOrWithdrawRequestById(userData.token, id);
+    handleSearch();
+  };
+  const handleAccept = async () => {
+    console.log("accept current item");
+    const id = pend.data._id;
+    // console.log(pend.data._id)
+    reactReceivedRequest(userData.token, id, "A");
+    setPend(false);
+    handleSearch();
+  };
 
   return (
     <NativeBaseProvider>
@@ -140,7 +140,13 @@ const InviteScreen = ({ navigation }) => {
               </Text>
             </Box> */}
             {/* Code for InviteFriend section */}
-            <Box w="100%" h="95%" maxW="300" alignItems="center" marginTop={'50%'}>
+            <Box
+              w="100%"
+              h="95%"
+              maxW="300"
+              alignItems="center"
+              marginTop={"50%"}
+            >
               <VStack space={5} alignItems="center" w={"100%"}>
                 {/* Code for title: find a friend */}
                 <FormControl isInvalid={!errors.userId}>
@@ -170,7 +176,9 @@ const InviteScreen = ({ navigation }) => {
                   />
                   <FormControl.ErrorMessage ml={2} mt={2}>
                     <Text fontFamily={"Regular"} fontSize="sm">
-                      {!errors.userId ? "No users were found matching your search." : ""}
+                      {!errors.userId
+                        ? "No users were found matching your search."
+                        : ""}
                     </Text>
                   </FormControl.ErrorMessage>
                 </FormControl>
@@ -180,7 +188,7 @@ const InviteScreen = ({ navigation }) => {
                 (formData.userId.toLowerCase() == userData.data.email ||
                   formData.userId == userData.data.username) ? (
                   <Text fontFamily={"Regular"} fontSize="lg">
-                    This is YOU! 
+                    This is YOU!
                   </Text>
                 ) : (
                   <Button
@@ -219,7 +227,9 @@ const InviteScreen = ({ navigation }) => {
                       alignItems={"center"}
                       justifyContent={"center"}
                       space={5}
-                      backgroundColor={linked?"rgba(73,165,121,0.2)":"light.100"}
+                      backgroundColor={
+                        linked ? "rgba(73,165,121,0.2)" : "light.100"
+                      }
                       paddingY={2}
                     >
                       {findUser.user.profileImageUrl ? (
@@ -243,39 +253,47 @@ const InviteScreen = ({ navigation }) => {
                       </Text>
                       <Box>
                         {linked ? (
-                          <Pressable onPress={()=>{navigation.navigate('MyCircle')}}>
+                          <Pressable
+                            onPress={() => {
+                              navigation.navigate("MyCircle");
+                            }}
+                          >
                             <AntDesign name="link" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
                               linked
                             </Text>
                           </Pressable>
-                        ) : pend!=false ? (
-                          pend.data.senderId==userData.data._id?(
+                        ) : pend != false ? (
+                          pend.data.senderId == userData.data._id ? (
                             <Pressable onPress={handleCancel}>
-                            {/* <Feather name="cancel" size={30} color="grey" />
+                              {/* <Feather name="cancel" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
                               cancel
                             </Text> */}
-                            <Entypo
-                              name="back-in-time"
-                              size={30}
-                              color="black"
-                            />
-                            <Text fontFamily={"Regular"} fontSize="xs">
-                              cancel
-                            </Text>
-                          </Pressable>
-                          ):(
+                              <Entypo
+                                name="back-in-time"
+                                size={30}
+                                color="black"
+                              />
+                              <Text fontFamily={"Regular"} fontSize="xs">
+                                cancel
+                              </Text>
+                            </Pressable>
+                          ) : (
                             <Pressable onPress={handleAccept}>
-                            {/* <Feather name="cancel" size={30} color="grey" />
+                              {/* <Feather name="cancel" size={30} color="grey" />
                             <Text fontFamily={"Regular"} fontSize="xs">
                               cancel
                             </Text> */}
-                            <AntDesign name="checkcircleo" size={30} color="black" />
-                            <Text fontFamily={"Regular"} fontSize="xs">
-                              accept
-                            </Text>
-                          </Pressable>
+                              <AntDesign
+                                name="checkcircleo"
+                                size={30}
+                                color="black"
+                              />
+                              <Text fontFamily={"Regular"} fontSize="xs">
+                                accept
+                              </Text>
+                            </Pressable>
                           )
                         ) : (
                           <Pressable onPress={handleConnect}>

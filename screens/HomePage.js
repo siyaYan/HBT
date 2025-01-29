@@ -459,7 +459,7 @@ const HomeScreen = ({ navigation }) => {
       if (newStatus === "F") {
         console.log("Round finished, get scoreboard");
         // getExistScoreBoard(roundId);
-        setShowFinalScore(roundId)
+        setShowFinalScore(roundId);
         setScoreBoardOpen(true);
       }
 
@@ -493,8 +493,10 @@ const HomeScreen = ({ navigation }) => {
       ) {
         // validate if there is any active friend
         // console.log('-----111',round)
-        const activeFriend=round.roundFriends.filter(item=>item.id!=round.userId&&item.status=="A").length
-        if(activeFriend==0)setShowRoundFriendValidation(true);
+        const activeFriend = round.roundFriends.filter(
+          (item) => item.id != round.userId && item.status == "A"
+        ).length;
+        if (activeFriend == 0) setShowRoundFriendValidation(true);
         updateStatusAndDate(round._id, "A");
       }
 
@@ -645,7 +647,6 @@ const HomeScreen = ({ navigation }) => {
               : "Start a round"}
           </Button>
         )}
-
       </Flex>
       {/* Linda Sprint 4 Show round/s*/}
       {/* <Flex direction="column" alignItems="center">
@@ -774,7 +775,8 @@ const HomeScreen = ({ navigation }) => {
                             <Modal.Body>
                               <>
                                 <Text fontSize="md">
-                                You already have two active rounds. Unable to accept another.
+                                  You already have two active rounds. Unable to
+                                  accept another.
                                 </Text>
                               </>
                             </Modal.Body>
@@ -790,7 +792,8 @@ const HomeScreen = ({ navigation }) => {
                             <Modal.Body>
                               <>
                                 <Text fontSize="md">
-                                You cannot join a round that overlaps with your current active round.
+                                  You cannot join a round that overlaps with
+                                  your current active round.
                                 </Text>
                               </>
                             </Modal.Body>
@@ -832,11 +835,13 @@ const HomeScreen = ({ navigation }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-     {showFinalScore&&
-      <ScoreBoardModal
-        scoreBoardOpen={scoreBoardOpen}
-        handleClose={handleClose} 
-        roundId={showFinalScore}/>}
+      {showFinalScore && (
+        <ScoreBoardModal
+          scoreBoardOpen={scoreBoardOpen}
+          handleClose={handleClose}
+          roundId={showFinalScore}
+        />
+      )}
       {/* Modal 2: score board of Finished Round */}
       {/* <Modal
         isOpen={scoreBoardOpen}
@@ -1116,8 +1121,8 @@ const HomeScreen = ({ navigation }) => {
           <Modal.Body>
             <>
               <Text fontSize="md">
-                Your friend has not accepted the invitation yet. 
-                Remind them to keep the round active or it may be deleted.{" "}
+                Your friend has not accepted the invitation yet. Remind them to
+                keep the round active or it may be deleted.{" "}
               </Text>
             </>
           </Modal.Body>

@@ -77,10 +77,12 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={homeSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={28}
+                  height={28}
                 />
-                <Text style={styles.tabLabel(accessibilityState.selected)}>Home</Text>
+                <Text style={styles.tabLabel(accessibilityState.selected)}>
+                  Home
+                </Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -107,11 +109,13 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={circleSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={28}
+                  height={28}
                   top={0}
                 />
-                <Text style={styles.tabLabel(accessibilityState.selected)}>Circle</Text>
+                <Text style={styles.tabLabel(accessibilityState.selected)}>
+                  Circle
+                </Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -141,11 +145,13 @@ export default function AuthenticatedScreens({ navigation }) {
                     xml={uploadSvg(
                       accessibilityState.selected ? "#49a579" : "#191919"
                     )}
-                    width={30}
-                    height={30}
+                    width={28}
+                    height={28}
                     top={0}
                   />
-                  <Text style={styles.tabLabel(accessibilityState.selected)}>Upload</Text>
+                  <Text style={styles.tabLabel(accessibilityState.selected)}>
+                    Upload
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 <Button disabled style={styles.tabButton(true)}>
@@ -188,8 +194,18 @@ export default function AuthenticatedScreens({ navigation }) {
                   color={note > 0 ? "#49a579" : "#191919"}
                 /> */}
 
-                <SvgXml xml={notificationSvg(note > 0 ? "#ff061e" : "#191919")} width={30} height={30} />
-                <Text style={styles.tabLabelUpdates(accessibilityState.selected? "#49a579" : "#191919")}>Activity</Text>
+                <SvgXml
+                  xml={notificationSvg(note > 0 ? "#ff061e" : "#191919")}
+                  width={28}
+                  height={28}
+                />
+                <Text
+                  style={styles.tabLabelUpdates(
+                    accessibilityState.selected ? "#49a579" : "#191919"
+                  )}
+                >
+                  Activity
+                </Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -215,12 +231,13 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={settingsSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={28}
+                  height={28}
                   top={0}
                 />
-                <Text style={styles.tabLabel(accessibilityState.selected)}>Setting</Text>
-
+                <Text style={styles.tabLabel(accessibilityState.selected)}>
+                  Setting
+                </Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -243,7 +260,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   }),
 
   tabBarStyle: {
@@ -273,8 +290,6 @@ const styles = StyleSheet.create({
   }),
 });
 
-
-
 const homeSvg = (color) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="${color}">
   <path class="cls-1" d="M42.87,10.7c-.98-1.72-2.49-2.5-3.3-2.8-.5-.19-1.06.06-1.25.56-.19.5.06,1.06.56,1.25.32.12.97.43,1.58,1.02-1.13.58-3.91,2.34-5.88,6.24-.18.41-.37.82-.55,1.23l1.29.69c1.92-4.79,5.2-6.59,6-6.96.4.83.46,1.62.43,2.16-.03.54.38.99.92,1.02.08,0,.16,0,.23-.01.43-.08.77-.45.79-.9.05-.86-.06-2.17-.82-3.51Z"/><path class="cls-2" d="M29.05,33.95h-8.28c0,.19,0,.36,0,.53,0,3.17,0,6.33,0,9.5,0,1.54-.81,2.35-2.36,2.35-3.26,0-6.52,0-9.79,0-1.48,0-2.32-.83-2.32-2.3,0-6.59,0-13.18,0-19.77,0-.82.3-1.46.95-1.96,5.42-4.21,10.83-8.42,16.25-12.63.96-.74,1.87-.75,2.82,0,5.42,4.21,10.83,8.43,16.25,12.63.65.5.95,1.13.95,1.96,0,6.61,0,13.21,0,19.82,0,1.41-.85,2.26-2.26,2.26-3.31,0-6.62,0-9.93,0-1.43,0-2.26-.82-2.27-2.25,0-3.18,0-6.36,0-9.55,0-.19,0-.38,0-.59Z"/>
@@ -294,7 +309,6 @@ const notificationSvg = (color) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="${color}">
 <path class="cls-1" d="M39.96,25.14c-2.76-2.48-7.05-3.58-8.96-2.47-.19.11-.62.4-1.28.65-.11-1.25-1.06-8.38-7.7-12.13,1.34.03,2.67-.3,3.83-1,2.19-1.32,3.44-3.74,3.26-6.29-2.49-1.52-5.61-1.52-7.94-.02-1.91,1.24-2.66,3.07-2.94,4.4-2.11-.4-4.3.08-5.95,1.39-2.99,2.37-2.56,6.1-2.53,6.35,2.52,1.33,5.58,1.12,7.79-.51,1.01-.75,1.77-1.75,2.23-2.87,4.08,6.79.38,13.39.2,13.69-.02.03-.03.06-.04.09-.74-.35-1.2-.75-1.39-.88-1.87-1.35-9,.42-11.53,5.81-2.26,4.82.06,10.61,3.95,13.54,4.83,3.64,12.24,2.99,15.96-1.39.07-.08.13-.18.2-.27,1.97-2.5,2.77-6.03,1.87-9.28-.99-3.57-4.01-6.82-6.22-6.9-.12,0-.34,0-.63-.03-.23-.02-.49-.05-.79-.11.58-1.12,3.65-7.65.07-14.38.49.28.94.58,1.37.89,5.11,3.81,5.45,9.85,5.47,10.16,0,.03,0,.07.01.1-.81.1-1.42.01-1.64,0-1-.06-2.51.92-3.84,2.51h.04c2.65.1,5.92,3.62,7,7.53.93,3.37.21,7.06-1.85,9.81.89.28,1.79.47,2.69.53,6.02.46,11.93-4.07,12.7-9.76.44-3.26-.8-6.83-3.4-9.16Z"/></svg>
 </svg>`;
-
 
 const settingsSvg = (color) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="${color}">

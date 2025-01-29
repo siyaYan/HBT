@@ -82,7 +82,7 @@ const LoginScreen = ({ navigation }) => {
       webClientId:
         "720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com", // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
       offlineAccess: true,
-      });
+    });
   }, []);
 
   const loginGoogle = async () => {
@@ -97,7 +97,7 @@ const LoginScreen = ({ navigation }) => {
         "google"
       );
       // setThirdPartyUserData(userInfo);
-      await afterLogin(response,1);
+      await afterLogin(response, 1);
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
@@ -127,7 +127,7 @@ const LoginScreen = ({ navigation }) => {
         "facebook"
       );
       console.log(response);
-      await afterLogin(response,2);
+      await afterLogin(response, 2);
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
@@ -141,7 +141,10 @@ const LoginScreen = ({ navigation }) => {
         JSON.stringify({ id, password })
       );
     } catch (error) {
-      console.error("was unsucessful. to store the credentials securely", error);
+      console.error(
+        "was unsucessful. to store the credentials securely",
+        error
+      );
       // Handle the error, like showing an alert to the user
       Alert.alert(
         "Error",
@@ -150,14 +153,17 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const saveCredentialsThirdParty = async (idToken,type=1) => {
+  const saveCredentialsThirdParty = async (idToken, type = 1) => {
     try {
       await SecureStore.setItemAsync(
         "userData",
-        JSON.stringify({ idToken,type })
+        JSON.stringify({ idToken, type })
       );
     } catch (error) {
-      console.error("was unsucessful. to store the credentials securely", error);
+      console.error(
+        "was unsucessful. to store the credentials securely",
+        error
+      );
       // Handle the error, like showing an alert to the user
       Alert.alert(
         "Error",
@@ -179,7 +185,7 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const afterLogin = async (response, type=0) => {
+  const afterLogin = async (response, type = 0) => {
     console.log("response", response);
     if (response.token) {
       const roundInfo = await getRoundInfo(
@@ -188,9 +194,12 @@ const LoginScreen = ({ navigation }) => {
       );
       if (remember && formData?.id && formData?.password) {
         await saveCredentials(formData.id, formData.password);
-      }else{
-        const id=type==1?response.data.user.googleId:response.data.user.facebookId
-        await saveCredentialsThirdParty(id,response.data.user.email,type)
+      } else {
+        const id =
+          type == 1
+            ? response.data.user.googleId
+            : response.data.user.facebookId;
+        await saveCredentialsThirdParty(id, response.data.user.email, type);
       }
       updateUserData({
         token: response.token,
@@ -488,7 +497,6 @@ const LoginScreen = ({ navigation }) => {
                       size="sm"
                       defaultIsChecked
                       onPress={(value) => setRemember(!remember)}
-                      
                       _checked={{
                         bg: "#49a579", // Custom background color when checked
                         borderColor: "#49a579", // Border color when checked
@@ -496,12 +504,10 @@ const LoginScreen = ({ navigation }) => {
                       _icon={{
                         color: "#f9f8f2", // Custom tick color
                       }}
-                            
                     >
                       <Text fontFamily={"Regular"} fontSize={"lg"}>
                         Stay signed in
                       </Text>
-                      
                     </Checkbox>
 
                     <Link>

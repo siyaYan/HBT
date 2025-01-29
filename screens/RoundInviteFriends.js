@@ -119,7 +119,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       userData.data._id,
       newFriend.id
     );
-    if(responseCR.data){
+    if (responseCR.data) {
       insertRoundData(responseCR?.data?.newRound);
     }
   };
@@ -138,10 +138,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
             {friends.length > 0 ? (
               <Box w={"95%"}>
                 {friends.map((item, index) => {
-                    const friendInRound = round.roundFriends.find(
-                      (friend) => friend.id === item._id
-                    );
-                    const friendStatus = friendInRound?.status || null;
+                  const friendInRound = round.roundFriends.find(
+                    (friend) => friend.id === item._id
+                  );
+                  const friendStatus = friendInRound?.status || null;
                   return (
                     <HStack
                       w={"100%"}
@@ -186,12 +186,10 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                             </Text>
                           </Pressable>
                         )
-                      ) 
-                      :  
-                      // (
-                      //   <Feather name="refresh-cw" size={30} color="black" />
-                      // ) :
-                       (
+                      ) : (
+                        // (
+                        //   <Feather name="refresh-cw" size={30} color="black" />
+                        // ) :
                         <Pressable
                           onPress={() => {
                             console.log("item", item);

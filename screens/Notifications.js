@@ -31,10 +31,9 @@ import {
   reactReceivedRequest,
   clearFriendRequestById,
   clearAllFriendRequests,
-  getNoteUpdate
+  getNoteUpdate,
 } from "../components/Endpoint";
 import { SvgXml } from "react-native-svg";
-
 
 const NotificationScreen = ({ navigation }) => {
   useFocusEffect(
@@ -42,20 +41,20 @@ const NotificationScreen = ({ navigation }) => {
       updateNotifiableFriendRequest();
       updateNotification();
       updateNotificationHistory();
-      updateNote()
+      updateNote();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
-  const { userData, updateUserData,note,updateNotes } = useData();
+  const { userData, updateUserData, note, updateNotes } = useData();
   // combination of sent & received
   const [friendRequest, setFriendRequest] = useState([]);
   const [notificates, setNotificates] = useState([]);
   const [history, setHistory] = useState([]);
-  const updateNote = async ()=>{
-    const res=await getNoteUpdate(userData.token,userData.data.email)
-    if(res>0){
-      updateNotes(res)
+  const updateNote = async () => {
+    const res = await getNoteUpdate(userData.token, userData.data.email);
+    if (res > 0) {
+      updateNotes(res);
     }
- }
+  };
   const updateNotifiableFriendRequest = async () => {
     const response = await getNotifiableFriendRequests(userData.token);
 
@@ -75,12 +74,15 @@ const NotificationScreen = ({ navigation }) => {
           nickname: user.nickname,
           requestRole: response.data[index].requestRole,
         };
-        friendrequests[index]=item;
+        friendrequests[index] = item;
       });
       setFriendRequest(friendrequests);
       // console.log("NotifiableFriendRequests:", friendrequests);
     } else {
-      console.error("get NotifiableFriendRequests was unsucessful.:", response.message);
+      console.error(
+        "get NotifiableFriendRequests was unsucessful.:",
+        response.message
+      );
     }
   };
   //the latest is on the top
@@ -111,7 +113,10 @@ const NotificationScreen = ({ navigation }) => {
 
       // console.log("NotifiableNotifications:", Notification);
     } else {
-      console.error("get NotifiableNotifications was unsucessful.:", response.message);
+      console.error(
+        "get NotifiableNotifications was unsucessful.:",
+        response.message
+      );
     }
   };
   const updateNotificationHistory = async () => {
@@ -146,7 +151,10 @@ const NotificationScreen = ({ navigation }) => {
       setHistory(Historys);
       // console.log("NotificationHistory:", Historys);
     } else {
-      console.error("get NotificationHistory was unsucessful.:", response.message);
+      console.error(
+        "get NotificationHistory was unsucessful.:",
+        response.message
+      );
     }
   };
 
@@ -177,32 +185,35 @@ const NotificationScreen = ({ navigation }) => {
     }
     // Handle success or error response
     if (response.status == "success") {
-      updateNotes(friendRequest.length)
+      updateNotes(friendRequest.length);
       console.log("clear all notifications success:", response);
     } else {
-      console.error("clear all notifications was unsucessful.:", response.message);
+      console.error(
+        "clear all notifications was unsucessful.:",
+        response.message
+      );
     }
   };
 
   const clearAllFriendRequest = async () => {
-    const response = await clearAllFriendRequests(userData.token)
-    if(!response){
-      console.log('clear all notification was unsucessful.')
+    const response = await clearAllFriendRequests(userData.token);
+    if (!response) {
+      console.log("clear all notification was unsucessful.");
     }
     // Handle success or error response
     if (response.status == "success") {
-      updateNotes(notificates.length)
-      console.log('clear all notifications success:',response);
+      updateNotes(notificates.length);
+      console.log("clear all notifications success:", response);
     } else {
-      console.error('clear all notifications was unsucessful.:',response.message);
+      console.error(
+        "clear all notifications was unsucessful.:",
+        response.message
+      );
     }
   };
 
   const clearFriendRequest = async (id) => {
-    const response = await clearFriendRequestById(
-      userData.token,
-      id
-    );
+    const response = await clearFriendRequestById(userData.token, id);
     if (!response) {
       console.log("clear notification was unsucessful.");
     }
@@ -214,44 +225,43 @@ const NotificationScreen = ({ navigation }) => {
     }
   };
 
-  const reactRequest = async(id, react) =>{
+  const reactRequest = async (id, react) => {
     const response = await reactReceivedRequest(userData.token, id, react);
-    if(!response){
-      console.log('react request was unsucessful.')
+    if (!response) {
+      console.log("react request was unsucessful.");
     }
     // Handle success or error response
     if (response.status == "success") {
-      console.log('react request success:',response);
+      console.log("react request success:", response);
     } else {
-      console.error('react request was unsucessful.:',response.message);
+      console.error("react request was unsucessful.:", response.message);
     }
-  }
+  };
 
   const rejectFriend = (i) => {
     console.log("reject Friend,delete current notificate");
     setFriendRequest((currentReceived) => [
       ...currentReceived.slice(0, i),
-      ...currentReceived.slice(i+1),
+      ...currentReceived.slice(i + 1),
     ]);
-    reactRequest(friendRequest[i].friendRequestId,"R")
+    reactRequest(friendRequest[i].friendRequestId, "R");
   };
   const acceptFriend = (i) => {
     console.log("accept Friend,delete current notificate");
     setFriendRequest((currentReceived) => [
       ...currentReceived.slice(0, i),
-      ...currentReceived.slice(i+1),
+      ...currentReceived.slice(i + 1),
     ]);
-    reactRequest(friendRequest[i].friendRequestId,"A")
+    reactRequest(friendRequest[i].friendRequestId, "A");
   };
   const clearCurrent = (item, i) => {
     if (item == "received") {
       console.log("clear current received notificate");
-      clearFriendRequest(friendRequest[i].friendRequestId)
+      clearFriendRequest(friendRequest[i].friendRequestId);
       setFriendRequest((currentReceived) => [
         ...currentReceived.slice(0, i),
-        ...currentReceived.slice(i+1),
+        ...currentReceived.slice(i + 1),
       ]);
-      
     }
     if (item === "notificates") {
       console.log("clear current selected notificate");
@@ -284,14 +294,17 @@ const NotificationScreen = ({ navigation }) => {
               <HStack w={"100%"} justifyContent={"space-between"}>
                 {friendRequest?.length > 0 ? (
                   <Box>
-
-                     <Image
+                    <Image
                       size={30}
                       source={require("../assets/Buttonicons/Users.png")}
                       alt="received"
-                    /> 
-                    <SvgXml xml={myCircleSVG("#191919")} width={35} height={35}/>                
-                   
+                    />
+                    <SvgXml
+                      xml={myCircleSVG("#191919")}
+                      width={35}
+                      height={35}
+                    />
+
                     <Badge // bg="red.400"
                       colorScheme="danger"
                       rounded="full"
@@ -310,10 +323,9 @@ const NotificationScreen = ({ navigation }) => {
                     </Badge>
                   </Box>
                 ) : (
-                  <SvgXml xml={myCircleSVG("#191919")} width={35} height={35}/>                
-                  
+                  <SvgXml xml={myCircleSVG("#191919")} width={35} height={35} />
                 )}
-{/* 
+                {/* 
                 <AntDesign
                   name="checkcircleo"
                   size={30}
@@ -321,8 +333,7 @@ const NotificationScreen = ({ navigation }) => {
                   onPress={() => clearAll("friendrequests")}
                 /> */}
                 {/* <AntDesign name="delete" size={30} color="black" /> */}
-                <SvgXml xml={readAllSvg("#191919")} width={35} height={35}/>                
-
+                <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
               </HStack>
               <Box
                 h="24%"
@@ -333,118 +344,125 @@ const NotificationScreen = ({ navigation }) => {
                 <ScrollView w={"100%"}>
                   {friendRequest?.length > 0 ? (
                     <Box mt={"2"} w={"95%"} alignSelf={"center"}>
-                      {friendRequest?.map((item, index) => 
+                      {friendRequest?.map((item, index) =>
                         // (item.requestRole == "sent"?item.username:'qqq')
-                          (item.requestRole == "received" ? (
-                            <Box mt={"2"} w={"100%"} alignSelf={"center"} key={index}>
-                              <HStack
-                                w={"100%"}
-                                alignItems={"center"}
-                                justifyContent={"space-between"}
-                                
-                              >
-                                {item.profileImageUrl ? (
-                                  <Avatar
-                                    bg="white"
-                                    mb="1"
-                                    size={"md"}
-                                    source={{ uri: item.profileImageUrl }}
-                                  />
-                                ) : (
-                                  <Avatar
-                                    bg="white"
-                                    mb="1"
-                                    size="md"
-                                    borderWidth={2}
-                                  >
-                                    <AntDesign
-                                      name="user"
-                                      size={20}
-                                      color="black"
-                                    />
-                                  </Avatar>
-                                  
-                                )}
-                                <Text fontFamily={"Regular"} fontSize="lg">
-                                  {item.username}
-                                </Text>
-                                <Text fontFamily={"Regular"} fontSize="lg">
-                                  {item.nickname}
-                                </Text>
-                                <HStack space="3">
+                        item.requestRole == "received" ? (
+                          <Box
+                            mt={"2"}
+                            w={"100%"}
+                            alignSelf={"center"}
+                            key={index}
+                          >
+                            <HStack
+                              w={"100%"}
+                              alignItems={"center"}
+                              justifyContent={"space-between"}
+                            >
+                              {item.profileImageUrl ? (
+                                <Avatar
+                                  bg="white"
+                                  mb="1"
+                                  size={"md"}
+                                  source={{ uri: item.profileImageUrl }}
+                                />
+                              ) : (
+                                <Avatar
+                                  bg="white"
+                                  mb="1"
+                                  size="md"
+                                  borderWidth={2}
+                                >
                                   <AntDesign
-                                    onPress={() => acceptFriend(index)}
-                                    name="checksquareo"
-                                    size={30}
+                                    name="user"
+                                    size={20}
                                     color="black"
                                   />
-                                  <AntDesign
-                                    onPress={() => rejectFriend(index)}
-                                    name="closesquareo"
-                                    size={30}
-                                    color="black"
-                                  />
-                                </HStack>
+                                </Avatar>
+                              )}
+                              <Text fontFamily={"Regular"} fontSize="lg">
+                                {item.username}
+                              </Text>
+                              <Text fontFamily={"Regular"} fontSize="lg">
+                                {item.nickname}
+                              </Text>
+                              <HStack space="3">
+                                <AntDesign
+                                  onPress={() => acceptFriend(index)}
+                                  name="checksquareo"
+                                  size={30}
+                                  color="black"
+                                />
+                                <AntDesign
+                                  onPress={() => rejectFriend(index)}
+                                  name="closesquareo"
+                                  size={30}
+                                  color="black"
+                                />
                               </HStack>
-                            </Box>
-                          ) : (
-                            <Box mt={"2"} w={"100%"} alignSelf={"center"} key={index}>
-                              <HStack
-                                w={"100%"}
-                                alignItems={"center"}
-                                justifyContent={"space-between"}
-                              >
-                                {item.profileImageUrl ? (
-                                  <Avatar
-                                    bg="white"
-                                    mb="1"
-                                    size={"md"}
-                                    source={{ uri: item.profileImageUrl }}
+                            </HStack>
+                          </Box>
+                        ) : (
+                          <Box
+                            mt={"2"}
+                            w={"100%"}
+                            alignSelf={"center"}
+                            key={index}
+                          >
+                            <HStack
+                              w={"100%"}
+                              alignItems={"center"}
+                              justifyContent={"space-between"}
+                            >
+                              {item.profileImageUrl ? (
+                                <Avatar
+                                  bg="white"
+                                  mb="1"
+                                  size={"md"}
+                                  source={{ uri: item.profileImageUrl }}
+                                />
+                              ) : (
+                                <Avatar
+                                  bg="white"
+                                  mb="1"
+                                  size="md"
+                                  borderWidth={2}
+                                >
+                                  <AntDesign
+                                    name="user"
+                                    size={20}
+                                    color="black"
                                   />
-                                ) : (
-                                  <Avatar
-                                    bg="white"
-                                    mb="1"
-                                    size="md"
-                                    borderWidth={2}
-                                  >
-                                    <AntDesign
-                                      name="user"
-                                      size={20}
-                                      color="black"
-                                    />
-                                  </Avatar>
-                                )}
+                                </Avatar>
+                              )}
 
-                                <Text fontFamily={"Regular"} fontSize="lg">
-                                  {item.username}
-                                </Text>
-                                <Text fontFamily={"Regular"} fontSize="lg">
-                                  {item.nickname}
-                                </Text>
-                                <HStack space="3">
-                                  {item.status == "linked" ? (
-                                    <AntDesign
-                                      name="link"
-                                      size={28}
-                                      color="black"
-                                    />
-                                  ) : (
-                                    ""
-                                  )}
-                                  <MaterialIcons
-                                    onPress={() =>
-                                      clearCurrent("received", index)
-                                    }
-                                    name="delete-outline"
-                                    size={30}
-                                    color="#191919"
+                              <Text fontFamily={"Regular"} fontSize="lg">
+                                {item.username}
+                              </Text>
+                              <Text fontFamily={"Regular"} fontSize="lg">
+                                {item.nickname}
+                              </Text>
+                              <HStack space="3">
+                                {item.status == "linked" ? (
+                                  <AntDesign
+                                    name="link"
+                                    size={28}
+                                    color="black"
                                   />
-                                </HStack>
+                                ) : (
+                                  ""
+                                )}
+                                <MaterialIcons
+                                  onPress={() =>
+                                    clearCurrent("received", index)
+                                  }
+                                  name="delete-outline"
+                                  size={30}
+                                  color="#191919"
+                                />
                               </HStack>
-                            </Box>
-                          ))
-                        
+                            </HStack>
+                          </Box>
+                        )
                       )}
                     </Box>
                   ) : (
@@ -462,21 +480,25 @@ const NotificationScreen = ({ navigation }) => {
               </Box>
 
               <Divider
-              mt="-3"
-              _light={{
-                bg: "muted.300",
-              }}
-              _dark={{
-                bg: "muted.700",
-              }}
-              alignSelf={"center"}
-              w="90%"
-            />
+                mt="-3"
+                _light={{
+                  bg: "muted.300",
+                }}
+                _dark={{
+                  bg: "muted.700",
+                }}
+                alignSelf={"center"}
+                w="90%"
+              />
 
               <HStack w={"100%"} justifyContent={"space-between"}>
                 {notificates?.length ? (
                   <Box>
-                     <SvgXml xml={bellNotificationSVG("#191919")} width={30} height={30}/>                
+                    <SvgXml
+                      xml={bellNotificationSVG("#191919")}
+                      width={30}
+                      height={30}
+                    />
                     <Badge // bg="red.400"
                       colorScheme="danger"
                       rounded="full"
@@ -495,12 +517,13 @@ const NotificationScreen = ({ navigation }) => {
                     </Badge>
                   </Box>
                 ) : (
-                  <SvgXml xml={bellNotificationSVG("#191919")} width={35} height={35}/>                
-                  
+                  <SvgXml
+                    xml={bellNotificationSVG("#191919")}
+                    width={35}
+                    height={35}
+                  />
                 )}
-                <SvgXml xml={readAllSvg("#191919")} width={35} height={35}/>                
-
-
+                <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
               </HStack>
 
               <Box
@@ -544,8 +567,6 @@ const NotificationScreen = ({ navigation }) => {
                             size={30}
                             color="black"
                           />
-                          
-
                         </HStack>
                       ))}
                     </Box>
@@ -573,7 +594,6 @@ const NotificationScreen = ({ navigation }) => {
               alignSelf={"center"}
               w="90%"
             /> */}
-
 
               <HStack w={"100%"} mt={"5"} justifyContent={"space-between"}>
                 <Text mt={"1"} fontFamily={"Regular Semi Bold"} fontSize="2xl">
@@ -632,7 +652,6 @@ const NotificationScreen = ({ navigation }) => {
   );
 };
 
-
 const myCircleSVG = () => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
   <defs>
@@ -666,18 +685,17 @@ const bellNotificationSVG = () => `
     <path class="cls-1" d="M18.25,41.18c-.11,0-.24,0-.36,0-3.41,0-6.83,0-10.24,0-1.13,0-1.9-.8-1.9-1.94,0-.8.12-1.59.37-2.35.67-2.08,1.95-3.65,3.84-4.69.5-.28.74-.68.74-1.26,0-3.59-.04-7.18,0-10.77.08-5.47,2.5-9.57,7.19-12.28,1.54-.88,3.21-1.37,4.97-1.54.25-.02.32-.1.32-.35-.01-.93-.02-1.87,0-2.8.03-.94.75-1.66,1.67-1.74.88-.07,1.7.52,1.91,1.4.05.2.05.41.06.61,0,.86,0,1.71,0,2.57,0,.21.06.29.27.31,6.94.7,12.18,6.57,12.21,13.68.01,3.61,0,7.22,0,10.83,0,.65.26,1.06.81,1.38,2.64,1.55,4.04,3.89,4.14,6.99.04,1.16-.75,1.95-1.9,1.95-3.41,0-6.83,0-10.24,0q-.39,0-.4.39c-.05,3.45-2.7,6.27-6.2,6.61-3.29.31-6.42-2.08-7.07-5.42-.1-.51-.12-1.03-.18-1.58ZM40.18,37.46c-.04-.09-.06-.14-.08-.19-.42-.8-1.05-1.4-1.83-1.84-1.7-.97-2.59-2.45-2.6-4.43-.02-3.75.03-7.5-.02-11.24-.05-3.99-2.58-7.6-6.24-9.07-2.17-.87-4.44-.92-6.68-.56-4.93.78-8.37,4.96-8.37,10.03,0,3.63.02,7.26,0,10.89-.01,1.95-.9,3.41-2.58,4.38-.31.18-.61.38-.88.62-.45.38-.81.84-1.05,1.42h30.35ZM28.06,41.21h-6.08c-.16,1.02.47,2.24,1.45,2.84,1.04.64,2.39.59,3.39-.16.87-.66,1.28-1.56,1.24-2.68Z"/>
   </svg>`;
 
-  const acceptSvg = () => `
+const acceptSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <path class="cls-1" d="M25,4.53C13.71,4.53,4.53,13.72,4.53,25s9.18,20.47,20.47,20.47,20.47-9.18,20.47-20.47S36.29,4.53,25,4.53ZM34.27,19.72l-10.14,13.05c-.69.89-1.97,1.05-2.85.36-.16-.13-.29-.27-.4-.43l-5.05-5.72c-.74-.84-.66-2.13.18-2.87.84-.74,2.13-.66,2.87.18l3.56,4.04,8.62-11.09c.69-.89,1.97-1.05,2.85-.36s1.05,1.97.36,2.85Z"/>
   </svg>`;
 
-  const declineSvg = () => `
+const declineSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/>
     <rect class="cls-1" x="14.7" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(24.81 60.35) rotate(-134.69)"/>
     <rect class="cls-1" x="14.7" y="22.9" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(60.31 25.08) rotate(135.31)"/>
   </svg>`;
- 
 
 const deleteSVG = () => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
@@ -685,6 +703,5 @@ const deleteSVG = () => `
   <path class="cls-1" d="M29.24,9.65c1.26,0,2.56,0,3.87,0q2.62,0,3.15,2.41,2.55.43,2.51,1.96H11.36q-.29-1.51,2.35-1.97c.42-2.35.47-2.4,2.97-2.4,1.31,0,2.62,0,3.49,0,3.02,0,6.05,0,9.07,0ZM26.12,6.91"/>
   <path class="cls-1" d="M24.62,6.22c-1.89,0-3.42,1.53-3.42,3.42h1.56c0-1.03.83-1.86,1.86-1.86s1.86.83,1.86,1.86h1.56c0-1.89-1.53-3.42-3.42-3.42Z"/>
 </svg>`;
-
 
 export default NotificationScreen;

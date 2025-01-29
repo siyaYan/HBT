@@ -159,7 +159,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
 
       navigation.navigate("RoundStack", {
         screen: "RoundInfo",
-        params: { id: response.data._id, state: emptyState , gohabit:true},
+        params: { id: response.data._id, state: emptyState, gohabit: true },
       });
     } else {
       const newRoundData = {
@@ -301,7 +301,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   open={open}
                   value={level}
                   items={items}
-                  disabled={round?.status=="A"}
+                  disabled={round?.status == "A"}
                   setOpen={setOpen}
                   setValue={(callback) => {
                     setValue(callback);
@@ -313,7 +313,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                 {isInvalid.level && (
                   <FormControl isInvalid={isInvalid.level}>
                     <FormControl.ErrorMessage>
-                    Please select a level.
+                      Please select a level.
                     </FormControl.ErrorMessage>
                   </FormControl>
                 )}
@@ -376,18 +376,18 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                                 );
                               }}
                             >
-                                <DateTimePicker
-                                  mode="single"
-                                  date={startDate}
-                                  colorScheme="green"
-                                  // minDate={minDaysFromNow}
-                                  minDate={datePickerMin}
-                                  onChange={(params) => {
-                                    setDate(new Date(params.date));
-                                  }}
-                                  selectedItemColor= "#49a579"
-                                  // timePickerContainerStyle={{width: "50%", height: "80%"}}
-                                />
+                              <DateTimePicker
+                                mode="single"
+                                date={startDate}
+                                colorScheme="green"
+                                // minDate={minDaysFromNow}
+                                minDate={datePickerMin}
+                                onChange={(params) => {
+                                  setDate(new Date(params.date));
+                                }}
+                                selectedItemColor="#49a579"
+                                // timePickerContainerStyle={{width: "50%", height: "80%"}}
+                              />
                             </Menu>
                           </Box>
                         </ZStack>
@@ -420,7 +420,8 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   />
                   {isInvalid.maxCapacity && (
                     <FormControl.ErrorMessage>
-                     Please enter a value for maximum capacity between 2 and 50.
+                      Please enter a value for maximum capacity between 2 and
+                      50.
                     </FormControl.ErrorMessage>
                   )}
                 </FormControl>

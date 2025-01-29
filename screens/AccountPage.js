@@ -26,7 +26,6 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import { SvgXml } from "react-native-svg";
 
-
 const AccountScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const [selectedImage, setSelectedImage] = useState(null);
@@ -100,7 +99,7 @@ const AccountScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <Background />
       <Flex direction="column" alignItems="center">
-        <Box safeArea py="2" maxW="320" w={'100%'}>
+        <Box safeArea py="2" maxW="320" w={"100%"}>
           <VStack space={3} alignItems="center">
             <Pressable onPress={onOpen}>
               <Box py="2" alignItems="center" justifyContent="center">
@@ -137,7 +136,7 @@ const AccountScreen = ({ navigation }) => {
                     </Avatar.Badge>
                   </Avatar>
                 )}
-                <Text fontFamily={"Regular"} fontSize="lg" >
+                <Text fontFamily={"Regular"} fontSize="lg">
                   {userData.data.nickname}
                 </Text>
               </Box>
@@ -151,12 +150,7 @@ const AccountScreen = ({ navigation }) => {
                 bg: "muted.50",
               }}
             />
-            <Box
-              py="2"
-              w={'100%'}
-              alignItems="center"
-              justifyContent="center"
-            >
+            <Box py="2" w={"100%"} alignItems="center" justifyContent="center">
               <Text style={{ fontSize: 18, fontFamily: "Semi Bold" }}>
                 Credits: {userData.data.credit}
               </Text>
@@ -166,8 +160,8 @@ const AccountScreen = ({ navigation }) => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  paddingHorizontal: '10%',
-                  marginVertical: '10%'
+                  paddingHorizontal: "10%",
+                  marginVertical: "10%",
                 }}
               >
                 <View>

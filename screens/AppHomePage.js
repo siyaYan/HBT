@@ -14,8 +14,6 @@ import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import Background from "../components/Background";
 
-
-
 const AppHomeScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
   const handleAvatarPress = () => {

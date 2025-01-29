@@ -118,7 +118,10 @@ const RegisterScreen = ({ navigation }) => {
         JSON.stringify({ id, password })
       );
     } catch (error) {
-      console.error("was unsucessful. to store the credentials securely", error);
+      console.error(
+        "was unsucessful. to store the credentials securely",
+        error
+      );
       // Handle the error, like showing an alert to the user
       Alert.alert(
         "Error",
@@ -134,7 +137,10 @@ const RegisterScreen = ({ navigation }) => {
         JSON.stringify({ idToken, type })
       );
     } catch (error) {
-      console.error("was unsucessful. to store the credentials securely", error);
+      console.error(
+        "was unsucessful. to store the credentials securely",
+        error
+      );
       // Handle the error, like showing an alert to the user
       Alert.alert(
         "Error",
@@ -554,7 +560,7 @@ const RegisterScreen = ({ navigation }) => {
                         ) : (
                           <FormControl.ErrorMessage ml={2} mt={2}>
                             <Text fontFamily={"Regular"} fontSize="sm">
-                            Password must meet all requirements.
+                              Password must meet all requirements.
                             </Text>
                           </FormControl.ErrorMessage>
                         )}
@@ -621,7 +627,7 @@ const RegisterScreen = ({ navigation }) => {
                       ) : (
                         <FormControl.ErrorMessage ml={2} mt={2}>
                           <Text fontFamily={"Regular"} fontSize="sm">
-                          The confirm password does not match the password.
+                            The confirm password does not match the password.
                           </Text>
                         </FormControl.ErrorMessage>
                       )}
