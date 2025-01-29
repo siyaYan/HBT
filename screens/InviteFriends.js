@@ -170,7 +170,7 @@ const InviteScreen = ({ navigation }) => {
                   />
                   <FormControl.ErrorMessage ml={2} mt={2}>
                     <Text fontFamily={"Regular"} fontSize="sm">
-                      {!errors.userId ? "No users found" : ""}
+                      {!errors.userId ? "No users were found matching your search." : ""}
                     </Text>
                   </FormControl.ErrorMessage>
                 </FormControl>
@@ -180,7 +180,7 @@ const InviteScreen = ({ navigation }) => {
                 (formData.userId.toLowerCase() == userData.data.email ||
                   formData.userId == userData.data.username) ? (
                   <Text fontFamily={"Regular"} fontSize="lg">
-                    This is YOU!
+                    This is YOU! 
                   </Text>
                 ) : (
                   <Button

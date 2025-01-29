@@ -29,7 +29,7 @@ const getCredentials = async () => {
       return JSON.parse(credentials);
     }
   } catch (error) {
-    console.error("Failed to retrieve the credentials", error);
+    console.error("was unsucessful. to retrieve the credentials", error);
     // Handle the error, like showing an alert to the user
   }
 };

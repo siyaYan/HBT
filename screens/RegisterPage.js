@@ -103,7 +103,7 @@ const RegisterScreen = ({ navigation }) => {
       console.log("round context", roundData);
       navigation.navigate("MainStack", { screen: "Home" });
     } else {
-      console.log("login failed");
+      console.log("login was unsucessful.");
       if (response.message.includes("Email varify")) {
         console.log("need to verify email....");
         setShowVerifyModal(true);
@@ -118,11 +118,11 @@ const RegisterScreen = ({ navigation }) => {
         JSON.stringify({ id, password })
       );
     } catch (error) {
-      console.error("Failed to store the credentials securely", error);
+      console.error("was unsucessful. to store the credentials securely", error);
       // Handle the error, like showing an alert to the user
       Alert.alert(
         "Error",
-        "Failed to securely save your credentials. You may need to login again next time."
+        "was unsucessful. to securely save your credentials. You may need to login again next time."
       );
     }
   };
@@ -134,11 +134,11 @@ const RegisterScreen = ({ navigation }) => {
         JSON.stringify({ idToken, type })
       );
     } catch (error) {
-      console.error("Failed to store the credentials securely", error);
+      console.error("was unsucessful. to store the credentials securely", error);
       // Handle the error, like showing an alert to the user
       Alert.alert(
         "Error",
-        "Failed to securely save your credentials. You may need to login again next time."
+        "was unsucessful. to securely save your credentials. You may need to login again next time."
       );
     }
   };
@@ -554,7 +554,7 @@ const RegisterScreen = ({ navigation }) => {
                         ) : (
                           <FormControl.ErrorMessage ml={2} mt={2}>
                             <Text fontFamily={"Regular"} fontSize="sm">
-                              Please input your password
+                            Password must meet all requirements.
                             </Text>
                           </FormControl.ErrorMessage>
                         )}
@@ -621,7 +621,7 @@ const RegisterScreen = ({ navigation }) => {
                       ) : (
                         <FormControl.ErrorMessage ml={2} mt={2}>
                           <Text fontFamily={"Regular"} fontSize="sm">
-                            Confirm password is not correct
+                          The confirm password does not match the password.
                           </Text>
                         </FormControl.ErrorMessage>
                       )}

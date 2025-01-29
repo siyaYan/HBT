@@ -73,7 +73,7 @@ const FriendsScreen = ({ navigation }) => {
     const response = await getFriends(userData.token);
     // Handle success or error response
     if (!response) {
-      console.log("get friends failed");
+      console.log("get friends was unsucessful.");
     }
     if (response.status == "success") {
       let newFriends = [];
@@ -95,14 +95,14 @@ const FriendsScreen = ({ navigation }) => {
       });
       setFriends(newFriends);
     } else {
-      console.error("get friends failed:", response.message);
+      console.error("get friends was unsucessful.:", response.message);
     }
   };
   const updateSendRequest = async () => {
     const response = await getSendRequest(userData.token);
     // Handle success or error response
     if (!response) {
-      console.log("get send friends request failed");
+      console.log("get send friends request was unsucessful.");
       setSent({});
     }
     if (response.status == "success") {
@@ -128,8 +128,8 @@ const FriendsScreen = ({ navigation }) => {
       setSent(sendFriends);
       // console.log('send request:',sent)
     } else {
-      // console.error('get send friend request failed:',response.message);
-      console.log("get send friends request failed");
+      // console.error('get send friend request was unsucessful.:',response.message);
+      console.log("get send friends request was unsucessful.");
       setSent({});
     }
   };
@@ -137,7 +137,7 @@ const FriendsScreen = ({ navigation }) => {
     const response = await getReceivedRequest(userData.token);
     // Handle success or error response
     if (!response) {
-      console.log("get received friends failed");
+      console.log("get received friends was unsucessful.");
       setReceived({});
     }
     if (response.status == "success") {
@@ -161,8 +161,8 @@ const FriendsScreen = ({ navigation }) => {
       setReceived(reversedFriends);
       // console.log('received requests:',received)
     } else {
-      // console.error('get received friend requests failed:',response.message);
-      console.log("get received friends failed");
+      // console.error('get received friend requests was unsucessful.:',response.message);
+      console.log("get received friends was unsucessful.");
       setReceived({});
     }
   };
@@ -187,25 +187,25 @@ const FriendsScreen = ({ navigation }) => {
   const reactRequest = async (id, react) => {
     const response = await reactReceivedRequest(userData.token, id, react);
     if (!response) {
-      console.log("react request failed");
+      console.log("react request was unsucessful.");
     }
     // Handle success or error response
     if (response.status == "success") {
       console.log("react request success:", response);
     } else {
-      console.error("react request failed:", response.message);
+      console.error("react request was unsucessful.:", response.message);
     }
   };
   const deleteAllFriends = async () => {
     const response = await deleteFriends(userData.token);
     if (!response) {
-      console.log("delete friends failed");
+      console.log("delete friends was unsucessful.");
     }
     // Handle success or error response
     if (response.status == "success") {
       console.log("delete friends success:", response);
     } else {
-      console.error("delete friends failed:", response.message);
+      console.error("delete friends was unsucessful.:", response.message);
     }
   };
   const deleteFriendOrRequestByID = async (id) => {
@@ -214,13 +214,13 @@ const FriendsScreen = ({ navigation }) => {
       id
     );
     if (!response) {
-      console.log("delete friends failed");
+      console.log("delete friends was unsucessful.");
     }
     // Handle success or error response
     if (response.status == "success") {
       console.log("delete friends success:", response);
     } else {
-      console.error("delete friends failed:", response.message);
+      console.error("delete friends was unsucessful.:", response.message);
     }
   };
   const deleteCurrent = (item, i) => {
@@ -324,7 +324,7 @@ const FriendsScreen = ({ navigation }) => {
           <VStack space={1} alignItems="left">
             <HStack>
               <SvgXml xml={incomingRequestSVG("#191919")} width={35} height={35}/>
-              <Text fontFamily={"Regular"} fontSize="lg">
+              <Text ml={2} fontFamily={"Regular"} fontSize="lg">
                 {received?.length > 0 ? received.length : ""}
               </Text>
             </HStack>
@@ -563,40 +563,45 @@ const FriendsScreen = ({ navigation }) => {
               justifyContent={"space-between"}
             >
               <HStack>
-                {/* <Image
-                  size={30}
-                  source={require("../assets/Buttonicons/UsersThree.png")}
-                  alt="friends"
-                /> */}
               <SvgXml xml={myCircleSVG("#191919")} width={35} height={35}/>                
-                <Text fontFamily={"Regular"} fontSize="lg">
+                <Text fontFamily={"Regular"} fontSize="md">
                   {friends?.length > 0 ? friends.length : ""}
                 </Text>
-              </HStack>
-              {/* <FontAwesome5
-                onPress={() => deleteOption(-1)}
-                name="unlink"
-                size={24}
-                color="black"
-              /> */}
-              
+              </HStack>           
               {/* TODO:update to slide item */}
             </HStack>
             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
               <Modal.Content maxWidth="400px">
-                <Modal.Header>Unlink the friend(s)?</Modal.Header>
+                <Modal.Header>Did you want to proceed to unlink?                </Modal.Header>
                 <Modal.Footer>
-                  <Button.Group justifyContent={"space-between"}>
+                  <Button.Group justifyContent={"center"}>
                     <Button
+                    rounded={30}
+                    shadow="7"
+                      width="40%"
+                       size={"md"}
+                        _text={{
+                          color: "#f9f8f2",
+                          }}
+                          backgroundColor={"#49a579"}
+
                       onPress={() => {
                         deleteCurrent("friend");
+                        }}
+                      >
+                        Ok
+                      </Button>
+                      <Button
+                      rounded={30}
+                      shadow="7"
+                      width="40%"
+                      size={"md"}
+                      _text={{
+                        color: "#f9f8f2",
                       }}
-                    >
-                      Ok
-                    </Button>
-                    <Button
-                      colorScheme="secondary"
-                      onPress={() => {
+                      colorScheme="blueGray"
+                      alignSelf="center"
+                        onPress={() => {
                         setShowModal(false);
                       }}
                     >
@@ -627,7 +632,9 @@ const FriendsScreen = ({ navigation }) => {
                             source={{ uri: item.profileImageUrl }}
                           />
                         ) : (
-                          <FontAwesome name="check" size={24} color="black" />
+                          // <FontAwesome name="check" size={24} color="black" />
+                          <SvgXml xml={acceptSvg("#191919")} width={35} height={35}/>                
+                          
                         )}
                         <Text fontFamily={"Regular"} fontSize="md">
                           {item.username}
@@ -645,18 +652,18 @@ const FriendsScreen = ({ navigation }) => {
                     ))}
                   </Box>
                 ) : (
-                  <><Text
-                      marginTop={"20%"}
+                  <><Image
+                  source={require('../assets/Animations/AddFriends.gif')} 
+                  alt="Add Friends GIF"
+                  style={{ alignSelf: "center", width: 100, height: 100 }}
+                /><Text
+                      // marginTop={"20%"}
                       fontFamily={"Regular"}
                       fontSize="xl"
                       textAlign={"center"}
                     >
                       Add friends to start a round!
-                    </Text><Image
-                        source={require('../assets/Animations/Test2.gif')} // Update the path to your GIF file
-                        alt="Add Friends GIF"
-                        style={{ alignSelf: "center", width: 100, height: 100 }} // Adjust the size and margin as needed
-                      /></>
+                    </Text></>
                   
                 )}
               </ScrollView>

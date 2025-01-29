@@ -189,7 +189,7 @@ export default function AuthenticatedScreens({ navigation }) {
                 /> */}
 
                 <SvgXml xml={notificationSvg(note > 0 ? "#ff061e" : "#191919")} width={30} height={30} />
-                <Text style={styles.tabLabelUpdates(accessibilityState.selected)}>Activity</Text>
+                <Text style={styles.tabLabelUpdates(accessibilityState.selected? "#49a579" : "#191919")}>Activity</Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     borderTopColor: "transparent",
     // borderTopLeftRadius: 10, // Rounds the top-left corner
     // borderTopRightRadius: 10s, // Rounds the top-right corner
-    height: 100, // Optional height adjustment
+    height: 90, // Optional height adjustment
     position: "absolute",
     left: 0,
     right: 0,

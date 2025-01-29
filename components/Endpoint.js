@@ -34,13 +34,13 @@ export async function registerUser(
 
     const data = await response.json();
     if (data.status != "success") {
-      Alert.alert("Oh,No!", data.message || "Registration unsuccessful");
+      Alert.alert("Oh,No!", data.message || "Registration was unsuccessful");
       // console.log(data.message);
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in register user:", error);
-    Alert.alert("Unsuccessful", "Registration failed. Please try again later.");
+    Alert.alert("Unsuccessful", "Registration was unsucessful. Please try again later.");
   }
 }
 
@@ -62,12 +62,12 @@ export async function loginUser(id, password) {
     if (data.status == "success") {
       // Alert.alert('Success', 'Login successful');
     } else {
-      Alert.alert("Unsuccessful", data.message || "Login failed");
+      Alert.alert("Unsuccessful", data.message || "Login was unsucessful.");
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in loginUser:", error);
-    Alert.alert("Unsuccessful", "Login failed. Please try again later");
+    Alert.alert("Unsuccessful", "Login was unsucessful. Please try again later");
     // Decide how to handle the error. You may want to re-throw it or return a specific value.
   }
 }
@@ -90,14 +90,14 @@ export async function loginUserThirdParty(idToken, user, type='google') {
     const data = await response.json();
     if (data.status == "success") {
       const res=type=='google'?"Google!":"Facebook!"
-      Alert.alert('Success', "Login successful with "+ res);
+      Alert.alert('Success', "You have signed in with "+ res);
     } else {
-      Alert.alert("Unsuccessful", data.message || "Login failed");
+      Alert.alert("Unsuccessful", data.message || "Login was unsucessful.");
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in loginUser:", error);
-    Alert.alert("Unsuccessful", "Login failed. Please try again later");
+    Alert.alert("Unsuccessful", "Login was unsucessful. Please try again later");
     // Decide how to handle the error. You may want to re-throw it or return a specific value.
   }
 }
@@ -118,12 +118,12 @@ export async function verifyEmail(id, token) {
     if (data.status == "success") {
       Alert.alert('Success', 'Email verified');
     } else {
-      Alert.alert("Unsuccessful", data.message || "Verify email failed");
+      Alert.alert("Unsuccessful", data.message || "Verify email was unsucessful.");
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in verify email:", error);
-    Alert.alert("Unsuccessful", "Verify email failed. Please try again later");
+    Alert.alert("Unsuccessful", "Email verification was unsucessful. Please try again later");
     // Decide how to handle the error. You may want to re-throw it or return a specific value.
   }
 }
@@ -148,14 +148,14 @@ export async function tokenResetPassword(password, passwordConfirm, code) {
     if (data.status == "success") {
       Alert.alert("Success", "Please login using your new password");
     } else {
-      Alert.alert("Unsuccessful", data.message || "Reset password failed");
+      Alert.alert("Unsuccessful", data.message || "Reset password was unsucessful.");
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in Reset password:", error);
     Alert.alert(
       "Unsuccessful",
-      "Reset password failed. Please try again later"
+      "Password reset was unsuccessful. Please check the details and try again."
     );
   }
 }
@@ -184,7 +184,7 @@ export async function forgetSendEmail(email) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in send email:", error);
-    Alert.alert("Unsuccessful", "Send Email failed. Please try again later");
+    Alert.alert("Unsuccessful", "Send Email was unsucessful. Please try again later");
   }
 }
 
@@ -227,7 +227,7 @@ export async function resetPassword(
     console.error("Unsuccessful in Reset password:", error);
     Alert.alert(
       "Unsuccessful",
-      "Reset password failed. Please try again later"
+      "Reset password was unsucessful. Please try again later"
     );
   }
 }
@@ -252,14 +252,14 @@ export async function resetProfile(userId, token, nickname, username) {
 
     const data = await response.json();
     if (data.status == "success") {
-      Alert.alert("Success", "Profile updated");
+      Alert.alert("Success", "Profile updated successfully.");
     } else {
       Alert.alert("Unsuccessful", data.message || "Reset profile unsuccessful");
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in Reset profile:", error);
-    Alert.alert("Unsuccessful", "Reset profile failed. Please try again later");
+    Alert.alert("Unsuccessful", "Reset profile was unsucessful.. Please try again later");
   }
 }
 export async function deleteUser(id, token) {
@@ -312,14 +312,14 @@ export async function resetSendEmail(token, userId, email) {
     const data = await response.json();
     // // console.log(data)
     if (data.status == "success") {
-      Alert.alert("Code sent", "Please check your email");
+      Alert.alert("Code sent", "Please check your email for further instructions.");
     } else {
       Alert.alert("Unsuccessful", data.message || "send email code unseccuess");
     }
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in sending token", error);
-    Alert.alert("Unsuccessful", "can not send token, Please try again later");
+    Alert.alert("Unsuccessful", "Can not send token, Please try again later");
   }
 }
 
@@ -340,7 +340,7 @@ export async function resetEmail(token, userId, resetToken) {
     const data = await response.json();
     // // console.log(data)
     if (data.status == "success") {
-      Alert.alert("Success", "Email updated");
+      Alert.alert("Success", "Your email has been successfully updated.");
     } else {
       Alert.alert(
         "Unsuccessful",
@@ -350,7 +350,7 @@ export async function resetEmail(token, userId, resetToken) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in email reset", error);
-    Alert.alert("Unsuccessful", "can not reset email , Please try again later");
+    Alert.alert("Unsuccessful", "Can not reset email , Please try again later");
   }
 }
 
@@ -389,7 +389,7 @@ export async function updateAvatar(token, userId, avatar) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in Update avatar:", error);
-    Alert.alert("Unsuccessful", "Update avatar failed, Please try again later");
+    Alert.alert("Unsuccessful", "Update avatar was unsucessful., Please try again later");
   }
 }
 
@@ -411,7 +411,7 @@ export async function findByUserIdAndUsername(token, userId) {
     return data;
   } catch (e) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -436,15 +436,15 @@ export async function connectByUserId(token, senderId, receiverId) {
     const data = await response.json();
     console.log(data);
     if (data?.status == "success") {
-      Alert.alert("Success", "Send link request to this friend!");
+      Alert.alert("Success", "Friend request sent successfully.");
     } else {
-      Alert.alert("Oh,No!", data?.message || "Failed to connect!");
+      Alert.alert("Oh,No!", data?.message || "was unsucessful. to connect!");
       // console.log(data.message);
     }
     return data;
   } catch (e) {
     console.error("Unsuccessful in connect server:", e);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -465,7 +465,7 @@ export async function getFriends(token) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 export async function getSendRequest(token) {
@@ -486,7 +486,7 @@ export async function getSendRequest(token) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -513,7 +513,7 @@ export async function getRelationByUserId(token, senderId, receiverId) {
     return data;
   } catch (e) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 export async function getReceivedRequest(token) {
@@ -534,7 +534,7 @@ export async function getReceivedRequest(token) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 export async function reactReceivedRequest(token, friendRequestId, react) {
@@ -559,7 +559,7 @@ export async function reactReceivedRequest(token, friendRequestId, react) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 export async function deleteFriends(token) {
@@ -579,7 +579,7 @@ export async function deleteFriends(token) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 export async function deleteFriendOrWithdrawRequestById(
@@ -603,7 +603,7 @@ export async function deleteFriendOrWithdrawRequestById(
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -625,7 +625,7 @@ export async function getNotifiableFriendRequests(token) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -647,7 +647,7 @@ export async function getNotifiableNotification(token, userId) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -669,7 +669,7 @@ export async function getNotificationHistory(token, userId) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -691,7 +691,7 @@ export async function clearNotificationById(token, userId, notificationId) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -713,7 +713,7 @@ export async function clearAllNotifications(token, userId) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -735,7 +735,7 @@ export async function clearAllFriendRequests(token) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -757,7 +757,7 @@ export async function clearFriendRequestById(token, friendRequestId) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -823,7 +823,7 @@ export async function addPost(id,post,token) {
     // } else {
     //   Alert.alert(
     //     "Unsuccessful",
-    //     data.message || "Post message failed"
+    //     data.message || "Post message was unsucessful."
     //   );
     // }
     return data
@@ -859,7 +859,7 @@ export async function getForum(id,token) {
     // } else {
     //   Alert.alert(
     //     "Unsuccessful",
-    //     data.message || "get messages failed"
+    //     data.message || "get messages was unsucessful."
     //   );
     // }
     return data
@@ -981,7 +981,7 @@ export async function createRound(roundData, token) {
     console.error("Unsuccessful in createRound:", error);
     Alert.alert(
       "Unsuccessful",
-      "Round creation failed. Please try again later"
+      "Round creation was unsucessful.. Please try again later"
     );
     // Handle error appropriately, maybe return an error status or rethrow the error.
     return { status: "fail", message: error.message };
@@ -1037,7 +1037,7 @@ export async function getRoundInfo(token, Id) {
     // return dummyRounds;
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -1112,7 +1112,7 @@ export async function updateRoundStatus(token, roundId, newStatus) {
     console.log("Patch endpoint", data);  
     return data; // Return the data for further processing if needed  
   } catch (error) {  
-    console.error("Failed to connect to server:", error);  
+    console.error("was unsucessful. to connect to server:", error);  
     Alert.alert("Unsuccessful", "Cannot connect to server");  
   }  
 }
@@ -1141,12 +1141,12 @@ export async function leaveRound(token, roundId) {
     if (data.status === "success") {  
       Alert.alert("Success", "Leave round successfully");  
     } else {  
-      Alert.alert("Unsuccessful", data.message || "Failed to leave round");  
+      Alert.alert("Unsuccessful", data.message || "was unsucessful. to leave round");  
     }  
     console.log("Patch endpoint", data);  
     return data; // Return the data for further processing if needed  
   } catch (error) {  
-    console.error("Failed to connect to server:", error);  
+    console.error("was unsucessful. to connect to server:", error);  
     Alert.alert("Unsuccessful", "Cannot connect to server");  
   }  
 }
@@ -1175,9 +1175,9 @@ export async function updateRoundhabit(token, roundId, newHabit) {
 
     const data = await response.json();
     if (data.status === "success") {
-      Alert.alert("Success", "Habit updated");
+      Alert.alert("Success", "Your habit for the round is updated.");
     } else {
-      Alert.alert("Unsuccessful", data.message || "Update habit unsuccessful");
+      Alert.alert("Unsuccessful", data.message || "Your habit has not been updated.");
     }
     return data; // Make sure you return the data here
   } catch (error) {
@@ -1250,7 +1250,7 @@ export async function deleteRound(token, roundId) {
     }
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -1281,7 +1281,7 @@ export async function createRoundNotification(
     );
 
     if (!response.ok) {
-      Alert.alert("Oh,No!", "Failed to send round invitation request!");
+      Alert.alert("Oh,No!", "was unsucessful. to send round invitation request!");
       const errorText = await response.text();
       throw new Error(`HTTP error ${response.status}: ${errorText}`);
     }
@@ -1294,7 +1294,7 @@ export async function createRoundNotification(
     console.error("Unsuccessful in createRoundNotification:", error);
     Alert.alert(
       "Unsuccessful",
-      "Round Notification creation failed. Please try again later"
+      "Round Notification creation was unsucessful.. Please try again later"
     );
     // Handle error appropriately, maybe return an error status or rethrow the error.
     return { status: "fail", message: error.message };
@@ -1320,7 +1320,7 @@ export async function getRoundInvitation(token, receiver = "receiver") {
     return data;
   } catch (e) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -1346,7 +1346,7 @@ export async function reactRoundRequest(token, roundInvitationId, react) {
     return data; // Make sure you return the data here
   } catch (error) {
     console.error("Unsuccessful in connect server:", error);
-    Alert.alert("Unsuccessful", "can not connect to server");
+    Alert.alert("Unsuccessful", "Can not connect to server");
   }
 }
 
@@ -1373,7 +1373,7 @@ export async function getScoreBoard(token, roundId) {
     // console.log("Success:", data); 
     return data; // Return the data for further processing if needed  
   } catch (error) {  
-    console.error("Failed to connect to server:", error);  
+    console.error("was unsucessful. to connect to server:", error);  
     Alert.alert("Unsuccessful", "Cannot connect to server");  
   }  
 }

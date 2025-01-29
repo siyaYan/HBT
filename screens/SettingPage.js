@@ -49,7 +49,7 @@ const SettingScreen = ({ navigation }) => {
         avatar: "",
       });
     } catch (error) {
-      console.error("Failed to delete the credentials", error);
+      console.error("was unsucessful. to delete the credentials", error);
       // Handle the error, like showing an alert to the user
     }
   };

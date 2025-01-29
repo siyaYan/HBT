@@ -72,7 +72,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
         navigation.navigate("MainStack", { screen: "Home" });
       } else {
         // Handle case when response is not as expected
-        Alert.alert("Error", "Failed to leave the round");
+        Alert.alert("Error", "was unsucessful. to leave the round");
       }
     } catch (error) {
       console.error("Error leaving round:", error);

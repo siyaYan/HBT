@@ -114,7 +114,7 @@ const ResetPassword = ({ navigation }) => {
       console.log("submitted");
       handlePasswordReset();
     } else {
-      console.log("failed");
+      console.log("was unsucessful.");
     }
   };
 
@@ -384,7 +384,7 @@ const ResetPassword = ({ navigation }) => {
                     ) : (
                       <FormControl.ErrorMessage ml={2} mt={2}>
                         <Text fontFamily={"Regular"} fontSize="sm">
-                          Confirm password is not correct
+                        The confirm password does not match the password.
                         </Text>
                       </FormControl.ErrorMessage>
                     )}

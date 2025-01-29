@@ -15,7 +15,7 @@ update the password validation icons
 
 Unfinished:
 
-can not see password explositely(can not validate the curren password)
+Can not see password explositely(Can not validate the curren password)
 
 After trying the endpoints(updateUser) ,found this work(update profile with default image)
 {
@@ -25,6 +25,6 @@ After trying the endpoints(updateUser) ,found this work(update profile with defa
 }
 
 Password not match errorv always showing
-can not update password&email.
+Can not update password&email.
 
 update the size and font of the tabs

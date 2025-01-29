@@ -189,13 +189,13 @@ const AccountSettingScreen = ({ navigation }) => {
     if (text) {
       let Prop = "";
       if (!/(?=.*\d)[A-Za-z\d]/.test(text)) {
-        Prop = "It should contain at least one digit.";
+        Prop = "Username must include at least one digit.";
       } else if (!(text.length <= 20 && text.length >= 5)) {
-        Prop = "Length should be between 5 to 20 characters.";
+        Prop = "Username must be between 5 and 20 characters.";
       } else if (!/^(?=.*[A-Za-z])/.test(text)) {
-        Prop = "It should start with a letter.";
+        Prop = "Username must start with a letter.";
       } else if (!/\s/.test(text)) {
-        Prop = "It should not contain space.";
+        Prop = "Username cannot contain spaces.";
       }
       setShowMessage({
         ...showMessage,
@@ -251,14 +251,14 @@ const AccountSettingScreen = ({ navigation }) => {
       } else {
         setErrors({
           ...errors,
-          nickname: "Nickname can not be empty.",
+          nickname: "Nickname cannot be empty.",
         });
         return false;
       }
     } else {
       setErrors({
         ...errors,
-        nickname: "Nickname can not be empty.",
+        nickname: "Nickname cannot be empty.",
       });
       return false;
     }
@@ -334,7 +334,7 @@ const AccountSettingScreen = ({ navigation }) => {
       });
       setErrors({
         ...errors,
-        token: "Reset token invalid",
+        token: "Reset code invalid",
       });
     } else {
       await updateUserData({
@@ -363,7 +363,7 @@ const AccountSettingScreen = ({ navigation }) => {
         });
         setErrors({
           ...errors,
-          email: "Email address invalid",
+          email: "Please enter a valid email address.",
         });
       } else {
         setData({

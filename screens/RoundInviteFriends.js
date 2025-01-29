@@ -70,7 +70,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
     const response = await getFriends(userData.token);
     // Handle success or error response
     if (!response) {
-      console.log("get friends failed");
+      console.log("get friends was unsucessful.");
     }
     if (response.status == "success") {
       //TODO round/id/friendlist/add, add a single friend into the round
@@ -89,7 +89,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
       setFriends(newFriends);
       console.log("newfriends:", newFriends);
     } else {
-      console.error("get friends failed:", response.message);
+      console.error("get friends was unsucessful.:", response.message);
     }
   };
 
