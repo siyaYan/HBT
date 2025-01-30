@@ -397,7 +397,7 @@ const ForumPage = ({ route, navigation }) => {
                           zIndex={5}
                           alignSelf="flex-start"
                           _text={{
-                            fontSize: 24,
+                            fontSize: 10,
                           }}
                           backgroundColor={"#f9f8f2"}
                         >
@@ -407,7 +407,7 @@ const ForumPage = ({ route, navigation }) => {
                               roundActive && handleDeleteMessage(item.id)
                             }
                           >
-                            <SvgXml xml={DeleteIndi} width={30} height={30} />
+                            <SvgXml xml={DeleteIndi} width={20} height={20} />
                           </Pressable>
                         </Badge>
                       )}
