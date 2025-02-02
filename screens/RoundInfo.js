@@ -179,6 +179,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
               }}
               mt="5"
               width="100%"
+              rounded={30}
               size="lg"
               bg="#49a579"
               _text={{

@@ -278,7 +278,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   />
                   {isInvalid.roundName && (
                     <FormControl.ErrorMessage>
-                      Please provide a round name.
+                      Please enter a round name.
                     </FormControl.ErrorMessage>
                   )}
                 </FormControl>
