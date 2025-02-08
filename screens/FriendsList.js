@@ -322,11 +322,7 @@ const FriendsScreen = ({ navigation }) => {
         <Box mt="9" w="85%">
           <VStack space={1} alignItems="left">
             <HStack>
-              <SvgXml
-                xml={incomingRequestSVG("#191919")}
-                width={35}
-                height={35}
-              />
+              <SvgXml style={{ transform: [{ translateY: -20 }] }} xml={incomingRequestSVG()} width={35} height={35} />
               <Text ml={2} fontFamily={"Regular"} fontSize="lg">
                 {received?.length > 0 ? received.length : ""}
               </Text>
@@ -446,11 +442,7 @@ const FriendsScreen = ({ navigation }) => {
               w="90%"
             />
             <HStack>
-              <SvgXml
-                xml={outGoingRequestSVG("#191919")}
-                width={35}
-                height={35}
-              />
+              <SvgXml  xml={outGoingRequestSVG()} width={35} height={35} />
               <Text fontFamily={"Regular"} fontSize="lg">
                 {sent?.length > 0 ? sent.length : ""}
               </Text>
@@ -638,24 +630,26 @@ const FriendsScreen = ({ navigation }) => {
                           />
                         ) : (
                           // <FontAwesome name="check" size={24} color="black" />
-                          <SvgXml
+                            <SvgXml
                             xml={acceptSvg("#191919")}
                             width={35}
                             height={35}
-                          />
-                        )}
-                        <Text fontFamily={"Regular"} fontSize="md">
-                          {item.username}
-                        </Text>
-                        <Text fontFamily={"Regular"} fontSize="md">
-                          {item.nickname}
-                        </Text>
-                        <Foundation
-                          onPress={() => deleteOption(index + 1)}
-                          name="unlink"
-                          size={24}
-                          color="black"
-                        />
+                            />
+                            )}
+                            <Text fontFamily={"Regular"} fontSize="md">
+                            {item.username}
+                            </Text>
+                            <Text fontFamily={"Regular"} fontSize="md">
+                            {item.nickname}
+                            </Text>
+                            <Pressable onPress={() => deleteOption(index + 1)} style={{ transform: [{ translateY: -3 }] }}>
+                            <Image size={8} source={require("../assets/UIicons/Unlink.png")} alt="Unlink" />
+                            </Pressable>
+                            {/* <SvgXml
+                            xml={unlinkSvg("#191919")}
+                            width={35}
+                            height={35}
+                            /> */}
                       </HStack>
                     ))}
                   </Box>
@@ -696,13 +690,16 @@ const FriendsScreen = ({ navigation }) => {
 // });
 const outGoingRequestSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+      <defs>
+      <style>.cls-1{fill:#000;stroke-width:1px;}</style>
+    </defs>
     <path class="cls-1" d="M7.76,9.8l4.37,15.57c.04.15,4.01,15.69,4.01,15.69.15.59.59,1.03,1.18,1.19.53.14,1.07.02,1.48-.32l6.06-15.76-7.04-7.04c-.39-.39-.39-1.01,0-1.4s1.01-.39,1.4,0l7.05,7.05,15.67-5.98c.34-.41.46-.95.32-1.48-.16-.59-.6-1.03-1.19-1.18l-15.66-4-15.59-4.37c-.58-.16-1.19,0-1.62.42s-.59,1.04-.42,1.62Z"/>
   </svg>`;
 
 const incomingRequestSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
-      <style>.cls-1{fill:#000;stroke-width:0px;}</style>
+      <style>.cls-1{fill:#000;stroke-width:1px;}</style>
     </defs>
     <path class="cls-1" d="M39.84,23.55l-14.1-7.92c-.13-.08-13.92-8.26-13.92-8.26-.52-.31-1.15-.31-1.68,0-.47.27-.77.74-.82,1.27l6.86,15.43h9.96c.55,0,.99.44.99.99s-.44.99-.99.99h-9.96s-6.86,15.31-6.86,15.31c.05.53.35,1,.82,1.27.53.3,1.15.3,1.67,0l13.9-8.25,14.12-7.93c.53-.3.85-.84.85-1.45s-.32-1.15-.85-1.45Z"/>
   </svg>`;
@@ -727,15 +724,15 @@ const myCircleSVG = () => `
 const unlinkSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
-      <style>.cls-1{fill:#000;stroke-width:0px;}</style>
+      <style>.cls-1{fill:#000;stroke-width:1px;}</style>
     </defs>
     <path class="cls-1" d="M15.06,18.23c.44-.48,1.17-.58,1.73-.22l3.54,2.3c.62.4.8,1.24.4,1.86-.41.62-1.24.8-1.86.4l-3.54-2.3c-.62-.4-.8-1.24-.4-1.86.04-.06.09-.12.14-.18Z"/>
     <path class="cls-1" d="M8.05,14.16c.44-.48,1.17-.58,1.73-.22l3.54,2.3c.62.4.8,1.24.4,1.86-.41.62-1.24.8-1.86.4l-3.54-2.3c-.62-.4-.8-1.24-.4-1.86.04-.06.09-.12.14-.18Z"/>
     <path class="cls-1" d="M22.13,22.83c.44-.48,1.17-.58,1.73-.22l3.54,2.3c.62.4.8,1.24.4,1.86-.4.62-1.24.8-1.86.4l-3.54-2.3c-.62-.4-.8-1.24-.4-1.86.04-.06.09-.12.14-.18Z"/>
     <path class="cls-1" d="M29.21,27.42c.44-.48,1.17-.58,1.73-.22l3.54,2.3c.62.4.8,1.24.4,1.86-.41.63-1.24.8-1.86.4l-3.54-2.3c-.62-.4-.8-1.24-.4-1.86.04-.06.09-.12.14-.18Z"/>
     <path class="cls-1" d="M36.42,31.72c.44-.48,1.17-.58,1.73-.22l3.54,2.3c.62.4.8,1.24.4,1.86-.41.63-1.24.8-1.86.4l-3.54-2.3c-.62-.4-.8-1.24-.4-1.86.04-.06.09-.12.14-.18Z"/>
-    <polygon class="cls-1" points="31.75 35.23 31.75 35.23 31.75 35.23 31.75 35.23"/>
-    <polygon class="cls-1" points="26.67 20.11 26.67 20.11 26.67 20.11 26.67 20.11"/>
+    <polygon class="cls-1" points="31.75,35.23 35.23,31.75 31.75,28.27 28.27,31.75 31.75,35.23"/>
+    <polygon class="cls-1" points="26.67,20.11 30.11,16.67 26.67,13.23 23.23,16.67 26.67,20.11"/>
   </svg>`;
 
 const acceptSvg = () => `
