@@ -432,13 +432,13 @@ const HomeScreen = ({ navigation }) => {
   const reactRequest = async (id, react) => {
     const response = await reactRoundRequest(userData.token, id, react);
     if (!response) {
-      console.log("react request failed");
+      console.log("react request was unsucessful.");
     }
     if (response.status == "success") {
       console.log("react request success:", response);
       return true;
     } else {
-      console.error("react request failed:", response.message);
+      console.error("react request was unsucessful.:", response.message);
       return false;
     }
   };
@@ -453,19 +453,19 @@ const HomeScreen = ({ navigation }) => {
       );
       console.log("", response);
       // if (!response.ok) {
-      //   throw new Error("Failed to update status");
+      //   throw new Error("was unsucessful. to update status");
       // }
       //If this is a newly finsihed round, calculate the scoreboard and show up
       if (newStatus === "F") {
         console.log("Round finished, get scoreboard");
         // getExistScoreBoard(roundId);
-        setShowFinalScore(roundId)
+        setShowFinalScore(roundId);
         setScoreBoardOpen(true);
       }
 
       console.log("Status updated successfully");
     } catch (error) {
-      console.error("Failed to update status and date:", error);
+      console.error("was unsucessful. to update status and date:", error);
     }
   };
 
@@ -493,8 +493,10 @@ const HomeScreen = ({ navigation }) => {
       ) {
         // validate if there is any active friend
         // console.log('-----111',round)
-        const activeFriend=round.roundFriends.filter(item=>item.id!=round.userId&&item.status=="A").length
-        if(activeFriend==0)setShowRoundFriendValidation(true);
+        const activeFriend = round.roundFriends.filter(
+          (item) => item.id != round.userId && item.status == "A"
+        ).length;
+        if (activeFriend == 0) setShowRoundFriendValidation(true);
         updateStatusAndDate(round._id, "A");
       }
 
@@ -645,7 +647,6 @@ const HomeScreen = ({ navigation }) => {
               : "Start a round"}
           </Button>
         )}
-
       </Flex>
       {/* Linda Sprint 4 Show round/s*/}
       {/* <Flex direction="column" alignItems="center">
@@ -774,8 +775,8 @@ const HomeScreen = ({ navigation }) => {
                             <Modal.Body>
                               <>
                                 <Text fontSize="md">
-                                  Two active round already, cannot accept this
-                                  one.
+                                  You already have two active rounds. Unable to
+                                  accept another.
                                 </Text>
                               </>
                             </Modal.Body>
@@ -791,8 +792,8 @@ const HomeScreen = ({ navigation }) => {
                             <Modal.Body>
                               <>
                                 <Text fontSize="md">
-                                  Cannot accept a round before current active
-                                  round.
+                                  You cannot join a round that overlaps with
+                                  your current active round.
                                 </Text>
                               </>
                             </Modal.Body>
@@ -834,11 +835,13 @@ const HomeScreen = ({ navigation }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-     {showFinalScore&&
-      <ScoreBoardModal
-        scoreBoardOpen={scoreBoardOpen}
-        handleClose={handleClose} 
-        roundId={showFinalScore}/>}
+      {showFinalScore && (
+        <ScoreBoardModal
+          scoreBoardOpen={scoreBoardOpen}
+          handleClose={handleClose}
+          roundId={showFinalScore}
+        />
+      )}
       {/* Modal 2: score board of Finished Round */}
       {/* <Modal
         isOpen={scoreBoardOpen}
@@ -1118,9 +1121,8 @@ const HomeScreen = ({ navigation }) => {
           <Modal.Body>
             <>
               <Text fontSize="md">
-                Your friend hasn't accepted the invitation yet. Without
-                participants, this round risks deletion. Please remind your
-                friend to accept the invitation to keep the round active.{" "}
+                Your friend has not accepted the invitation yet. Remind them to
+                keep the round active or it may be deleted.{" "}
               </Text>
             </>
           </Modal.Body>
@@ -1136,7 +1138,7 @@ const HomeScreen = ({ navigation }) => {
           <Modal.Header>Warning</Modal.Header>
           <Modal.Body>
             <>
-              <Text fontSize="md">This round is complete. </Text>
+              <Text fontSize="md">This round has already been completed. </Text>
             </>
           </Modal.Body>
         </Modal.Content>

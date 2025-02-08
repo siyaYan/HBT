@@ -4,19 +4,14 @@ import SettingScreen from "../screens/SettingPage";
 import HomeScreen from "../screens/HomePage";
 import FriendsScreen from "../screens/FriendsList";
 import NotificationScreen from "../screens/Notifications";
-
 import AddImage from "../components/AddImage";
 import { useData } from "../context/DataContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import { TouchableOpacity, View, StyleSheet } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import { getNoteUpdate } from "../components/Endpoint";
 import { Button, useDisclose } from "native-base";
 import { useRound } from "../context/RoundContext";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { SvgXml } from "react-native-svg";
-import { openBrowserAsync } from "expo-web-browser";
 
 const Tab = createBottomTabNavigator();
 
@@ -82,9 +77,12 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={homeSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={28}
+                  height={28}
                 />
+                <Text style={styles.tabLabel(accessibilityState.selected)}>
+                  Home
+                </Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -111,10 +109,13 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={circleSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={28}
+                  height={28}
                   top={0}
                 />
+                <Text style={styles.tabLabel(accessibilityState.selected)}>
+                  Circle
+                </Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -144,17 +145,20 @@ export default function AuthenticatedScreens({ navigation }) {
                     xml={uploadSvg(
                       accessibilityState.selected ? "#49a579" : "#191919"
                     )}
-                    width={30}
-                    height={30}
+                    width={28}
+                    height={28}
                     top={0}
                   />
+                  <Text style={styles.tabLabel(accessibilityState.selected)}>
+                    Upload
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 <Button disabled style={styles.tabButton(true)}>
                   <SvgXml
-                    xml={uploadSvg("lightgray")}
-                    width={30}
-                    height={30}
+                    xml={uploadSvg("rgba(25, 25, 25, 0.1)")}
+                    width={40}
+                    height={40}
                     top={0}
                   />
                 </Button>
@@ -184,11 +188,24 @@ export default function AuthenticatedScreens({ navigation }) {
                   alignItems: "center",
                 }}
               >
-                <MaterialCommunityIcons
+                {/* <MaterialCommunityIcons
                   name="fruit-cherries"
                   size={32}
                   color={note > 0 ? "#49a579" : "#191919"}
+                /> */}
+
+                <SvgXml
+                  xml={notificationSvg(note > 0 ? "#ff061e" : "#191919")}
+                  width={28}
+                  height={28}
                 />
+                <Text
+                  style={styles.tabLabelUpdates(
+                    accessibilityState.selected ? "#49a579" : "#191919"
+                  )}
+                >
+                  Activity
+                </Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -214,10 +231,13 @@ export default function AuthenticatedScreens({ navigation }) {
                   xml={settingsSvg(
                     accessibilityState.selected ? "#49a579" : "#191919"
                   )}
-                  width={30}
-                  height={30}
+                  width={28}
+                  height={28}
                   top={0}
                 />
+                <Text style={styles.tabLabel(accessibilityState.selected)}>
+                  Setting
+                </Text>
               </TouchableOpacity>
             ),
             tabBarLabelStyle: { display: "none" },
@@ -240,25 +260,34 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   }),
 
   tabBarStyle: {
     backgroundColor: "#f9f8f2",
     borderTopColor: "transparent",
-    borderTopLeftRadius: 10, // Rounds the top-left corner
-    borderTopRightRadius: 10, // Rounds the top-right corner
-    height: 65, // Optional height adjustment
+    // borderTopLeftRadius: 10, // Rounds the top-left corner
+    // borderTopRightRadius: 10s, // Rounds the top-right corner
+    height: 90, // Optional height adjustment
     position: "absolute",
-    left: 3,
-    right: 3,
-    bottom: -5, // Keep the bottom at 0 so it stays at the bottom
-    elevation: 10, // Adds shadow for depth (Android)
+    left: 0,
+    right: 0,
+    bottom: 0, // Keep the bottom at 0 so it stays at the bottom
     shadowColor: "#191919", // Shadow properties (iOS)
     shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 10,
   },
+  tabLabel: (isSelected) => ({
+    color: isSelected ? "#49a579" : "#191919",
+    fontSize: 12,
+    marginTop: 4,
+  }),
+  tabLabelUpdates: (isSelected) => ({
+    color: isSelected ? "#191919" : "#191919",
+    fontSize: 12,
+    marginTop: 4,
+  }),
 });
 
 const homeSvg = (color) => `
@@ -278,7 +307,7 @@ const uploadSvg = (color) => `
 
 const notificationSvg = (color) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="${color}">
-</defs><path class="cls-1" d="M39.96,25.14c-2.76-2.48-7.05-3.58-8.96-2.47-.19.11-.62.4-1.28.65-.11-1.25-1.06-8.38-7.7-12.13,1.34.03,2.67-.3,3.83-1,2.19-1.32,3.44-3.74,3.26-6.29-2.49-1.52-5.61-1.52-7.94-.02-1.91,1.24-2.66,3.07-2.94,4.4-2.11-.4-4.3.08-5.95,1.39-2.99,2.37-2.56,6.1-2.53,6.35,2.52,1.33,5.58,1.12,7.79-.51,1.01-.75,1.77-1.75,2.23-2.87,4.08,6.79.38,13.39.2,13.69-.02.03-.03.06-.04.09-.74-.35-1.2-.75-1.39-.88-1.87-1.35-9,.42-11.53,5.81-2.26,4.82.06,10.61,3.95,13.54,4.83,3.64,12.24,2.99,15.96-1.39.07-.08.13-.18.2-.27,1.97-2.5,2.77-6.03,1.87-9.28-.99-3.57-4.01-6.82-6.22-6.9-.12,0-.34,0-.63-.03-.23-.02-.49-.05-.79-.11.58-1.12,3.65-7.65.07-14.38.49.28.94.58,1.37.89,5.11,3.81,5.45,9.85,5.47,10.16,0,.03,0,.07.01.1-.81.1-1.42.01-1.64,0-1-.06-2.51.92-3.84,2.51h.04c2.65.1,5.92,3.62,7,7.53.93,3.37.21,7.06-1.85,9.81.89.28,1.79.47,2.69.53,6.02.46,11.93-4.07,12.7-9.76.44-3.26-.8-6.83-3.4-9.16Z"/></svg>
+<path class="cls-1" d="M39.96,25.14c-2.76-2.48-7.05-3.58-8.96-2.47-.19.11-.62.4-1.28.65-.11-1.25-1.06-8.38-7.7-12.13,1.34.03,2.67-.3,3.83-1,2.19-1.32,3.44-3.74,3.26-6.29-2.49-1.52-5.61-1.52-7.94-.02-1.91,1.24-2.66,3.07-2.94,4.4-2.11-.4-4.3.08-5.95,1.39-2.99,2.37-2.56,6.1-2.53,6.35,2.52,1.33,5.58,1.12,7.79-.51,1.01-.75,1.77-1.75,2.23-2.87,4.08,6.79.38,13.39.2,13.69-.02.03-.03.06-.04.09-.74-.35-1.2-.75-1.39-.88-1.87-1.35-9,.42-11.53,5.81-2.26,4.82.06,10.61,3.95,13.54,4.83,3.64,12.24,2.99,15.96-1.39.07-.08.13-.18.2-.27,1.97-2.5,2.77-6.03,1.87-9.28-.99-3.57-4.01-6.82-6.22-6.9-.12,0-.34,0-.63-.03-.23-.02-.49-.05-.79-.11.58-1.12,3.65-7.65.07-14.38.49.28.94.58,1.37.89,5.11,3.81,5.45,9.85,5.47,10.16,0,.03,0,.07.01.1-.81.1-1.42.01-1.64,0-1-.06-2.51.92-3.84,2.51h.04c2.65.1,5.92,3.62,7,7.53.93,3.37.21,7.06-1.85,9.81.89.28,1.79.47,2.69.53,6.02.46,11.93-4.07,12.7-9.76.44-3.26-.8-6.83-3.4-9.16Z"/></svg>
 </svg>`;
 
 const settingsSvg = (color) => `

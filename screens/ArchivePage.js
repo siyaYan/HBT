@@ -132,7 +132,6 @@ const ArchivePage = ({ navigation }) => {
                       color: "#FFFFFF",
                       fontFamily: "Regular Semi Bold",
                       fontSize: 20, // Use a number for fontSize instead of "lg"
-  
                     }}
                   >
                     {item?.startData} ---- {item?.timeframe}

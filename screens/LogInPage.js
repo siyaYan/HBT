@@ -82,7 +82,7 @@ const LoginScreen = ({ navigation }) => {
       webClientId:
         "720818502811-gvpcgktd6jgf21fbdt3sa9e6v9iu7e5d.apps.googleusercontent.com", // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
       offlineAccess: true,
-      });
+    });
   }, []);
 
   const loginGoogle = async () => {
@@ -97,7 +97,7 @@ const LoginScreen = ({ navigation }) => {
         "google"
       );
       // setThirdPartyUserData(userInfo);
-      await afterLogin(response,1);
+      await afterLogin(response, 1);
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
@@ -127,7 +127,7 @@ const LoginScreen = ({ navigation }) => {
         "facebook"
       );
       console.log(response);
-      await afterLogin(response,2);
+      await afterLogin(response, 2);
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
@@ -141,27 +141,33 @@ const LoginScreen = ({ navigation }) => {
         JSON.stringify({ id, password })
       );
     } catch (error) {
-      console.error("Failed to store the credentials securely", error);
+      console.error(
+        "was unsucessful. to store the credentials securely",
+        error
+      );
       // Handle the error, like showing an alert to the user
       Alert.alert(
         "Error",
-        "Failed to securely save your credentials. You may need to login again next time."
+        "was unsucessful. to securely save your credentials. You may need to login again next time."
       );
     }
   };
 
-  const saveCredentialsThirdParty = async (idToken,type=1) => {
+  const saveCredentialsThirdParty = async (idToken, type = 1) => {
     try {
       await SecureStore.setItemAsync(
         "userData",
-        JSON.stringify({ idToken,type })
+        JSON.stringify({ idToken, type })
       );
     } catch (error) {
-      console.error("Failed to store the credentials securely", error);
+      console.error(
+        "was unsucessful. to store the credentials securely",
+        error
+      );
       // Handle the error, like showing an alert to the user
       Alert.alert(
         "Error",
-        "Failed to securely save your credentials. You may need to login again next time."
+        "was unsucessful. to securely save your credentials. You may need to login again next time."
       );
     }
   };
@@ -179,7 +185,7 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const afterLogin = async (response, type=0) => {
+  const afterLogin = async (response, type = 0) => {
     console.log("response", response);
     if (response.token) {
       const roundInfo = await getRoundInfo(
@@ -188,9 +194,12 @@ const LoginScreen = ({ navigation }) => {
       );
       if (remember && formData?.id && formData?.password) {
         await saveCredentials(formData.id, formData.password);
-      }else{
-        const id=type==1?response.data.user.googleId:response.data.user.facebookId
-        await saveCredentialsThirdParty(id,response.data.user.email,type)
+      } else {
+        const id =
+          type == 1
+            ? response.data.user.googleId
+            : response.data.user.facebookId;
+        await saveCredentialsThirdParty(id, response.data.user.email, type);
       }
       updateUserData({
         token: response.token,
@@ -206,7 +215,7 @@ const LoginScreen = ({ navigation }) => {
       console.log("round context", roundData);
       navigation.navigate("MainStack", { screen: "Home" });
     } else {
-      console.log("login failed");
+      console.log("login was unsucessful.");
       if (response.message.includes("Email varify")) {
         console.log("need to verify email....");
         setShowVerifyModal(true);
@@ -299,7 +308,7 @@ const LoginScreen = ({ navigation }) => {
             maxW={320}
           >
             <Center w="90%" h="100%">
-              <VStack w="100%" space={8}>
+              <VStack w="100%" space={12}>
                 <HStack
                   w="95%"
                   style={{
@@ -338,7 +347,7 @@ const LoginScreen = ({ navigation }) => {
                   </VStack>
                 </HStack>
 
-                <VStack space={5} mt="5">
+                <VStack space={5} mt="2">
                   <Button
                     rounded={30}
                     shadow="6"
@@ -406,7 +415,7 @@ const LoginScreen = ({ navigation }) => {
                         style={{ right: "10" }}
                       />
                       <Text
-                        textAlign={"center"}
+                        textAlign={"left"}
                         fontFamily={"Regular Medium"}
                         fontSize={"lg"}
                         color={"white"}
@@ -426,6 +435,7 @@ const LoginScreen = ({ navigation }) => {
                   <FormControl isRequired isInvalid={"id" in errors}>
                     <Input
                       fontSize="lg"
+                      fontFamily={"Regular Medium"}
                       onChangeText={(value) =>
                         setData({
                           ...formData,
@@ -440,6 +450,7 @@ const LoginScreen = ({ navigation }) => {
                   <FormControl isRequired isInvalid={"password" in errors}>
                     <Input
                       fontSize="lg"
+                      fontFamily={"Regular Medium"}
                       placeholder="Password"
                       onChangeText={(value) =>
                         setData({
@@ -486,6 +497,13 @@ const LoginScreen = ({ navigation }) => {
                       size="sm"
                       defaultIsChecked
                       onPress={(value) => setRemember(!remember)}
+                      _checked={{
+                        bg: "#49a579", // Custom background color when checked
+                        borderColor: "#49a579", // Border color when checked
+                      }}
+                      _icon={{
+                        color: "#f9f8f2", // Custom tick color
+                      }}
                     >
                       <Text fontFamily={"Regular"} fontSize={"lg"}>
                         Stay signed in
@@ -660,7 +678,7 @@ const LoginScreen = ({ navigation }) => {
                  </Button> */}
                   <Pressable onPress={handleSubmit}>
                     <Image
-                      source={require("../assets/UIicons/LogIn.png")}
+                      source={require("../assets/UIicons/Login.gif")}
                       style={{ width: 120, height: 120 }}
                       bottom="5"
                       alt="image"

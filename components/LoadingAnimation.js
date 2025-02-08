@@ -2,10 +2,10 @@ import React, { useRef, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
 
-const LoadingAnimationScreen = ({ navigation }) => {
+const LoadingAnimationScreen = () => {
   return (
     // <NativeBaseProvider>
-    <View Loadingstyle={styles.animationContainer}>
+    <View style={styles.animationContainer}>
       <LottieView
         autoPlay
         style={{
@@ -20,7 +20,7 @@ const LoadingAnimationScreen = ({ navigation }) => {
   );
 };
 
-const Loadingstyle = StyleSheet.create({
+const styles = StyleSheet.create({
   animationContainer: {
     backgroundColor: "#transparent",
     alignItems: "center",
