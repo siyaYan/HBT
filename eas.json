@@ -25,10 +25,10 @@
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview",
+      "channel": "preview"
     },
     "production": {
-      "channel": "production",
+      "channel": "production"
     }
   },
   "submit": {
