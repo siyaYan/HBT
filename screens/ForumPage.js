@@ -210,7 +210,7 @@ const ForumPage = ({ route, navigation }) => {
               w={"100%"}
               h={"100%"}
               contentContainerStyle={{
-                flexGrow: 1, // Ensures the content stretches to fill the screen
+                // flexGrow: 1, // Ensures the content stretches to fill the screen
               }}
             >
               {post.length > 0 ? (
