@@ -194,7 +194,7 @@ const ForumPage = ({ route, navigation }) => {
               />
             </View>
           )}
-          <ScrollView ref={scrollViewRef} w={"100%"} h={"100%"}>
+          <ScrollView ref={scrollViewRef} w={"100%"} h={"100%"} paddingVertical={10}>
             {post.length > 0 ? (
               post.map((item, index) => (
                 <View
@@ -380,8 +380,8 @@ const ForumPage = ({ route, navigation }) => {
                             position: "absolute",
                             // Like button position
                             // bottom: 100, // (example value – tune this to match the image’s bottom offset)
-                            top: 270,
-                            right: -20,
+                            top: '66%',
+                            right: '-4%',
                             zIndex: 1000,
                             elevation: 10,
                           }}
