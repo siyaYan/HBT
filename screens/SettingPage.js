@@ -1,5 +1,6 @@
 import { useEffect,useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
   Pressable,
   Divider,
@@ -19,12 +20,12 @@ import OptionMenu from "../components/OptionMenu";
 import { Ionicons } from "@expo/vector-icons";
 import Background2 from "../components/Background2";
 import Feather from "@expo/vector-icons/Feather";
-import { deleteUser } from "../components/Endpoint";
+// import { deleteUser } from "../components/Endpoint";
 import { SvgXml } from "react-native-svg";
 
 const SettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
-  const [modalVisible, setModalVisible] = useState(false);
+  // const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     console.log(userData, "inSetting");
   }, [userData]);
@@ -39,35 +40,35 @@ const SettingScreen = ({ navigation }) => {
     navigation.navigate("AccountStack", { screen: "AccountSetting" });
   };
 
-  const deleteItemAsyncs = async (keys) => {
-    try {
-      if (keys.length > 0) {
-        await AsyncStorage.multiRemove(keys); // Remove all keys in one operation
-        console.log(`Keys removed:`, keys);
-      } else {
-        console.log("No keys to remove.");
-      }
-    } catch (error) {
-      console.error("Failed to delete keys:", error);
-    }
-  };
+  // const deleteItemAsyncs = async (keys) => {
+  //   try {
+  //     if (keys.length > 0) {
+  //       await AsyncStorage.multiRemove(keys); // Remove all keys in one operation
+  //       console.log(`Keys removed:`, keys);
+  //     } else {
+  //       console.log("No keys to remove.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to delete keys:", error);
+  //   }
+  // };
 
-  const deleteCredentials = async () => {
-    try {
-      await deleteItemAsyncs(["userData"]);
-      updateUserData({
-        token: "",
-        data: "",
-        avatar: "",
-      });
-      const allKeys = await AsyncStorage.getAllKeys(); // Get all keys from AsyncStorage
-      const matchingKeys = allKeys.filter((key) => key.startsWith(`lastCheck_1`)); // Filter keys that match the pattern
-      await deleteItemAsyncs(matchingKeys);
-    } catch (error) {
-      console.error("was unsucessful. to delete the credentials", error);
-      // Handle the error, like showing an alert to the user
-    }
-  };
+  // const deleteCredentials = async () => {
+  //   try {
+  //     await deleteItemAsyncs(["userData"]);
+  //     updateUserData({
+  //       token: "",
+  //       data: "",
+  //       avatar: "",
+  //     });
+  //     const allKeys = await AsyncStorage.getAllKeys(); // Get all keys from AsyncStorage
+  //     const matchingKeys = allKeys.filter((key) => key.startsWith(`lastCheck_1`)); // Filter keys that match the pattern
+  //     await deleteItemAsyncs(matchingKeys);
+  //   } catch (error) {
+  //     console.error("was unsucessful. to delete the credentials", error);
+  //     // Handle the error, like showing an alert to the user
+  //   }
+  // };
   const logout = async () => {
     try {
       await deleteCredentials();
@@ -77,18 +78,18 @@ const SettingScreen = ({ navigation }) => {
     }
   };
 
-  const deleteAccount = async () => {
-    // console.log(userData.data._id,userData.token)
-    try {
-      const data = await deleteUser(userData.data._id, userData.token);
-      if (data.status == "success") {
-        navigation.navigate("LoginStack", { screen: "Login" });
-        await deleteCredentials();
-      }
-    } catch (error) {
-      // Error clearing the credentials
-    }
-  };
+  // const deleteAccount = async () => {
+  //   // console.log(userData.data._id,userData.token)
+  //   try {
+  //     const data = await deleteUser(userData.data._id, userData.token);
+  //     if (data.status == "success") {
+  //       navigation.navigate("LoginStack", { screen: "Login" });
+  //       await deleteCredentials();
+  //     }
+  //   } catch (error) {
+  //     // Error clearing the credentials
+  //   }
+  // };
 
   const goArchivePage = async () => {
     navigation.navigate("Archive");
@@ -243,6 +244,7 @@ const SettingScreen = ({ navigation }) => {
                     style={{
                       marginLeft: 217,
                       marginTop: 6,
+                      marginBottom:15,
                       transform: [{ scaleX: -1 }],
                     }}
                   />
@@ -250,7 +252,7 @@ const SettingScreen = ({ navigation }) => {
               </Button>
             </Box>
 
-            <Divider
+            {/* <Divider
               my="2"
               width="90%"
               alignSelf="center"
@@ -260,8 +262,8 @@ const SettingScreen = ({ navigation }) => {
               _dark={{
                 bg: "muted.700",
               }}
-            />
-            <Box mb="3" alignItems="center" justifyContent="center">
+            /> */}
+            {/* <Box mb="3" alignItems="center" justifyContent="center">
               <Button
                 onPress={() => setModalVisible(true)}
                 size="md"
@@ -269,12 +271,6 @@ const SettingScreen = ({ navigation }) => {
                 variant="unstyled"
               >
                 <HStack>
-                  {/* <Ionicons name="remove-circle-outline" size={30} color="red" /> */}
-                  {/* <Ionicons
-                    name="person-remove-outline"
-                    size={26}
-                    color="red"
-                  /> */}
                   <SvgXml
                     xml={deleteSVG("#191919")}
                     width={28}
@@ -297,7 +293,7 @@ const SettingScreen = ({ navigation }) => {
                 </HStack>
               </Button>
             </Box>
-          </VStack>
+
           <Modal
             isOpen={modalVisible}
             onClose={setModalVisible}
@@ -342,7 +338,8 @@ const SettingScreen = ({ navigation }) => {
                 </Button.Group>
               </Modal.Footer>
             </Modal.Content>
-          </Modal>
+          </Modal> */}
+          </VStack>
         </Box>
       </Flex>
     </NativeBaseProvider>
@@ -369,12 +366,12 @@ const logOutSVG = () => `
     <path class="cls-1" d="M40.87,27.03c-.11,0-.22,0-.33,0-6.97,0-13.93,0-20.9,0-.44,0-.87-.06-1.26-.3-.79-.5-1.16-1.4-.91-2.29.24-.87,1.01-1.46,1.94-1.49.1,0,.19,0,.29,0,6.95,0,13.9,0,20.85,0h.39c-.1-.11-.15-.17-.21-.23-.79-.79-1.58-1.57-2.36-2.36-.93-.94-.83-2.34.2-3.12.64-.48,1.59-.52,2.26-.08.19.13.36.28.53.44,1.98,1.97,3.96,3.95,5.93,5.93.8.8.83,2.06.02,2.87-2.04,2.05-4.08,4.1-6.13,6.13-.8.79-2.05.78-2.83,0-.8-.79-.83-2.05-.04-2.87.79-.82,1.6-1.61,2.41-2.41.06-.06.15-.09.23-.13-.03-.04-.05-.08-.08-.11Z"/>
   </svg>`;
 
-const deleteSVG = () => `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-    <path class="cls-1" d="M37.01,15.62c0,3.38,0,6.62,0,9.86,0,4.89,0,9.78,0,14.67,0,2.66-.94,3.61-3.53,3.62-5.77.01-11.54.02-17.31,0-2.14,0-3.26-1.03-3.26-3.06-.03-8.08-.01-16.15,0-24.23,0-.26.06-.52.1-.85h24ZM17.18,29.81c0,2.25,0,4.49,0,6.74,0,1.17.31,2.17,1.67,2.14,1.26-.03,1.57-1,1.57-2.09,0-4.6,0-9.21,0-13.81,0-1.16-.29-2.16-1.68-2.13-1.28.03-1.56.98-1.56,2.08,0,2.36,0,4.71,0,7.07ZM23.38,29.64c0,2.36,0,4.73,0,7.09,0,1.07.36,1.91,1.52,1.96,1.28.05,1.66-.85,1.65-1.98,0-4.67,0-9.35,0-14.02,0-1.11-.3-2.05-1.6-2.03-1.29.01-1.58.95-1.57,2.06.01,2.31,0,4.62,0,6.93ZM32.73,29.65c0-2.35,0-4.71,0-7.06,0-1.06-.34-1.9-1.52-1.94-1.29-.04-1.65.85-1.65,1.97,0,4.71,0,9.42,0,14.13,0,1.05.33,1.92,1.51,1.94,1.26.03,1.66-.83,1.65-1.97-.01-2.35,0-4.71,0-7.06Z"/>
-    <path class="cls-1" d="M29.24,9.65c1.26,0,2.56,0,3.87,0q2.62,0,3.15,2.41,2.55.43,2.51,1.96H11.36q-.29-1.51,2.35-1.97c.42-2.35.47-2.4,2.97-2.4,1.31,0,2.62,0,3.49,0,3.02,0,6.05,0,9.07,0ZM26.12,6.91"/>
-    <path class="cls-1" d="M24.62,6.22c-1.89,0-3.42,1.53-3.42,3.42h1.56c0-1.03.83-1.86,1.86-1.86s1.86.83,1.86,1.86h1.56c0-1.89-1.53-3.42-3.42-3.42Z"/>
-  </svg>`;
+// const deleteSVG = () => `
+//   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+//     <path class="cls-1" d="M37.01,15.62c0,3.38,0,6.62,0,9.86,0,4.89,0,9.78,0,14.67,0,2.66-.94,3.61-3.53,3.62-5.77.01-11.54.02-17.31,0-2.14,0-3.26-1.03-3.26-3.06-.03-8.08-.01-16.15,0-24.23,0-.26.06-.52.1-.85h24ZM17.18,29.81c0,2.25,0,4.49,0,6.74,0,1.17.31,2.17,1.67,2.14,1.26-.03,1.57-1,1.57-2.09,0-4.6,0-9.21,0-13.81,0-1.16-.29-2.16-1.68-2.13-1.28.03-1.56.98-1.56,2.08,0,2.36,0,4.71,0,7.07ZM23.38,29.64c0,2.36,0,4.73,0,7.09,0,1.07.36,1.91,1.52,1.96,1.28.05,1.66-.85,1.65-1.98,0-4.67,0-9.35,0-14.02,0-1.11-.3-2.05-1.6-2.03-1.29.01-1.58.95-1.57,2.06.01,2.31,0,4.62,0,6.93ZM32.73,29.65c0-2.35,0-4.71,0-7.06,0-1.06-.34-1.9-1.52-1.94-1.29-.04-1.65.85-1.65,1.97,0,4.71,0,9.42,0,14.13,0,1.05.33,1.92,1.51,1.94,1.26.03,1.66-.83,1.65-1.97-.01-2.35,0-4.71,0-7.06Z"/>
+//     <path class="cls-1" d="M29.24,9.65c1.26,0,2.56,0,3.87,0q2.62,0,3.15,2.41,2.55.43,2.51,1.96H11.36q-.29-1.51,2.35-1.97c.42-2.35.47-2.4,2.97-2.4,1.31,0,2.62,0,3.49,0,3.02,0,6.05,0,9.07,0ZM26.12,6.91"/>
+//     <path class="cls-1" d="M24.62,6.22c-1.89,0-3.42,1.53-3.42,3.42h1.56c0-1.03.83-1.86,1.86-1.86s1.86.83,1.86,1.86h1.56c0-1.89-1.53-3.42-3.42-3.42Z"/>
+//   </svg>`;
 
 const backSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
