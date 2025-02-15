@@ -195,7 +195,7 @@ export default function AuthenticatedScreens({ navigation }) {
                 /> */}
 
                 <SvgXml
-                  xml={notificationSvg(note > 0 ? "#ff061e" : "#191919")}
+                  xml={notificationSvg(note > 0 ? "#ff061e" : "#606060")}
                   width={28}
                   height={28}
                 />

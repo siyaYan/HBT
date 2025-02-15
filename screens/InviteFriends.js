@@ -26,6 +26,8 @@ import {
 import Background from "../components/Background";
 import { Feather } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import { SvgXml } from "react-native-svg";
+
 
 const InviteScreen = ({ navigation }) => {
   useEffect(() => {
@@ -122,24 +124,6 @@ const InviteScreen = ({ navigation }) => {
       <Flex direction="column" alignItems="center">
         <Box safeArea py="2" w="100%" maxW="320">
           <VStack paddingY={10} alignItems="center">
-            {/* <Box py="5" alignSelf={"center"}>
-              {userData.avatar && userData.avatar.uri ? (
-                <Avatar
-                  bg="white"
-                  mb="1"
-                  size="md"
-                  source={{ uri: userData.avatar.uri }}
-                />
-              ) : (
-                <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                  <AntDesign name="user" size={30} color="black" />
-                </Avatar>
-              )}
-              <Text fontFamily={"Regular"} fontSize="lg">
-                {userData.data.nickname}
-              </Text>
-            </Box> */}
-            {/* Code for InviteFriend section */}
             <Box
               w="100%"
               h="95%"
@@ -224,9 +208,10 @@ const InviteScreen = ({ navigation }) => {
                   <Box w={"100%"}>
                     <HStack
                       w={"100%"}
+                      rounded={"25"}
                       alignItems={"center"}
                       justifyContent={"center"}
-                      space={5}
+                      space={7}
                       backgroundColor={
                         linked ? "rgba(73,165,121,0.2)" : "light.100"
                       }
@@ -234,14 +219,15 @@ const InviteScreen = ({ navigation }) => {
                     >
                       {findUser.user.profileImageUrl ? (
                         <Avatar
-                          bg="white"
+                          bg="f9f8f2"
                           mb="1"
+                          ml={1}
                           size={"md"}
                           source={{ uri: findUser.user.profileImageUrl }}
                           rounded={100}
                         />
                       ) : (
-                        <Avatar bg="white" mb="2" size="md" borderWidth={2}>
+                        <Avatar bg="#f9f8f2" mb="2" size="md" borderWidth={2} >
                           <AntDesign name="user" size={20} color="black" />
                         </Avatar>
                       )}
@@ -258,48 +244,36 @@ const InviteScreen = ({ navigation }) => {
                               navigation.navigate("MyCircle");
                             }}
                           >
-                            <AntDesign name="link" size={30} color="grey" />
+                            <SvgXml xml={myCircleSVG("#191919")} width={30} height={30} />
                             <Text fontFamily={"Regular"} fontSize="xs">
-                              linked
+                              Linked
                             </Text>
                           </Pressable>
                         ) : pend != false ? (
                           pend.data.senderId == userData.data._id ? (
                             <Pressable onPress={handleCancel}>
-                              {/* <Feather name="cancel" size={30} color="grey" />
-                            <Text fontFamily={"Regular"} fontSize="xs">
-                              cancel
-                            </Text> */}
-                              <Entypo
-                                name="back-in-time"
-                                size={30}
-                                color="black"
-                              />
+                              <SvgXml xml={widthdrawSvg()} width={30} height={30} />
                               <Text fontFamily={"Regular"} fontSize="xs">
-                                cancel
+                                Cancel
                               </Text>
                             </Pressable>
                           ) : (
                             <Pressable onPress={handleAccept}>
-                              {/* <Feather name="cancel" size={30} color="grey" />
-                            <Text fontFamily={"Regular"} fontSize="xs">
-                              cancel
-                            </Text> */}
                               <AntDesign
                                 name="checkcircleo"
                                 size={30}
-                                color="black"
+                                color="#191919"
                               />
                               <Text fontFamily={"Regular"} fontSize="xs">
-                                accept
+                                Accept
                               </Text>
                             </Pressable>
                           )
                         ) : (
                           <Pressable onPress={handleConnect}>
-                            <Feather name="send" size={30} color="black" />
+                            <Feather name="send" size={30} color="#191919"/>
                             <Text fontFamily={"Regular"} fontSize="xs">
-                              connect
+                              Connect
                             </Text>
                           </Pressable>
                         )}
@@ -319,3 +293,32 @@ const InviteScreen = ({ navigation }) => {
 };
 
 export default InviteScreen;
+
+
+const widthdrawSvg = () => `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+    <defs>
+      <style>.cls-1{fill:#000;stroke-width:0px;}</style>
+    </defs>
+    <path class="cls-1" d="M10.46,32.72c-.38.68-1.35.68-1.74,0l-2.98-5.3s-3.1-5.23-3.1-5.23c-.4-.67.09-1.51.87-1.5l6.08.07,6.08-.07c.78,0,1.26.83.87,1.5,0,0-3.1,5.23-3.1,5.23s-2.98,5.3-2.98,5.3Z"/>
+    <path class="cls-1" d="M27.03,4.53C15.58,4.53,6.29,13.99,6.57,25.5h.02s4.42-4.25,4.42-4.25c1.84-7.85,9.29-13.56,17.88-12.61,7.54.84,13.65,6.93,14.49,14.47,1.11,9.92-6.66,18.36-16.36,18.36-4.33,0-8.27-1.7-11.21-4.44l-2.88,2.78c3.69,3.52,8.68,5.69,14.17,5.67,10.73-.04,19.79-8.63,20.36-19.35.63-11.79-8.78-21.58-20.44-21.58Z"/>
+  </svg>`;
+
+
+
+const myCircleSVG = () => `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <defs>
+    <style>
+      .cls-1, .cls-2 { fill: #000; stroke: #000; stroke-miterlimit: 10; }
+      .cls-2 { stroke-width: 0.75px; }
+    </style>
+  </defs>
+  <path class="cls-2" d="M23.1,22.47s-.04,0-.05,0c-2.43-.02-4.51-1.6-5.06-3.84-.09-.37.16-.75.55-.83.39-.08.79.15.89.52.39,1.58,1.92,2.74,3.63,2.76.01,0,.03,0,.04,0,1.74,0,3.28-1.16,3.67-2.76.09-.37.49-.6.89-.52.4.09.65.46.55.83-.55,2.23-2.69,3.84-5.11,3.84Z"/>
+  <path class="cls-1" d="M23.1,27.43c-5.73,0-10.39-4.66-10.39-10.39s4.66-10.39,10.39-10.39,10.39,4.66,10.39,10.39-4.66,10.39-10.39,10.39ZM23.1,8.62c-4.64,0-8.42,3.78-8.42,8.42s3.78,8.42,8.42,8.42,8.42-3.78,8.42-8.42-3.78-8.42-8.42-8.42Z"/>
+  <path class="cls-1" d="M5.07,40.5c-.53,0-.97-.42-.99-.95-.06-1.62.09-7.26,4.25-11.69,3.16-3.36,6.89-4.21,8.83-4.43.53-.06,1.03.33,1.09.87.06.54-.33,1.03-.87,1.09-1.67.18-4.89.92-7.61,3.82-3.64,3.87-3.76,8.83-3.71,10.26.02.54-.41,1-.95,1.02-.01,0-.02,0-.03,0Z"/>
+  <path class="cls-1" d="M37.63,30.4c-.42,0-.82-.28-.94-.7-.17-.55-.68-1.63-2.2-2.6-2.02-1.3-4.55-1.61-5.54-1.68-.54-.04-.95-.51-.91-1.06.04-.54.51-.95,1.06-.91,1.42.11,4.14.51,6.46,1.99,1.96,1.26,2.72,2.7,3.02,3.69.16.52-.14,1.07-.66,1.23-.1.03-.19.04-.29.04Z"/>
+  <path class="cls-1" d="M44.93,34.6h-14.61c-.55,0-.99-.44-.99-.99s.44-.99.99-.99h14.61c.55,0,.99.44.99.99s-.44.99-.99.99Z"/>
+  <path class="cls-1" d="M44.93,38.98h-14.61c-.55,0-.99-.44-.99-.99s.44-.99.99-.99h14.61c.55,0,.99.44.99.99s-.44.99-.99.99Z"/>
+  <path class="cls-1" d="M44.93,43.35h-14.61c-.55,0-.99-.44-.99-.99s.44-.99.99-.99h14.61c.55,0,.99.44.99.99s-.44.99-.99.99Z"/>
+</svg>`;
