@@ -201,7 +201,7 @@ const ForumPage = ({ route, navigation }) => {
                 />
               </View>
             )}
-            <ScrollView ref={scrollViewRef} w={"100%"} h={"100%"}>
+            <ScrollView scrollEnabled={!scoreBoardOpen} ref={scrollViewRef} w={"100%"} h={"100%"}>
               {post.length > 0 ? (
                 post.map((item, index) => (
                   <View
@@ -431,6 +431,13 @@ const ForumPage = ({ route, navigation }) => {
           ) : (
             ""
           ))}
+        {roundFinished && (
+          <ScoreBoardModal
+            scoreBoardOpen={scoreBoardOpen}
+            handleClose={handleClose}
+            roundId={roundFinished}
+          />
+        )}
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <Modal.Content maxWidth="300px">
             <Modal.CloseButton />
@@ -442,13 +449,6 @@ const ForumPage = ({ route, navigation }) => {
           </Modal.Content>
         </Modal>
 
-        {roundFinished && (
-          <ScoreBoardModal
-            scoreBoardOpen={scoreBoardOpen}
-            handleClose={handleClose}
-            roundId={roundFinished}
-          />
-        )}
       </Box>
       <Modal
         isOpen={deleteModalVisible}

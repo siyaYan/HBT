@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
+import { View, StyleSheet, FlatList, ScrollView } from "react-native";
 import { Box, Text, Avatar, Badge, Modal } from "native-base";
 import { useData } from "../context/DataContext";
 import { getScoreBoard } from "../components/Endpoint";
@@ -32,10 +32,12 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
   //   setScoreBoardOpen(false);
   //   // console.log("isOpened", isOpened);
   // };
-  useEffect(() => {
-    getExistScoreBoard(roundId);
-  }, [scoreBoardOpen]);
 
+  useEffect(() => {
+    if (scoreBoardOpen) {
+      getExistScoreBoard(roundId);
+    }
+  }, [scoreBoardOpen, roundId]);
   return (
     <View>
       {/* Modal 2: score board of Finished Round */}
@@ -290,7 +292,8 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
               </Box>
               <Box height={"60%"}>
                 <View style={styles.listContainer}>
-                  <ScrollView
+                  {/* <FlatList
+                   nestedScrollEnabled={true}
                     data={rest}
                     keyExtractor={(item) => item.nickname}
                     renderItem={({ item, index }) => (
@@ -316,7 +319,32 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                         </Text>
                       </View>
                     )}
-                  />
+                  /> */}
+                  <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    {rest.map((item, index) => (
+                      <View key={index} style={styles.playerItem}>
+                        <View>
+                          <Text style={styles.rankText}>{item.rank}th</Text>
+                          <MaterialCommunityIcons
+                            name="medal-outline"
+                            size={25}
+                            color={medalColors[item.medal] || "#49a579"}
+                          />
+                        </View>
+
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size="md"
+                          source={{ uri: item?.avatar }}
+                        />
+                        <Text>{item.nickname}</Text>
+                        <Text>
+                          {item.score} | {item.credit}
+                        </Text>
+                      </View>
+                    ))}
+                  </ScrollView>
                 </View>
               </Box>
               <Box height={"15%"}>
@@ -409,7 +437,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 60,
-    fontSize: 16
+    fontSize: 16,
   },
   firstPlace: {
     backgroundColor: "rgba(255, 215, 0, 0.2)", // Gold in RGB
