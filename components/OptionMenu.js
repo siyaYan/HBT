@@ -28,7 +28,7 @@ export default OptionMenu = ({ navigation }) => {
             </Menu.Item>
             <Menu.Item px="0"onPress={UserManual}>
             <SvgXml xml={infoSVG} width={24} height={24} /> How to play?</Menu.Item>
-            <Menu.Item px="0">Test</Menu.Item>
+            {/* <Menu.Item px="0">Test</Menu.Item> */}
           </Menu>
         </Box>
       </ZStack>

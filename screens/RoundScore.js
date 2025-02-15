@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, FlatList, ScrollView } from "react-native";
-import { Text, NativeBaseProvider, View } from "native-base";
+import { StyleSheet, FlatList, View } from "react-native";
+import { Text, NativeBaseProvider } from "native-base";
 import { getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
@@ -80,7 +80,7 @@ const RoundScoreScreen = ({ route, navigation }) => {
         {/* <Text style={styles.roundName}>{round.name}</Text> */}
         <Text style={styles.daysLeftText}>Days left: {daysLeft}</Text>
       </View>
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <View style={styles.scrollViewContainer}>
         {/* Entire List as a Single Card */}
         <View style={styles.cardContainer}>
           {loading ? (
@@ -100,7 +100,7 @@ const RoundScoreScreen = ({ route, navigation }) => {
             />
           )}
         </View>
-      </ScrollView>
+      </View>
 
       {currentUserRank && (
         <View style={styles.currentUserContainer}>

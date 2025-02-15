@@ -186,7 +186,7 @@ const SettingScreen = ({ navigation }) => {
             />
 
             <Box alignItems="center" justifyContent="center">
-              <Button onPress={logout} size="md" p={0} variant="unstyled">
+              <Button onPress={goArchivePage} size="md" p={0} variant="unstyled">
                 <HStack>
                   {/* <Feather name="archive" size={26} color="black" /> */}
                   <SvgXml

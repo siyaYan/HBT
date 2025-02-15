@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { View, StyleSheet, FlatList, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { Box, Text, Avatar, Badge, Modal } from "native-base";
 import { useData } from "../context/DataContext";
 import { getScoreBoard } from "../components/Endpoint";
@@ -34,7 +34,7 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
   // };
   useEffect(() => {
     getExistScoreBoard(roundId);
-  }, scoreBoardOpen);
+  }, [scoreBoardOpen]);
 
   return (
     <View>
@@ -289,8 +289,8 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                 )}
               </Box>
               <Box height={"60%"}>
-                <ScrollView style={styles.listContainer}>
-                  <FlatList
+                <View style={styles.listContainer}>
+                  <ScrollView
                     data={rest}
                     keyExtractor={(item) => item.nickname}
                     renderItem={({ item, index }) => (
@@ -317,7 +317,7 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                       </View>
                     )}
                   />
-                </ScrollView>
+                </View>
               </Box>
               <Box height={"15%"}>
                 {
