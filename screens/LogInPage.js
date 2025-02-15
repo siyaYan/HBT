@@ -39,28 +39,29 @@ import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
 
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-
-import { initializeApp } from "firebase/app";
+import * as AppleAuthentication from "expo-apple-authentication";
+// import { initializeApp } from "firebase/app";
 import {
   getAuth,
   FacebookAuthProvider,
   signInWithCredential,
+  OAuthProvider
 } from "firebase/auth";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import OTPInput from "../components/OTPInput";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCUcdfsmB6eqkaUPQ0xH2ELm4mqA9MhHJ4",
-  authDomain: "habital-e1c8d.firebaseapp.com",
-  projectId: "habital-e1c8d",
-  storageBucket: "habital-e1c8d.appspot.com",
-  messagingSenderId: "720818502811",
-  appId: "1:720818502811:web:6516136f1df011ce289a3e",
-  measurementId: "G-EVZCE105VF",
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCUcdfsmB6eqkaUPQ0xH2ELm4mqA9MhHJ4",
+//   authDomain: "habital-e1c8d.firebaseapp.com",
+//   projectId: "habital-e1c8d",
+//   storageBucket: "habital-e1c8d.appspot.com",
+//   messagingSenderId: "720818502811",
+//   appId: "1:720818502811:web:6516136f1df011ce289a3e",
+//   measurementId: "G-EVZCE105VF",
+// };
 
-// // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// // // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
 
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
@@ -131,6 +132,34 @@ const LoginScreen = ({ navigation }) => {
     } catch (error) {
       console.log(error);
       setErrorT(error.code);
+    }
+  };
+  const loginApple = async () => {
+    try {
+      const appleCredential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      // Create Firebase credential
+      const provider = new OAuthProvider("apple.com");
+      const firebaseCredential = provider.credential({
+        idToken: appleCredential.identityToken
+      });
+
+      // Sign in with Firebase
+      const userCredential = await signInWithCredential(auth, firebaseCredential);
+
+      console.log("Firebase Apple Sign-In:", userCredential);
+      Alert.alert("Success", `Welcome, ${userCredential.user.displayName || "User"}!`);
+    } catch (error) {
+      if (error.code === "ERR_CANCELED") {
+        Alert.alert("Login Canceled");
+      } else {
+        Alert.alert("Login Failed", error.message);
+      }
     }
   };
 
@@ -348,6 +377,13 @@ const LoginScreen = ({ navigation }) => {
                 </HStack>
 
                 <VStack space={5} mt="2">
+                <AppleAuthentication.AppleAuthenticationButton
+                    buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                    buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                    cornerRadius={5}
+                    style={{ width: 200, height: 50 }}
+                    onPress={loginApple}
+                  />
                   <Button
                     rounded={30}
                     shadow="6"
