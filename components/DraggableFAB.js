@@ -1,7 +1,10 @@
-import React, { useRef } from "react";
-import { Animated, PanResponder, StyleSheet, View } from "react-native";
+import React, { useRef,useState } from "react";
+import { Animated, PanResponder, StyleSheet, Dimensions } from "react-native";
 import { Pressable } from "react-native";
 import { SvgXml } from "react-native-svg";
+
+const { width, height } = Dimensions.get("window"); // Get screen dimensions
+const BOUNDARY_PADDING = 50; // Padding from edges
 
 const DraggableFAB = ({ onUpload }) => {
   const pan = useRef(new Animated.ValueXY()).current;
@@ -10,22 +13,32 @@ const DraggableFAB = ({ onUpload }) => {
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event(
-        [null, { dx: pan.x, dy: pan.y }],
-        { useNativeDriver: false }
-      ),
+      // onPanResponderMove: Animated.event(
+      //   [null, { dx: pan.x, dy: pan.y }],
+      //   { useNativeDriver: false }
+      // ),
+      onPanResponderMove: (_, gesture) => {
+        Animated.event(
+          [null, { dx: pan.x, dy: pan.y }],
+          { useNativeDriver: false }
+        )(null, {
+          dx: Math.max(BOUNDARY_PADDING, Math.min(width - 50, gesture.dx)),
+          dy: Math.max(BOUNDARY_PADDING, Math.min(height - 50, gesture.dy)),
+        });
+      },
       onPanResponderRelease: () => {
         // Optionally add snapping logic here
+        
       },
     })
   ).current;
-
+  
   return (
-    // <View style={styles.container}>
       <Animated.View
         style={[styles.fab, { transform: pan.getTranslateTransform() }]}
         {...panResponder.panHandlers}
       >
+
         <Pressable accessibilityLabel="Upload button" onPress={onUpload}>
           <SvgXml
             xml={UploadPost}
@@ -37,7 +50,6 @@ const DraggableFAB = ({ onUpload }) => {
           />
         </Pressable>
       </Animated.View>
-    // </View>
   );
 };
 
