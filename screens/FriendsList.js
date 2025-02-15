@@ -508,7 +508,7 @@ const FriendsScreen = ({ navigation }) => {
                 <Modal.Header>Did you want to proceed to unlink? </Modal.Header>
                 <Modal.Footer>
                   <Button.Group justifyContent={"center"}>
-                    {/* <Button
+                    <Button
                       rounded={30}
                       shadow="7"
                       width="48%"
@@ -523,13 +523,8 @@ const FriendsScreen = ({ navigation }) => {
                       }}
                     >
                       Cancel
-                    </Button> */}
-                    <TouchableOpacity onPress={() => {
-                        setShowModal(false);
-                      }}>
-                      <SvgXml xml={Withdraw} width={30} height={30} />
-                    </TouchableOpacity>
-
+                    </Button>
+                   
                     <Button
                       rounded={30}
                       shadow="7"
