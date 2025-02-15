@@ -46,7 +46,8 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
     try {
       if (!result.canceled) {
         setSelectedImage(result);
-
+        onClose()
+        navigation.navigate("ForumStack", {screen: "ForumDraft", params: {res }});
       }
     } catch (e) {
       console.log(e.message);

@@ -12,9 +12,7 @@ import { SvgXml } from "react-native-svg";
 const Stack = createStackNavigator();
 export default function ForumStackNavigator({ route, navigation }) {
   const { acceptRoundData } = useRound();
-  // const roundId = route.params.id;
   const { id: roundId, isFromHome: isFromHome } = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
-  console.log(roundId);
   const activeRound = acceptRoundData?.data.filter(
     (item) => item.status === "A"
   )[0];
@@ -22,26 +20,18 @@ export default function ForumStackNavigator({ route, navigation }) {
   const thisRound = roundId
     ? acceptRoundData.data.filter((item) => item._id === roundId)[0]
     : activeRound;
-  console.log(thisRound);
+
   const calculateDaysLeft = () => {
-    // Calculate how many days are left
     const today = new Date();
     const startDate = new Date(thisRound?.startDate);
-
-    // Get the difference in milliseconds
     const timeDifference = Math.abs(today - startDate);
-
-    // Convert milliseconds to days
     const daysLeft = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-
-    // Adjust daysLeft based on level if needed
     const finalDaysLeft = Math.abs(daysLeft - thisRound?.level);
-    return finalDaysLeft==0?"Last day":finalDaysLeft+" days to go";
+    return finalDaysLeft == 0 ? "Last day" : finalDaysLeft + " days to go";
   };
 
   const isThisActiveRound = thisRound?.status == "A" ? calculateDaysLeft() : "";
 
-  // console.log(finalDaysLeft);
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -73,10 +63,9 @@ export default function ForumStackNavigator({ route, navigation }) {
             <IconButton
               ml={3}
               marginY={0}
-              // icon={<Ionicons name="arrow-back" size={28} color="black" />}
               icon={<SvgXml xml={backSvg()} width={28} height={28} />}
               onPress={() => {
-                navigation.goBack();
+                navigation.goBack(); // Ensure it navigates to the previous screen
               }}
             />
           ),
@@ -125,7 +114,6 @@ export default function ForumStackNavigator({ route, navigation }) {
             <IconButton
               ml={3}
               marginY={0}
-              // icon={<Ionicons name="arrow-back" size={28} color="black" />}
               icon={<SvgXml xml={backSvg()} width={28} height={28} />}
               onPress={() => {
                 {
