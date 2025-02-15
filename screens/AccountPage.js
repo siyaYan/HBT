@@ -17,7 +17,7 @@ import {
 import { useData } from "../context/DataContext";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-// import * as ImagePicker from "expo-image-picker/src/ImagePicker";
+import * as ImageManipulator from "expo-image-manipulator";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -71,19 +71,35 @@ const AccountScreen = ({ navigation }) => {
   };
 
   const handleTakePicture = async () => {
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      quality: 0.6, // Reduce image quality
+      allowsEditing: true,
+    });
 
     try {
       if (!result.canceled) {
-        setSelectedImage(result);
+        // Compress the image before upload
+        const compressedImage = await ImageManipulator.manipulateAsync(
+          result.assets[0].uri,
+          [{ resize: { width: 800 } }], // Reduce resolution
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress quality
+        );
+
+        setSelectedImage(compressedImage); // Update UI with compressed image
+
         const response = await updateAvatar(
           userData.token,
           userData.data.email,
-          result.assets[0]
+          {
+            uri: compressedImage.uri,
+            name: "compressed.jpg",
+            type: "image/jpeg",
+          }
         );
+
         updateUserData({
           ...userData,
-          avatar: result.assets[0],
+          avatar: compressedImage,
         });
       }
     } catch (e) {
