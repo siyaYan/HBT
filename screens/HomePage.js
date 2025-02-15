@@ -206,7 +206,8 @@ const HomeScreen = ({ navigation }) => {
 
       if (
         shouldRedirectToScoreBoard(startDate, level) &&
-        lastCheckedDate !== today && (status === "A" || status === "F")
+        lastCheckedDate !== today &&
+        (status === "A" || status === "F")
       ) {
         // If it's Monday, halfway, or 1 week left, and hasn't been checked today
         await AsyncStorage.setItem(`lastCheck_1${roundId}`, today); // Store today's date

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -8,17 +8,15 @@ import AccountStackNavigator from "../components/AccountStackNavigator";
 import RoundStackNavigator from "../components/RoundStackNavigator";
 import ForumStackNavigator from "../components/ForumStackNavigator";
 import * as SecureStore from "expo-secure-store";
-import { loginUser,getRoundInfo } from "../components/Endpoint";
+import { loginUser, getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
 import InviteScreen from "../screens/InviteFriends";
-import ArchivePage from '../screens/ArchivePage';
+import Instruction from "../screens/Instruction";
 import SplashAnimationScreen from "../components/SplashAnimation";
 import { IconButton } from "native-base";
-import { Ionicons } from "@expo/vector-icons";
 import { useRound } from "../context/RoundContext";
 import { SvgXml } from "react-native-svg";
-
 
 const Stack = createStackNavigator();
 
@@ -39,14 +37,15 @@ export const navigationRef = React.createRef();
 export default function AppContainer() {
   // const navigationRef = useRef();
   const { userData, updateUserData } = useData();
-  const { roundData,updateacceptRoundData, updateRounds, acceptRoundData } = useRound();
+  const { roundData, updateacceptRoundData, updateRounds, acceptRoundData } =
+    useRound();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkCredentials = async () => {
       const storedCredentials = await getCredentials();
-      console.log("in app",storedCredentials);
+      console.log("in app", storedCredentials);
 
       if (storedCredentials) {
         // Use credentials to log in the user automatically
@@ -60,7 +59,10 @@ export default function AppContainer() {
         );
         // console.log('response',response);
         if (response.token) {
-          const roundInfo = await getRoundInfo(response.token, response.data.user._id);
+          const roundInfo = await getRoundInfo(
+            response.token,
+            response.data.user._id
+          );
 
           updateUserData({
             data: response.data.user,
@@ -69,15 +71,15 @@ export default function AppContainer() {
               uri: response.data.user.profileImageUrl,
             },
           });
-          updateRounds(roundInfo)
-          updateacceptRoundData(roundInfo)
+          updateRounds(roundInfo);
+          updateacceptRoundData(roundInfo);
           // console.log("saved Cren rounddata",acceptRoundData)
 
           // console.log(userData);
           setIsAuthenticated(true);
           navigationRef.current?.navigate("MainStack", { screen: "Home" });
           // console.log(response.token);
-        }else{
+        } else {
           setIsAuthenticated(false);
           navigationRef.current?.navigate("Home");
         }
@@ -87,7 +89,7 @@ export default function AppContainer() {
       }
     };
     // setTimeout(() => {
-      checkCredentials();
+    checkCredentials();
     // }, 1500);
   }, [isAuthenticated]);
 
@@ -99,24 +101,7 @@ export default function AppContainer() {
       >
         <Stack.Screen name="Splash" component={SplashAnimationScreen} />
         <Stack.Screen name="Home" component={AppHomeScreen} />
-        <Stack.Screen name="Archive" component={ArchivePage} 
-                  options={{
-                    headerShown: true,
-            title: "Archived",
-            headerStyle: {
-              backgroundColor: "rgba(255,255,255,0)",
-            },
-                    headerLeft: () => (
-                      <IconButton
-                        ml={3}
-                        marginY={0}
-                        icon={<SvgXml xml={backSvg()} width={28} height={28} />}
-                        onPress={() => {
-                            navigationRef.current?.goBack();
-                        }}
-                      />
-                    ),
-                  }}/>
+
         <Stack.Screen
           name="Invite"
           component={InviteScreen}
@@ -132,22 +117,43 @@ export default function AppContainer() {
                 marginY={0}
                 icon={<SvgXml xml={backSvg()} width={28} height={28} />}
                 onPress={() => {
-                    navigationRef.current?.goBack();
+                  navigationRef.current?.goBack();
                 }}
               />
             ),
           }}
         />
+        <Stack.Screen
+          name="Instruction"
+          component={Instruction}
+          options={{
+            headerShown: true,
+            title: "",
+            headerStyle: {
+              backgroundColor: "rgba(255,255,255,0)",
+            },
+            headerLeft: () => (
+              <IconButton
+                ml={3}
+                marginY={0}
+                icon={<SvgXml xml={backSvg()} width={28} height={28} />}
+                onPress={() => {
+                  navigationRef.current?.goBack();
+                }}
+              />
+            ),
+          }}
+        />
+
         <Stack.Screen name="MainStack" component={AuthenticatedScreens} />
         <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
         <Stack.Screen name="AccountStack" component={AccountStackNavigator} />
-        <Stack.Screen name="RoundStack"  component={RoundStackNavigator} />
-        <Stack.Screen name="ForumStack"  component={ForumStackNavigator} />
+        <Stack.Screen name="RoundStack" component={RoundStackNavigator} />
+        <Stack.Screen name="ForumStack" component={ForumStackNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
 
 const backSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">

@@ -12,10 +12,8 @@ import {
   View,
   Avatar,
   Badge,
-  Modal,
   Divider,
 } from "native-base";
-import { StyleSheet } from "react-native";
 import { useData } from "../context/DataContext";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -23,8 +21,6 @@ import * as ImagePicker from "expo-image-picker";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Feather from "@expo/vector-icons/Feather";
-import { SvgXml } from "react-native-svg";
 
 const AccountScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();

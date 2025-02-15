@@ -1,8 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   Box,
-  Heading,
-  IconButton,
   Text,
   Pressable,
   Button,
@@ -14,17 +12,12 @@ import {
   Image,
   ScrollView,
   Modal,
-  View,
   Avatar,
 } from "native-base";
-import { StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import Background2 from "../components/Background2";
-import { FontAwesome } from "@expo/vector-icons";
-import { Foundation } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
 import {
   getFriends,
   deleteFriendOrWithdrawRequestById,
@@ -45,11 +38,6 @@ const FriendsScreen = ({ navigation }) => {
   const [received, setReceived] = useState([]);
   const [sent, setSent] = useState([]);
   const [friends, setFriends] = useState([]);
-  const [listViewData, setListViewData] = useState(
-    Array(20)
-      .fill("")
-      .map((_, i) => ({ key: `${i}`, text: `item #${i}` }))
-  );
 
   useFocusEffect(
     useCallback(() => {
@@ -254,66 +242,6 @@ const FriendsScreen = ({ navigation }) => {
     setShowModal(true);
   };
 
-  // const renderItem = ({
-  //   item,
-  //   index
-  // }) => <Box>
-  //     <Pressable onPress={() => console.log('You touched me')} _dark={{
-  //     bg: 'coolGray.800'
-  //   }} _light={{
-  //     bg: 'white'
-  //   }}>
-  //       <Box pl="4" pr="5" py="2">
-  //         <HStack alignItems="center" space={3}>
-  //           <Avatar size="48px" source={{
-  //           uri: item.avatarUrl
-  //         }} />
-  //           <VStack>
-  //             <Text color="coolGray.800" _dark={{
-  //             color: 'warmGray.50'
-  //           }} bold>
-  //               {item.fullName}
-  //             </Text>
-  //             <Text color="coolGray.600" _dark={{
-  //             color: 'warmGray.200'
-  //           }}>
-  //               {item.recentText}
-  //             </Text>
-  //           </VStack>
-  //           <Spacer />
-  //           <Text fontSize="xs" color="coolGray.800" _dark={{
-  //           color: 'warmGray.50'
-  //         }} alignSelf="flex-start">
-  //             {item.timeStamp}
-  //           </Text>
-  //         </HStack>
-  //       </Box>
-  //     </Pressable>
-  //   </Box>;
-
-  // const renderHiddenItem = (data, rowMap) => <HStack flex="1" pl="2">
-  //     <Pressable w="70" ml="auto" cursor="pointer" bg="coolGray.200" justifyContent="center" onPress={() => closeRow(rowMap, data.item.key)} _pressed={{
-  //     opacity: 0.5
-  //   }}>
-  //       <VStack alignItems="center" space={2}>
-  //         <Icon as={<Entypo name="dots-three-horizontal" />} size="xs" color="coolGray.800" />
-  //         <Text fontSize="xs" fontWeight="medium" color="coolGray.800">
-  //           More
-  //         </Text>
-  //       </VStack>
-  //     </Pressable>
-  //     <Pressable w="70" cursor="pointer" bg="red.500" justifyContent="center" onPress={() => deleteRow(rowMap, data.item.key)} _pressed={{
-  //     opacity: 0.5
-  //   }}>
-  //       <VStack alignItems="center" space={2}>
-  //         <Icon as={<MaterialIcons name="delete" />} color="white" size="xs" />
-  //         <Text color="white" fontSize="xs" fontWeight="medium">
-  //           Delete
-  //         </Text>
-  //       </VStack>
-  //     </Pressable>
-  //   </HStack>;
-
   return (
     <NativeBaseProvider>
       <Background2 />
@@ -322,7 +250,12 @@ const FriendsScreen = ({ navigation }) => {
         <Box mt="9" w="85%">
           <VStack space={1} alignItems="left">
             <HStack>
-              <SvgXml style={{ transform: [{ translateY: -20 }] }} xml={incomingRequestSVG()} width={35} height={35} />
+              <SvgXml
+                style={{ transform: [{ translateY: -20 }] }}
+                xml={incomingRequestSVG()}
+                width={35}
+                height={35}
+              />
               <Text ml={2} fontFamily={"Regular"} fontSize="lg">
                 {received?.length > 0 ? received.length : ""}
               </Text>
@@ -442,7 +375,7 @@ const FriendsScreen = ({ navigation }) => {
               w="90%"
             />
             <HStack>
-              <SvgXml  xml={outGoingRequestSVG()} width={35} height={35} />
+              <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
               <Text fontFamily={"Regular"} fontSize="lg">
                 {sent?.length > 0 ? sent.length : ""}
               </Text>
@@ -576,22 +509,7 @@ const FriendsScreen = ({ navigation }) => {
                     <Button
                       rounded={30}
                       shadow="7"
-                      width="40%"
-                      size={"md"}
-                      _text={{
-                        color: "#f9f8f2",
-                      }}
-                      backgroundColor={"#49a579"}
-                      onPress={() => {
-                        deleteCurrent("friend");
-                      }}
-                    >
-                      Ok
-                    </Button>
-                    <Button
-                      rounded={30}
-                      shadow="7"
-                      width="40%"
+                      width="48%"
                       size={"md"}
                       _text={{
                         color: "#f9f8f2",
@@ -603,6 +521,22 @@ const FriendsScreen = ({ navigation }) => {
                       }}
                     >
                       Cancel
+                    </Button>
+                    <Button
+                      rounded={30}
+                      shadow="7"
+                      width="48%"
+                      size={"md"}
+                      // _text={{
+                      //   color: "#f9f8f2",
+                      // }}
+                      colorScheme="red"
+                      // backgroundColor={"#ff061e"}
+                      onPress={() => {
+                        deleteCurrent("friend");
+                      }}
+                    >
+                      Delete
                     </Button>
                   </Button.Group>
                 </Modal.Footer>
@@ -630,22 +564,29 @@ const FriendsScreen = ({ navigation }) => {
                           />
                         ) : (
                           // <FontAwesome name="check" size={24} color="black" />
-                            <SvgXml
+                          <SvgXml
                             xml={acceptSvg("#191919")}
                             width={35}
                             height={35}
-                            />
-                            )}
-                            <Text fontFamily={"Regular"} fontSize="md">
-                            {item.username}
-                            </Text>
-                            <Text fontFamily={"Regular"} fontSize="md">
-                            {item.nickname}
-                            </Text>
-                            <Pressable onPress={() => deleteOption(index + 1)} style={{ transform: [{ translateY: -3 }] }}>
-                            <Image size={8} source={require("../assets/UIicons/Unlink.png")} alt="Unlink" />
-                            </Pressable>
-                            {/* <SvgXml
+                          />
+                        )}
+                        <Text fontFamily={"Regular"} fontSize="md">
+                          {item.username}
+                        </Text>
+                        <Text fontFamily={"Regular"} fontSize="md">
+                          {item.nickname}
+                        </Text>
+                        <Pressable
+                          onPress={() => deleteOption(index + 1)}
+                          style={{ transform: [{ translateY: -3 }] }}
+                        >
+                          <Image
+                            size={8}
+                            source={require("../assets/UIicons/Unlink.png")}
+                            alt="Unlink"
+                          />
+                        </Pressable>
+                        {/* <SvgXml
                             xml={unlinkSvg("#191919")}
                             width={35}
                             height={35}
@@ -654,21 +595,21 @@ const FriendsScreen = ({ navigation }) => {
                     ))}
                   </Box>
                 ) : (
-                  <>
+                  <Pressable onPress={() => navigation.navigate("Invite")}>
                     <Image
                       source={require("../assets/Animations/AddFriends.gif")}
                       alt="Add Friends GIF"
                       style={{ alignSelf: "center", width: 100, height: 100 }}
+                      
                     />
                     <Text
-                      // marginTop={"20%"}
                       fontFamily={"Regular"}
                       fontSize="xl"
                       textAlign={"center"}
                     >
                       Add friends to start a round!
                     </Text>
-                  </>
+                  </Pressable>
                 )}
               </ScrollView>
             </Box>
@@ -678,16 +619,7 @@ const FriendsScreen = ({ navigation }) => {
     </NativeBaseProvider>
   );
 };
-// const styles = StyleSheet.create({
-//   rowBack: {
-//     alignItems: "center",
-//     // backgroundColor: '#DDD',
-//     flex: 1,
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     paddingLeft: 15,
-//   },
-// });
+
 const outGoingRequestSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
       <defs>

@@ -7,22 +7,13 @@ import {
   Actionsheet,
   useDisclose,
   NativeBaseProvider,
+  Modal,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import { Avatar } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import {
-  VStack,
-  HStack,
-  FormControl,
-  Button,
-  Box,
-  Heading,
-  Text,
-  Label,
-} from "native-base";
+import { VStack, HStack, FormControl, Button, Box, Text } from "native-base";
 import {
   resetEmail,
   resetProfile,
@@ -33,6 +24,8 @@ import * as ImagePicker from "expo-image-picker";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import { SvgXml } from "react-native-svg";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { deleteUser } from "../components/Endpoint";
 
 const AccountSettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
@@ -44,6 +37,7 @@ const AccountSettingScreen = ({ navigation }) => {
     email: false,
   });
 
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     (async () => {
       const cameraPermission =
@@ -126,24 +120,24 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   };
 
-  // const handleUploadImage = async () => {
-  //   // Implement image upload to backend here
-  //   // You can use the 'selectedImage' state to get the image data
-  //   const response = await updateAvatar(
-  //     userData.token,
-  //     userData.data.email,
-  //     userData.avatar
-  //   );
-  //   if (response.data) {
-  //     // console.log(response.data, "got");
-  //     const newData = userData.data;
-  //     newData.profileImageUrl = response.data.profileImageUrl;
-  //     updateUserData({
-  //       ...userData,
-  //       data: newData,
-  //     });
-  //   }
-  // };
+  const handleUploadImage = async () => {
+    // Implement image upload to backend here
+    // You can use the 'selectedImage' state to get the image data
+    const response = await updateAvatar(
+      userData.token,
+      userData.data.email,
+      userData.avatar
+    );
+    if (response.data) {
+      // console.log(response.data, "got");
+      const newData = userData.data;
+      newData.profileImageUrl = response.data.profileImageUrl;
+      updateUserData({
+        ...userData,
+        data: newData,
+      });
+    }
+  };
 
   const validateEmail = (text) => {
     setInputChange({
@@ -165,6 +159,7 @@ const AccountSettingScreen = ({ navigation }) => {
       return res;
     }
   };
+
   const validateUsername = (text) => {
     if (text == userData.data.username) {
       setInputChange({
@@ -230,6 +225,7 @@ const AccountSettingScreen = ({ navigation }) => {
       return false;
     }
   };
+
   const validateNickname = (text) => {
     if (text && text !== "") {
       setInputChange({
@@ -262,6 +258,7 @@ const AccountSettingScreen = ({ navigation }) => {
       return false;
     }
   };
+
   async function saveNickName() {
     if (
       inputChange.nick &&
@@ -291,6 +288,7 @@ const AccountSettingScreen = ({ navigation }) => {
       }
     }
   }
+
   async function saveUsername() {
     if (
       inputChange.user &&
@@ -376,6 +374,51 @@ const AccountSettingScreen = ({ navigation }) => {
   const goResetPassword = () => {
     // Navigate to another screen when the Avatar is pressed
     navigation.navigate("AccountStack", { screen: "ResetPassword" });
+  };
+
+  const deleteAccount = async () => {
+    // console.log(userData.data._id,userData.token)
+    try {
+      const data = await deleteUser(userData.data._id, userData.token);
+      if (data.status == "success") {
+        navigation.navigate("LoginStack", { screen: "Login" });
+        await deleteCredentials();
+      }
+    } catch (error) {
+      // Error clearing the credentials
+    }
+  };
+
+  const deleteCredentials = async () => {
+    try {
+      await deleteItemAsyncs(["userData"]);
+      updateUserData({
+        token: "",
+        data: "",
+        avatar: "",
+      });
+      const allKeys = await AsyncStorage.getAllKeys(); // Get all keys from AsyncStorage
+      const matchingKeys = allKeys.filter((key) =>
+        key.startsWith(`lastCheck_1`)
+      ); // Filter keys that match the pattern
+      await deleteItemAsyncs(matchingKeys);
+    } catch (error) {
+      console.error("was unsucessful. to delete the credentials", error);
+      // Handle the error, like showing an alert to the user
+    }
+  };
+
+  const deleteItemAsyncs = async (keys) => {
+    try {
+      if (keys.length > 0) {
+        await AsyncStorage.multiRemove(keys); // Remove all keys in one operation
+        console.log(`Keys removed:`, keys);
+      } else {
+        console.log("No keys to remove.");
+      }
+    } catch (error) {
+      console.error("Failed to delete keys:", error);
+    }
   };
 
   return (
@@ -641,8 +684,100 @@ const AccountSettingScreen = ({ navigation }) => {
                 </HStack>
               </Button>
             )}
+
+            <Box mb="3" alignItems="center" justifyContent="center">
+              <Button
+                onPress={() => setModalVisible(true)}
+                size="lg"
+                px={5}
+                // variant="unstyled"
+                variant="outline"
+                borderRadius="full"
+                width={"100%"}
+                style={{
+                  borderColor: "red",
+                }}
+              >
+                <HStack>
+                  <SvgXml xml={deleteSVG("#191919")} width={28} height={28} />
+                  <Text ml={1} fontFamily={"Regular Medium"} fontSize="lg">
+                    Delete account
+                  </Text>
+                </HStack>
+              </Button>
+            </Box>
           </VStack>
         </Box>
+        <Modal
+          isOpen={modalVisible}
+          onClose={setModalVisible}
+          animationPreset="fade"
+        >
+          <Modal.Content maxWidth="400px">
+            <Modal.CloseButton />
+            <Modal.Header>
+              <Text fontFamily={"Regular Medium"} fontSize="xl">
+                Are you sure? 🥹
+              </Text>
+            </Modal.Header>
+            <Modal.Body>
+              <Text>
+                This will permanently delete your account, including all your
+                history and records of progress.{" "}
+              </Text>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
+                  colorScheme="blueGray"
+                  rounded={30}
+                  width="48%"
+                  size={"md"}
+                  _text={{
+                    color: "#f9f8f2",
+                  }}
+                  onPress={() => setModalVisible(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  rounded={30}
+                  width="48%"
+                  size={"md"}
+                  colorScheme="red"
+                  onPress={() => {
+                    onPress = { deleteAccount };
+                  }}
+                >
+                  Delete
+                </Button>
+              </Button.Group>
+              {/* <Button.Group space={2}>
+                <Button
+                  rounded={30}
+                  width="48%"
+                  size={"md"}
+                  _text={{
+                    color: "#f9f8f2",
+                  }}
+                  colorScheme="#606060"
+                  onPress={() => setModalVisible(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  rounded={30}
+                  width="48%"
+                  size={"md"}
+                  colorScheme="#ff061e"
+                  onPress={deleteAccount}
+                >
+                  Delete
+                </Button>
+              </Button.Group> */}
+            </Modal.Footer>
+          </Modal.Content>
+        </Modal>
         <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
           <Actionsheet.Content>
             <Box
@@ -699,6 +834,13 @@ const ChangePasswordSVG = () => `
     <path class="cls-1" d="M32.05,49.75c-1.39-.83-2.79-1.66-4.17-2.5-.71-.44-.92-1.25-.52-1.98.71-1.28,1.42-2.56,2.16-3.83.43-.74,1.25-.97,1.95-.59.71.38.96,1.24.57,2-.13.26-.28.5-.47.85.21-.06.34-.09.46-.14,7.18-2.99,11.5-8.3,12.58-16,1.47-10.49-5.7-20.22-16.08-22.1-.95-.17-1.5-.88-1.34-1.73.16-.84.92-1.32,1.83-1.13,8.35,1.75,14.21,6.55,17.26,14.52,4.44,11.61-1.6,24.78-13.23,29.16-.2.08-.41.16-.7.27.64.44,1.38.7,1.49,1.54.1.71-.23,1.22-1.11,1.66h-.68Z"/>
     <path class="cls-1" d="M24.97,37.76c-2.3,0-4.61,0-6.91,0-2.5,0-4.19-1.69-4.19-4.18,0-2.93,0-5.87,0-8.8,0-1.59.66-2.78,1.98-3.64.14-.09.25-.36.25-.54-.02-1.43.12-2.82.67-4.17,1.47-3.62,5.3-5.97,9.04-5.52,4.17.5,7.37,3.5,7.96,7.51.11.73.06,1.48.13,2.22.02.19.13.43.28.53,1.29.84,1.95,2.01,1.95,3.56,0,2.96,0,5.93,0,8.89,0,2.44-1.71,4.14-4.13,4.14-2.34,0-4.67,0-7.01,0ZM25,23.53c-2.32,0-4.64,0-6.96,0-.91,0-1.28.38-1.28,1.3,0,2.91,0,5.83,0,8.74,0,.89.4,1.28,1.31,1.28,4.61,0,9.21,0,13.82,0,.96,0,1.33-.38,1.33-1.35,0-2.87,0-5.73,0-8.6,0-1.02-.35-1.37-1.36-1.38-2.29,0-4.57,0-6.86,0ZM30.93,20.61c.31-2.49-.91-4.88-3.07-6.08-2.13-1.19-4.77-.94-6.69.63-1.59,1.3-2.58,3.87-2.09,5.45h11.84Z"/>
     <path class="cls-1" d="M23.54,29.17c0-.34-.01-.68,0-1.01.04-.8.66-1.41,1.43-1.42.77,0,1.42.59,1.45,1.39.03.71.03,1.42,0,2.13-.03.79-.69,1.4-1.45,1.4-.76,0-1.4-.63-1.43-1.42-.02-.35,0-.71,0-1.06Z"/>
+  </svg>`;
+
+const deleteSVG = () => `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+    <path class="cls-1" d="M37.01,15.62c0,3.38,0,6.62,0,9.86,0,4.89,0,9.78,0,14.67,0,2.66-.94,3.61-3.53,3.62-5.77.01-11.54.02-17.31,0-2.14,0-3.26-1.03-3.26-3.06-.03-8.08-.01-16.15,0-24.23,0-.26.06-.52.1-.85h24ZM17.18,29.81c0,2.25,0,4.49,0,6.74,0,1.17.31,2.17,1.67,2.14,1.26-.03,1.57-1,1.57-2.09,0-4.6,0-9.21,0-13.81,0-1.16-.29-2.16-1.68-2.13-1.28.03-1.56.98-1.56,2.08,0,2.36,0,4.71,0,7.07ZM23.38,29.64c0,2.36,0,4.73,0,7.09,0,1.07.36,1.91,1.52,1.96,1.28.05,1.66-.85,1.65-1.98,0-4.67,0-9.35,0-14.02,0-1.11-.3-2.05-1.6-2.03-1.29.01-1.58.95-1.57,2.06.01,2.31,0,4.62,0,6.93ZM32.73,29.65c0-2.35,0-4.71,0-7.06,0-1.06-.34-1.9-1.52-1.94-1.29-.04-1.65.85-1.65,1.97,0,4.71,0,9.42,0,14.13,0,1.05.33,1.92,1.51,1.94,1.26.03,1.66-.83,1.65-1.97-.01-2.35,0-4.71,0-7.06Z"/>
+    <path class="cls-1" d="M29.24,9.65c1.26,0,2.56,0,3.87,0q2.62,0,3.15,2.41,2.55.43,2.51,1.96H11.36q-.29-1.51,2.35-1.97c.42-2.35.47-2.4,2.97-2.4,1.31,0,2.62,0,3.49,0,3.02,0,6.05,0,9.07,0ZM26.12,6.91"/>
+    <path class="cls-1" d="M24.62,6.22c-1.89,0-3.42,1.53-3.42,3.42h1.56c0-1.03.83-1.86,1.86-1.86s1.86.83,1.86,1.86h1.56c0-1.89-1.53-3.42-3.42-3.42Z"/>
   </svg>`;
 
 export default AccountSettingScreen;
