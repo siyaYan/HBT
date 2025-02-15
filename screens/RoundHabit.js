@@ -48,7 +48,16 @@ const RoundHabit = ({ route, navigation }) => {
         onChangeText={setText}
         placeholder={myhabit}
       />
-      <Button variant="info" onPress={handleSubmit}>
+      <Button variant="info" onPress={handleSubmit}
+      width="100%"
+      rounded={30}
+      size="lg"
+      bg="#49a579"
+      _text={{
+        color: "#f9f8f2",
+        fontFamily: "Regular Medium",
+        fontSize: "lg",
+      }}>
         Submit
       </Button>
     </View>
