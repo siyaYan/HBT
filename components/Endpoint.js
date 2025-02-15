@@ -75,9 +75,10 @@ export async function loginUser(id, password) {
 export async function loginUserThirdParty(idToken, user, type='google') {
   const google="http://3.27.94.77:8000/habital/v1/google"
   const facebook="http://3.27.94.77:8000/habital/v1/facebook"
+  const apple="http://3.27.94.77:8000/habital/v1/apple"
   try {
     const response = await fetch(
-      type=='google'?google:facebook,
+      type=='google'?google:type=='facebook'?facebook:apple,
       {
         method: "POST",
         headers: {
@@ -89,7 +90,7 @@ export async function loginUserThirdParty(idToken, user, type='google') {
 
     const data = await response.json();
     if (data.status == "success") {
-      const res=type=='google'?"Google!":"Facebook!"
+      const res=type=='google'?"Google!":type=='facebook'?"Facebook!":"Apple!"
       Alert.alert('Success', "You have signed in with "+ res);
     } else {
       Alert.alert("Unsuccessful", data.message || "Login was unsucessful.");

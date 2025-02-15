@@ -9,17 +9,15 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "native-base";
-import Svg, { G, Path } from "react-native-svg";
+import  Path  from "react-native-svg";
 import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import {
   VStack,
   HStack,
-  ZStack,
   FormControl,
   Box,
   Button,
-  Heading,
   Link,
   Text,
   Image,
@@ -148,12 +146,28 @@ const LoginScreen = ({ navigation }) => {
       const firebaseCredential = provider.credential({
         idToken: appleCredential.identityToken
       });
+      const auth = getAuth();
 
       // Sign in with Firebase
       const userCredential = await signInWithCredential(auth, firebaseCredential);
 
       console.log("Firebase Apple Sign-In:", userCredential);
-      Alert.alert("Success", `Welcome, ${userCredential.user.displayName || "User"}!`);
+      console.log(userCredential._tokenResponse);
+      const user = {
+        email: userCredential._tokenResponse.email,
+        name: userCredential._tokenResponse.displayName,
+        photo: userCredential._tokenResponse.photoUrl,
+        emailVerified: userCredential._tokenResponse.emailVerified,
+      };
+      // Alert.alert("Success", `Welcome, ${userCredential.user.displayName || "User"}!`);
+      console.log(userCredential._tokenResponse);
+      const response = await loginUserThirdParty(
+        appleCredential.identityToken,
+        user,
+        "apple"
+      );
+      console.log(response);
+      // await afterLogin(response, 2);
     } catch (error) {
       if (error.code === "ERR_CANCELED") {
         Alert.alert("Login Canceled");
