@@ -9,7 +9,6 @@ import { AntDesign } from "@expo/vector-icons";
 const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
   const [rest, setRest] = useState([]);
   const [topThree, setTopThree] = useState([]);
-  // const [scoreBoardOpen, setScoreBoardOpen] = useState(false);
   const { userData } = useData();
 
   const medalColors = {
@@ -17,30 +16,30 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
     Silver: "rgb(192, 192, 192)", // Silver in RGB
     Bronze: "rgb(205, 127, 50)", // Bronze in RGB
   };
+
   const getExistScoreBoard = async (roundId) => {
-    console.log("getinscore", roundId);
-    const res = await getScoreBoard(userData.token, roundId);
-    if (res) {
-      const topThree = res.data.ranking.slice(0, 3);
-      const rest = res.data.ranking.slice(3);
-      setRest(rest);
-      setTopThree(topThree);
+    try {
+      console.log("getinscore", roundId);
+      const res = await getScoreBoard(userData.token, roundId);
+      if (res) {
+        const topThree = res.data.ranking.slice(0, 3);
+        const rest = res.data.ranking.slice(3);
+        setRest(rest);
+        setTopThree(topThree);
+      }
+    } catch (error) {
+      console.error("Error fetching score board:", error);
     }
   };
-  // const handleClose = () => {
-  //   setIsOpened(false);
-  //   setScoreBoardOpen(false);
-  //   // console.log("isOpened", isOpened);
-  // };
 
   useEffect(() => {
     if (scoreBoardOpen) {
       getExistScoreBoard(roundId);
     }
   }, [scoreBoardOpen, roundId]);
+
   return (
     <View>
-      {/* Modal 2: score board of Finished Round */}
       <Modal
         isOpen={scoreBoardOpen}
         onClose={handleClose}
@@ -68,13 +67,13 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                           }}
                         />
                         <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
+                          colorScheme="coolGray"
                           style={{
                             position: "absolute",
                             bottom: 30,
                             right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
+                            backgroundColor: "rgba(255,255,255,0)",
+                            padding: 0,
                           }}
                         >
                           <AntDesign
@@ -92,7 +91,6 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                       <View
                         style={[
                           styles.stage,
-
                           topThree[1].rank == 1
                             ? styles.firstPlace
                             : styles.secondPlace,
@@ -110,13 +108,13 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                           }}
                         />
                         <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
+                          colorScheme="coolGray"
                           style={{
                             position: "absolute",
                             bottom: 30,
                             right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
+                            backgroundColor: "rgba(255,255,255,0)",
+                            padding: 0,
                           }}
                         >
                           <AntDesign
@@ -133,7 +131,7 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                   </View>
                 ) : (
                   <View style={styles.topThreeContainer}>
-                    {topThree[1] ? (
+                    {topThree[1] && (
                       <View style={styles.stageContainer}>
                         <View
                           style={[
@@ -159,13 +157,13 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                             }}
                           />
                           <Badge
-                            colorScheme="coolGray" // or use any other color scheme if needed
+                            colorScheme="coolGray"
                             style={{
                               position: "absolute",
                               bottom: 30,
                               right: 10,
-                              backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                              padding: 0, // Adjust padding if necessary
+                              backgroundColor: "rgba(255,255,255,0)",
+                              padding: 0,
                             }}
                           >
                             <AntDesign
@@ -181,10 +179,8 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                           </Text>
                         </View>
                       </View>
-                    ) : (
-                      ""
                     )}
-                    {topThree[0] ? (
+                    {topThree[0] && (
                       <View style={styles.stageContainer}>
                         <View
                           style={[
@@ -210,13 +206,13 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                             }}
                           />
                           <Badge
-                            colorScheme="coolGray" // or use any other color scheme if needed
+                            colorScheme="coolGray"
                             style={{
                               position: "absolute",
                               bottom: 30,
                               right: 10,
-                              backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                              padding: 0, // Adjust padding if necessary
+                              backgroundColor: "rgba(255,255,255,0)",
+                              padding: 0,
                             }}
                           >
                             <AntDesign
@@ -232,10 +228,8 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                           </Text>
                         </View>
                       </View>
-                    ) : (
-                      ""
                     )}
-                    {topThree[2] ? (
+                    {topThree[2] && (
                       <View style={styles.stageContainer}>
                         <View
                           style={[
@@ -261,13 +255,13 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                             }}
                           />
                           <Badge
-                            colorScheme="coolGray" // or use any other color scheme if needed
+                            colorScheme="coolGray"
                             style={{
                               position: "absolute",
                               bottom: 30,
                               right: 10,
-                              backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                              padding: 0, // Adjust padding if necessary
+                              backgroundColor: "rgba(255,255,255,0)",
+                              padding: 0,
                             }}
                           >
                             <AntDesign
@@ -278,48 +272,17 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                               }
                             />
                           </Badge>
-
                           <Text>
                             {topThree[2]?.score} | {topThree[2]?.credit}
                           </Text>
                         </View>
                       </View>
-                    ) : (
-                      ""
                     )}
                   </View>
                 )}
               </Box>
               <Box height={"60%"}>
                 <View style={styles.listContainer}>
-                  {/* <FlatList
-                   nestedScrollEnabled={true}
-                    data={rest}
-                    keyExtractor={(item) => item.nickname}
-                    renderItem={({ item, index }) => (
-                      <View key={index} style={styles.playerItem}>
-                        <View>
-                          <Text style={styles.rankText}>{item.rank}th</Text>
-                          <MaterialCommunityIcons
-                            name="medal-outline"
-                            size={25}
-                            color={medalColors[item.medal] || "#49a579"}
-                          />
-                        </View>
-
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: item?.avatar }}
-                        />
-                        <Text>{item.nickname}</Text>
-                        <Text>
-                          {item.score} | {item.credit}
-                        </Text>
-                      </View>
-                    )}
-                  /> */}
                   <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     {rest.map((item, index) => (
                       <View key={index} style={styles.playerItem}>
@@ -331,7 +294,6 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                             color={medalColors[item.medal] || "#49a579"}
                           />
                         </View>
-
                         <Avatar
                           bg="white"
                           mb="1"
@@ -348,56 +310,52 @@ const ScoreBoardModal = ({ scoreBoardOpen, handleClose, roundId }) => {
                 </View>
               </Box>
               <Box height={"15%"}>
-                {
-                  rest.filter((item) => item.id === userData.data._id).length >
-                  0
-                    ? rest
-                        .filter((item) => item.id === userData.data._id)
-                        .map((item, index) => (
-                          <View key={index} style={styles.placementContainer}>
-                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
-                              {item.nickname}
-                            </Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${index + 1}th  place`}</Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${item.score} | ${item.credit} `}</Text>
-                          </View>
-                        ))
-                    : topThree
-                        .filter((item) => item.id === userData.data._id)
-                        .map((item, index) => (
-                          <View key={index} style={styles.placementContainer}>
-                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
-                              {item.nickname}
-                            </Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${index + 1}th  place`}</Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${item.score} | ${item.credit} `}</Text>
-                          </View>
-                        )) // or you can replace null with some fallback JSX if needed
-                }
+                {rest
+                  .filter((item) => item.id === userData.data._id)
+                  .map((item, index) => (
+                    <View key={index} style={styles.placementContainer}>
+                      <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
+                        {item.nickname}
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "#f9f8f2",
+                        }}
+                      >{`${index + 1}th  place`}</Text>
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "#f9f8f2",
+                        }}
+                      >{`${item.score} | ${item.credit} `}</Text>
+                    </View>
+                  ))}
+                {topThree
+                  .filter((item) => item.id === userData.data._id)
+                  .map((item, index) => (
+                    <View key={index} style={styles.placementContainer}>
+                      <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
+                        {item.nickname}
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "#f9f8f2",
+                        }}
+                      >{`${index + 1}th  place`}</Text>
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          color: "#f9f8f2",
+                        }}
+                      >{`${item.score} | ${item.credit} `}</Text>
+                    </View>
+                  ))}
               </Box>
             </View>
           </Modal.Body>
@@ -427,26 +385,25 @@ const styles = StyleSheet.create({
   stageContainer: {
     flex: 1,
     alignItems: "center",
-    // flexDirection: "row",
     backgroundColor: "rgba(205, 200, 200, 0.2)",
     paddingVertical: 20,
   },
   stage: {
-    width: 100, // Example width
-    height: 100, // Example height
+    width: 100,
+    height: 100,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 60,
     fontSize: 16,
   },
   firstPlace: {
-    backgroundColor: "rgba(255, 215, 0, 0.2)", // Gold in RGB
+    backgroundColor: "rgba(255, 215, 0, 0.2)",
   },
   secondPlace: {
     backgroundColor: "rgba(192, 192, 192,0.2)",
   },
   thirdPlace: {
-    backgroundColor: "rgba(205, 127, 50,0.2)", // Bronze
+    backgroundColor: "rgba(205, 127, 50,0.2)",
   },
   restPlcae: {
     backgroundColor: "rgba(73, 165, 121,0.2)",
