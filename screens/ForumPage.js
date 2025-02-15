@@ -170,13 +170,6 @@ const ForumPage = ({ route, navigation }) => {
     setIsModalVisible(false);
   };
 
-  const handleContentSizeChange = (width, height) => {
-    setContentHeight(height);
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: false });
-    }
-  };
-
   const handleClose = () => {
     setScoreBoardOpen(false);
     // console.log("isOpened", isOpened);
@@ -190,134 +183,140 @@ const ForumPage = ({ route, navigation }) => {
         alignItems={"center"}
         justifyContent={"flex-start"}
       >
-          <View style={{ flex: 1 }}>
-            {isModalVisible && (
-              <View style={styles.modalContainer}>
-                <AddImage
-                  isOpen={isOpen}
-                  onOpen={onOpen}
-                  onClose={() => handleUploadClose()}
-                  navigation={navigation}
-                />
-              </View>
-            )}
-            <ScrollView ref={scrollViewRef} w={"100%"} h={"100%"}>
-              {post.length > 0 ? (
-                post.map((item, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      flex: 1,
-                      marginVertical: 10, // Consistent gap between rows
-                      paddingHorizontal: 10, // Optional: Add uniform horizontal padding
-                    }}
-                  >
-                    <WingBlank>
-                      <View style={{ position: "relative" }}>
-                        {/* Date Badge at Top Left */}
+        <View style={{ flex: 1 }}>
+          {isModalVisible && (
+            <View style={styles.modalContainer}>
+              <AddImage
+                isOpen={isOpen}
+                onOpen={onOpen}
+                onClose={() => handleUploadClose()}
+                navigation={navigation}
+              />
+            </View>
+          )}
+          <ScrollView ref={scrollViewRef} w={"100%"} h={"100%"}>
+            {post.length > 0 ? (
+              post.map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flex: 1,
+                    marginVertical: 10, // Consistent gap between rows
+                    paddingHorizontal: 10, // Optional: Add uniform horizontal padding
+                  }}
+                >
+                  <WingBlank>
+                    <View style={{ position: "relative" }}>
+                      {/* Date Badge at Top Left */}
+                      <Badge
+                        style={{
+                          position: "absolute",
+                          top: -10,
+                          left: 0,
+                          zIndex: 10,
+                        }}
+                        _text={{ fontSize: 14 }}
+                      >
+                        <Text>{item.date}</Text>
+                      </Badge>
+
+                      {/* Delete Badge at Top Right (only for matching user) */}
+                      {item.userId === userData.data._id && (
                         <Badge
                           style={{
                             position: "absolute",
-                            top: -10,
-                            left: 0,
+                            top: -15,
+                            right: -20,
                             zIndex: 10,
+                            backgroundColor: "transparent",
+                            borderWidth: 2,
+                            // borderColor: "#191919", // light grey border
+                            padding: 5,
                           }}
-                          _text={{ fontSize: 14 }}
+                          rounded="full"
+                          _text={{ fontSize: 10 }}
                         >
-                          <Text>{item.date}</Text>
-                        </Badge>
-
-                        {/* Delete Badge at Top Right (only for matching user) */}
-                        {item.userId === userData.data._id && (
-                          <Badge
-                            style={{
-                              position: "absolute",
-                              top: -15,
-                              right: -20,
-                              zIndex: 10,
-                              backgroundColor: "transparent",
-                              borderWidth: 2,
-                              // borderColor: "#191919", // light grey border
-                              padding: 5,
+                          <Pressable
+                            accessibilityLabel="Delete button"
+                            onPress={() => {
+                              roundActive && setDeleteModalVisible(true);
+                              roundActive && setSelectedPostId(item.id);
                             }}
-                            rounded="full"
-                            _text={{ fontSize: 10 }}
+                            style={{
+                              // backgroundColor: "transparent",
+                              backgroundColor: "#f9f8f2", // light background, similar to the like button
+                              borderRadius: 999, // makes it fully circular
+                              borderWidth: 1,
+                              borderColor: "#D3D3D3", // light grey border (hex for lightgrey)
+                              padding: 8, // adjust size as needed
+                              shadowColor: "#000",
+                              shadowOpacity: 0.1,
+                              shadowRadius: 4,
+                              shadowOffset: { width: 0, height: 2 },
+                              elevation: 3, // for Android shadow
+                            }}
                           >
-                            <Pressable
-                              accessibilityLabel="Delete button"
-                              onPress={() => {
-                                roundActive && setDeleteModalVisible(true);
-                                roundActive && setSelectedPostId(item.id);
-                              }}
-                              style={{
-                                // backgroundColor: "transparent",
-                                backgroundColor: "#f9f8f2", // light background, similar to the like button
-                                borderRadius: 999, // makes it fully circular
-                                borderWidth: 1,
-                                borderColor: "#D3D3D3", // light grey border (hex for lightgrey)
-                                padding: 8, // adjust size as needed
-                                shadowColor: "#000",
-                                shadowOpacity: 0.1,
-                                shadowRadius: 4,
-                                shadowOffset: { width: 0, height: 2 },
-                                elevation: 3, // for Android shadow
-                              }}
-                            >
-                              <SvgXml xml={DeleteIndi} width={20} height={20} />
-                            </Pressable>
-                          </Badge>
-                        )}
+                            <SvgXml xml={DeleteIndi} width={20} height={20} />
+                          </Pressable>
+                        </Badge>
+                      )}
 
-                        <View
-                          style={{ position: "relative", overflow: "visible" }}
+                      <View
+                        style={{ position: "relative", overflow: "visible" }}
+                      >
+                        <Card
+                          style={{
+                            position: "relative",
+                            backgroundColor:
+                              item.userId === userData.data._id
+                                ? "#D3D3D3"
+                                : "#f9f8f2",
+                          }}
                         >
-                          <Card
+                          <Card.Body style={{ padding: 8 }}>
+                            <View style={{ position: "relative" }}>
+                              <Image
+                                source={{ uri: item.image }}
+                                style={{
+                                  width: "100%",
+                                  height: undefined,
+                                  aspectRatio: 1.3,
+                                }}
+                                alt="Alternate Text"
+                                resizeMode="cover"
+                              />
+                            </View>
+                          </Card.Body>
+
+                          <Card.Footer
                             style={{
                               position: "relative",
-                              backgroundColor:
-                                item.userId === userData.data._id
-                                  ? "lightgrey"
-                                  : "#f9f8f2",
+                              display: "flex",
+                              alignItems: "center",
+                              paddingVertical: 5,
+                              paddingHorizontal: 20,
                             }}
-                          >
-                            <Card.Body style={{ padding: 8 }}>
-                              <Card width="100%">
-                                <View style={{ position: "relative" }}>
-                                  <Image
-                                    source={{ uri: item.image }}
-                                    style={{
-                                      width: "100%",
-                                      height: undefined,
-                                      aspectRatio: 1.3,
-                                    }}
-                                    alt="Alternate Text"
-                                    resizeMode="cover"
-                                  />
-                                </View>
-                              </Card>
-                            </Card.Body>
-
-                            <Card.Footer
-                              style={{
-                                position: "relative",
-                                display: "flex",
-                                alignItems: "center",
-                                paddingVertical: 5,
-                                paddingHorizontal: 20,
-                              }}
-                              content={
+                            content={
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                }}
+                              >
                                 <View
                                   style={{
                                     flexDirection: "row",
-                                    alignItems: "center",
+                                    alignItems: "flex-start",
                                   }}
                                 >
-                                  {/* Left Part: Avatar */}
+                                  {/* Left Column: Avatar and Nickname */}
                                   <View
                                     style={{
-                                      flexDirection: "column",
                                       alignItems: "center",
                                       marginRight: 10,
+                                      top: -10,
+                                      minHeight: 90, // Set a fixed height that covers avatar and nickname
+                                      justifyContent: "center",
                                     }}
                                   >
                                     <Pressable
@@ -331,9 +330,19 @@ const ForumPage = ({ route, navigation }) => {
                                         source={{ uri: item.profileImageUrl }}
                                       />
                                     </Pressable>
+                                    <Text
+                                      style={{
+                                        marginTop: 5,
+                                        textAlign: "center",
+                                        fontWeight: "bold",
+                                        color: "#191919",
+                                      }}
+                                    >
+                                      {item.nickname}
+                                    </Text>
                                   </View>
 
-                                  {/* Right Part: Nickname and Text */}
+                                  {/* Right Column: Post Text */}
                                   <View style={{ flex: 1 }}>
                                     <View
                                       style={{
@@ -341,16 +350,9 @@ const ForumPage = ({ route, navigation }) => {
                                         borderRadius: 8,
                                         paddingHorizontal: 10,
                                         paddingVertical: 5,
+                                        minHeight: 70, // Same minimum height as the left column
                                       }}
                                     >
-                                      <Text
-                                        style={{
-                                          textAlign: "left",
-                                          marginTop: 5,
-                                        }}
-                                      >
-                                        {item.nickname}
-                                      </Text>
                                       <Text
                                         style={{
                                           color: "#191919",
@@ -362,68 +364,70 @@ const ForumPage = ({ route, navigation }) => {
                                     </View>
                                   </View>
                                 </View>
-                              }
-                            />
-                          </Card>
+                              </View>
+                            }
+                          />
+                        </Card>
 
-                          {/* Like Badge declared after the Card so it renders on top */}
-                          <Badge
-                            colorScheme="danger"
-                            rounded="full"
-                            variant="outline"
-                            borderColor="transparent"
-                            backgroundColor={"#f9f8f2"}
+                        {/* Like Badge declared after the Card so it renders on top */}
+                        <Badge
+                          colorScheme="danger"
+                          rounded="full"
+                          variant="outline"
+                          borderColor="transparent"
+                          backgroundColor={"#f9f8f2"}
+                          style={{
+                            position: "absolute",
+                            // Like button position
+                            // bottom: 100, // (example value – tune this to match the image’s bottom offset)
+                            top: 270,
+                            right: -20,
+                            zIndex: 1000,
+                            elevation: 10,
+                          }}
+                        >
+                          <HStack
                             style={{
-                              position: "absolute",
-                              // Like button position
-                              bottom: 60, // (example value – tune this to match the image’s bottom offset)
-                              right: -20,
-                              zIndex: 1000,
-                              elevation: 10,
+                              flexDirection: "row",
+                              alignItems: "center",
                             }}
                           >
-                            <HStack
+                            <Pressable
+                              accessibilityLabel="Like button"
+                              onPress={() =>
+                                roundActive &&
+                                handleLikeMessage(item.id, item.like)
+                              }
+                            >
+                              <SvgXml
+                                xml={Support}
+                                width={30}
+                                height={30}
+                                fill={item.like ? "#FFD700" : "#D3D3D3"}
+                              />
+                            </Pressable>
+                            <Text
                               style={{
-                                flexDirection: "row",
-                                alignItems: "center",
+                                fontSize: 18,
+                                color: "#191919",
+                                marginLeft: 5,
+                                lineHeight: 30,
                               }}
                             >
-                              <Pressable
-                                accessibilityLabel="Like button"
-                                onPress={() =>
-                                  roundActive &&
-                                  handleLikeMessage(item.id, item.like)
-                                }
-                              >
-                                <SvgXml
-                                  xml={Support}
-                                  width={30}
-                                  height={30}
-                                  fill={item.like ? "#FFD700" : "#D3D3D3"}
-                                />
-                              </Pressable>
-                              <Text
-                                style={{
-                                  fontSize: 18,
-                                  color: "#191919",
-                                  marginLeft: 5,
-                                  lineHeight: 30,
-                                }}
-                              >
-                                {item.likes}
-                              </Text>
-                            </HStack>
-                          </Badge>
-                        </View>
+                              {item.likes}
+                            </Text>
+                          </HStack>
+                        </Badge>
                       </View>
-                    </WingBlank>
-                  </View>
-                ))
-              ) : (
-                <Text>No Post</Text>
-              )}
-            </ScrollView>
-          </View>
+                    </View>
+                  </WingBlank>
+                </View>
+              ))
+            ) : (
+              <Text>No Post</Text>
+            )}
+          </ScrollView>
+        </View>
 
         {!isModalVisible &&
           (roundActive && isFocused ? (
@@ -431,6 +435,13 @@ const ForumPage = ({ route, navigation }) => {
           ) : (
             ""
           ))}
+        {roundFinished && (
+          <ScoreBoardModal
+            scoreBoardOpen={scoreBoardOpen}
+            handleClose={handleClose}
+            roundId={roundFinished}
+          />
+        )}
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
           <Modal.Content maxWidth="300px">
             <Modal.CloseButton />
@@ -442,13 +453,6 @@ const ForumPage = ({ route, navigation }) => {
           </Modal.Content>
         </Modal>
 
-        {roundFinished && (
-          <ScoreBoardModal
-            scoreBoardOpen={scoreBoardOpen}
-            handleClose={handleClose}
-            roundId={roundFinished}
-          />
-        )}
       </Box>
       <Modal
         isOpen={deleteModalVisible}
@@ -538,3 +542,5 @@ const Support = `<?xml version="1.0" encoding="utf-8"?>
 </svg>`;
 
 const UploadPost = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M46.62,31.09c0-5.63-3.58-10.43-8.57-12.28-.52-6.75-6.17-12.08-13.05-12.08s-12.53,5.33-13.05,12.08c-5,1.85-8.57,6.65-8.57,12.28,0,.01,0,.03,0,.04h0v.85c0,1.56,1.27,2.83,2.83,2.83h10.47c1.02,0,1.84-.82,1.84-1.84s-.82-1.84-1.84-1.84H7.06s0-.03,0-.04c0-3.66,2.11-6.84,5.17-8.39,1.08-.55,2.28-.89,3.54-.99-.12-.61-.19-1.23-.19-1.88s.06-1.22.18-1.8c.84-4.33,4.67-7.62,9.24-7.62s8.4,3.28,9.24,7.62c.11.58.18,1.19.18,1.8s-.07,1.27-.19,1.88c1.27.09,2.46.44,3.54.99,3.06,1.56,5.17,4.73,5.17,8.39,0,.01,0,.03,0,.04h-9.62c-1.02,0-1.84.82-1.84,1.84s.82,1.84,1.84,1.84h10.47c1.56,0,2.83-1.27,2.83-2.83v-.85h0s0-.03,0-.04Z"/><path class="cls-1" d="M32.64,27.81c.79-.64.9-1.8.26-2.59l-6.76-8.24c-.36-.44-.9-.69-1.46-.67-.56.01-1.09.28-1.43.73l-6.2,8.24c-.61.81-.45,1.97.36,2.58.33.25.72.37,1.1.37.56,0,1.11-.25,1.47-.73l3.17-4.21v17.2c0,1.02.82,1.84,1.84,1.84s1.84-.82,1.84-1.84v-16.84l3.21,3.92c.64.79,1.8.9,2.59.26Z"/></svg>`;
+
+

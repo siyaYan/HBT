@@ -21,6 +21,7 @@ import {
 } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import { SvgXml } from "react-native-svg";
@@ -101,24 +102,60 @@ const AccountSettingScreen = ({ navigation }) => {
   };
 
   const handleTakePicture = async () => {
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      quality: 0.6, // Reduce image quality
+      allowsEditing: true,
+    });
+  
     try {
       if (!result.canceled) {
-        setSelectedImage(result);
+        // Compress the image before upload
+        const compressedImage = await ImageManipulator.manipulateAsync(
+          result.assets[0].uri,
+          [{ resize: { width: 800 } }], // Reduce resolution
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress quality
+        );
+  
+        setSelectedImage(compressedImage); // Update UI with compressed image
+  
         const response = await updateAvatar(
           userData.token,
           userData.data.email,
-          result.assets[0]
+          {
+            uri: compressedImage.uri,
+            name: "compressed.jpg",
+            type: "image/jpeg",
+          }
         );
+  
         updateUserData({
           ...userData,
-          avatar: result.assets[0],
+          avatar: compressedImage,
         });
       }
     } catch (e) {
       console.log(e.message);
     }
   };
+  // const handleTakePicture = async () => {
+  //   const result = await ImagePicker.launchCameraAsync();
+  //   try {
+  //     if (!result.canceled) {
+  //       setSelectedImage(result);
+  //       const response = await updateAvatar(
+  //         userData.token,
+  //         userData.data.email,
+  //         result.assets[0]
+  //       );
+  //       updateUserData({
+  //         ...userData,
+  //         avatar: result.assets[0],
+  //       });
+  //     }
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // };
 
   const handleUploadImage = async () => {
     // Implement image upload to backend here

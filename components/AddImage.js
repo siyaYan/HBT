@@ -2,6 +2,7 @@ import { Icon, Box, Text, Actionsheet } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import React, { useRef } from "react";
 
 const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
@@ -40,19 +41,42 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
     }
   };
 
-  const handleTakePicture = async () => {
-    const result = await ImagePicker.launchCameraAsync();
-
-    try {
-      if (!result.canceled) {
-        setSelectedImage(result);
-        onClose()
-        navigation.navigate("ForumStack", {screen: "ForumDraft", params: {res }});
+    const handleTakePicture = async () => {
+      const result = await ImagePicker.launchCameraAsync({
+        quality: 0.6, // Reduce image quality
+        allowsEditing: true,
+      });
+    
+      try {
+        if (!result.canceled) {
+          // Compress the image before upload
+          const compressedImage = await ImageManipulator.manipulateAsync(
+            result.assets[0].uri,
+            [{ resize: { width: 800 } }], // Reduce resolution
+            { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress quality
+          );
+    
+          setSelectedImage(compressedImage); // Update UI with compressed image
+          onClose()
+          navigation.navigate("ForumStack", {screen: "ForumDraft", params: {compressedImage }});
+        }
+      } catch (e) {
+        console.log(e.message);
       }
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
+    };
+  // const handleTakePicture = async () => {
+  //   const result = await ImagePicker.launchCameraAsync();
+
+  //   try {
+  //     if (!result.canceled) {
+  //       setSelectedImage(result);
+  //       onClose()
+  //       navigation.navigate("ForumStack", {screen: "ForumDraft", params: {result }});
+  //     }
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // };
   return (
         <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
           <Actionsheet.Content>
