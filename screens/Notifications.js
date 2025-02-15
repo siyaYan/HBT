@@ -1,11 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   Box,
-  Heading,
-  IconButton,
   Text,
-  Pressable,
-  Button,
   NativeBaseProvider,
   Flex,
   VStack,
@@ -294,11 +290,11 @@ const NotificationScreen = ({ navigation }) => {
               <HStack w={"100%"} justifyContent={"space-between"}>
                 {friendRequest?.length > 0 ? (
                   <Box>
-                    <Image
+                    {/* <Image
                       size={30}
                       source={require("../assets/Buttonicons/Users.png")}
                       alt="received"
-                    />
+                    /> */}
                     <SvgXml
                       xml={myCircleSVG("#191919")}
                       width={35}
