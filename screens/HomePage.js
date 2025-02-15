@@ -79,7 +79,7 @@ const HomeScreen = ({ navigation }) => {
   // const [topThree, setTopThree] = useState([]);
   const [roundInvitationData, setRoundInvitationData] = useState(null);
   const [hasRoundInvitation, setHasRoundInvitation] = useState(false);
-  
+
   const [processedRounds, setProcessedRounds] = useState(null);
 
   const [showRoundFriendValidation, setShowRoundFriendValidation] =
@@ -120,7 +120,7 @@ const HomeScreen = ({ navigation }) => {
       // updateNote();
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
-  
+
   useEffect(() => {
     // console.log("acceptRoundData----", acceptRoundData?.data[acceptRoundData.data.length - 1]?.roundFriends);
     const processing = processRounds(acceptRoundData.data, new Date());
@@ -813,23 +813,23 @@ const HomeScreen = ({ navigation }) => {
                             </Modal.Body>
                           </Modal.Content>
                         </Modal>
-                        <AntDesign
+                
+                        <TouchableOpacity
                           onPress={() =>
                             acceptRoundFriend(
                               1,
                               filteredUsers.filteredRound[index]
                             )
                           }
-                          name="checksquareo"
-                          size={30}
-                          color="black"
-                        />
-                        <AntDesign
-                          onPress={() => rejectRoundFriend(1)}
-                          name="closesquareo"
-                          size={30}
-                          color="black"
-                        />
+                        >
+                          <SvgXml xml={ReadAllNoti} width={30} height={30} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                         onPress={() => rejectRoundFriend(1)}
+                        >
+                          <SvgXml xml={Decline} width={30} height={30} />
+                        </TouchableOpacity>
+                        
                       </HStack>
                     </HStack>
                   );
@@ -1047,3 +1047,11 @@ c-0.22,3.05-0.13,5.5,0,7.22c0.09,1.15,0.22,2.24,1.03,3.04c0.67,0.67,1.67,1.01,3,
 c2.6,0,3.98-1.38,3.98-3.98c0-2.4,0-4.8,0-7.2c0,0,0,0,0-0.01C87.42,63.8,87.44,56.2,87.38,45.47z"/>
 </svg>
 `;
+
+const Decline = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><rect class="cls-1" x="14.7" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(24.81 60.35) rotate(-134.69)"/><rect class="cls-1" x="14.7" y="22.9" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(60.31 25.08) rotate(135.31)"/></svg>`;
+const ReadAllNoti = `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <path fill="#191919" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/>
+  <rect fill="#191919" x="13.98" y="26.52" width="11.88" height="4.07" rx="2.03" ry="2.03" transform="translate(28.16 -5.28) rotate(48.58)"/>
+  <rect fill="#191919" x="17.29" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(64.26 18.56) rotate(127.86)"/>
+</svg>`;
