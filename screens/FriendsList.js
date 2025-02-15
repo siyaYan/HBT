@@ -30,7 +30,9 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { SvgXml } from "react-native-svg";
-
+import {
+  TouchableOpacity,
+} from "react-native";
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();
@@ -506,7 +508,7 @@ const FriendsScreen = ({ navigation }) => {
                 <Modal.Header>Did you want to proceed to unlink? </Modal.Header>
                 <Modal.Footer>
                   <Button.Group justifyContent={"center"}>
-                    <Button
+                    {/* <Button
                       rounded={30}
                       shadow="7"
                       width="48%"
@@ -521,7 +523,13 @@ const FriendsScreen = ({ navigation }) => {
                       }}
                     >
                       Cancel
-                    </Button>
+                    </Button> */}
+                    <TouchableOpacity onPress={() => {
+                        setShowModal(false);
+                      }}>
+                      <SvgXml xml={Withdraw} width={30} height={30} />
+                    </TouchableOpacity>
+
                     <Button
                       rounded={30}
                       shadow="7"
@@ -600,7 +608,6 @@ const FriendsScreen = ({ navigation }) => {
                       source={require("../assets/Animations/AddFriends.gif")}
                       alt="Add Friends GIF"
                       style={{ alignSelf: "center", width: 100, height: 100 }}
-                      
                     />
                     <Text
                       fontFamily={"Regular"}
@@ -695,3 +702,5 @@ const widthdrawSvg = () => `
   </svg>`;
 
 export default FriendsScreen;
+
+const Withdraw = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M10.46,32.72c-.38.68-1.35.68-1.74,0l-2.98-5.3s-3.1-5.23-3.1-5.23c-.4-.67.09-1.51.87-1.5l6.08.07,6.08-.07c.78,0,1.26.83.87,1.5,0,0-3.1,5.23-3.1,5.23s-2.98,5.3-2.98,5.3Z"/><path class="cls-1" d="M27.03,4.53C15.58,4.53,6.29,13.99,6.57,25.5h.02s4.42-4.25,4.42-4.25c1.84-7.85,9.29-13.56,17.88-12.61,7.54.84,13.65,6.93,14.49,14.47,1.11,9.92-6.66,18.36-16.36,18.36-4.33,0-8.27-1.7-11.21-4.44l-2.88,2.78c3.69,3.52,8.68,5.69,14.17,5.67,10.73-.04,19.79-8.63,20.36-19.35.63-11.79-8.78-21.58-20.44-21.58Z"/></svg>`;
