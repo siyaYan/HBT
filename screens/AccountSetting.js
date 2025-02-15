@@ -13,16 +13,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import { Avatar } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  VStack,
-  HStack,
-  FormControl,
-  Button,
-  Box,
-  Heading,
-  Text,
-  Label,
-} from "native-base";
+import { VStack, HStack, FormControl, Button, Box, Text } from "native-base";
 import {
   resetEmail,
   resetProfile,
@@ -129,24 +120,24 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   };
 
-  // const handleUploadImage = async () => {
-  //   // Implement image upload to backend here
-  //   // You can use the 'selectedImage' state to get the image data
-  //   const response = await updateAvatar(
-  //     userData.token,
-  //     userData.data.email,
-  //     userData.avatar
-  //   );
-  //   if (response.data) {
-  //     // console.log(response.data, "got");
-  //     const newData = userData.data;
-  //     newData.profileImageUrl = response.data.profileImageUrl;
-  //     updateUserData({
-  //       ...userData,
-  //       data: newData,
-  //     });
-  //   }
-  // };
+  const handleUploadImage = async () => {
+    // Implement image upload to backend here
+    // You can use the 'selectedImage' state to get the image data
+    const response = await updateAvatar(
+      userData.token,
+      userData.data.email,
+      userData.avatar
+    );
+    if (response.data) {
+      // console.log(response.data, "got");
+      const newData = userData.data;
+      newData.profileImageUrl = response.data.profileImageUrl;
+      updateUserData({
+        ...userData,
+        data: newData,
+      });
+    }
+  };
 
   const validateEmail = (text) => {
     setInputChange({
@@ -736,29 +727,31 @@ const AccountSettingScreen = ({ navigation }) => {
               </Text>
             </Modal.Body>
             <Modal.Footer>
-            <Button.Group space={2}>
-              <Button  
-              colorScheme="blueGray" 
-              rounded={30}
-              width="48%"
-              size={"md"}
-              _text={{
-                color: "#f9f8f2",
-              }}
-              onPress={() => setModalVisible(false)}>
-                Cancel
-              </Button>
-              <Button 
-              rounded={30}
-              width="48%"
-              size={"md"}
-              colorScheme='red'
-              onPress={() => {
-               onPress={deleteAccount}
-            }}>
-                Delete
-              </Button>
-            </Button.Group>
+              <Button.Group space={2}>
+                <Button
+                  colorScheme="blueGray"
+                  rounded={30}
+                  width="48%"
+                  size={"md"}
+                  _text={{
+                    color: "#f9f8f2",
+                  }}
+                  onPress={() => setModalVisible(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  rounded={30}
+                  width="48%"
+                  size={"md"}
+                  colorScheme="red"
+                  onPress={() => {
+                    onPress = { deleteAccount };
+                  }}
+                >
+                  Delete
+                </Button>
+              </Button.Group>
               {/* <Button.Group space={2}>
                 <Button
                   rounded={30}

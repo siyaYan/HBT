@@ -1,40 +1,50 @@
-import { Menu, Pressable, Box, ZStack } from 'native-base';
+import { Menu, Pressable, Box, ZStack } from "native-base";
 import React, { useRef } from "react";
-import { SvgXml } from 'react-native-svg'; // Import SvgXml to use custom SVGs
-import UserManual from '../screens/UserMenual';
+import { SvgXml } from "react-native-svg"; // Import SvgXml to use custom SVGs
 
 export default OptionMenu = ({ navigation }) => {
-    // const navigationRef = useRef();
-    function inviteFriend() {
-        console.log('invite friend')
-        // navigationRef.current?.navigate("Invite");
-        navigation.navigate("Invite");
-    }
+  // const navigationRef = useRef();
+  function inviteFriend() {
+    console.log("invite friend");
+    // navigationRef.current?.navigate("Invite");
+    navigation.navigate("Invite");
+  }
 
-    return (
-      <ZStack alignSelf="flex-end" mr="15%" mt="15%">
-        <Box alignItems="flex-start" shadow={2}>
-          <Menu ml="-110" mt="-10%" w="160" borderRadius="15" trigger={(triggerProps) => {
-              return (
-                <Pressable accessibilityLabel="Options menu" {...triggerProps}>
-                  <SvgXml xml={plusSvg} width={30} height={30} />
-                </Pressable>
-              );
-            }}
-          >
-            {/* Use SVG in menu item */}
-            <Menu.Item px="0" onPress={inviteFriend}>
-              <SvgXml xml={addUserSvg} width={24} height={24} /> Add a friend
-            </Menu.Item>
-            <Menu.Item px="0"onPress={UserManual}>
-            <SvgXml xml={infoSVG} width={24} height={24} /> How to play?</Menu.Item>
-            {/* <Menu.Item px="0">Test</Menu.Item> */}
-          </Menu>
-        </Box>
-      </ZStack>
-    );
+  function Instruction() {
+    console.log("Go to User Instruction");
+    // navigationRef.current?.navigate("Invite");
+    navigation.navigate("Instruction");
+  }
+
+  return (
+    <ZStack alignSelf="flex-end" mr="15%" mt="15%">
+      <Box alignItems="flex-start" shadow={2}>
+        <Menu
+          ml="-110"
+          mt="-10%"
+          w="160"
+          borderRadius="15"
+          trigger={(triggerProps) => {
+            return (
+              <Pressable accessibilityLabel="Options menu" {...triggerProps}>
+                <SvgXml xml={plusSvg} width={30} height={30} />
+              </Pressable>
+            );
+          }}
+        >
+          {/* Use SVG in menu item */}
+          <Menu.Item px="0" onPress={inviteFriend}>
+            <SvgXml xml={addUserSvg} width={24} height={24} /> Add a friend
+          </Menu.Item>
+          <Menu.Item px="0" onPress={Instruction}>
+            <SvgXml xml={infoSVG} width={24} height={24} /> How to play?
+          </Menu.Item>
+          {/* <Menu.Item px="0">Test</Menu.Item> */}
+        </Menu>
+      </Box>
+    </ZStack>
+  );
 };
-
 
 const plusSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <path fill="#191919" class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><path class="cls-1" d="M32.49,27h-14.98c-1.1,0-2-.9-2-2s.9-2,2-2h14.98c1.1,0,2,.9,2,2s-.9,2-2,2Z"/><path class="cls-1" d="M25,34.49c-1.1,0-2-.9-2-2v-14.98c0-1.1.9-2,2-2s2,.9,2,2v14.98c0,1.1-.9,2-2,2Z"/></svg>
@@ -46,7 +56,7 @@ const addUserSvg = `
       </svg>
     `;
 
-    const infoSVG = `
+const infoSVG = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
       <defs>
         <style>
@@ -76,4 +86,3 @@ const addUserSvg = `
         C26.91,34.21,26.91,34.52,26.74,34.84z M26.11,22.99c-1.17,0-2.11-0.95-2.11-2.11c0-1.17,0.95-2.11,2.11-2.11
         c1.17,0,2.11,0.95,2.11,2.11C28.22,22.04,27.27,22.99,26.11,22.99z"/>
     </svg>`;
-  

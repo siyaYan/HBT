@@ -1,11 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { useState, useEffect } from "react";
-import { Avatar } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
-import { useData } from "../context/DataContext";
-import Background from "../components/Background";
 
 const CreateRoundSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50" height="50">
@@ -26,12 +21,10 @@ const ReactToRoundSVG = () => `
   </svg>
 `;
 
-const UserManual = ({ navigation }) => {
+const Instruction = ({ navigation }) => {
   return (
-  
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Welcome to RoundMaster! 🎯</Text>
-      <Text style={styles.subtitle}>Master the game in 3 steps:</Text>
+      <Text style={styles.subtitle}>Master the game in 3 steps: 🎯</Text>
 
       <View style={styles.stepContainer}>
         <SvgXml xml={CreateRoundSVG()} width={60} height={60} />
@@ -66,7 +59,7 @@ const UserManual = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('CreateRound')}
+        onPress={() =>navigation.navigate("MainStack", { screen: "Home" })}
       >
         <Text style={styles.buttonText}>Let's Start a Round!</Text>
       </TouchableOpacity>
@@ -133,4 +126,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserManual;
+export default Instruction;
