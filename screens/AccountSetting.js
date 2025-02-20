@@ -299,37 +299,34 @@ const AccountSettingScreen = ({ navigation }) => {
   };
 
   const validateNickname = (text) => {
-    if (text && text !== "") {
-      setInputChange({
-        ...inputChange,
-        nick: true,
-      });
-      setData({
-        ...formData,
-        nickname: text,
-      });
-      // console.log(text, "nickname");
-      if (formData.nickname.trim() != "") {
-        setErrors({
-          ...errors,
-          nickname: false,
-        });
-        return true;
-      } else {
-        setErrors({
-          ...errors,
-          nickname: "Nickname cannot be empty.",
-        });
-        return false;
-      }
+    // Mark that the nickname field has been touched
+    setInputChange((prev) => ({
+      ...prev,
+      nick: true,
+    }));
+  
+    // Update the form data with the new text
+    setData((prev) => ({
+      ...prev,
+      nickname: text,
+    }));
+  
+    // Use text.trim() directly for validation
+    if (text.trim() !== "") {
+      setErrors((prev) => ({
+        ...prev,
+        nickname: false,
+      }));
+      return true;
     } else {
-      setErrors({
-        ...errors,
+      setErrors((prev) => ({
+        ...prev,
         nickname: "Nickname cannot be empty.",
-      });
+      }));
       return false;
     }
   };
+  
 
   async function saveNickName() {
     if (
@@ -613,7 +610,7 @@ const AccountSettingScreen = ({ navigation }) => {
                   size="lg"
                   mr={3}
                   w="93%"
-                  placeholder="Username"
+                  placeholder="e.g. JohnDoe123"
                   value={formData.username}
                   onChangeText={validateUsername}
                 />
@@ -635,11 +632,13 @@ const AccountSettingScreen = ({ navigation }) => {
               </Box>
               <Box ml={1}>
                 <FormControl.ErrorMessage>
-                  {Object.values(showMessage.username).some(
+                  {/* {Object.values(showMessage.username).some(
                     (value) => value === false
                   )
                     ? showMessage.textProp
-                    : ""}
+                    : ""} */}
+                 {inputChange.user || !errors.user ? "Username is not valid" : ""}
+
                 </FormControl.ErrorMessage>
               </Box>
             </FormControl>
@@ -727,7 +726,7 @@ const AccountSettingScreen = ({ navigation }) => {
                 </Box>
                 <Box ml={1}>
                   <FormControl.ErrorMessage>
-                    {!errors.token ? "Input token it not valid" : ""}
+                    {!errors.token ? "Input token is not valid" : ""}
                   </FormControl.ErrorMessage>
                 </Box>
               </FormControl>
