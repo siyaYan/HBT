@@ -415,16 +415,18 @@ const FriendsScreen = ({ navigation }) => {
                       {sent[0].nickname}
                     </Text>
                     <VStack justifyContent={"center"} alignItems={"center"}>
-                      <SvgXml
-                        onPress={() => deleteCurrent("sent", 1)}
-                        xml={widthdrawSvg()}
-                        width={30}
-                        height={30}
-                      />
-                      <Text fontFamily={"Regular"} fontSize="10">
-                        Withdraw
-                      </Text>
-                    </VStack>
+  <Pressable onPress={() => deleteCurrent("sent", 1)}>
+    <SvgXml
+      xml={widthdrawSvg()}
+      width={30}
+      height={30}
+    />
+  </Pressable>
+  <Text fontFamily={"Regular"} fontSize="10">
+    Withdraw
+  </Text>
+</VStack>
+
                   </HStack>
                   {sent?.length > 1 ? (
                     <HStack
@@ -453,16 +455,13 @@ const FriendsScreen = ({ navigation }) => {
                       </Text>
 
                       <VStack justifyContent={"center"} alignItems={"center"}>
-                        <Entypo
-                          onPress={() => deleteCurrent("sent", 2)}
-                          name="back-in-time"
-                          size={30}
-                          color="black"
-                        />
-                        <Text fontFamily={"Regular"} fontSize="10">
-                          Withdraw
-                        </Text>
-                      </VStack>
+      <Pressable onPress={() => deleteCurrent("sent", 2)}>
+        <SvgXml xml={widthdrawSvg()} width={30} height={30} />
+      </Pressable>
+      <Text fontFamily={"Regular"} fontSize="10">
+        Withdraw
+      </Text>
+    </VStack>
                     </HStack>
                   ) : (
                     ""
