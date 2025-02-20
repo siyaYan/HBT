@@ -168,9 +168,10 @@ const InviteScreen = ({ navigation }) => {
                 </FormControl>
 
                 {/* Code for search friend button*/}
+
                 {formData.userId &&
                 (formData.userId.toLowerCase() == userData.data.email ||
-                  formData.userId == userData.data.username) ? (
+                  formData.userId.toLowerCase() == userData.data.username) ? (
                   <Text fontFamily={"Regular"} fontSize="lg">
                     This is YOU!
                   </Text>
