@@ -264,6 +264,7 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
             bottom="5"
             alignSelf="center"
             mt="5"
+            rounded={30}
             width="100%"
             size="lg"
             bg="#49a579"

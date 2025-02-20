@@ -219,6 +219,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
                   mt="5"
                   width="100%"
                   size="lg"
+                  rounded={30}
                   bg="#49a579"
                   _text={{
                     color: "#f9f8f2",
@@ -238,6 +239,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
                 mt="5"
                 width="100%"
                 size="lg"
+                rounded={30}
                 // bg="#ff061e"
                 // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
                 backgroundColor={"#f9f8f2"}
