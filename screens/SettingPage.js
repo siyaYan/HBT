@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   Pressable,
@@ -46,6 +46,38 @@ const SettingScreen = ({ navigation }) => {
 
   const goArchivePage = async () => {
     navigation.navigate("AccountStack", { screen: "Archive" });
+  };
+
+  const deleteCredentials = async () => {
+    try {
+      await deleteItemAsyncs(["userData"]);
+      updateUserData({
+        token: "",
+        data: "",
+        avatar: "",
+      });
+      const allKeys = await AsyncStorage.getAllKeys(); // Get all keys from AsyncStorage
+      const matchingKeys = allKeys.filter((key) =>
+        key.startsWith(`lastCheck_1`)
+      ); // Filter keys that match the pattern
+      await deleteItemAsyncs(matchingKeys);
+    } catch (error) {
+      console.error("was unsucessful. to delete the credentials", error);
+      // Handle the error, like showing an alert to the user
+    }
+  };
+
+  const deleteItemAsyncs = async (keys) => {
+    try {
+      if (keys.length > 0) {
+        await AsyncStorage.multiRemove(keys); // Remove all keys in one operation
+        console.log(`Keys removed:`, keys);
+      } else {
+        console.log("No keys to remove.");
+      }
+    } catch (error) {
+      console.error("Failed to delete keys:", error);
+    }
   };
   return (
     <NativeBaseProvider>

@@ -70,6 +70,42 @@ const AccountScreen = ({ navigation }) => {
     }
   };
 
+  // const handleTakePicture = async () => {
+  //   const result = await ImagePicker.launchCameraAsync({
+  //     quality: 0.6, // Reduce image quality
+  //     allowsEditing: true,
+  //   });
+
+  //   try {
+  //     if (!result.canceled) {
+  //       // Compress the image before upload
+  //       const compressedImage = await ImageManipulator.manipulateAsync(
+  //         result.assets[0].uri,
+  //         [{ resize: { width: 800 } }], // Reduce resolution
+  //         { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress quality
+  //       );
+
+  //       setSelectedImage(compressedImage); // Update UI with compressed image
+
+  //       const response = await updateAvatar(
+  //         userData.token,
+  //         userData.data.email,
+  //         {
+  //           uri: compressedImage.uri,
+  //           name: "compressed.jpg",
+  //           type: "image/jpeg",
+  //         }
+  //       );
+
+  //       updateUserData({
+  //         ...userData,
+  //         avatar: compressedImage,
+  //       });
+  //     }
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // };
   const handleTakePicture = async () => {
     const result = await ImagePicker.launchCameraAsync({
       quality: 0.6, // Reduce image quality
@@ -78,35 +114,24 @@ const AccountScreen = ({ navigation }) => {
 
     try {
       if (!result.canceled) {
-        // Compress the image before upload
-        const compressedImage = await ImageManipulator.manipulateAsync(
-          result.assets[0].uri,
-          [{ resize: { width: 800 } }], // Reduce resolution
-          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress quality
-        );
-
-        setSelectedImage(compressedImage); // Update UI with compressed image
+        setSelectedImage(result); // Update UI with compressed image
 
         const response = await updateAvatar(
           userData.token,
           userData.data.email,
-          {
-            uri: compressedImage.uri,
-            name: "compressed.jpg",
-            type: "image/jpeg",
-          }
+          result.assets[0]
         );
 
         updateUserData({
           ...userData,
-          avatar: compressedImage,
+          avatar: result.assets[0],
         });
+
       }
     } catch (e) {
       console.log(e.message);
     }
   };
-
   return (
     <NativeBaseProvider>
       <Background />

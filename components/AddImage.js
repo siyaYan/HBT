@@ -40,7 +40,6 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
       console.log(e.message);
     }
   };
-
     const handleTakePicture = async () => {
       const result = await ImagePicker.launchCameraAsync({
         quality: 0.6, // Reduce image quality
@@ -49,16 +48,15 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
     
       try {
         if (!result.canceled) {
-          // Compress the image before upload
-          const compressedImage = await ImageManipulator.manipulateAsync(
-            result.assets[0].uri,
-            [{ resize: { width: 800 } }], // Reduce resolution
-            { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress quality
-          );
-    
-          setSelectedImage(compressedImage); // Update UI with compressed image
+          const res={
+            uri: result.assets[0].uri,
+            type: result.assets[0].type,
+            name: result.assets[0].fileName, 
+          }
+          console.log(res)
+          setSelectedImage(res);
           onClose()
-          navigation.navigate("ForumStack", {screen: "ForumDraft", params: {compressedImage }});
+          navigation.navigate("ForumStack", {screen: "ForumDraft", params: {res }});
         }
       } catch (e) {
         console.log(e.message);
