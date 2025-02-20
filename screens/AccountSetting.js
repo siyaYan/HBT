@@ -36,6 +36,7 @@ const AccountSettingScreen = ({ navigation }) => {
     nick: false,
     user: false,
     email: false,
+    token:false
   });
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -175,7 +176,41 @@ const AccountSettingScreen = ({ navigation }) => {
       });
     }
   };
-
+  const validateToken = (text) => {
+    // Mark that the token input has been changed
+    setInputChange({
+      ...inputChange,
+      token: true,
+    });
+  
+    // Update formData with the token value
+    setData({
+      ...formData,
+      token: text,
+    });
+  
+    // Regex to ensure exactly 6 digits (no letters)
+    const regex = /^\d{6}$/;
+    const isValid = regex.test(text);
+    console.log(isValid);
+  
+    // If text is provided, update the errors state for token
+    if (text) {
+      setErrors({
+        ...errors,
+        token: isValid,
+      });
+      return isValid;
+    } else {
+      // Optionally, if token is empty, you can explicitly set error to false
+      setErrors({
+        ...errors,
+        token: false,
+      });
+      return false;
+    }
+  };
+  
   const validateEmail = (text) => {
     setInputChange({
       ...inputChange,
@@ -317,6 +352,7 @@ const AccountSettingScreen = ({ navigation }) => {
             uri: response.data.user.profileImageUrl,
           },
         });
+        setInputChange(prev => ({ ...prev, nick: false }));
       } else {
         setData({
           ...formData,
@@ -345,6 +381,7 @@ const AccountSettingScreen = ({ navigation }) => {
             uri: response.data.user.profileImageUrl,
           },
         });
+        setInputChange(prev => ({ ...prev, user: false }));
       } else {
         setData({
           ...formData,
@@ -378,8 +415,9 @@ const AccountSettingScreen = ({ navigation }) => {
           uri: response.data.user.profileImageUrl,
         },
       });
-      console.log(userData);
+      // console.log(userData);
     }
+    setInputChange(prev => ({ ...prev, email: false }));
   }
 
   async function sendToken() {
@@ -399,11 +437,13 @@ const AccountSettingScreen = ({ navigation }) => {
           ...errors,
           email: "Please enter a valid email address.",
         });
+        setInputChange(prev => ({ ...prev, email: false }));
       } else {
         setData({
           ...formData,
           send: true,
         });
+        setInputChange(prev => ({ ...prev, email: false }));
       }
     }
   }
@@ -530,7 +570,7 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <Pressable onPress={saveNickName}>
                   <SvgXml
-                    xml={SaveButtonSVG(
+                    xml={saveSVG(
                       inputChange.nick && !errors.nickname && formData.nickname
                         ? "black"
                         : "grey"
@@ -579,7 +619,7 @@ const AccountSettingScreen = ({ navigation }) => {
                 />
                 <Pressable onPress={saveUsername}>
                   <SvgXml
-                    xml={SaveButtonSVG(
+                    xml={saveSVG(
                       formData.username &&
                         inputChange.user &&
                         !Object.values(showMessage.username).some(
@@ -627,12 +667,16 @@ const AccountSettingScreen = ({ navigation }) => {
                   onChangeText={validateEmail}
                 />
                 <Pressable onPress={sendToken}>
-                  <SvgXml
-                    xml={SaveButtonSVG(inputChange.email ? "black" : "grey")}
-                    width={40}
-                    height={40}
-                  />
-                </Pressable>
+  <SvgXml
+    xml={saveSVG(
+      formData.email && inputChange.email && errors.email
+        ? "black"
+        : "grey"
+    )}
+    width={40}
+    height={40}
+  />
+</Pressable>
               </Box>
               <Box ml={1}>
                 <FormControl.ErrorMessage>
@@ -662,16 +706,20 @@ const AccountSettingScreen = ({ navigation }) => {
                     w="93%"
                     placeholder="Enter the code"
                     value={formData.token}
-                    onChangeText={(value) => {
-                      setData({
-                        ...formData,
-                        token: value,
-                      });
-                    }}
+                    // onChangeText={(value) => {
+                    //   setData({
+                    //     ...formData,
+                    //     token: value,
+                    //   });
+                    // }}
+                    onChangeText={validateToken}
+
                   />
                   <Pressable onPress={saveEmail}>
                     <SvgXml
-                      xml={SaveButtonSVG(formData.token ? "black" : "grey")}
+                      xml={saveSVG(
+                        formData.token  && inputChange.token && errors.token
+                        ? "black" : "grey")}
                       width={40}
                       height={40}
                     />
@@ -855,16 +903,17 @@ const AccountSettingScreen = ({ navigation }) => {
   );
 };
 
-const SaveButtonSVG = () => `
+const saveSVG = (color) => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-    <path class="cls-1" d="M11.13,24.99c0-4.89,0-9.77,0-14.66,0-2.03.79-2.84,2.81-2.84,7.37,0,14.74,0,22.11,0,2.02,0,2.82.8,2.82,2.83,0,9.81,0,19.62.01,29.43,0,1.06-.25,1.94-1.21,2.48-.97.54-1.86.28-2.73-.32-2.72-1.84-5.48-3.63-8.19-5.5-1.2-.83-2.28-.83-3.48,0-2.68,1.85-5.41,3.61-8.1,5.44-.9.61-1.8.95-2.82.38-1.02-.56-1.23-1.5-1.22-2.59.02-4.89.01-9.77.01-14.66Z"/>
-  </svg>`;
-
-const SavedButtonSVG = () => `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-    <path class="cls-1" d="M11.13,24.99c0-4.89,0-9.77,0-14.66,0-2.03.79-2.84,2.81-2.84,7.37,0,14.74,0,22.11,0,2.02,0,2.82.8,2.82,2.83,0,9.81,0,19.62.01,29.43,0,1.06-.25,1.94-1.21,2.48-.97.54-1.86.28-2.73-.32-2.72-1.84-5.48-3.63-8.19-5.5-1.2-.83-2.28-.83-3.48,0-2.68,1.85-5.41,3.61-8.1,5.44-.9.61-1.8.95-2.82.38-1.02-.56-1.23-1.5-1.22-2.59.02-4.89.01-9.77.01-14.66Z"/>
-  </svg>`;
-
+    <path 
+      fill="none" 
+      stroke="${color}" 
+      stroke-miterlimit="10" 
+      stroke-width="4" 
+      d="M11.13,24.99c0-4.89,0-9.77,0-14.66,0-2.03.79-2.84,2.81-2.84,7.37,0,14.74,0,22.11,0,2.02,0,2.82.8,2.82,2.83,0,9.81,0,19.62.01,29.43,0,1.06-.25,1.94-1.21,2.48-.97.54-1.86.28-2.73-.32-2.72-1.84-5.48-3.63-8.19-5.5-1.2-.83-2.28-.83-3.48,0-2.68,1.85-5.41,3.61-8.1,5.44-.9.61-1.8.95-2.82.38-1.02-.56-1.23-1.5-1.22-2.59.02-4.89.01-9.77.01-14.66Z"
+    />
+  </svg>
+`;
 const ChangePasswordSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <path class="cls-1" d="M2.27,23.55c.12-.86.2-1.72.37-2.57,1.73-8.42,6.6-14.21,14.59-17.37.1-.04.2-.09.4-.17-.3-.19-.53-.33-.77-.48-.73-.47-.95-1.32-.54-2.01.42-.69,1.28-.91,2.02-.47,1.25.74,2.49,1.49,3.72,2.25.74.46.95,1.25.54,2.01-.7,1.27-1.41,2.53-2.13,3.79-.44.76-1.27,1-1.99.61-.72-.4-.94-1.26-.52-2.05.13-.24.26-.47.45-.8-.26.08-.42.12-.58.19-7.45,3.18-11.78,8.77-12.57,16.84-.88,8.99,4.5,17.27,12.98,20.35,1.07.39,2.2.61,3.3.89.75.19,1.22.68,1.26,1.39.04.63-.37,1.25-1.01,1.42-.27.07-.58.09-.85.03-9.61-2.12-15.67-7.94-18.13-17.48-.26-1.01-.32-2.06-.48-3.1-.02-.12-.05-.25-.08-.37,0-.97,0-1.93,0-2.9Z"/>
