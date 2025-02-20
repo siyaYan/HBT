@@ -9,8 +9,6 @@ import {
   NativeBaseProvider,
   Flex,
 } from "native-base";
-import { Avatar } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import Background from "../components/Background";
 
