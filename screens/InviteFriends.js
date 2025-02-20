@@ -255,7 +255,7 @@ const InviteScreen = ({ navigation }) => {
                             <Pressable onPress={handleCancel}>
                               <SvgXml xml={widthdrawSvg()} width={30} height={30} />
                               <Text fontFamily={"Regular"} fontSize="xs">
-                                Cancel
+                                Withdraw
                               </Text>
                             </Pressable>
                           ) : (
