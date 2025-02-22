@@ -291,11 +291,6 @@ const NotificationScreen = ({ navigation }) => {
               <HStack w={"100%"} justifyContent={"space-between"}>
                 {friendRequest?.length > 0 ? (
                   <Box>
-                    {/* <Image
-                      size={30}
-                      source={require("../assets/Buttonicons/Users.png")}
-                      alt="received"
-                    /> */}
                     <SvgXml
                       xml={myCircleSVG("#191919")}
                       width={35}
@@ -463,14 +458,6 @@ const NotificationScreen = ({ navigation }) => {
                                     height={30}
                                   />
                                 </Pressable>
-                                {/* <MaterialIcons
-                                  onPress={() =>
-                                    clearCurrent("received", index)
-                                  }
-                                  name="delete-outline"
-                                  size={30}
-                                  color="#191919"
-                                /> */}
                               </HStack>
                             </HStack>
                           </Box>
@@ -546,41 +533,83 @@ const NotificationScreen = ({ navigation }) => {
               >
                 <ScrollView w={"100%"}>
                   {notificates?.length > 0 ? (
-                    <Box my="2" w={"95%"} alignSelf={"center"}>
-                      {notificates?.map((item, index) => (
-                        <HStack
-                          w={"100%"}
-                          alignItems={"center"}
-                          justifyContent={"space-between"}
-                          mt={2}
-                          key={index}
-                        >
-                          {item.profileImageUrl ? (
-                            <Avatar
-                              bg="white"
-                              mb="1"
-                              size={"md"}
-                              source={{ uri: item.profileImageUrl }}
+                    <Box my="2" w="95%" alignSelf="center">
+                      {notificates?.map((item, index) =>
+                        item.user === "system" ? (
+                          // For system notifications: show only the message and close button
+                          <HStack
+                            key={index}
+                            w="100%"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            mt={2}
+                            px={2}
+                          >
+                            <Text flex={1} fontFamily="Regular" fontSize="md">
+                              {item.content}
+                            </Text>
+
+                            <Pressable
+                              onPress={() => clearCurrent("notificates", index)}
+                            >
+                              <SvgXml
+                                xml={declineSvg("#191919")}
+                                width={35}
+                                height={35}
+                              />
+                            </Pressable>
+                          </HStack>
+                        ) : (
+                          // For user notifications: show avatar, username, message, and close button
+                          <HStack
+                            key={index}
+                            w="100%"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            mt={2}
+                            px={2}
+                          >
+                            {item.profileImageUrl ? (
+                              <Avatar
+                                bg="white"
+                                mb="1"
+                                size="md"
+                                source={{ uri: item.profileImageUrl }}
+                              />
+                            ) : (
+                              <Avatar
+                                bg="white"
+                                mb="1"
+                                size="md"
+                                borderWidth={2}
+                              >
+                                <AntDesign
+                                  name="user"
+                                  size={20}
+                                  color="black"
+                                />
+                              </Avatar>
+                            )}
+                            <Text fontFamily="Regular" fontSize="md" ml={2}>
+                              {item.user}
+                            </Text>
+                            <Text
+                              flex={1}
+                              fontFamily="Regular"
+                              fontSize="md"
+                              mx={2}
+                            >
+                              {item.content}
+                            </Text>
+                            <AntDesign
+                              onPress={() => clearCurrent("notificates", index)}
+                              name="closesquareo"
+                              size={30}
+                              color="black"
                             />
-                          ) : (
-                            <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                              <AntDesign name="user" size={20} color="black" />
-                            </Avatar>
-                          )}
-                          <Text fontFamily={"Regular"} fontSize="md">
-                            {item.user}
-                          </Text>
-                          <Text fontFamily={"Regular"} fontSize="md">
-                            {item.content}
-                          </Text>
-                          <AntDesign
-                            onPress={() => clearCurrent("notificates", index)}
-                            name="closesquareo"
-                            size={30}
-                            color="black"
-                          />
-                        </HStack>
-                      ))}
+                          </HStack>
+                        )
+                      )}
                     </Box>
                   ) : (
                     <Text
@@ -617,32 +646,51 @@ const NotificationScreen = ({ navigation }) => {
                 <ScrollView w={"100%"} h="40%">
                   {history?.length > 0 ? (
                     <Box my="2" w={"95%"} alignSelf={"center"}>
-                      {history?.map((item, index) => (
-                        <HStack
-                          w={"100%"}
-                          alignItems={"center"}
-                          justifyContent={"space-between"}
-                          m={1}
-                          key={index}
-                        >
-                          {item.profileImageUrl ? (
-                            <Avatar
-                              bg="white"
-                              mb="1"
-                              size={"md"}
-                              source={{ uri: item.profileImageUrl }}
-                            />
-                          ) : (
-                            <FontAwesome name="check" size={40} color="black" />
-                          )}
-                          <Text fontFamily={"Regular"} fontSize="md">
-                            {item.user ? item.user : item.title}
-                          </Text>
-                          <Text fontFamily={"Regular"} fontSize="md">
-                            {item.content}
-                          </Text>
-                        </HStack>
-                      ))}
+                      {history?.map((item, index) =>
+                        item.user === "system" || item.title === "system" ? (
+                          <HStack
+                            w="100%"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            m={1}
+                            key={index}
+                            px={2}
+                          >
+                            <Text flex={1} fontFamily="Regular" fontSize="md">
+                              {item.content}
+                            </Text>
+                          </HStack>
+                        ) : (
+                          <HStack
+                            w={"100%"}
+                            alignItems={"center"}
+                            justifyContent={"space-between"}
+                            m={1}
+                            key={index}
+                          >
+                            {item.profileImageUrl ? (
+                              <Avatar
+                                bg="white"
+                                mb="1"
+                                size={"md"}
+                                source={{ uri: item.profileImageUrl }}
+                              />
+                            ) : (
+                              <FontAwesome
+                                name="check"
+                                size={40}
+                                color="black"
+                              />
+                            )}
+                            <Text fontFamily={"Regular"} fontSize="md">
+                              {item.user ? item.user : item.title}
+                            </Text>
+                            <Text fontFamily={"Regular"} fontSize="md">
+                              {item.content}
+                            </Text>
+                          </HStack>
+                        )
+                      )}
                     </Box>
                   ) : (
                     <Text

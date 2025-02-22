@@ -26,6 +26,7 @@ import {
   getRoundInvitation,
   reactRoundRequest,
   updateRoundStatus,
+  // createNotification,
 } from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -101,6 +102,7 @@ const HomeScreen = ({ navigation }) => {
   //   Silver: "rgb(192, 192, 192)", // Silver in RGB
   //   Bronze: "rgb(205, 127, 50)", // Bronze in RGB
   // };
+  
 
   const [show10PerRoundValidation, setShow10PerRoundValidation] =
     useState(false);
@@ -813,7 +815,7 @@ const HomeScreen = ({ navigation }) => {
                             </Modal.Body>
                           </Modal.Content>
                         </Modal>
-                
+
                         <TouchableOpacity
                           onPress={() =>
                             acceptRoundFriend(
@@ -824,12 +826,9 @@ const HomeScreen = ({ navigation }) => {
                         >
                           <SvgXml xml={ReadAllNoti} width={30} height={30} />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                         onPress={() => rejectRoundFriend(1)}
-                        >
+                        <TouchableOpacity onPress={() => rejectRoundFriend(1)}>
                           <SvgXml xml={Decline} width={30} height={30} />
                         </TouchableOpacity>
-                        
                       </HStack>
                     </HStack>
                   );

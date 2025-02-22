@@ -1369,3 +1369,40 @@ export async function getScoreBoard(token, roundId) {
     Alert.alert("Unsuccessful", "Cannot connect to server");  
   }  
 }
+
+// System Notification
+export async function createNotification(
+  token,
+  senderId,
+  receiverId,
+  content
+) {
+  const endpoint = `http://3.27.94.77:8000/habital/v1/notifications/create`; // Replace with your actual endpoint URL
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Include the authorization header if your endpoint requires it.
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        senderId,
+        receiverId,
+        content,
+      }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `Error creating notification: ${errorData.message || response.statusText}`
+      );
+    }
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error creating notification", error);
+    throw error;
+  }
+};
