@@ -26,6 +26,7 @@ import {
   likeMessage,
   cancelLike,
   deleteMessage,
+  createNotification
 } from "../components/Endpoint";
 import AddImage from "../components/AddImage";
 import { useIsFocused } from "@react-navigation/native";
@@ -35,7 +36,7 @@ const ForumPage = ({ route, navigation }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [reportModalVisible, setReportModalVisible] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
-
+  const [content, setContent] = useState("");
   const { userData } = useData();
   const { acceptRoundData, roundData } = useRound();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -109,6 +110,10 @@ const ForumPage = ({ route, navigation }) => {
   const deletePost = async (messageId) => {
     const res = await deleteMessage(id, messageId, userData.token);
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== messageId));
+  };
+  const reportPost = async (messageId, content) => {
+    const res = await createNotification(userData.token, userData.data._id, 'system', userData.data._id+' report '+messageId+':'+content);
+    console.log(res);
   };
   const generateItem = (data, user) => {
     const postItem = {
@@ -520,35 +525,48 @@ const ForumPage = ({ route, navigation }) => {
                   deletePost(selectedPostId);
                   setDeleteModalVisible(false);
                 }}
-              >
+                >
                 Delete
-              </Button>
-            </Button.Group>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-      <Modal
-        isOpen={reportModalVisible}
-        onClose={() => setReportModalVisible(false)}
-        animationPreset="fade"
-      >
-        <Modal.Content maxWidth="400px">
-          <Modal.CloseButton />
-          <Modal.Header>
-            <Text fontFamily="Regular Medium" fontSize="xl">
-              Report Post
-            </Text>
-          </Modal.Header>
-          <Modal.Body>
-            <Text>
-              The reason for reporting this post will be sent to the
-              administrator for review!
-            </Text>
-            <Input />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button.Group space={2}>
-              <Button
+                </Button>
+              </Button.Group>
+              </Modal.Footer>
+            </Modal.Content>
+            </Modal>
+            <Modal
+            isOpen={reportModalVisible}
+            onClose={() => setReportModalVisible(false)}
+            animationPreset="fade"
+            >
+            <Modal.Content maxWidth="400px">
+              <Modal.CloseButton />
+              <Modal.Header>
+              <Text fontFamily="Regular Medium" fontSize="xl">
+                Report Post
+              </Text>
+              </Modal.Header>
+              <Modal.Body>
+              {/* <Text>
+                Tell us what is wrong!
+              </Text> */}
+              <Input
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                placeholder="Tell us what is wrong..."
+                style={{
+                height: 100,
+                borderColor: "gray",
+                // borderWidth: 1,
+                // padding: 10,
+                // borderRadius: 0,
+                }}
+                value={content}
+                onChangeText={(text) => setContent(text)}
+              />
+              </Modal.Body>
+              <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
                 colorScheme="blueGray"
                 rounded={30}
                 width="48%"
@@ -557,16 +575,17 @@ const ForumPage = ({ route, navigation }) => {
                   color: "#f9f8f2",
                 }}
                 onPress={() => setReportModalVisible(false)}
-              >
+                >
                 Cancel
-              </Button>
-              <Button
+                </Button>
+                <Button
                 rounded={30}
                 width="48%"
                 size={"md"}
                 colorScheme="red"
                 onPress={() => {
                   setReportModalVisible(false);
+                  reportPost(selectedPostId, content);
                 }}
               >
                 Submit

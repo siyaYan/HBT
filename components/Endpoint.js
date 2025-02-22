@@ -1396,11 +1396,18 @@ export async function createNotification(
     });
     if (!response.ok) {
       const errorData = await response.json();
+      if(receiverId=='system'){
+        Alert.alert("Oh,No!", "your reporting is not successful!");
+      }
       throw new Error(
         `Error creating notification: ${errorData.message || response.statusText}`
       );
+
     }
     const result = await response.json();
+    if(receiverId=='system'){
+      Alert.alert("Success", "The report has been submitted!");
+    }
     return result;
   } catch (error) {
     console.error("Error creating notification", error);
