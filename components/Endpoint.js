@@ -818,14 +818,15 @@ export async function addPost(id,post,token) {
     }
     const data= await response.json();
 
-    // if (data.status == "success") {
-    //   Alert.alert("Success", "Post message successfully");
-    // } else {
-    //   Alert.alert(
-    //     "Unsuccessful",
-    //     data.message || "Post message was unsucessful."
-    //   );
-    // }
+    if (data.status == "success") {
+      Alert.alert("Success", "Post message successfully");
+    } else {
+      Alert.alert(
+        "Unsuccessful",
+        data.message || "Post message was unsucessful."
+      );
+    }
+    console.log('data:',data)
     return data
     
   } catch (error) {
