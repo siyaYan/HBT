@@ -121,7 +121,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const levelInt = round ? parseInt(round.level, 10) : 0;
   const startDate = round ? new Date(round.startDate) : new Date();
   const endDate = new Date(
-    startDate.getTime() + (levelInt-1) * 24 * 60 * 60 * 1000
+    startDate.getTime() + (levelInt - 1) * 24 * 60 * 60 * 1000
   ); // Convert days to milliseconds
   const today = new Date();
 
@@ -198,7 +198,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
                 mt="5"
                 width="100%"
                 size="lg"
-                rounded={30}
                 bg="#49a579"
                 _text={{
                   color: "#f9f8f2",
@@ -218,6 +217,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
                   onPress={inviteFriend}
                   mt="5"
                   width="100%"
+                  rounded={30}
                   size="lg"
                   rounded={30}
                   bg="#49a579"
