@@ -121,12 +121,14 @@ const NotificationScreen = ({ navigation }) => {
       userData.token,
       userData.data.email
     );
+    console.log("---email", userData.data.email);
     // Handle success or error response
     if (!response) {
       console.log("get NotificationHistory was unsucessful.");
     }
     if (response.status == "success") {
       let Historys = [];
+      console.log("----response", response);
       response.data.map((item, index) => {
         if (response.senders[index].profileImageUrl) {
           const historyContent = {
@@ -146,7 +148,7 @@ const NotificationScreen = ({ navigation }) => {
         }
       });
       setHistory(Historys);
-      // console.log("NotificationHistory:", Historys);
+      console.log("----NotificationHistory:", Historys);
     } else {
       console.error(
         "get NotificationHistory was unsucessful.:",
@@ -317,14 +319,7 @@ const NotificationScreen = ({ navigation }) => {
                 ) : (
                   <SvgXml xml={myCircleSVG("#191919")} width={35} height={35} />
                 )}
-                {/* 
-                <AntDesign
-                  name="checkcircleo"
-                  size={30}
-                  color="black"
-                  onPress={() => clearAll("friendrequests")}
-                /> */}
-                {/* <AntDesign name="delete" size={30} color="black" /> */}
+
                 <Pressable onPress={() => clearAll("friendrequests")}>
                   <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
                 </Pressable>
@@ -498,7 +493,7 @@ const NotificationScreen = ({ navigation }) => {
                       width={30}
                       height={30}
                     />
-                    <Badge // bg="red.400"
+                       <Badge // bg="red.400"
                       colorScheme="danger"
                       rounded="full"
                       mt={-8}
@@ -548,7 +543,6 @@ const NotificationScreen = ({ navigation }) => {
                             <Text flex={1} fontFamily="Regular" fontSize="md">
                               {item.content}
                             </Text>
-                            
 
                             <Pressable
                               onPress={() => clearCurrent("notificates", index)}
@@ -642,9 +636,8 @@ const NotificationScreen = ({ navigation }) => {
                   Last 30 days
                 </Text>
               </HStack>
-
               <Box w={"96%"} h={"40%"} alignSelf={"center"}>
-                <ScrollView w={"100%"} h="40%">
+                <ScrollView w={"100%"} h="40%">       
                   {history?.length > 0 ? (
                     <Box my="2" w={"95%"} alignSelf={"center"}>
                       {history?.map((item, index) =>
@@ -657,15 +650,15 @@ const NotificationScreen = ({ navigation }) => {
                             key={index}
                             px={2}
                           >
-                          <Text
-  fontFamily="Regular"
-  fontSize="md"
-  numberOfLines={1}
-  ellipsizeMode="tail"
-  style={{ flex: 1 }}
->
-  {item.content}
-</Text>
+                            <Text
+                              fontFamily="Regular"
+                              fontSize="md"
+                              numberOfLines={1}
+                              ellipsizeMode="tail"
+                              style={{ flex: 1 }}
+                            >
+                              {item.content}
+                            </Text>
                           </HStack>
                         ) : (
                           <HStack
