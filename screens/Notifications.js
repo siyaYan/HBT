@@ -10,6 +10,7 @@ import {
   Image,
   ScrollView,
   Badge,
+  Pressable,
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
@@ -120,12 +121,14 @@ const NotificationScreen = ({ navigation }) => {
       userData.token,
       userData.data.email
     );
+    console.log("---email", userData.data.email);
     // Handle success or error response
     if (!response) {
       console.log("get NotificationHistory was unsucessful.");
     }
     if (response.status == "success") {
       let Historys = [];
+      console.log("----response", response);
       response.data.map((item, index) => {
         if (response.senders[index].profileImageUrl) {
           const historyContent = {
@@ -145,7 +148,7 @@ const NotificationScreen = ({ navigation }) => {
         }
       });
       setHistory(Historys);
-      // console.log("NotificationHistory:", Historys);
+      console.log("----NotificationHistory:", Historys);
     } else {
       console.error(
         "get NotificationHistory was unsucessful.:",
@@ -290,11 +293,6 @@ const NotificationScreen = ({ navigation }) => {
               <HStack w={"100%"} justifyContent={"space-between"}>
                 {friendRequest?.length > 0 ? (
                   <Box>
-                    {/* <Image
-                      size={30}
-                      source={require("../assets/Buttonicons/Users.png")}
-                      alt="received"
-                    /> */}
                     <SvgXml
                       xml={myCircleSVG("#191919")}
                       width={35}
@@ -321,15 +319,10 @@ const NotificationScreen = ({ navigation }) => {
                 ) : (
                   <SvgXml xml={myCircleSVG("#191919")} width={35} height={35} />
                 )}
-                {/* 
-                <AntDesign
-                  name="checkcircleo"
-                  size={30}
-                  color="black"
-                  onPress={() => clearAll("friendrequests")}
-                /> */}
-                {/* <AntDesign name="delete" size={30} color="black" /> */}
-                <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
+
+                <Pressable onPress={() => clearAll("friendrequests")}>
+                  <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
+                </Pressable>
               </HStack>
               <Box
                 h="24%"
@@ -382,18 +375,20 @@ const NotificationScreen = ({ navigation }) => {
                                 {item.nickname}
                               </Text>
                               <HStack space="3">
-                                <AntDesign
-                                  onPress={() => acceptFriend(index)}
-                                  name="checksquareo"
-                                  size={30}
-                                  color="black"
-                                />
-                                <AntDesign
-                                  onPress={() => rejectFriend(index)}
-                                  name="closesquareo"
-                                  size={30}
-                                  color="black"
-                                />
+                                <Pressable onPress={() => acceptFriend(index)}>
+                                  <SvgXml
+                                    xml={acceptSvg()}
+                                    width={30}
+                                    height={30}
+                                  />
+                                </Pressable>
+                                <Pressable onPress={() => rejectFriend(index)}>
+                                  <SvgXml
+                                    xml={declineSvg()}
+                                    width={30}
+                                    height={30}
+                                  />
+                                </Pressable>
                               </HStack>
                             </HStack>
                           </Box>
@@ -447,14 +442,17 @@ const NotificationScreen = ({ navigation }) => {
                                 ) : (
                                   ""
                                 )}
-                                <MaterialIcons
+                                <Pressable
                                   onPress={() =>
                                     clearCurrent("received", index)
                                   }
-                                  name="delete-outline"
-                                  size={30}
-                                  color="#191919"
-                                />
+                                >
+                                  <SvgXml
+                                    xml={deleteSVG()}
+                                    width={30}
+                                    height={30}
+                                  />
+                                </Pressable>
                               </HStack>
                             </HStack>
                           </Box>
@@ -495,7 +493,7 @@ const NotificationScreen = ({ navigation }) => {
                       width={30}
                       height={30}
                     />
-                    <Badge // bg="red.400"
+                       <Badge // bg="red.400"
                       colorScheme="danger"
                       rounded="full"
                       mt={-8}
@@ -530,41 +528,83 @@ const NotificationScreen = ({ navigation }) => {
               >
                 <ScrollView w={"100%"}>
                   {notificates?.length > 0 ? (
-                    <Box my="2" w={"95%"} alignSelf={"center"}>
-                      {notificates?.map((item, index) => (
-                        <HStack
-                          w={"100%"}
-                          alignItems={"center"}
-                          justifyContent={"space-between"}
-                          mt={2}
-                          key={index}
-                        >
-                          {item.profileImageUrl ? (
-                            <Avatar
-                              bg="white"
-                              mb="1"
-                              size={"md"}
-                              source={{ uri: item.profileImageUrl }}
+                    <Box my="2" w="95%" alignSelf="center">
+                      {notificates?.map((item, index) =>
+                        item.user === "system" ? (
+                          // For system notifications: show only the message and close button
+                          <HStack
+                            key={index}
+                            w="100%"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            mt={2}
+                            px={2}
+                          >
+                            <Text flex={1} fontFamily="Regular" fontSize="md">
+                              {item.content}
+                            </Text>
+
+                            <Pressable
+                              onPress={() => clearCurrent("notificates", index)}
+                            >
+                              <SvgXml
+                                xml={declineSvg("#191919")}
+                                width={35}
+                                height={35}
+                              />
+                            </Pressable>
+                          </HStack>
+                        ) : (
+                          // For user notifications: show avatar, username, message, and close button
+                          <HStack
+                            key={index}
+                            w="100%"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            mt={2}
+                            px={2}
+                          >
+                            {item.profileImageUrl ? (
+                              <Avatar
+                                bg="white"
+                                mb="1"
+                                size="md"
+                                source={{ uri: item.profileImageUrl }}
+                              />
+                            ) : (
+                              <Avatar
+                                bg="white"
+                                mb="1"
+                                size="md"
+                                borderWidth={2}
+                              >
+                                <AntDesign
+                                  name="user"
+                                  size={20}
+                                  color="black"
+                                />
+                              </Avatar>
+                            )}
+                            <Text fontFamily="Regular" fontSize="md" ml={2}>
+                              {item.user}
+                            </Text>
+                            <Text
+                              flex={1}
+                              fontFamily="Regular"
+                              fontSize="md"
+                              mx={2}
+                            >
+                              {item.content}
+                            </Text>
+                            <AntDesign
+                              onPress={() => clearCurrent("notificates", index)}
+                              name="closesquareo"
+                              size={30}
+                              color="black"
                             />
-                          ) : (
-                            <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                              <AntDesign name="user" size={20} color="black" />
-                            </Avatar>
-                          )}
-                          <Text fontFamily={"Regular"} fontSize="md">
-                            {item.user}
-                          </Text>
-                          <Text fontFamily={"Regular"} fontSize="md">
-                            {item.content}
-                          </Text>
-                          <AntDesign
-                            onPress={() => clearCurrent("notificates", index)}
-                            name="closesquareo"
-                            size={30}
-                            color="black"
-                          />
-                        </HStack>
-                      ))}
+                          </HStack>
+                        )
+                      )}
                     </Box>
                   ) : (
                     <Text
@@ -596,37 +636,61 @@ const NotificationScreen = ({ navigation }) => {
                   Last 30 days
                 </Text>
               </HStack>
-
               <Box w={"96%"} h={"40%"} alignSelf={"center"}>
-                <ScrollView w={"100%"} h="40%">
+                <ScrollView w={"100%"} h="40%">       
                   {history?.length > 0 ? (
                     <Box my="2" w={"95%"} alignSelf={"center"}>
-                      {history?.map((item, index) => (
-                        <HStack
-                          w={"100%"}
-                          alignItems={"center"}
-                          justifyContent={"space-between"}
-                          m={1}
-                          key={index}
-                        >
-                          {item.profileImageUrl ? (
-                            <Avatar
-                              bg="white"
-                              mb="1"
-                              size={"md"}
-                              source={{ uri: item.profileImageUrl }}
-                            />
-                          ) : (
-                            <FontAwesome name="check" size={40} color="black" />
-                          )}
-                          <Text fontFamily={"Regular"} fontSize="md">
-                            {item.user ? item.user : item.title}
-                          </Text>
-                          <Text fontFamily={"Regular"} fontSize="md">
-                            {item.content}
-                          </Text>
-                        </HStack>
-                      ))}
+                      {history?.map((item, index) =>
+                        item.user === "system" || item.title === "system" ? (
+                          <HStack
+                            w="100%"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            m={1}
+                            key={index}
+                            px={2}
+                          >
+                            <Text
+                              fontFamily="Regular"
+                              fontSize="md"
+                              numberOfLines={1}
+                              ellipsizeMode="tail"
+                              style={{ flex: 1 }}
+                            >
+                              {item.content}
+                            </Text>
+                          </HStack>
+                        ) : (
+                          <HStack
+                            w={"100%"}
+                            alignItems={"center"}
+                            justifyContent={"space-between"}
+                            m={1}
+                            key={index}
+                          >
+                            {item.profileImageUrl ? (
+                              <Avatar
+                                bg="white"
+                                mb="1"
+                                size={"md"}
+                                source={{ uri: item.profileImageUrl }}
+                              />
+                            ) : (
+                              <FontAwesome
+                                name="check"
+                                size={40}
+                                color="black"
+                              />
+                            )}
+                            <Text fontFamily={"Regular"} fontSize="md">
+                              {item.user ? item.user : item.title}
+                            </Text>
+                            <Text fontFamily={"Regular"} fontSize="md">
+                              {item.content}
+                            </Text>
+                          </HStack>
+                        )
+                      )}
                     </Box>
                   ) : (
                     <Text

@@ -26,9 +26,9 @@ import {
   getRoundInvitation,
   reactRoundRequest,
   updateRoundStatus,
+  // createNotification,
 } from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
-import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Add this at the top of your file
 import ScoreBoardModal from "../components/ScoreBoard";
 import { SvgXml } from "react-native-svg"; // Import SvgXml to use custom SVGs
@@ -70,15 +70,13 @@ const HomeScreen = ({ navigation }) => {
   const [scoreBoardOpen, setScoreBoardOpen] = useState(false);
   const [showRoundDetails, setShowRoundDetails] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [pendingReceived, setPendingReceived] = useState([]);
+
   const [showRoundValidation, setShowRoundValidation] = useState(false);
   const [showRoundValidationDate, setShowRoundValidationDate] = useState(false);
   const [showRoundCompleteValidation, setShowRoundCompleteValidation] =
     useState(false);
-  // const [rest, setRest] = useState([]);
-  // const [topThree, setTopThree] = useState([]);
-  const [roundInvitationData, setRoundInvitationData] = useState(null);
-  const [hasRoundInvitation, setHasRoundInvitation] = useState(false);
+
+  const [pendingReceived, setPendingReceived] = useState([]);
 
   const [processedRounds, setProcessedRounds] = useState(null);
 
@@ -91,8 +89,6 @@ const HomeScreen = ({ navigation }) => {
   const { userData, updateNotes } = useData();
   const { acceptRoundData, roundData, updateRounds } = useRound();
 
-  // console.log("active round---", acceptRoundData);
-  // Get screen dimensions
   const { width, height } = Dimensions.get("window");
   const [showFinalScore, setShowFinalScore] = useState(null);
 
@@ -101,16 +97,17 @@ const HomeScreen = ({ navigation }) => {
   //   Silver: "rgb(192, 192, 192)", // Silver in RGB
   //   Bronze: "rgb(205, 127, 50)", // Bronze in RGB
   // };
+  
 
   const [show10PerRoundValidation, setShow10PerRoundValidation] =
     useState(false);
 
-  const updateNote = async () => {
-    const res = await getNoteUpdate(userData.token, userData.data.email);
-    // if (res > 0) {
-    updateNotes(res);
-    // }
-  };
+  // const updateNote = async () => {
+  //   const res = await getNoteUpdate(userData.token, userData.data.email);
+  //   // if (res > 0) {
+  //   updateNotes(res);
+  //   // }
+  // };
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
@@ -162,7 +159,8 @@ const HomeScreen = ({ navigation }) => {
 
   const getRoundInvitationData = async () => {
     const res = await getRoundInvitation(userData.token);
-    setRoundInvitationData(res);
+    const pending = res?.data.filter((invitation) => invitation.status === "P");
+    setPendingReceived(pending);
   };
 
   const getRoundData = async () => {
@@ -235,17 +233,28 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const handlePress = () => {
-    console.log("UserData", userData);
+  const handlePress = async () => {
+    let filteredRound = [];
+    let filteredUsers = [];
+    const filtering = await Promise.all(
+      pendingReceived.map(async (invitation) => {
+        const round = await fetchRoundInfo(invitation.roundId);
+        filteredRound.push(round);
+        filteredUsers.push(
+          round.data[0].roundFriends?.find(
+            (user) => user.id === invitation.senderId
+          )
+        );
+      })
+    );
+    // console.log("filteredUsers", filteredUsers);
+    setFilteredUsers({ filtered: filteredUsers, filteredRound });
     setIsOpened(true);
-    // console.log("isOpened", isOpened);
-    loadAllReceivedNotification();
   };
 
   const handleClose = () => {
     setIsOpened(false);
     setScoreBoardOpen(false);
-    // console.log("isOpened", isOpened);
   };
 
   const handleRoundValidationClose = () => {
@@ -259,68 +268,50 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundDetails(!showRoundDetails);
   };
 
-  const findPendingReceived = () => {
-    // console.log("----roundInvitationData", roundInvitationData);
-    if (roundInvitationData && roundInvitationData.status === "success") {
-      const pending = roundInvitationData.data.filter(
-        (invitation) => invitation.status === "P"
-      );
-      setPendingReceived(pending);
-    }
-  };
+  // const findPendingReceived = () => {
+  //   // console.log("----roundInvitationData", roundInvitationData);
+  //   if (roundInvitationData && roundInvitationData.status === "success") {
+  //     const pending = roundInvitationData.data.filter(
+  //       (invitation) => invitation.status === "P"
+  //     );
+  //     setPendingReceived(pending);
+  //   }
+  // };
 
-  const loadAllReceivedNotification = () => {
-    // console.log("----roundInvitationData---notification", roundInvitationData);
-    findPendingReceived();
-  };
+  // const loadAllReceivedNotification = () => {
+  //   // console.log("----roundInvitationData---notification", roundInvitationData);
+  //   findPendingReceived();
+  // };
 
   useEffect(() => {
-    // Define the async function inside the useEffect
-    const fetchData = async () => {
-      // console.log("Fetching data-----", pendingReceived);
-      // Ensure pendingReceived is valid and has data
-      if (pendingReceived && pendingReceived.length > 0) {
-        setHasRoundInvitation(true);
-        const pendingSenderIds = pendingReceived.map(
-          (invitation) => invitation.senderId
-        );
+    // const filteredRound = pendingReceived.map(
+    //   (invitation) => {return await fetchRoundInfo(invitation.roundId)}
+    // );
+    // const filtered = filteredRound.map(item=>{
+    //   return roundInfo.users.find(
+    //     (user) => user._id === item.senderId
+    //   )}
+    // );
 
-        let filteredRound = [];
-
-        // Fetch invitation info and filter users
-        const filtered = await Promise.all(
-          pendingSenderIds.map(async (senderId, index) => {
-            // Fetch invitation info and add to filteredRound
-            const roundInfo = await fetchRoundInfo(index);
-            filteredRound.push(roundInfo);
-
-            // Find the user matching the senderId
-            return roundInvitationData.users.find(
-              (user) => user._id === senderId
-            );
-          })
-        );
-
-        // Once all promises are resolved, update the state
-        setFilteredUsers({ filtered, filteredRound });
-        // filteredUsers.filtered
-      }
-      setHasRoundInvitation(false);
-    };
-
-    // Call the async function immediately
-    fetchData();
-
+    // setFilteredUsers({ filtered, pendingReceived });
+    // console.log('update the envelope',filteredUsers)
+    if (pendingReceived.length > 0) {
+      console.log("update the envelope open");
+    } else {
+      setIsOpened(false);
+      console.log("update the envelope close");
+    }
     // Optional clean-up function can be returned here if needed
   }, [pendingReceived]); // The effect runs when pendingReceived changes
 
-  const fetchRoundInfo = async (i) => {
-    const thisRoundId = roundInvitationData.data[i].roundId;
+  const fetchRoundInfo = async (roundId) => {
+    const thisRoundId = roundId;
 
     const aRoundInfo = await getRoundInfo(userData.token, thisRoundId);
     // setThisRoundInfo(aRoundInfo);
     return aRoundInfo;
   };
+
   const openRoundInvitationInfo = () => {
     setShowRoundDetails(!showRoundDetails);
   };
@@ -408,7 +399,7 @@ const HomeScreen = ({ navigation }) => {
         );
         updateRounds(RoundInfoList);
       }
-      getRoundInvitationData();
+      // getRoundInvitationData();
     }
   };
 
@@ -431,7 +422,7 @@ const HomeScreen = ({ navigation }) => {
     ]);
     const id = pendingReceived[i - 1]._id;
     reactRequest(id, "R");
-    getRoundInvitationData();
+    // getRoundInvitationData();
   };
 
   const reactRequest = async (id, react) => {
@@ -664,21 +655,30 @@ const HomeScreen = ({ navigation }) => {
           {
             position: "absolute",
             top: height - 420,
-            left: width - 350,
-            right: "auto",
+            left: width / 2 - 175,
           },
         ]}
       >
         {/* <Icon name="envelope" size={300} color="#606060" /> */}
-        <SvgXml
-          xml={
-            hasRoundInvitation
-              ? RoundInvitationNewMessage
-              : RoundInvitationBefore
-          }
-          width={300}
-          height={300}
-        />
+        {isOpened ? (
+          <SvgXml
+            xml={RoundInvitationNewMessage}
+            opacity="0.5"
+            width={350}
+            height={350}
+          />
+        ) : (
+          <SvgXml
+            xml={
+              pendingReceived.length > 0
+                ? RoundInvitationBefore
+                : RoundInvitationAfter
+            }
+            opacity={pendingReceived.length > 0 ? 1 : 0.8}
+            width={350}
+            height={350}
+          />
+        )}
       </TouchableOpacity>
 
       {/* Modal 1: round invitation notification */}
@@ -699,12 +699,12 @@ const HomeScreen = ({ navigation }) => {
                       m={1}
                       key={index}
                     >
-                      {item.profileImageUrl ? (
+                      {item.avatar ? (
                         <Avatar
                           bg="white"
                           mb="1"
                           size={"md"}
-                          source={{ uri: item.profileImageUrl }}
+                          source={{ uri: item.avatar }}
                         />
                       ) : (
                         <FontAwesome name="check" size={24} color="black" />
@@ -813,7 +813,7 @@ const HomeScreen = ({ navigation }) => {
                             </Modal.Body>
                           </Modal.Content>
                         </Modal>
-                
+
                         <TouchableOpacity
                           onPress={() =>
                             acceptRoundFriend(
@@ -824,12 +824,9 @@ const HomeScreen = ({ navigation }) => {
                         >
                           <SvgXml xml={ReadAllNoti} width={30} height={30} />
                         </TouchableOpacity>
-                        <TouchableOpacity
-                         onPress={() => rejectRoundFriend(1)}
-                        >
+                        <TouchableOpacity onPress={() => rejectRoundFriend(1)}>
                           <SvgXml xml={Decline} width={30} height={30} />
                         </TouchableOpacity>
-                        
                       </HStack>
                     </HStack>
                   );
@@ -1009,6 +1006,28 @@ const RoundInvitationBefore = `
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
 
+<path fill="#93D8C5"  d="M15.01,35.39c4.84,4.13,9.47,8.07,14.09,12.02c6.07,5.18,12.14,10.36,18.21,15.53c1.95,1.66,3.5,1.62,5.53-0.12
+	c10.38-8.88,20.76-17.76,31.14-26.64c0.27-0.23,0.55-0.45,0.95-0.77c0.03,0.44,0.06,0.74,0.06,1.05c0,11.59,0,23.17,0,34.76
+	c0,2.6-1.38,3.98-3.98,3.98c-20.66,0-41.32,0-61.97,0c-2.66,0-4.02-1.37-4.02-4.05c0-11.51,0-23.03,0-34.54
+	C15.01,36.29,15.01,35.97,15.01,35.39z"/>
+
+<path fill="#93D8C5"   d="M81.59,33.64c-10.28,8.8-20.57,17.61-30.94,26.48c-0.37,0.32-0.92,0.32-1.29,0L18.35,33.57
+	c-0.44-0.37-0.57-0.97-0.34-1.45c0.22-0.45,0.81-0.6,1.04-0.65c1.91-0.44,21.73-0.08,25.17-0.02c12.21,0,24.41,0.01,36.62,0.01
+	c0.46,0.01,0.88,0.25,1.09,0.64C82.17,32.6,82.04,33.24,81.59,33.64z"/>
+
+<path fill="#FF061E" d="M53.59,57.18c-1.75-1.27-4.3-1.65-5.34-0.88c-0.1,0.07-0.34,0.27-0.7,0.45c-0.16-0.8-1.34-5.75-6.66-7.06
+	c0.19-0.41,0.48-0.76,0.93-0.97c0.22-0.1,0.31-0.35,0.21-0.57c-0.1-0.22-0.36-0.31-0.57-0.21c-2.31,1.05-1.68,4.43-1.65,4.57
+	c0.04,0.21,0.22,0.35,0.42,0.35c0.03,0,0.06,0,0.08-0.01c0.23-0.05,0.39-0.27,0.34-0.51c0-0.02-0.17-0.91-0.02-1.82
+	c5.23,1.26,6.04,6.25,6.07,6.47c0,0.02,0.01,0.04,0.01,0.06c-0.46,0.11-0.82,0.09-0.95,0.1c-1.34,0.07-3.94,3.46-3.14,6.83
+	c0.72,3.02,3.88,4.81,6.71,4.73c3.52-0.1,6.66-3.08,6.76-6.42C56.18,60.36,55.24,58.37,53.59,57.18z"/>
+</svg>
+`;
+
+const RoundInvitationAfter = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+
 <path fill="#93D8C5" d="M15.01,35.39c4.84,4.13,9.47,8.07,14.09,12.02c6.07,5.18,12.14,10.36,18.21,15.53c1.95,1.66,3.5,1.62,5.53-0.12
 	c10.38-8.88,20.76-17.76,31.14-26.64c0.27-0.23,0.55-0.45,0.95-0.77c0.03,0.44,0.06,0.74,0.06,1.05c0,11.59,0,23.17,0,34.76
 	c0,2.6-1.38,3.98-3.98,3.98c-20.66,0-41.32,0-61.97,0c-2.66,0-4.02-1.37-4.02-4.05c0-11.51,0-23.03,0-34.54
@@ -1018,7 +1037,7 @@ const RoundInvitationBefore = `
 	c-0.44-0.37-0.57-0.97-0.34-1.45c0.22-0.45,0.81-0.6,1.04-0.65c1.91-0.44,21.73-0.08,25.17-0.02c12.21,0,24.41,0.01,36.62,0.01
 	c0.46,0.01,0.88,0.25,1.09,0.64C82.17,32.6,82.04,33.24,81.59,33.64z"/>
 
-<path fill="#FF061E" d="M53.59,57.18c-1.75-1.27-4.3-1.65-5.34-0.88c-0.1,0.07-0.34,0.27-0.7,0.45c-0.16-0.8-1.34-5.75-6.66-7.06
+<path fill="gray" d="M53.59,57.18c-1.75-1.27-4.3-1.65-5.34-0.88c-0.1,0.07-0.34,0.27-0.7,0.45c-0.16-0.8-1.34-5.75-6.66-7.06
 	c0.19-0.41,0.48-0.76,0.93-0.97c0.22-0.1,0.31-0.35,0.21-0.57c-0.1-0.22-0.36-0.31-0.57-0.21c-2.31,1.05-1.68,4.43-1.65,4.57
 	c0.04,0.21,0.22,0.35,0.42,0.35c0.03,0,0.06,0,0.08-0.01c0.23-0.05,0.39-0.27,0.34-0.51c0-0.02-0.17-0.91-0.02-1.82
 	c5.23,1.26,6.04,6.25,6.07,6.47c0,0.02,0.01,0.04,0.01,0.06c-0.46,0.11-0.82,0.09-0.95,0.1c-1.34,0.07-3.94,3.46-3.14,6.83

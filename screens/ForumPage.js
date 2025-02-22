@@ -3,20 +3,17 @@ import {
   Box,
   Text,
   View,
-  AspectRatio,
   Image,
   Avatar,
   Badge,
   Modal,
   HStack,
-  Icon,
   useDisclose,
   Button,
+  Input
 } from "native-base";
 import DraggableFAB from "../components/DraggableFAB";
 import { SvgXml } from "react-native-svg"; // Import SvgXml to use custom SVGs
-
-import { AntDesign } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import React, { useRef } from "react";
 import { useData } from "../context/DataContext";
@@ -29,6 +26,7 @@ import {
   likeMessage,
   cancelLike,
   deleteMessage,
+  createNotification
 } from "../components/Endpoint";
 import AddImage from "../components/AddImage";
 import { useIsFocused } from "@react-navigation/native";
@@ -36,8 +34,9 @@ import ScoreBoardModal from "../components/ScoreBoard";
 
 const ForumPage = ({ route, navigation }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [reportModalVisible, setReportModalVisible] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
-
+  const [content, setContent] = useState("");
   const { userData } = useData();
   const { acceptRoundData, roundData } = useRound();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -111,6 +110,10 @@ const ForumPage = ({ route, navigation }) => {
   const deletePost = async (messageId) => {
     const res = await deleteMessage(id, messageId, userData.token);
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== messageId));
+  };
+  const reportPost = async (messageId, content) => {
+    const res = await createNotification(userData.token, userData.data._id, 'system', userData.data._id+' report '+messageId+':'+content);
+    console.log(res);
   };
   const generateItem = (data, user) => {
     const postItem = {
@@ -194,7 +197,12 @@ const ForumPage = ({ route, navigation }) => {
               />
             </View>
           )}
-          <ScrollView ref={scrollViewRef} w={"100%"} h={"100%"} paddingVertical={10}>
+          <ScrollView
+            ref={scrollViewRef}
+            w={"100%"}
+            h={"100%"}
+            paddingVertical={10}
+          >
             {post.length > 0 ? (
               post.map((item, index) => (
                 <View
@@ -221,21 +229,21 @@ const ForumPage = ({ route, navigation }) => {
                       </Badge>
 
                       {/* Delete Badge at Top Right (only for matching user) */}
-                      {item.userId === userData.data._id && (
-                        <Badge
-                          style={{
-                            position: "absolute",
-                            top: -15,
-                            right: -20,
-                            zIndex: 10,
-                            backgroundColor: "transparent",
-                            borderWidth: 2,
-                            // borderColor: "#191919", // light grey border
-                            padding: 5,
-                          }}
-                          rounded="full"
-                          _text={{ fontSize: 10 }}
-                        >
+                      <Badge
+                        style={{
+                          position: "absolute",
+                          top: -15,
+                          right: -20,
+                          zIndex: 10,
+                          backgroundColor: "transparent",
+                          borderWidth: 2,
+                          // borderColor: "#191919", // light grey border
+                          padding: 5,
+                        }}
+                        rounded="full"
+                        _text={{ fontSize: 10 }}
+                      >
+                        {item.userId === userData.data._id ? (
                           <Pressable
                             accessibilityLabel="Delete button"
                             onPress={() => {
@@ -258,8 +266,31 @@ const ForumPage = ({ route, navigation }) => {
                           >
                             <SvgXml xml={DeleteIndi} width={20} height={20} />
                           </Pressable>
-                        </Badge>
-                      )}
+                        ) : (
+                          <Pressable
+                            accessibilityLabel="Report button"
+                            onPress={() => {
+                              roundActive && setReportModalVisible(true);
+                              roundActive && setSelectedPostId(item.id);
+                            }}
+                            style={{
+                              // backgroundColor: "transparent",
+                              backgroundColor: "#f9f8f2", // light background, similar to the like button
+                              borderRadius: 999, // makes it fully circular
+                              borderWidth: 1,
+                              borderColor: "#D3D3D3", // light grey border (hex for lightgrey)
+                              padding: 8, // adjust size as needed
+                              shadowColor: "#000",
+                              shadowOpacity: 0.1,
+                              shadowRadius: 4,
+                              shadowOffset: { width: 0, height: 2 },
+                              elevation: 3, // for Android shadow
+                            }}
+                          >
+                            <SvgXml xml={report} width={20} height={20} />
+                          </Pressable>
+                        )}
+                      </Badge>
 
                       <View
                         style={{ position: "relative", overflow: "visible" }}
@@ -380,8 +411,8 @@ const ForumPage = ({ route, navigation }) => {
                             position: "absolute",
                             // Like button position
                             // bottom: 100, // (example value – tune this to match the image’s bottom offset)
-                            top: '66%',
-                            right: '-4%',
+                            top: "66%",
+                            right: "-4%",
                             zIndex: 1000,
                             elevation: 10,
                           }}
@@ -452,7 +483,6 @@ const ForumPage = ({ route, navigation }) => {
             </Modal.Body>
           </Modal.Content>
         </Modal>
-
       </Box>
       <Modal
         isOpen={deleteModalVisible}
@@ -495,8 +525,70 @@ const ForumPage = ({ route, navigation }) => {
                   deletePost(selectedPostId);
                   setDeleteModalVisible(false);
                 }}
-              >
+                >
                 Delete
+                </Button>
+              </Button.Group>
+              </Modal.Footer>
+            </Modal.Content>
+            </Modal>
+            <Modal
+            isOpen={reportModalVisible}
+            onClose={() => setReportModalVisible(false)}
+            animationPreset="fade"
+            >
+            <Modal.Content maxWidth="400px">
+              <Modal.CloseButton />
+              <Modal.Header>
+              <Text fontFamily="Regular Medium" fontSize="xl">
+                Report Post
+              </Text>
+              </Modal.Header>
+              <Modal.Body>
+              {/* <Text>
+                Tell us what is wrong!
+              </Text> */}
+              <Input
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                placeholder="Tell us what is wrong..."
+                style={{
+                height: 100,
+                borderColor: "gray",
+                // borderWidth: 1,
+                // padding: 10,
+                // borderRadius: 0,
+                }}
+                value={content}
+                onChangeText={(text) => setContent(text)}
+              />
+              </Modal.Body>
+              <Modal.Footer>
+              <Button.Group space={2}>
+                <Button
+                colorScheme="blueGray"
+                rounded={30}
+                width="48%"
+                size={"md"}
+                _text={{
+                  color: "#f9f8f2",
+                }}
+                onPress={() => setReportModalVisible(false)}
+                >
+                Cancel
+                </Button>
+                <Button
+                rounded={30}
+                width="48%"
+                size={"md"}
+                colorScheme="red"
+                onPress={() => {
+                  setReportModalVisible(false);
+                  reportPost(selectedPostId, content);
+                }}
+              >
+                Submit
               </Button>
             </Button.Group>
           </Modal.Footer>
@@ -514,7 +606,20 @@ const styles = StyleSheet.create({
 });
 
 export default ForumPage;
-
+const report = `<svg 
+    width="100" 
+    height="100" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+>
+    <!-- Warning Triangle -->
+    <polygon points="12,2 22,20 2,20" stroke="black" stroke-width="2"/>
+    
+    <!-- Exclamation Mark -->
+    <line x1="12" y1="8" x2="12" y2="14" stroke="black" stroke-width="2"/>
+    <circle cx="12" cy="17" r="1.5" fill="black"/>
+</svg>`;
 const DeleteIndi = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M37.01,15.62c0,3.38,0,6.62,0,9.86,0,4.89,0,9.78,0,14.67,0,2.66-.94,3.61-3.53,3.62-5.77.01-11.54.02-17.31,0-2.14,0-3.26-1.03-3.26-3.06-.03-8.08-.01-16.15,0-24.23,0-.26.06-.52.1-.85h24ZM17.18,29.81c0,2.25,0,4.49,0,6.74,0,1.17.31,2.17,1.67,2.14,1.26-.03,1.57-1,1.57-2.09,0-4.6,0-9.21,0-13.81,0-1.16-.29-2.16-1.68-2.13-1.28.03-1.56.98-1.56,2.08,0,2.36,0,4.71,0,7.07ZM23.38,29.64c0,2.36,0,4.73,0,7.09,0,1.07.36,1.91,1.52,1.96,1.28.05,1.66-.85,1.65-1.98,0-4.67,0-9.35,0-14.02,0-1.11-.3-2.05-1.6-2.03-1.29.01-1.58.95-1.57,2.06.01,2.31,0,4.62,0,6.93ZM32.73,29.65c0-2.35,0-4.71,0-7.06,0-1.06-.34-1.9-1.52-1.94-1.29-.04-1.65.85-1.65,1.97,0,4.71,0,9.42,0,14.13,0,1.05.33,1.92,1.51,1.94,1.26.03,1.66-.83,1.65-1.97-.01-2.35,0-4.71,0-7.06Z"/><path class="cls-1" d="M29.24,9.65c1.26,0,2.56,0,3.87,0q2.62,0,3.15,2.41,2.55.43,2.51,1.96H11.36q-.29-1.51,2.35-1.97c.42-2.35.47-2.4,2.97-2.4,1.31,0,2.62,0,3.49,0,3.02,0,6.05,0,9.07,0ZM26.12,6.91"/><path class="cls-1" d="M24.62,6.22c-1.89,0-3.42,1.53-3.42,3.42h1.56c0-1.03.83-1.86,1.86-1.86s1.86.83,1.86,1.86h1.56c0-1.89-1.53-3.42-3.42-3.42Z"/></svg>`;
 const Support = `<?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 28.3.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
@@ -542,5 +647,3 @@ const Support = `<?xml version="1.0" encoding="utf-8"?>
 </svg>`;
 
 const UploadPost = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M46.62,31.09c0-5.63-3.58-10.43-8.57-12.28-.52-6.75-6.17-12.08-13.05-12.08s-12.53,5.33-13.05,12.08c-5,1.85-8.57,6.65-8.57,12.28,0,.01,0,.03,0,.04h0v.85c0,1.56,1.27,2.83,2.83,2.83h10.47c1.02,0,1.84-.82,1.84-1.84s-.82-1.84-1.84-1.84H7.06s0-.03,0-.04c0-3.66,2.11-6.84,5.17-8.39,1.08-.55,2.28-.89,3.54-.99-.12-.61-.19-1.23-.19-1.88s.06-1.22.18-1.8c.84-4.33,4.67-7.62,9.24-7.62s8.4,3.28,9.24,7.62c.11.58.18,1.19.18,1.8s-.07,1.27-.19,1.88c1.27.09,2.46.44,3.54.99,3.06,1.56,5.17,4.73,5.17,8.39,0,.01,0,.03,0,.04h-9.62c-1.02,0-1.84.82-1.84,1.84s.82,1.84,1.84,1.84h10.47c1.56,0,2.83-1.27,2.83-2.83v-.85h0s0-.03,0-.04Z"/><path class="cls-1" d="M32.64,27.81c.79-.64.9-1.8.26-2.59l-6.76-8.24c-.36-.44-.9-.69-1.46-.67-.56.01-1.09.28-1.43.73l-6.2,8.24c-.61.81-.45,1.97.36,2.58.33.25.72.37,1.1.37.56,0,1.11-.25,1.47-.73l3.17-4.21v17.2c0,1.02.82,1.84,1.84,1.84s1.84-.82,1.84-1.84v-16.84l3.21,3.92c.64.79,1.8.9,2.59.26Z"/></svg>`;
-
-

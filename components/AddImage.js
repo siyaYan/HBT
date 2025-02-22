@@ -51,7 +51,7 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
           const res={
             uri: result.assets[0].uri,
             type: result.assets[0].type,
-            name: result.assets[0].fileName, 
+            name: 'test.jpg', 
           }
           console.log(res)
           setSelectedImage(res);

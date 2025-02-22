@@ -196,6 +196,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
                   goScoreBoard();
                 }}
                 mt="5"
+                rounded={30}
                 width="100%"
                 size="lg"
                 bg="#49a579"
