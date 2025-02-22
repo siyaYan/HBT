@@ -548,6 +548,7 @@ const NotificationScreen = ({ navigation }) => {
                             <Text flex={1} fontFamily="Regular" fontSize="md">
                               {item.content}
                             </Text>
+                            
 
                             <Pressable
                               onPress={() => clearCurrent("notificates", index)}
@@ -656,9 +657,15 @@ const NotificationScreen = ({ navigation }) => {
                             key={index}
                             px={2}
                           >
-                            <Text flex={1} fontFamily="Regular" fontSize="md">
-                              {item.content}
-                            </Text>
+                          <Text
+  fontFamily="Regular"
+  fontSize="md"
+  numberOfLines={1}
+  ellipsizeMode="tail"
+  style={{ flex: 1 }}
+>
+  {item.content}
+</Text>
                           </HStack>
                         ) : (
                           <HStack
