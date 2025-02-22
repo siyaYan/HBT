@@ -30,9 +30,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { SvgXml } from "react-native-svg";
-import {
-  TouchableOpacity,
-} from "react-native";
+import { TouchableOpacity } from "react-native";
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();
@@ -415,18 +413,13 @@ const FriendsScreen = ({ navigation }) => {
                       {sent[0].nickname}
                     </Text>
                     <VStack justifyContent={"center"} alignItems={"center"}>
-  <Pressable onPress={() => deleteCurrent("sent", 1)}>
-    <SvgXml
-      xml={widthdrawSvg()}
-      width={30}
-      height={30}
-    />
-  </Pressable>
-  <Text fontFamily={"Regular"} fontSize="10">
-    Withdraw
-  </Text>
-</VStack>
-
+                      <Pressable onPress={() => deleteCurrent("sent", 1)}>
+                        <SvgXml xml={widthdrawSvg()} width={30} height={30} />
+                      </Pressable>
+                      <Text fontFamily={"Regular"} fontSize="10">
+                        Withdraw
+                      </Text>
+                    </VStack>
                   </HStack>
                   {sent?.length > 1 ? (
                     <HStack
@@ -455,13 +448,13 @@ const FriendsScreen = ({ navigation }) => {
                       </Text>
 
                       <VStack justifyContent={"center"} alignItems={"center"}>
-      <Pressable onPress={() => deleteCurrent("sent", 2)}>
-        <SvgXml xml={widthdrawSvg()} width={30} height={30} />
-      </Pressable>
-      <Text fontFamily={"Regular"} fontSize="10">
-        Withdraw
-      </Text>
-    </VStack>
+                        <Pressable onPress={() => deleteCurrent("sent", 2)}>
+                          <SvgXml xml={widthdrawSvg()} width={30} height={30} />
+                        </Pressable>
+                        <Text fontFamily={"Regular"} fontSize="10">
+                          Withdraw
+                        </Text>
+                      </VStack>
                     </HStack>
                   ) : (
                     ""
@@ -523,7 +516,7 @@ const FriendsScreen = ({ navigation }) => {
                     >
                       Cancel
                     </Button>
-                   
+
                     <Button
                       rounded={30}
                       shadow="7"

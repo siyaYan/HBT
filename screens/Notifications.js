@@ -10,6 +10,7 @@ import {
   Image,
   ScrollView,
   Badge,
+  Pressable,
 } from "native-base";
 import { Avatar } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
@@ -329,7 +330,9 @@ const NotificationScreen = ({ navigation }) => {
                   onPress={() => clearAll("friendrequests")}
                 /> */}
                 {/* <AntDesign name="delete" size={30} color="black" /> */}
-                <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
+                <Pressable onPress={() => clearAll("friendrequests")}>
+                  <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
+                </Pressable>
               </HStack>
               <Box
                 h="24%"
@@ -382,18 +385,20 @@ const NotificationScreen = ({ navigation }) => {
                                 {item.nickname}
                               </Text>
                               <HStack space="3">
-                                <AntDesign
-                                  onPress={() => acceptFriend(index)}
-                                  name="checksquareo"
-                                  size={30}
-                                  color="black"
-                                />
-                                <AntDesign
-                                  onPress={() => rejectFriend(index)}
-                                  name="closesquareo"
-                                  size={30}
-                                  color="black"
-                                />
+                                <Pressable onPress={() => acceptFriend(index)}>
+                                  <SvgXml
+                                    xml={acceptSvg()}
+                                    width={30}
+                                    height={30}
+                                  />
+                                </Pressable>
+                                <Pressable onPress={() => rejectFriend(index)}>
+                                  <SvgXml
+                                    xml={declineSvg()}
+                                    width={30}
+                                    height={30}
+                                  />
+                                </Pressable>
                               </HStack>
                             </HStack>
                           </Box>
@@ -447,14 +452,25 @@ const NotificationScreen = ({ navigation }) => {
                                 ) : (
                                   ""
                                 )}
-                                <MaterialIcons
+                                <Pressable
+                                  onPress={() =>
+                                    clearCurrent("received", index)
+                                  }
+                                >
+                                  <SvgXml
+                                    xml={deleteSVG()}
+                                    width={30}
+                                    height={30}
+                                  />
+                                </Pressable>
+                                {/* <MaterialIcons
                                   onPress={() =>
                                     clearCurrent("received", index)
                                   }
                                   name="delete-outline"
                                   size={30}
                                   color="#191919"
-                                />
+                                /> */}
                               </HStack>
                             </HStack>
                           </Box>
