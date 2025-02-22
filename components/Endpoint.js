@@ -1028,7 +1028,7 @@ export async function getRoundInfo(token, Id) {
       }
     );
     const data = await response.json();
-    console.log("getRoundInfo", data);
+    // console.log("getRoundInfo", data);
     return data; // Make sure you return the data here
 
   } catch (error) {
