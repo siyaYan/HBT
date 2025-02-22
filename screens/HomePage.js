@@ -685,7 +685,7 @@ const HomeScreen = ({ navigation }) => {
       <Modal isOpen={isOpened} onClose={handleClose}>
         <Modal.Content maxWidth="400px" width="90%">
           <Modal.CloseButton />
-          <Modal.Header>Received Invitations</Modal.Header>
+          <Modal.Header>Rround invitations</Modal.Header>
           <Modal.Body>
             {/* <View style={[styles.modalContent, { width: width * 1 }]}> */}
             {filteredUsers?.filtered?.length > 0 ? (
@@ -837,10 +837,11 @@ const HomeScreen = ({ navigation }) => {
               </Box>
             ) : (
               <Text
-                marginTop={"30%"}
+                marginTop={"25%"}
                 fontFamily={"Regular"}
-                fontSize="2xl"
+                fontSize="xl"
                 textAlign={"center"}
+                marginBottom={"25%"}
               >
                 No round invitation
               </Text>
