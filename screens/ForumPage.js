@@ -33,7 +33,7 @@ import ScoreBoardModal from "../components/ScoreBoard";
 
 const ForumPage = ({ route, navigation }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [reportModalVisible, setDeleteModal2Visible] = useState(false);
+  const [reportModalVisible, setReportModalVisible] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
 
   const { userData } = useData();
@@ -265,7 +265,7 @@ const ForumPage = ({ route, navigation }) => {
                           <Pressable
                             accessibilityLabel="Report button"
                             onPress={() => {
-                              roundActive && setDeleteModal2Visible(true);
+                              roundActive && setReportModalVisible(true);
                               roundActive && setSelectedPostId(item.id);
                             }}
                             style={{
@@ -529,7 +529,7 @@ const ForumPage = ({ route, navigation }) => {
       </Modal>
       <Modal
         isOpen={reportModalVisible}
-        onClose={() => setDeleteModal2Visible(false)}
+        onClose={() => setReportModalVisible(false)}
         animationPreset="fade"
       >
         <Modal.Content maxWidth="400px">
@@ -556,7 +556,7 @@ const ForumPage = ({ route, navigation }) => {
                 _text={{
                   color: "#f9f8f2",
                 }}
-                onPress={() => setDeleteModal2Visible(false)}
+                onPress={() => setReportModalVisible(false)}
               >
                 Cancel
               </Button>
@@ -566,7 +566,7 @@ const ForumPage = ({ route, navigation }) => {
                 size={"md"}
                 colorScheme="red"
                 onPress={() => {
-                  setDeleteModal2Visible(false);
+                  setReportModalVisible(false);
                 }}
               >
                 Submit
