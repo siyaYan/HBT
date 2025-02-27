@@ -13,6 +13,7 @@
       "backgroundColor": "#ffffff"
     },
     "plugins": [
+      "expo-apple-authentication",
       "@react-native-google-signin/google-signin",
       "@react-native-firebase/app",
       "@react-native-firebase/perf",
@@ -38,6 +39,7 @@
       "**/*"
     ],
     "ios": {
+      "usesAppleSignIn": true,
       "supportsTablet": true,
       "config": {
         "usesNonExemptEncryption": false,
