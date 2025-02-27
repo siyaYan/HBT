@@ -116,9 +116,9 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-    { label: "21", value: "21" },
-    { label: "35", value: "35" },
-    { label: "66", value: "66" },
+    { label: "21 days", value: "21" },
+    { label: "35 days", value: "35" },
+    { label: "66 days", value: "66" },
   ]);
   // Delete round
   const [isModalVisible, setModalVisible] = useState(false);
@@ -294,20 +294,62 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   </FormControl.Label>
                 </FormControl>
                 {/* // Dropdown list */}
+
                 <DropDownPicker
-                  // dropDownContainerStyle={dropDownContainer}
-                  open={open}
-                  value={level}
-                  items={items}
-                  disabled={round?.status == "A"}
-                  setOpen={setOpen}
-                  setValue={(callback) => {
-                    setValue(callback);
-                    const newValue = callback(value);
-                    setLevel(newValue);
-                  }}
-                  setItems={setItems}
-                />
+  open={open}
+  value={level}
+  items={items}
+  disabled={round?.status === "A"}
+  setOpen={setOpen}
+  setValue={(callback) => {
+    setValue(callback);
+    const newValue = callback(value);
+    setLevel(newValue);
+  }}
+  setItems={setItems}
+  placeholder="Select level"
+  containerStyle={{
+    width: "93%",
+    marginRight: 3,
+  }}
+  style={{
+    borderColor: "#49a579",
+    minHeight: 46, // instead of height, use minHeight to enforce the size
+    maxHeight: 46, // instead of height, use minHeight to enforce the size
+    borderRadius: 30,
+    backgroundColor: "transparent", // Make placeholder background transparent
+  }}
+  dropDownContainerStyle={{
+    borderColor: "#49a579",
+    borderWidth: 1,
+    borderRadius: 30,
+    backgroundColor: "#f9f8f2", // Consistent with your text input background
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginTop: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  }}
+  labelStyle={{
+    fontFamily: "Regular Medium",
+    fontSize: 16,
+    color: "#191919",
+  }}
+  placeholderStyle={{
+    fontFamily: "Regular Medium",
+    fontSize: 16,
+    color: "#a0a0a0",
+    backgroundColor: "transparent", // Make placeholder background transparent
+    // paddingLeft: 10, // Add padding for the placeholder as well
+  }}
+  listItemLabelStyle={{
+    marginLeft: 0, // Additional left margin for individual option labels, if supported
+  }}
+/>
+
                 {isInvalid.level && (
                   <FormControl isInvalid={isInvalid.level}>
                     <FormControl.ErrorMessage>
@@ -408,18 +450,21 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   <Input
                     borderColor="#49a579"
                     rounded="30"
-                    fontFamily={"Regular Medium"}
-                    size="lg"
+                    // fontFamily={"Regular Medium"}
+                    // size="lg"
+                    h={50}               // sets the height to 50px
+                    fontSize={16}        // sets the font size to 16
+                    px={2}              // horizontal padding of 12px
+                    py={2.5}             // vertical padding; 2.5 in theme units may equal about 10px
                     mr={3}
                     w="93%"
-                    placeholder="Please enter a value for maximum capacity between 2 and 50."
+                    placeholder="A digit between 2 and 50."
                     value={maxCapacity}
                     onChangeText={validateMaxCapacity}
                   />
                   {isInvalid.maxCapacity && (
                     <FormControl.ErrorMessage>
-                      Please enter a value for maximum capacity between 2 and
-                      50.
+                      Please enter a digit between 2 and 50.
                     </FormControl.ErrorMessage>
                   )}
                 </FormControl>
@@ -448,7 +493,12 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                   }}
                   mt="5"
                   width="100%"
-                  size="lg"
+                  // size="lg"
+
+                  h={50}               // sets the height to 50px
+                  fontSize={16}        // sets the font size to 16
+                  px={2}              // horizontal padding of 12px
+                  py={2.5}             // vertical padding; 2.5 in theme units may equal about 10px
                   bg="#49a579"
                   _text={{
                     color: "#f9f8f2",

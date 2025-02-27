@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { Avatar } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { VStack, HStack, FormControl, Button, Box, Text } from "native-base";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import {
   resetEmail,
   resetProfile,
@@ -21,6 +22,7 @@ import {
 } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import { SvgXml } from "react-native-svg";
@@ -35,6 +37,7 @@ const AccountSettingScreen = ({ navigation }) => {
     nick: false,
     user: false,
     email: false,
+    token: false,
   });
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -95,47 +98,113 @@ const AccountSettingScreen = ({ navigation }) => {
         ...userData,
         avatar: result.assets[0],
       });
-      handleUploadImage();
+
     }
     // console.log(selectedImage)
   };
 
   const handleTakePicture = async () => {
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      quality: 0.6, // Reduce image quality
+      allowsEditing: true,
+    });
+
     try {
       if (!result.canceled) {
-        setSelectedImage(result);
+        // Compress the image before upload
+        // const compressedImage = await ImageManipulator.manipulateAsync(
+        //   result.assets[0].uri,
+        //   [{ resize: { width: 800 } }], // Reduce resolution
+        //   { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress quality
+        // );
+        setSelectedImage(result); // Update UI with compressed image
+
         const response = await updateAvatar(
           userData.token,
           userData.data.email,
           result.assets[0]
         );
+
         updateUserData({
           ...userData,
           avatar: result.assets[0],
         });
+
       }
     } catch (e) {
       console.log(e.message);
     }
   };
+  // const handleTakePicture = async () => {
+  //   const result = await ImagePicker.launchCameraAsync();
+  //   try {
+  //     if (!result.canceled) {
+  //       setSelectedImage(result);
+  //       const response = await updateAvatar(
+  //         userData.token,
+  //         userData.data.email,
+  //         result.assets[0]
+  //       );
+  //       updateUserData({
+  //         ...userData,
+  //         avatar: result.assets[0],
+  //       });
+  //     }
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // };
 
-  const handleUploadImage = async () => {
-    // Implement image upload to backend here
-    // You can use the 'selectedImage' state to get the image data
-    const response = await updateAvatar(
-      userData.token,
-      userData.data.email,
-      userData.avatar
-    );
-    if (response.data) {
-      // console.log(response.data, "got");
-      const newData = userData.data;
-      newData.profileImageUrl = response.data.profileImageUrl;
-      updateUserData({
-        ...userData,
-        data: newData,
+  // const handleUploadImage = async () => {
+  //   // Implement image upload to backend here
+  //   // You can use the 'selectedImage' state to get the image data
+  //   const response = await updateAvatar(
+  //     userData.token,
+  //     userData.data.email,
+  //     userData.avatar
+  //   );
+  //   if (response.data) {
+  //     // console.log(response.data, "got");
+  //     const newData = userData.data;
+  //     newData.profileImageUrl = response.data.profileImageUrl;
+  //     updateUserData({
+  //       ...userData,
+  //       data: newData,
+  //     });
+  //   }
+  // };
+  const validateToken = (text) => {
+    // Mark that the token input has been changed
+    setInputChange({
+      ...inputChange,
+      token: true,
+    });
+
+    // Update formData with the token value
+    setData({
+      ...formData,
+      token: text,
+    });
+
+    // Regex to ensure exactly 6 digits (no letters)
+    const regex = /^\d{6}$/;
+    const isValid = regex.test(text);
+    console.log(isValid);
+
+    // If text is provided, update the errors state for token
+    if (text) {
+      setErrors({
+        ...errors,
+        token: isValid,
       });
+      return isValid;
+    } else {
+      // Optionally, if token is empty, you can explicitly set error to false
+      setErrors({
+        ...errors,
+        token: false,
+      });
+      return false;
     }
   };
 
@@ -227,34 +296,30 @@ const AccountSettingScreen = ({ navigation }) => {
   };
 
   const validateNickname = (text) => {
-    if (text && text !== "") {
-      setInputChange({
-        ...inputChange,
-        nick: true,
-      });
-      setData({
-        ...formData,
-        nickname: text,
-      });
-      // console.log(text, "nickname");
-      if (formData.nickname.trim() != "") {
-        setErrors({
-          ...errors,
-          nickname: false,
-        });
-        return true;
-      } else {
-        setErrors({
-          ...errors,
-          nickname: "Nickname cannot be empty.",
-        });
-        return false;
-      }
+    // Mark that the nickname field has been touched
+    setInputChange((prev) => ({
+      ...prev,
+      nick: true,
+    }));
+
+    // Update the form data with the new text
+    setData((prev) => ({
+      ...prev,
+      nickname: text,
+    }));
+
+    // Use text.trim() directly for validation
+    if (text.trim() !== "") {
+      setErrors((prev) => ({
+        ...prev,
+        nickname: false,
+      }));
+      return true;
     } else {
-      setErrors({
-        ...errors,
+      setErrors((prev) => ({
+        ...prev,
         nickname: "Nickname cannot be empty.",
-      });
+      }));
       return false;
     }
   };
@@ -280,6 +345,7 @@ const AccountSettingScreen = ({ navigation }) => {
             uri: response.data.user.profileImageUrl,
           },
         });
+        setInputChange((prev) => ({ ...prev, nick: false }));
       } else {
         setData({
           ...formData,
@@ -308,6 +374,7 @@ const AccountSettingScreen = ({ navigation }) => {
             uri: response.data.user.profileImageUrl,
           },
         });
+        setInputChange((prev) => ({ ...prev, user: false }));
       } else {
         setData({
           ...formData,
@@ -341,8 +408,9 @@ const AccountSettingScreen = ({ navigation }) => {
           uri: response.data.user.profileImageUrl,
         },
       });
-      console.log(userData);
+      // console.log(userData);
     }
+    setInputChange((prev) => ({ ...prev, email: false }));
   }
 
   async function sendToken() {
@@ -362,11 +430,13 @@ const AccountSettingScreen = ({ navigation }) => {
           ...errors,
           email: "Please enter a valid email address.",
         });
+        setInputChange((prev) => ({ ...prev, email: false }));
       } else {
         setData({
           ...formData,
           send: true,
         });
+        setInputChange((prev) => ({ ...prev, email: false }));
       }
     }
   }
@@ -421,190 +491,60 @@ const AccountSettingScreen = ({ navigation }) => {
     }
   };
 
+  const control = () => {
+    Keyboard.dismiss();
+    setModalVisible(true);
+  };
+
   return (
-    <NativeBaseProvider>
-      <Center w="100%">
-        <Background />
-        <Box w="80%" h="100%" maxW="320">
-          <Pressable onPress={onOpen}>
-            <Box py="5" alignItems="center" justifyContent="center">
-              {selectedImage ? (
-                <Avatar
-                  bg="white"
-                  mb="1"
-                  size="lg"
-                  source={{ uri: selectedImage.assets[0].uri }}
-                >
-                  <Avatar.Badge
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <NativeBaseProvider>
+        <Center w="100%">
+          <Background />
+          <Box w="80%" h="100%" maxW="320">
+            <Pressable onPress={onOpen}>
+              <Box py="5" alignItems="center" justifyContent="center">
+                {selectedImage ? (
+                  <Avatar
                     bg="white"
-                    position="absolute"
-                    top={0}
-                    right={0}
+                    mb="1"
+                    size="lg"
+                    source={{ uri: selectedImage.assets[0].uri }}
                   >
-                    <Ionicons name="settings-sharp" size={16} color="black" />
-                  </Avatar.Badge>
-                </Avatar>
-              ) : (
-                <Avatar
-                  bg="white"
-                  mb="1"
-                  size="lg"
-                  source={{ uri: userData.avatar.uri }}
-                >
-                  <Avatar.Badge
+                    <Avatar.Badge
+                      bg="white"
+                      position="absolute"
+                      top={0}
+                      right={0}
+                    >
+                      <Ionicons name="settings-sharp" size={16} color="black" />
+                    </Avatar.Badge>
+                  </Avatar>
+                ) : (
+                  <Avatar
                     bg="white"
-                    position="absolute"
-                    top={0}
-                    right={0}
+                    mb="1"
+                    size="lg"
+                    source={{ uri: userData.avatar.uri }}
                   >
-                    <Ionicons name="settings-sharp" size={16} color="black" />
-                  </Avatar.Badge>
-                </Avatar>
-              )}
-            </Box>
-          </Pressable>
-          <VStack space={3} mt="10" style={{ justifyContent: "center" }}>
-            <FormControl
-              isInvalid={
-                errors.nickname && inputChange.nick && formData.nickname
-              }
-            >
-              <FormControl.Label
-                ml={1}
-                _text={{
-                  fontFamily: "Regular Semi Bold",
-                  fontSize: "lg",
-                  color: "#191919",
-                }}
+                    <Avatar.Badge
+                      bg="white"
+                      position="absolute"
+                      top={0}
+                      right={0}
+                    >
+                      <Ionicons name="settings-sharp" size={16} color="black" />
+                    </Avatar.Badge>
+                  </Avatar>
+                )}
+              </Box>
+            </Pressable>
+            <VStack space={3} mt="10" style={{ justifyContent: "center" }}>
+              <FormControl
+                isInvalid={
+                  errors.nickname && inputChange.nick && formData.nickname
+                }
               >
-                Nickname
-              </FormControl.Label>
-              <Box flexDir="row" w="100%">
-                <Input
-                  borderColor="#49a579"
-                  rounded="30"
-                  fontFamily={"Regular Medium"}
-                  size="lg"
-                  mr={3}
-                  w="93%"
-                  placeholder="Nickname"
-                  value={formData.nickname}
-                  onChangeText={validateNickname}
-                />
-                <Pressable onPress={saveNickName}>
-                  <SvgXml
-                    xml={SaveButtonSVG(
-                      inputChange.nick && !errors.nickname && formData.nickname
-                        ? "black"
-                        : "grey"
-                    )}
-                    width={40}
-                    height={40}
-                  />
-                </Pressable>
-              </Box>
-              <Box ml={1}>
-                <FormControl.ErrorMessage>
-                  {errors.nickname ? errors.nickname : ""}
-                </FormControl.ErrorMessage>
-              </Box>
-            </FormControl>
-            <FormControl
-              isInvalid={
-                Object.values(showMessage.username).some(
-                  (value) => value === false
-                ) &&
-                inputChange.user &&
-                formData.username
-              }
-            >
-              <FormControl.Label
-                ml={1}
-                _text={{
-                  fontFamily: "Regular Semi Bold",
-                  fontSize: "lg",
-                  color: "#191919",
-                }}
-              >
-                Username
-              </FormControl.Label>
-              <Box flexDir="row" w="100%">
-                <Input
-                  borderColor="#49a579"
-                  rounded="30"
-                  fontFamily={"Regular Medium"}
-                  size="lg"
-                  mr={3}
-                  w="93%"
-                  placeholder="Username"
-                  value={formData.username}
-                  onChangeText={validateUsername}
-                />
-                <Pressable onPress={saveUsername}>
-                  <SvgXml
-                    xml={SaveButtonSVG(
-                      formData.username &&
-                        inputChange.user &&
-                        !Object.values(showMessage.username).some(
-                          (value) => value === false
-                        )
-                        ? "black"
-                        : "grey"
-                    )}
-                    width={40}
-                    height={40}
-                  />
-                </Pressable>
-              </Box>
-              <Box ml={1}>
-                <FormControl.ErrorMessage>
-                  {Object.values(showMessage.username).some(
-                    (value) => value === false
-                  )
-                    ? showMessage.textProp
-                    : ""}
-                </FormControl.ErrorMessage>
-              </Box>
-            </FormControl>
-            <FormControl isInvalid={!errors.email}>
-              <FormControl.Label
-                ml={1}
-                _text={{
-                  fontFamily: "Regular Semi Bold",
-                  fontSize: "lg",
-                  color: "#191919",
-                }}
-              >
-                Email
-              </FormControl.Label>
-              <Box flexDir="row" w="100%">
-                <Input
-                  borderColor="#49a579"
-                  rounded="30"
-                  fontFamily={"Regular Medium"}
-                  size="lg"
-                  mr={3}
-                  w="93%"
-                  placeholder="Email"
-                  value={formData.email}
-                  onChangeText={validateEmail}
-                />
-                <Pressable onPress={sendToken}>
-                  <SvgXml
-                    xml={SaveButtonSVG(inputChange.email ? "black" : "grey")}
-                    width={40}
-                    height={40}
-                  />
-                </Pressable>
-              </Box>
-              <Box ml={1}>
-                <FormControl.ErrorMessage>
-                  {!errors.email ? "Email address is not valid" : ""}
-                </FormControl.ErrorMessage>
-              </Box>
-            </FormControl>
-            {formData.send ? (
-              <FormControl isInvalid={!errors.token}>
                 <FormControl.Label
                   ml={1}
                   _text={{
@@ -613,9 +553,9 @@ const AccountSettingScreen = ({ navigation }) => {
                     color: "#191919",
                   }}
                 >
-                  Verification code
+                  Nickname
                 </FormControl.Label>
-                <Box flexDir="row" w="100%" alignItems="center">
+                <Box flexDir="row" w="100%">
                   <Input
                     borderColor="#49a579"
                     rounded="30"
@@ -623,18 +563,19 @@ const AccountSettingScreen = ({ navigation }) => {
                     size="lg"
                     mr={3}
                     w="93%"
-                    placeholder="Enter the code"
-                    value={formData.token}
-                    onChangeText={(value) => {
-                      setData({
-                        ...formData,
-                        token: value,
-                      });
-                    }}
+                    placeholder="Nickname"
+                    value={formData.nickname}
+                    onChangeText={validateNickname}
                   />
-                  <Pressable onPress={saveEmail}>
+                  <Pressable onPress={saveNickName}>
                     <SvgXml
-                      xml={SaveButtonSVG(formData.token ? "black" : "grey")}
+                      xml={saveSVG(
+                        inputChange.nick &&
+                          !errors.nickname &&
+                          formData.nickname
+                          ? "black"
+                          : "grey"
+                      )}
                       width={40}
                       height={40}
                     />
@@ -642,117 +583,266 @@ const AccountSettingScreen = ({ navigation }) => {
                 </Box>
                 <Box ml={1}>
                   <FormControl.ErrorMessage>
-                    {!errors.token ? "Input token it not valid" : ""}
+                    {errors.nickname ? errors.nickname : ""}
                   </FormControl.ErrorMessage>
                 </Box>
               </FormControl>
-            ) : (
-              ""
-            )}
-            {userData.data?.googleId || userData.data?.facebookId ? (
-              ""
-            ) : (
-              <Button
-                onPress={goResetPassword}
-                rounded="30"
-                mt="5"
-                width="100%"
-                size="lg"
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#49a579",
-                }}
-                backgroundColor={"rgba(250,250,250,0.2)"}
-                _text={{
-                  color: "#191919",
-                  fontFamily: "Regular Semi Bold",
-                  fontSize: "lg",
-                }}
-                _pressed={{
-                  bg: "#e5f5e5",
-                }}
+              <FormControl
+                isInvalid={
+                  Object.values(showMessage.username).some(
+                    (value) => value === false
+                  ) &&
+                  inputChange.user &&
+                  formData.username
+                }
               >
-                <HStack alignItems="center" space={2}>
-                  <SvgXml xml={ChangePasswordSVG()} width={24} height={24} />
-                  <Text
-                    color="#191919"
-                    fontFamily="Regular Semi Bold"
-                    fontSize="lg"
-                  >
-                    Change your password
-                  </Text>
-                </HStack>
-              </Button>
-            )}
-
-            <Box mb="3" alignItems="center" justifyContent="center">
-              <Button
-                onPress={() => setModalVisible(true)}
-                size="lg"
-                px={5}
-                // variant="unstyled"
-                variant="outline"
-                borderRadius="full"
-                width={"100%"}
-                style={{
-                  borderColor: "red",
-                }}
-              >
-                <HStack>
-                  <SvgXml xml={deleteSVG("#191919")} width={28} height={28} />
-                  <Text ml={1} fontFamily={"Regular Medium"} fontSize="lg">
-                    Delete account
-                  </Text>
-                </HStack>
-              </Button>
-            </Box>
-          </VStack>
-        </Box>
-        <Modal
-          isOpen={modalVisible}
-          onClose={setModalVisible}
-          animationPreset="fade"
-        >
-          <Modal.Content maxWidth="400px">
-            <Modal.CloseButton />
-            <Modal.Header>
-              <Text fontFamily={"Regular Medium"} fontSize="xl">
-                Are you sure? 🥹
-              </Text>
-            </Modal.Header>
-            <Modal.Body>
-              <Text>
-                This will permanently delete your account, including all your
-                history and records of progress.{" "}
-              </Text>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button.Group space={2}>
-                <Button
-                  colorScheme="blueGray"
-                  rounded={30}
-                  width="48%"
-                  size={"md"}
+                <FormControl.Label
+                  ml={1}
                   _text={{
-                    color: "#f9f8f2",
+                    fontFamily: "Regular Semi Bold",
+                    fontSize: "lg",
+                    color: "#191919",
                   }}
-                  onPress={() => setModalVisible(false)}
                 >
-                  Cancel
-                </Button>
+                  Username
+                </FormControl.Label>
+                <Box flexDir="row" w="100%">
+                  <Input
+                    borderColor="#49a579"
+                    rounded="30"
+                    fontFamily={"Regular Medium"}
+                    size="lg"
+                    mr={3}
+                    w="93%"
+                    placeholder="e.g. JohnDoe123"
+                    value={formData.username}
+                    onChangeText={validateUsername}
+                  />
+                  <Pressable onPress={saveUsername}>
+                    <SvgXml
+                      xml={saveSVG(
+                        formData.username &&
+                          inputChange.user &&
+                          !Object.values(showMessage.username).some(
+                            (value) => value === false
+                          )
+                          ? "black"
+                          : "grey"
+                      )}
+                      width={40}
+                      height={40}
+                    />
+                  </Pressable>
+                </Box>
+                <Box ml={1}>
+                  <FormControl.ErrorMessage>
+                    {/* {Object.values(showMessage.username).some(
+                    (value) => value === false
+                  )
+                    ? showMessage.textProp
+                    : ""} */}
+                    {inputChange.user || !errors.user
+                      ? "Username is not valid"
+                      : ""}
+                  </FormControl.ErrorMessage>
+                </Box>
+              </FormControl>
+              <FormControl isInvalid={!errors.email}>
+                <FormControl.Label
+                  ml={1}
+                  _text={{
+                    fontFamily: "Regular Semi Bold",
+                    fontSize: "lg",
+                    color: "#191919",
+                  }}
+                >
+                  Email
+                </FormControl.Label>
+                <Box flexDir="row" w="100%">
+                  <Input
+                    borderColor="#49a579"
+                    rounded="30"
+                    fontFamily={"Regular Medium"}
+                    size="lg"
+                    mr={3}
+                    w="93%"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChangeText={validateEmail}
+                  />
+                  <Pressable onPress={sendToken}>
+                    <SvgXml
+                      xml={saveSVG(
+                        formData.email && inputChange.email && errors.email
+                          ? "black"
+                          : "grey"
+                      )}
+                      width={40}
+                      height={40}
+                    />
+                  </Pressable>
+                </Box>
+                <Box ml={1}>
+                  <FormControl.ErrorMessage>
+                    {!errors.email ? "Email address is not valid" : ""}
+                  </FormControl.ErrorMessage>
+                </Box>
+              </FormControl>
+              {formData.send ? (
+                <FormControl isInvalid={!errors.token}>
+                  <FormControl.Label
+                    ml={1}
+                    _text={{
+                      fontFamily: "Regular Semi Bold",
+                      fontSize: "lg",
+                      color: "#191919",
+                    }}
+                  >
+                    Verification code
+                  </FormControl.Label>
+                  <Box flexDir="row" w="100%" alignItems="center">
+                    <Input
+                      borderColor="#49a579"
+                      rounded="30"
+                      fontFamily={"Regular Medium"}
+                      size="lg"
+                      mr={3}
+                      w="93%"
+                      placeholder="Enter the code"
+                      value={formData.token}
+                      // onChangeText={(value) => {
+                      //   setData({
+                      //     ...formData,
+                      //     token: value,
+                      //   });
+                      // }}
+                      onChangeText={validateToken}
+                    />
+                    <Pressable onPress={saveEmail}>
+                      <SvgXml
+                        xml={saveSVG(
+                          formData.token && inputChange.token && errors.token
+                            ? "black"
+                            : "grey"
+                        )}
+                        width={40}
+                        height={40}
+                      />
+                    </Pressable>
+                  </Box>
+                  <Box ml={1}>
+                    <FormControl.ErrorMessage>
+                      {!errors.token ? "Input token is not valid" : ""}
+                    </FormControl.ErrorMessage>
+                  </Box>
+                </FormControl>
+              ) : (
+                ""
+              )}
+              {userData.data?.googleId || userData.data?.facebookId ? (
+                ""
+              ) : (
                 <Button
-                  rounded={30}
-                  width="48%"
-                  size={"md"}
-                  colorScheme="red"
-                  onPress={() => {
-                    onPress = { deleteAccount };
+                  onPress={goResetPassword}
+                  rounded="30"
+                  mt="5"
+                  width="100%"
+                  size="lg"
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#49a579",
+                  }}
+                  backgroundColor={"rgba(250,250,250,0.2)"}
+                  _text={{
+                    color: "#191919",
+                    fontFamily: "Regular Semi Bold",
+                    fontSize: "lg",
+                  }}
+                  _pressed={{
+                    bg: "#e5f5e5",
                   }}
                 >
-                  Delete
+                  <HStack alignItems="center" space={2}>
+                    <SvgXml xml={ChangePasswordSVG()} width={24} height={24} />
+                    <Text
+                      color="#191919"
+                      fontFamily="Regular Semi Bold"
+                      fontSize="lg"
+                    >
+                      Change your password
+                    </Text>
+                  </HStack>
                 </Button>
-              </Button.Group>
-              {/* <Button.Group space={2}>
+              )}
+
+              <Box mb="3" alignItems="center" justifyContent="center">
+                <Button
+                  onPress={control}
+                  size="lg"
+                  px={5}
+                  // variant="unstyled"
+                  variant="outline"
+                  borderRadius="full"
+                  width={"100%"}
+                  style={{
+                    borderColor: "red",
+                  }}
+                >
+                  <HStack>
+                    <SvgXml xml={deleteSVG("#191919")} width={28} height={28} />
+                    <Text ml={1} fontFamily={"Regular Medium"} fontSize="lg">
+                      Delete account
+                    </Text>
+                  </HStack>
+                </Button>
+              </Box>
+            </VStack>
+          </Box>
+          <Modal
+            isOpen={modalVisible}
+            onClose={setModalVisible}
+            animationPreset="fade"
+          >
+            <Modal.Content maxWidth="400px">
+              <Modal.CloseButton />
+              <Modal.Header>
+                <Text fontFamily={"Regular Medium"} fontSize="xl">
+                  Are you sure? 🥹
+                </Text>
+              </Modal.Header>
+              <Modal.Body>
+                <Text>
+                  This will permanently delete your account, including all your
+                  history and records of progress.{" "}
+                </Text>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button.Group space={2}>
+                  <Button
+                    colorScheme="blueGray"
+                    rounded={30}
+                    width="48%"
+                    size={"md"}
+                    _text={{
+                      color: "#f9f8f2",
+                    }}
+                    onPress={() => setModalVisible(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    rounded={30}
+                    width="48%"
+                    size={"md"}
+                    colorScheme="red"
+                    onPress={() => {
+                      onPress = { deleteAccount };
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Button.Group>
+                {/* <Button.Group space={2}>
                 <Button
                   rounded={30}
                   width="48%"
@@ -775,59 +865,63 @@ const AccountSettingScreen = ({ navigation }) => {
                   Delete
                 </Button>
               </Button.Group> */}
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
-        <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
-          <Actionsheet.Content>
-            <Box
-              w="100%"
-              h={60}
-              px={4}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Text
-                fontSize="16"
-                color="gray.500"
-                _dark={{
-                  color: "gray.300",
-                }}
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+          <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
+            <Actionsheet.Content>
+              <Box
+                w="100%"
+                h={60}
+                px={4}
+                justifyContent="center"
+                alignItems="center"
               >
-                Pick photo from
-              </Text>
-            </Box>
-            <Actionsheet.Item
-              onPress={handleTakePicture}
-              alignItems="center"
-              startIcon={<Icon as={MaterialIcons} size="6" name="camera-alt" />}
-            >
-              Take Photo
-            </Actionsheet.Item>
-            <Actionsheet.Item
-              onPress={handleChooseImage}
-              alignItems="center"
-              startIcon={<Icon as={MaterialIcons} name="camera" size="6" />}
-            >
-              Photo Album
-            </Actionsheet.Item>
-          </Actionsheet.Content>
-        </Actionsheet>
-      </Center>
-    </NativeBaseProvider>
+                <Text
+                  fontSize="16"
+                  color="gray.500"
+                  _dark={{
+                    color: "gray.300",
+                  }}
+                >
+                  Pick photo from
+                </Text>
+              </Box>
+              <Actionsheet.Item
+                onPress={handleTakePicture}
+                alignItems="center"
+                startIcon={
+                  <Icon as={MaterialIcons} size="6" name="camera-alt" />
+                }
+              >
+                Take Photo
+              </Actionsheet.Item>
+              <Actionsheet.Item
+                onPress={handleChooseImage}
+                alignItems="center"
+                startIcon={<Icon as={MaterialIcons} name="camera" size="6" />}
+              >
+                Photo Album
+              </Actionsheet.Item>
+            </Actionsheet.Content>
+          </Actionsheet>
+        </Center>
+      </NativeBaseProvider>
+    </TouchableWithoutFeedback>
   );
 };
 
-const SaveButtonSVG = () => `
+const saveSVG = (color) => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-    <path class="cls-1" d="M11.13,24.99c0-4.89,0-9.77,0-14.66,0-2.03.79-2.84,2.81-2.84,7.37,0,14.74,0,22.11,0,2.02,0,2.82.8,2.82,2.83,0,9.81,0,19.62.01,29.43,0,1.06-.25,1.94-1.21,2.48-.97.54-1.86.28-2.73-.32-2.72-1.84-5.48-3.63-8.19-5.5-1.2-.83-2.28-.83-3.48,0-2.68,1.85-5.41,3.61-8.1,5.44-.9.61-1.8.95-2.82.38-1.02-.56-1.23-1.5-1.22-2.59.02-4.89.01-9.77.01-14.66Z"/>
-  </svg>`;
-
-const SavedButtonSVG = () => `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-    <path class="cls-1" d="M11.13,24.99c0-4.89,0-9.77,0-14.66,0-2.03.79-2.84,2.81-2.84,7.37,0,14.74,0,22.11,0,2.02,0,2.82.8,2.82,2.83,0,9.81,0,19.62.01,29.43,0,1.06-.25,1.94-1.21,2.48-.97.54-1.86.28-2.73-.32-2.72-1.84-5.48-3.63-8.19-5.5-1.2-.83-2.28-.83-3.48,0-2.68,1.85-5.41,3.61-8.1,5.44-.9.61-1.8.95-2.82.38-1.02-.56-1.23-1.5-1.22-2.59.02-4.89.01-9.77.01-14.66Z"/>
-  </svg>`;
-
+    <path 
+      fill="none" 
+      stroke="${color}" 
+      stroke-miterlimit="10" 
+      stroke-width="4" 
+      d="M11.13,24.99c0-4.89,0-9.77,0-14.66,0-2.03.79-2.84,2.81-2.84,7.37,0,14.74,0,22.11,0,2.02,0,2.82.8,2.82,2.83,0,9.81,0,19.62.01,29.43,0,1.06-.25,1.94-1.21,2.48-.97.54-1.86.28-2.73-.32-2.72-1.84-5.48-3.63-8.19-5.5-1.2-.83-2.28-.83-3.48,0-2.68,1.85-5.41,3.61-8.1,5.44-.9.61-1.8.95-2.82.38-1.02-.56-1.23-1.5-1.22-2.59.02-4.89.01-9.77.01-14.66Z"
+    />
+  </svg>
+`;
 const ChangePasswordSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <path class="cls-1" d="M2.27,23.55c.12-.86.2-1.72.37-2.57,1.73-8.42,6.6-14.21,14.59-17.37.1-.04.2-.09.4-.17-.3-.19-.53-.33-.77-.48-.73-.47-.95-1.32-.54-2.01.42-.69,1.28-.91,2.02-.47,1.25.74,2.49,1.49,3.72,2.25.74.46.95,1.25.54,2.01-.7,1.27-1.41,2.53-2.13,3.79-.44.76-1.27,1-1.99.61-.72-.4-.94-1.26-.52-2.05.13-.24.26-.47.45-.8-.26.08-.42.12-.58.19-7.45,3.18-11.78,8.77-12.57,16.84-.88,8.99,4.5,17.27,12.98,20.35,1.07.39,2.2.61,3.3.89.75.19,1.22.68,1.26,1.39.04.63-.37,1.25-1.01,1.42-.27.07-.58.09-.85.03-9.61-2.12-15.67-7.94-18.13-17.48-.26-1.01-.32-2.06-.48-3.1-.02-.12-.05-.25-.08-.37,0-.97,0-1.93,0-2.9Z"/>

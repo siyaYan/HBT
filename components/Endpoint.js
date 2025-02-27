@@ -819,14 +819,15 @@ export async function addPost(id,post,token) {
     }
     const data= await response.json();
 
-    // if (data.status == "success") {
-    //   Alert.alert("Success", "Post message successfully");
-    // } else {
-    //   Alert.alert(
-    //     "Unsuccessful",
-    //     data.message || "Post message was unsucessful."
-    //   );
-    // }
+    if (data.status == "success") {
+      Alert.alert("Success", "Post message successfully");
+    } else {
+      Alert.alert(
+        "Unsuccessful",
+        data.message || "Post message was unsucessful."
+      );
+    }
+    console.log('data:',data)
     return data
     
   } catch (error) {
@@ -1029,7 +1030,7 @@ export async function getRoundInfo(token, Id) {
       }
     );
     const data = await response.json();
-    console.log("getRoundInfo", data);
+    // console.log("getRoundInfo", data);
     return data; // Make sure you return the data here
 
   } catch (error) {
@@ -1370,3 +1371,47 @@ export async function getScoreBoard(token, roundId) {
     Alert.alert("Unsuccessful", "Cannot connect to server");  
   }  
 }
+
+// System Notification
+export async function createNotification(
+  token,
+  senderId,
+  receiverId,
+  content
+) {
+  const endpoint = `http://3.27.94.77:8000/habital/v1/notifications/create`; // Replace with your actual endpoint URL
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Include the authorization header if your endpoint requires it.
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        senderId,
+        receiverId,
+        content,
+      }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      if(receiverId=='system'){
+        Alert.alert("Oh,No!", "your reporting is not successful!");
+      }
+      throw new Error(
+        `Error creating notification: ${errorData.message || response.statusText}`
+      );
+
+    }
+    const result = await response.json();
+    if(receiverId=='system'){
+      Alert.alert("Success", "The report has been submitted!");
+    }
+    return result;
+  } catch (error) {
+    console.error("Error creating notification", error);
+    throw error;
+  }
+};

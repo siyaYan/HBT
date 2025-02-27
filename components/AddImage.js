@@ -2,6 +2,7 @@ import { Icon, Box, Text, Actionsheet } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import React, { useRef } from "react";
 
 const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
@@ -39,19 +40,41 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
       console.log(e.message);
     }
   };
-
-  const handleTakePicture = async () => {
-    const result = await ImagePicker.launchCameraAsync();
-
-    try {
-      if (!result.canceled) {
-        setSelectedImage(result);
-
+    const handleTakePicture = async () => {
+      const result = await ImagePicker.launchCameraAsync({
+        quality: 0.6, // Reduce image quality
+        allowsEditing: true,
+      });
+    
+      try {
+        if (!result.canceled) {
+          const res={
+            uri: result.assets[0].uri,
+            type: result.assets[0].type,
+            name: 'test.jpg', 
+          }
+          console.log(res)
+          setSelectedImage(res);
+          onClose()
+          navigation.navigate("ForumStack", {screen: "ForumDraft", params: {res }});
+        }
+      } catch (e) {
+        console.log(e.message);
       }
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
+    };
+  // const handleTakePicture = async () => {
+  //   const result = await ImagePicker.launchCameraAsync();
+
+  //   try {
+  //     if (!result.canceled) {
+  //       setSelectedImage(result);
+  //       onClose()
+  //       navigation.navigate("ForumStack", {screen: "ForumDraft", params: {result }});
+  //     }
+  //   } catch (e) {
+  //     console.log(e.message);
+  //   }
+  // };
   return (
         <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
           <Actionsheet.Content>

@@ -121,7 +121,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
   const levelInt = round ? parseInt(round.level, 10) : 0;
   const startDate = round ? new Date(round.startDate) : new Date();
   const endDate = new Date(
-    startDate.getTime() + (levelInt-1) * 24 * 60 * 60 * 1000
+    startDate.getTime() + (levelInt - 1) * 24 * 60 * 60 * 1000
   ); // Convert days to milliseconds
   const today = new Date();
 
@@ -196,6 +196,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
                   goScoreBoard();
                 }}
                 mt="5"
+                rounded={30}
                 width="100%"
                 size="lg"
                 bg="#49a579"
@@ -217,7 +218,9 @@ const RoundInfoScreen = ({ route, navigation }) => {
                   onPress={inviteFriend}
                   mt="5"
                   width="100%"
+                  rounded={30}
                   size="lg"
+                  rounded={30}
                   bg="#49a579"
                   _text={{
                     color: "#f9f8f2",
@@ -237,6 +240,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
                 mt="5"
                 width="100%"
                 size="lg"
+                rounded={30}
                 // bg="#ff061e"
                 // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
                 backgroundColor={"#f9f8f2"}

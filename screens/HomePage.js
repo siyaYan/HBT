@@ -26,11 +26,12 @@ import {
   getRoundInvitation,
   reactRoundRequest,
   updateRoundStatus,
+  // createNotification,
 } from "../components/Endpoint";
 import { useRound } from "../context/RoundContext";
-import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Add this at the top of your file
 import ScoreBoardModal from "../components/ScoreBoard";
+import { SvgXml } from "react-native-svg"; // Import SvgXml to use custom SVGs
 
 // Function to add days to a date
 function calculateEndDate(date, days) {
@@ -69,14 +70,13 @@ const HomeScreen = ({ navigation }) => {
   const [scoreBoardOpen, setScoreBoardOpen] = useState(false);
   const [showRoundDetails, setShowRoundDetails] = useState(false);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [pendingReceived, setPendingReceived] = useState([]);
+
   const [showRoundValidation, setShowRoundValidation] = useState(false);
   const [showRoundValidationDate, setShowRoundValidationDate] = useState(false);
   const [showRoundCompleteValidation, setShowRoundCompleteValidation] =
     useState(false);
-  // const [rest, setRest] = useState([]);
-  // const [topThree, setTopThree] = useState([]);
-  const [roundInvitationData, setRoundInvitationData] = useState(null);
+
+  const [pendingReceived, setPendingReceived] = useState([]);
 
   const [processedRounds, setProcessedRounds] = useState(null);
 
@@ -89,8 +89,6 @@ const HomeScreen = ({ navigation }) => {
   const { userData, updateNotes } = useData();
   const { acceptRoundData, roundData, updateRounds } = useRound();
 
-  // console.log("active round---", acceptRoundData);
-  // Get screen dimensions
   const { width, height } = Dimensions.get("window");
   const [showFinalScore, setShowFinalScore] = useState(null);
 
@@ -99,16 +97,17 @@ const HomeScreen = ({ navigation }) => {
   //   Silver: "rgb(192, 192, 192)", // Silver in RGB
   //   Bronze: "rgb(205, 127, 50)", // Bronze in RGB
   // };
+  
 
   const [show10PerRoundValidation, setShow10PerRoundValidation] =
     useState(false);
 
-  const updateNote = async () => {
-    const res = await getNoteUpdate(userData.token, userData.data.email);
-    // if (res > 0) {
-    updateNotes(res);
-    // }
-  };
+  // const updateNote = async () => {
+  //   const res = await getNoteUpdate(userData.token, userData.data.email);
+  //   // if (res > 0) {
+  //   updateNotes(res);
+  //   // }
+  // };
   useFocusEffect(
     useCallback(() => {
       // This code runs when the tab comes into focus
@@ -160,7 +159,8 @@ const HomeScreen = ({ navigation }) => {
 
   const getRoundInvitationData = async () => {
     const res = await getRoundInvitation(userData.token);
-    setRoundInvitationData(res);
+    const pending = res?.data.filter((invitation) => invitation.status === "P");
+    setPendingReceived(pending);
   };
 
   const getRoundData = async () => {
@@ -233,17 +233,28 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const handlePress = () => {
-    console.log("UserData", userData);
+  const handlePress = async () => {
+    let filteredRound = [];
+    let filteredUsers = [];
+    const filtering = await Promise.all(
+      pendingReceived.map(async (invitation) => {
+        const round = await fetchRoundInfo(invitation.roundId);
+        filteredRound.push(round);
+        filteredUsers.push(
+          round.data[0].roundFriends?.find(
+            (user) => user.id === invitation.senderId
+          )
+        );
+      })
+    );
+    // console.log("filteredUsers", filteredUsers);
+    setFilteredUsers({ filtered: filteredUsers, filteredRound });
     setIsOpened(true);
-    // console.log("isOpened", isOpened);
-    loadAllReceivedNotification();
   };
 
   const handleClose = () => {
     setIsOpened(false);
     setScoreBoardOpen(false);
-    // console.log("isOpened", isOpened);
   };
 
   const handleRoundValidationClose = () => {
@@ -257,72 +268,56 @@ const HomeScreen = ({ navigation }) => {
     setShowRoundDetails(!showRoundDetails);
   };
 
-  const findPendingReceived = () => {
-    // console.log("----roundInvitationData", roundInvitationData);
-    if (roundInvitationData && roundInvitationData.status === "success") {
-      const pending = roundInvitationData.data.filter(
-        (invitation) => invitation.status === "P"
-      );
-      setPendingReceived(pending);
-    }
-  };
+  // const findPendingReceived = () => {
+  //   // console.log("----roundInvitationData", roundInvitationData);
+  //   if (roundInvitationData && roundInvitationData.status === "success") {
+  //     const pending = roundInvitationData.data.filter(
+  //       (invitation) => invitation.status === "P"
+  //     );
+  //     setPendingReceived(pending);
+  //   }
+  // };
 
-  const loadAllReceivedNotification = () => {
-    // console.log("----roundInvitationData---notification", roundInvitationData);
-    findPendingReceived();
-  };
+  // const loadAllReceivedNotification = () => {
+  //   // console.log("----roundInvitationData---notification", roundInvitationData);
+  //   findPendingReceived();
+  // };
 
   useEffect(() => {
-    // Define the async function inside the useEffect
-    const fetchData = async () => {
-      // console.log("Fetching data-----", pendingReceived);
-      // Ensure pendingReceived is valid and has data
-      if (pendingReceived && pendingReceived.length > 0) {
-        const pendingSenderIds = pendingReceived.map(
-          (invitation) => invitation.senderId
-        );
+    // const filteredRound = pendingReceived.map(
+    //   (invitation) => {return await fetchRoundInfo(invitation.roundId)}
+    // );
+    // const filtered = filteredRound.map(item=>{
+    //   return roundInfo.users.find(
+    //     (user) => user._id === item.senderId
+    //   )}
+    // );
 
-        let filteredRound = [];
-
-        // Fetch invitation info and filter users
-        const filtered = await Promise.all(
-          pendingSenderIds.map(async (senderId, index) => {
-            // Fetch invitation info and add to filteredRound
-            const roundInfo = await fetchRoundInfo(index);
-            filteredRound.push(roundInfo);
-
-            // Find the user matching the senderId
-            return roundInvitationData.users.find(
-              (user) => user._id === senderId
-            );
-          })
-        );
-
-        // Once all promises are resolved, update the state
-        setFilteredUsers({ filtered, filteredRound });
-        // filteredUsers.filtered
-      }
-    };
-
-    // Call the async function immediately
-    fetchData();
-
+    // setFilteredUsers({ filtered, pendingReceived });
+    // console.log('update the envelope',filteredUsers)
+    if (pendingReceived.length > 0) {
+      console.log("update the envelope open");
+    } else {
+      setIsOpened(false);
+      console.log("update the envelope close");
+    }
     // Optional clean-up function can be returned here if needed
   }, [pendingReceived]); // The effect runs when pendingReceived changes
 
-  const fetchRoundInfo = async (i) => {
-    const thisRoundId = roundInvitationData.data[i].roundId;
+  const fetchRoundInfo = async (roundId) => {
+    const thisRoundId = roundId;
 
     const aRoundInfo = await getRoundInfo(userData.token, thisRoundId);
     // setThisRoundInfo(aRoundInfo);
     return aRoundInfo;
   };
+
   const openRoundInvitationInfo = () => {
     setShowRoundDetails(!showRoundDetails);
   };
 
   const acceptRoundFriend = async (i, thisRoundInfo) => {
-    console.log("thisRoundInfo calling acceptRoundFriend:", thisRoundInfo);
+    // console.log("thisRoundInfo calling acceptRoundFriend:", thisRoundInfo);
 
     // 1. validate the new round status
     if (thisRoundInfo.data[0].status == "F") {
@@ -371,7 +366,7 @@ const HomeScreen = ({ navigation }) => {
         }
       }
       // no accept round
-      console.log("accept round Friend,delete current notification");
+      // console.log("accept round Friend,delete current notification");
       // 4. accept the round invitation
       setFilteredUsers((currentReceived) => ({
         ...currentReceived, // Spread the current state
@@ -404,12 +399,12 @@ const HomeScreen = ({ navigation }) => {
         );
         updateRounds(RoundInfoList);
       }
-      getRoundInvitationData();
+      // getRoundInvitationData();
     }
   };
 
   const rejectRoundFriend = (i) => {
-    console.log("reject round Friend,delete current notification");
+    // console.log("reject round Friend,delete current notification");
     setFilteredUsers((currentReceived) => ({
       ...currentReceived, // Spread the current state
       filtered: [
@@ -427,7 +422,7 @@ const HomeScreen = ({ navigation }) => {
     ]);
     const id = pendingReceived[i - 1]._id;
     reactRequest(id, "R");
-    getRoundInvitationData();
+    // getRoundInvitationData();
   };
 
   const reactRequest = async (id, react) => {
@@ -660,19 +655,37 @@ const HomeScreen = ({ navigation }) => {
           {
             position: "absolute",
             top: height - 420,
-            left: width - 350,
-            right: "auto",
+            left: width / 2 - 175,
           },
         ]}
       >
-        <Icon name="envelope" size={300} color="#606060" />
+        {/* <Icon name="envelope" size={300} color="#606060" /> */}
+        {isOpened ? (
+          <SvgXml
+            xml={RoundInvitationNewMessage}
+            opacity="0.5"
+            width={350}
+            height={350}
+          />
+        ) : (
+          <SvgXml
+            xml={
+              pendingReceived.length > 0
+                ? RoundInvitationBefore
+                : RoundInvitationAfter
+            }
+            opacity={pendingReceived.length > 0 ? 1 : 0.8}
+            width={350}
+            height={350}
+          />
+        )}
       </TouchableOpacity>
 
       {/* Modal 1: round invitation notification */}
       <Modal isOpen={isOpened} onClose={handleClose}>
         <Modal.Content maxWidth="400px" width="90%">
           <Modal.CloseButton />
-          <Modal.Header>Received Invitations</Modal.Header>
+          <Modal.Header>Rround invitations</Modal.Header>
           <Modal.Body>
             {/* <View style={[styles.modalContent, { width: width * 1 }]}> */}
             {filteredUsers?.filtered?.length > 0 ? (
@@ -686,12 +699,12 @@ const HomeScreen = ({ navigation }) => {
                       m={1}
                       key={index}
                     >
-                      {item.profileImageUrl ? (
+                      {item.avatar ? (
                         <Avatar
                           bg="white"
                           mb="1"
                           size={"md"}
-                          source={{ uri: item.profileImageUrl }}
+                          source={{ uri: item.avatar }}
                         />
                       ) : (
                         <FontAwesome name="check" size={24} color="black" />
@@ -800,23 +813,20 @@ const HomeScreen = ({ navigation }) => {
                             </Modal.Body>
                           </Modal.Content>
                         </Modal>
-                        <AntDesign
+
+                        <TouchableOpacity
                           onPress={() =>
                             acceptRoundFriend(
                               1,
                               filteredUsers.filteredRound[index]
                             )
                           }
-                          name="checksquareo"
-                          size={30}
-                          color="black"
-                        />
-                        <AntDesign
-                          onPress={() => rejectRoundFriend(1)}
-                          name="closesquareo"
-                          size={30}
-                          color="black"
-                        />
+                        >
+                          <SvgXml xml={ReadAllNoti} width={30} height={30} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => rejectRoundFriend(1)}>
+                          <SvgXml xml={Decline} width={30} height={30} />
+                        </TouchableOpacity>
                       </HStack>
                     </HStack>
                   );
@@ -824,10 +834,11 @@ const HomeScreen = ({ navigation }) => {
               </Box>
             ) : (
               <Text
-                marginTop={"30%"}
+                marginTop={"25%"}
                 fontFamily={"Regular"}
-                fontSize="2xl"
+                fontSize="xl"
                 textAlign={"center"}
+                marginBottom={"25%"}
               >
                 No round invitation
               </Text>
@@ -843,256 +854,6 @@ const HomeScreen = ({ navigation }) => {
           roundId={showFinalScore}
         />
       )}
-      {/* Modal 2: score board of Finished Round */}
-      {/* <Modal
-        isOpen={scoreBoardOpen}
-        onClose={handleClose}
-        size="full"
-        style={{ marginTop: "15%", overflow: "hidden", flex: 1 }}
-      >
-        <Modal.Content maxWidth="400px" width="90%" height={"95%"}>
-          <Modal.CloseButton />
-          <Modal.Body>
-            <View>
-              <Box height={"25%"}>
-                <View style={styles.topThreeContainer}>
-                  <View style={styles.stageContainer}>
-                    {topThree[1] ? (
-                      <View
-                        style={[
-                          styles.stage,
-                          topThree[1].rank == 1
-                            ? styles.firstPlace
-                            : topThree[1].rank == 2
-                            ? styles.secondPlace
-                            : topThree[1].rank == 3
-                            ? styles.thirdPlace
-                            : styles.restPlcae,
-                        ]}
-                      >
-                        <Text>{topThree[1]?.nickname}</Text>
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: topThree[1]?.avatar }}
-                          style={{
-                            position: "relative",
-                            right: 5,
-                          }}
-                        />
-                        <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
-                          style={{
-                            position: "absolute",
-                            bottom: 30,
-                            right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
-                          }}
-                        >
-                          <AntDesign
-                            name="Trophy"
-                            size={30}
-                            color={medalColors[topThree[1].medal] || "#49a579"}
-                          />
-                        </Badge>
-                        <Text>
-                          {topThree[1]?.score} | {topThree[2]?.credit}
-                        </Text>
-                      </View>
-                    ) : (
-                      ""
-                    )}
-                  </View>
-                  <View style={styles.stageContainer}>
-                    {topThree[0] ? (
-                      <View
-                        style={[
-                          styles.stage,
-                          topThree[0].rank == 1
-                            ? styles.firstPlace
-                            : topThree[0].rank == 2
-                            ? styles.secondPlace
-                            : topThree[0].rank == 3
-                            ? styles.thirdPlace
-                            : styles.restPlcae,
-                        ]}
-                      >
-                        <Text>{topThree[0]?.nickname}</Text>
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: topThree[0]?.avatar }}
-                          style={{
-                            position: "relative",
-                            right: 5,
-                          }}
-                        />
-                        <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
-                          style={{
-                            position: "absolute",
-                            bottom: 30,
-                            right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
-                          }}
-                        >
-                          <AntDesign
-                            name="Trophy"
-                            size={30}
-                            color={medalColors[topThree[0].medal] || "#49a579"}
-                          />
-                        </Badge>
-                        <Text>
-                          {topThree[0]?.score} | {topThree[0]?.credit}
-                        </Text>
-                      </View>
-                    ) : (
-                      ""
-                    )}
-                  </View>
-                  <View style={styles.stageContainer}>
-                    {topThree[2] ? (
-                      <View
-                        style={[
-                          styles.stage,
-                          topThree[2].rank == 1
-                            ? styles.firstPlace
-                            : topThree[2].rank == 2
-                            ? styles.secondPlace
-                            : topThree[2].rank == 3
-                            ? styles.thirdPlace
-                            : styles.restPlcae,
-                        ]}
-                      >
-                        <Text>{topThree[2]?.nickname}</Text>
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: topThree[2]?.avatar }}
-                          style={{
-                            position: "relative",
-                            right: 5,
-                          }}
-                        />
-                        <Badge
-                          colorScheme="coolGray" // or use any other color scheme if needed
-                          style={{
-                            position: "absolute",
-                            bottom: 30,
-                            right: 10,
-                            backgroundColor: "rgba(255,255,255,0)", // Set badge background color to the medal color
-                            padding: 0, // Adjust padding if necessary
-                          }}
-                        >
-                          <AntDesign
-                            name="Trophy"
-                            size={30}
-                            color={medalColors[topThree[2].medal] || "#49a579"}
-                          />
-                        </Badge>
-
-                        <Text>
-                          {topThree[2]?.score} | {topThree[2]?.credit}
-                        </Text>
-                      </View>
-                    ) : (
-                      ""
-                    )}
-                  </View>
-                </View>
-              </Box>
-              <Box height={"60%"}>
-                <ScrollView style={styles.listContainer}>
-                  <FlatList
-                    data={rest}
-                    keyExtractor={(item) => item.nickname}
-                    renderItem={({ item, index }) => (
-                      <View key={index} style={styles.playerItem}>
-                        <View>
-                          <Text style={styles.rankText}>{item.rank}th</Text>
-                          <MaterialCommunityIcons
-                            name="medal-outline"
-                            size={25}
-                            color={medalColors[item.medal] || "#49a579"}
-                          />
-                        </View>
-
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size="md"
-                          source={{ uri: item?.avatar }}
-                        />
-                        <Text>{item.nickname}</Text>
-                        <Text>
-                          {item.score} | {item.credit}
-                        </Text>
-                      </View>
-                    )}
-                  />
-                </ScrollView>
-              </Box>
-              <Box height={"15%"}>
-                {
-                  rest.filter((item) => item.id === userData.data._id).length >
-                  0
-                    ? rest
-                        .filter((item) => item.id === userData.data._id)
-                        .map((item, index) => (
-                          <View key={index} style={styles.placementContainer}>
-                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
-                              {item.nickname}
-                            </Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${index + 1}th  place`}</Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${item.score} | ${item.credit} `}</Text>
-                          </View>
-                        ))
-                    : topThree
-                        .filter((item) => item.id === userData.data._id)
-                        .map((item, index) => (
-                          <View key={index} style={styles.placementContainer}>
-                            <Text style={{ fontSize: 20, color: "#f9f8f2" }}>
-                              {item.nickname}
-                            </Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${index + 1}th  place`}</Text>
-                            <Text
-                              style={{
-                                fontWeight: "bold",
-                                fontSize: 20,
-                                color: "#f9f8f2",
-                              }}
-                            >{`${item.score} | ${item.credit} `}</Text>
-                          </View>
-                        )) // or you can replace null with some fallback JSX if needed
-                }
-              </Box>
-            </View>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal> */}
 
       <Modal
         isOpen={show10PerRoundValidation}
@@ -1239,3 +1000,78 @@ const styles = StyleSheet.create({
   },
 });
 export default HomeScreen;
+
+const RoundInvitationBefore = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+
+<path fill="#93D8C5"  d="M15.01,35.39c4.84,4.13,9.47,8.07,14.09,12.02c6.07,5.18,12.14,10.36,18.21,15.53c1.95,1.66,3.5,1.62,5.53-0.12
+	c10.38-8.88,20.76-17.76,31.14-26.64c0.27-0.23,0.55-0.45,0.95-0.77c0.03,0.44,0.06,0.74,0.06,1.05c0,11.59,0,23.17,0,34.76
+	c0,2.6-1.38,3.98-3.98,3.98c-20.66,0-41.32,0-61.97,0c-2.66,0-4.02-1.37-4.02-4.05c0-11.51,0-23.03,0-34.54
+	C15.01,36.29,15.01,35.97,15.01,35.39z"/>
+
+<path fill="#93D8C5"   d="M81.59,33.64c-10.28,8.8-20.57,17.61-30.94,26.48c-0.37,0.32-0.92,0.32-1.29,0L18.35,33.57
+	c-0.44-0.37-0.57-0.97-0.34-1.45c0.22-0.45,0.81-0.6,1.04-0.65c1.91-0.44,21.73-0.08,25.17-0.02c12.21,0,24.41,0.01,36.62,0.01
+	c0.46,0.01,0.88,0.25,1.09,0.64C82.17,32.6,82.04,33.24,81.59,33.64z"/>
+
+<path fill="#FF061E" d="M53.59,57.18c-1.75-1.27-4.3-1.65-5.34-0.88c-0.1,0.07-0.34,0.27-0.7,0.45c-0.16-0.8-1.34-5.75-6.66-7.06
+	c0.19-0.41,0.48-0.76,0.93-0.97c0.22-0.1,0.31-0.35,0.21-0.57c-0.1-0.22-0.36-0.31-0.57-0.21c-2.31,1.05-1.68,4.43-1.65,4.57
+	c0.04,0.21,0.22,0.35,0.42,0.35c0.03,0,0.06,0,0.08-0.01c0.23-0.05,0.39-0.27,0.34-0.51c0-0.02-0.17-0.91-0.02-1.82
+	c5.23,1.26,6.04,6.25,6.07,6.47c0,0.02,0.01,0.04,0.01,0.06c-0.46,0.11-0.82,0.09-0.95,0.1c-1.34,0.07-3.94,3.46-3.14,6.83
+	c0.72,3.02,3.88,4.81,6.71,4.73c3.52-0.1,6.66-3.08,6.76-6.42C56.18,60.36,55.24,58.37,53.59,57.18z"/>
+</svg>
+`;
+
+const RoundInvitationAfter = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+
+<path fill="#93D8C5" d="M15.01,35.39c4.84,4.13,9.47,8.07,14.09,12.02c6.07,5.18,12.14,10.36,18.21,15.53c1.95,1.66,3.5,1.62,5.53-0.12
+	c10.38-8.88,20.76-17.76,31.14-26.64c0.27-0.23,0.55-0.45,0.95-0.77c0.03,0.44,0.06,0.74,0.06,1.05c0,11.59,0,23.17,0,34.76
+	c0,2.6-1.38,3.98-3.98,3.98c-20.66,0-41.32,0-61.97,0c-2.66,0-4.02-1.37-4.02-4.05c0-11.51,0-23.03,0-34.54
+	C15.01,36.29,15.01,35.97,15.01,35.39z"/>
+
+<path fill="#93D8C5" d="M81.59,33.64c-10.28,8.8-20.57,17.61-30.94,26.48c-0.37,0.32-0.92,0.32-1.29,0L18.35,33.57
+	c-0.44-0.37-0.57-0.97-0.34-1.45c0.22-0.45,0.81-0.6,1.04-0.65c1.91-0.44,21.73-0.08,25.17-0.02c12.21,0,24.41,0.01,36.62,0.01
+	c0.46,0.01,0.88,0.25,1.09,0.64C82.17,32.6,82.04,33.24,81.59,33.64z"/>
+
+<path fill="gray" d="M53.59,57.18c-1.75-1.27-4.3-1.65-5.34-0.88c-0.1,0.07-0.34,0.27-0.7,0.45c-0.16-0.8-1.34-5.75-6.66-7.06
+	c0.19-0.41,0.48-0.76,0.93-0.97c0.22-0.1,0.31-0.35,0.21-0.57c-0.1-0.22-0.36-0.31-0.57-0.21c-2.31,1.05-1.68,4.43-1.65,4.57
+	c0.04,0.21,0.22,0.35,0.42,0.35c0.03,0,0.06,0,0.08-0.01c0.23-0.05,0.39-0.27,0.34-0.51c0-0.02-0.17-0.91-0.02-1.82
+	c5.23,1.26,6.04,6.25,6.07,6.47c0,0.02,0.01,0.04,0.01,0.06c-0.46,0.11-0.82,0.09-0.95,0.1c-1.34,0.07-3.94,3.46-3.14,6.83
+	c0.72,3.02,3.88,4.81,6.71,4.73c3.52-0.1,6.66-3.08,6.76-6.42C56.18,60.36,55.24,58.37,53.59,57.18z"/>
+</svg>
+`;
+
+const RoundInvitationNewMessage = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+
+<path fill="#93D8C5" d="M20.77,34.47c10.28-8.8,20.57-17.61,30.94-26.48c0.37-0.32,0.92-0.32,1.29,0l31.01,26.55
+	c0.44,0.37,0.57,0.97,0.34,1.45c-0.22,0.45-0.81,0.6-1.04,0.65c-1.91,0.44-21.73,0.08-25.17,0.02c-12.21,0-24.41-0.01-36.62-0.01
+	c-0.46-0.01-0.88-0.25-1.09-0.64C20.19,35.5,20.31,34.87,20.77,34.47z"/>
+
+<path fill="#FF061E" d="M61.76,42.01c-3.71-2.69-9.13-3.49-11.33-1.88c-0.22,0.16-0.71,0.57-1.49,0.96
+	c-0.33-1.7-2.84-12.21-14.14-14.99c0.4-0.87,1.02-1.62,1.98-2.06c0.46-0.21,0.66-0.75,0.46-1.21c-0.21-0.46-0.76-0.66-1.21-0.46
+	c-4.91,2.23-3.56,9.4-3.5,9.71c0.09,0.44,0.47,0.74,0.9,0.74c0.06,0,0.12-0.01,0.18-0.02c0.5-0.1,0.82-0.58,0.72-1.08
+	c-0.01-0.03-0.36-1.92-0.04-3.87c11.09,2.67,12.82,13.27,12.89,13.74c0.01,0.04,0.02,0.08,0.03,0.12c-0.99,0.23-1.74,0.2-2.02,0.22
+	c-2.85,0.14-8.37,7.34-6.66,14.49c1.53,6.4,8.23,10.21,14.25,10.04c7.46-0.21,14.13-6.54,14.35-13.64
+	C67.25,48.77,65.25,44.55,61.76,42.01z"/>
+
+<path fill="#93D8C5" d="M87.38,45.47c0-2.32,0-4.63,0-6.95c0-0.31-0.03-0.61-0.06-1.05c-4.96,1.39-11.42,3.74-18.36,7.82
+c-7.39,4.34-12.83,9.18-16.55,13.02c-4.22-4.09-10.15-9.03-17.98-13.46c-6.29-3.56-12.17-5.87-17.03-7.39c0,9.51,0,19.02,0,28.54
+c-0.22,3.05-0.13,5.5,0,7.22c0.09,1.15,0.22,2.24,1.03,3.04c0.67,0.67,1.67,1.01,3,1.01c20.66,0,41.32,0,61.97,0
+c2.6,0,3.98-1.38,3.98-3.98c0-2.4,0-4.8,0-7.2c0,0,0,0,0-0.01C87.42,63.8,87.44,56.2,87.38,45.47z"/>
+</svg>
+`;
+
+const Decline = `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><rect class="cls-1" x="14.7" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(24.81 60.35) rotate(-134.69)"/><rect class="cls-1" x="14.7" y="22.9" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(60.31 25.08) rotate(135.31)"/></svg>`;
+const ReadAllNoti = `<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <path fill="#191919" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/>
+  <rect fill="#191919" x="13.98" y="26.52" width="11.88" height="4.07" rx="2.03" ry="2.03" transform="translate(28.16 -5.28) rotate(48.58)"/>
+  <rect fill="#191919" x="17.29" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(64.26 18.56) rotate(127.86)"/>
+</svg>`;

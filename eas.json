@@ -17,9 +17,7 @@
         "gradleCommand": ":app:assembleDebug"
       },
       "ios": {
-        "buildConfiguration": "Debug",
-        "simulator": true
-
+        "buildConfiguration": "Debug"
       },
       "channel": "development"
     },

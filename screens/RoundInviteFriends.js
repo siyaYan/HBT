@@ -262,15 +262,22 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
             onPress={addFriend}
             position="absolute"
             bottom="5"
-            width="90%"
             alignSelf="center"
-            mt="auto"
+            mt="5"
+            rounded={30}
+            width="100%"
+            size="lg"
+            bg="#49a579"
+            _text={{
+              color: "#f9f8f2",
+              fontFamily: "Regular Medium",
+              fontSize: "lg",
+            }}
           >
             Add More Friends
           </Button>
         </VStack>
       </Box>
-      {/* </Center> */}
     </NativeBaseProvider>
   );
 };
