@@ -389,7 +389,7 @@ const LoginScreen = ({ navigation }) => {
                     buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
                     cornerRadius={5}
                     style={{ width: 200, height: 50 }}
-                    onPress={loginApple}
+                    // onPress={loginApple}
                   />
                   <Button
                     rounded={30}
