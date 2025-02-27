@@ -13,6 +13,7 @@ import {
   ScrollView,
   Modal,
   Avatar,
+  Badge,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
@@ -249,16 +250,40 @@ const FriendsScreen = ({ navigation }) => {
         <OptionMenu navigation={navigation} />
         <Box mt="9" w="85%">
           <VStack space={1} alignItems="left">
-            <HStack>
-              <SvgXml
-                style={{ transform: [{ translateY: -20 }] }}
-                xml={incomingRequestSVG()}
-                width={35}
-                height={35}
-              />
-              <Text ml={2} fontFamily={"Regular"} fontSize="lg">
-                {received?.length > 0 ? received.length : ""}
-              </Text>
+            <HStack w={"100%"} justifyContent={"space-between"}>
+              {received?.length > 0 ? (
+                <Box>
+                  <SvgXml
+                    // style={{ transform: [{ translateY: -20 }] }}
+                    xml={incomingRequestSVG()}
+                    width={35}
+                    height={35}
+                  />
+                  <Badge // bg="red.400"
+                    colorScheme="danger"
+                    rounded="full"
+                    mt={-8}
+                    mr={-3}
+                    px={1}
+                    py={0}
+                    zIndex={1}
+                    variant="solid"
+                    alignSelf="flex-end"
+                    _text={{
+                      fontSize: 12,
+                    }}
+                  >
+                    {received?.length}
+                  </Badge>
+                </Box>
+              ) : (
+                <SvgXml
+                  // style={{ transform: [{ translateY: -20 }] }}
+                  xml={incomingRequestSVG()}
+                  width={35}
+                  height={35}
+                />
+              )}
             </HStack>
             <Box
               mt={3}
@@ -374,12 +399,54 @@ const FriendsScreen = ({ navigation }) => {
               alignSelf={"center"}
               w="90%"
             />
-            <HStack>
-              <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
-              <Text fontFamily={"Regular"} fontSize="lg">
-                {sent?.length > 0 ? sent.length : ""}
-              </Text>
+            <HStack w={"100%"} justifyContent={"space-between"}>
+              {sent?.length > 0 ? (
+                <Box>
+                  <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
+
+                  <Badge // bg="red.400"
+                    colorScheme="danger"
+                    rounded="full"
+                    mt={-8}
+                    mr={-3}
+                    px={1}
+                    py={0}
+                    zIndex={1}
+                    variant="solid"
+                    alignSelf="flex-end"
+                    _text={{
+                      fontSize: 12,
+                    }}
+                  >
+                    {sent?.length}
+                  </Badge>
+                </Box>
+              ) : (
+                <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
+              )}
             </HStack>
+            {/* <HStack>
+              <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
+              
+              {sent?.length > 0 ? ( 
+                  <Badge 
+                  // bg="red.400"
+                    colorScheme="danger"
+                    rounded="full"
+                    mt={-8}
+                    mr={-3}
+                    px={1}
+                    py={0}
+                    zIndex={1}
+                    variant="solid"
+                    alignSelf="flex-end"
+                    _text={{
+                      fontSize: 12,
+                    }}
+                  >
+                    {sent?.length}
+                  </Badge>) : ""}
+            </HStack> */}
             <Box
               mt={3}
               h="15%"
@@ -560,7 +627,7 @@ const FriendsScreen = ({ navigation }) => {
                         ) : (
                           // <FontAwesome name="check" size={24} color="black" />
                           <SvgXml
-                            xml={acceptSvg("#191919")}
+                            xml={acceptSvg()}
                             width={35}
                             height={35}
                           />
@@ -662,12 +729,7 @@ const unlinkSvg = () => `
   </svg>`;
 
 const acceptSvg = () => `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-    <defs>
-      <style>.cls-1{fill:#000;stroke-width:0px;}</style>
-    </defs>
-    <path class="cls-1" d="M25,4.53C13.71,4.53,4.53,13.72,4.53,25s9.18,20.47,20.47,20.47,20.47-9.18,20.47-20.47S36.29,4.53,25,4.53ZM34.27,19.72l-10.14,13.05c-.69.89-1.97,1.05-2.85.36-.16-.13-.29-.27-.4-.43l-5.05-5.72c-.74-.84-.66-2.13.18-2.87.84-.74,2.13-.66,2.87.18l3.56,4.04,8.62-11.09c.69-.89,1.97-1.05,2.85-.36s1.05,1.97.36,2.85Z"/>
-  </svg>`;
+  <?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><rect class="cls-1" x="13.98" y="26.52" width="11.88" height="4.07" rx="2.03" ry="2.03" transform="translate(28.16 -5.28) rotate(48.58)"/><rect class="cls-1" x="17.29" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(64.26 18.56) rotate(127.86)"/></svg>`;
 
 const declineSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
