@@ -44,7 +44,7 @@ export async function registerUser(
   }
 }
 
-export async function loginUser(id, password) {
+export async function loginUser(id, password, fcmToken) {
   try {
     const response = await fetch(
       // 'http://localhost:8000/habital/v1/login',
@@ -54,7 +54,7 @@ export async function loginUser(id, password) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ id, password }),
+        body: JSON.stringify({ id, password, fcmToken}),
       }
     );
 
@@ -72,26 +72,35 @@ export async function loginUser(id, password) {
   }
 }
 
-export async function loginUserThirdParty(idToken, user, type='google') {
-  const google="http://3.27.94.77:8000/habital/v1/google"
-  const facebook="http://3.27.94.77:8000/habital/v1/facebook"
-  const apple="http://3.27.94.77:8000/habital/v1/apple"
+export async function loginUserThirdParty(idToken, fcmToken, user, type) {
+  var api="google"
+  switch (type) {
+    case 1:
+      api = 'google'
+      break;
+    case 2:
+      api = 'facebook'
+      break;
+    case 3:
+      api = 'apple'
+      break;
+    default:
+  }
   try {
     const response = await fetch(
-      type=='google'?google:type=='facebook'?facebook:apple,
+      `http://3.27.94.77:8000/habital/v1/${api}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ idToken, user }),
+        body: JSON.stringify({ idToken, fcmToken, user }),
       }
     );
 
     const data = await response.json();
     if (data.status == "success") {
-      const res=type=='google'?"Google!":type=='facebook'?"Facebook!":"Apple!"
-      Alert.alert('Success', "You have signed in with "+ res);
+      Alert.alert('Success', "You have signed in with "+ api);
     } else {
       Alert.alert("Unsuccessful", data.message || "Login was unsucessful.");
     }

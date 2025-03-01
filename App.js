@@ -1,12 +1,50 @@
 import React, { useEffect } from "react";
-import { NativeBaseProvider, View, extendTheme } from "native-base";
+import { NativeBaseProvider, extendTheme } from "native-base";
 import AppContainer from "./navigation/AppContainer";
 import { DataProvider } from "./context/DataContext";
 import { RoundProvider } from "./context/RoundContext";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import * as Notifications from "expo-notifications";
+import { messaging } from "./firebaseConfig";
+import { onMessage } from "firebase/messaging";
+
+// async function subscribeToTopic() {
+//   const fcmToken = await getToken(messaging);
+
+//   await fetch("https://iid.googleapis.com/iid/v1/" + fcmToken + "/rel/topics/all-users", {
+//     method: "POST",
+//     headers: {
+//       "Authorization": "key=YOUR_SERVER_KEY",
+//       "Content-Type": "application/json",
+//     },
+//   });
+
+//   console.log("Subscribed to topic!");
+// }
+
+async function prepare() {
+  await SplashScreen.preventAutoHideAsync();
+}
 
 export default function App() {
+  useEffect(() => {
+    prepare();
+    // Handle foreground notifications
+    const unsubscribe = onMessage(messaging, (message) => {
+      console.log("Foreground notification received:", message);
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: message.notification?.title || "No title",
+          body: message.notification?.body || "No body",
+        },
+        trigger: null,
+      });
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const [fontsLoaded] = useFonts({
     Bold: require("./assets/fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf"),
     "Semi Bold": require("./assets/fonts/Montserrat_Alternates/MontserratAlternates-SemiBoldItalic.ttf"),
@@ -15,12 +53,6 @@ export default function App() {
     "Regular Semi Bold": require("./assets/fonts/Source_Sans_3/SourceSans3-SemiBold.ttf"),
     "Regular Medium": require("./assets/fonts/Source_Sans_3/SourceSans3-Medium.ttf"),
   });
-  useEffect(() => {
-    async function prepare() {
-      await SplashScreen.preventAutoHideAsync();
-    }
-    prepare();
-  }, []);
 
   if (!fontsLoaded) {
     return null;

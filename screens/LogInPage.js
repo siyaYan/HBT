@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Input,
   Icon,
-  IconButton,
   Checkbox,
   Pressable,
   Center,
@@ -10,7 +9,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from "native-base";
-import  Path  from "react-native-svg";
+import Path from "react-native-svg";
 import { FontAwesome } from "@expo/vector-icons";
 import {
   VStack,
@@ -22,7 +21,7 @@ import {
   Text,
   Image,
 } from "native-base";
-import { Alert, Linking } from "react-native";
+import { Alert, Linking, TouchableOpacity } from "react-native";
 import {
   loginUser,
   forgetSendEmail,
@@ -36,28 +35,26 @@ import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
-// import { initializeApp } from "firebase/app";
 import {
   getAuth,
   FacebookAuthProvider,
   signInWithCredential,
-  OAuthProvider
+  OAuthProvider,
 } from "firebase/auth";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import OTPInput from "../components/OTPInput";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyCUcdfsmB6eqkaUPQ0xH2ELm4mqA9MhHJ4",
-//   authDomain: "habital-e1c8d.firebaseapp.com",
-//   projectId: "habital-e1c8d",
-//   storageBucket: "habital-e1c8d.appspot.com",
-//   messagingSenderId: "720818502811",
-//   appId: "1:720818502811:web:6516136f1df011ce289a3e",
-//   measurementId: "G-EVZCE105VF",
-// };
+import { getMessaging, getToken } from "firebase/messaging";
 
-// // // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
+async function getFCMToken() {
+  const messaging = getMessaging();
+  const fcmToken = await getToken(messaging);
+
+  if (fcmToken) {
+    console.log("FCM Token get:", fcmToken);
+  }
+  return fcmToken;
+}
 
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
@@ -86,12 +83,14 @@ const LoginScreen = ({ navigation }) => {
       console.log("Signing in...");
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
+      const fcmToken = await getFCMToken();
       const response = await loginUserThirdParty(
         userInfo.idToken,
+        fcmToken,
         userInfo.user,
-        "google"
+        1
       );
-      await afterLogin(response, 1);
+      await afterLogin(response, user, 1);
     } catch (error) {
       console.log(error);
     }
@@ -106,6 +105,7 @@ const LoginScreen = ({ navigation }) => {
         data.accessToken
       );
       const auth = getAuth();
+      const fcmToken = await getFCMToken();
       const res = await signInWithCredential(auth, facebookCredential);
       const user = {
         email: res._tokenResponse.email,
@@ -115,21 +115,56 @@ const LoginScreen = ({ navigation }) => {
       };
       const response = await loginUserThirdParty(
         res._tokenResponse.oauthAccessToken,
+        fcmToken,
         user,
-        "facebook"
+        2
       );
-      await afterLogin(response, 2);
+      await afterLogin(response, user, 2);
     } catch (error) {
       console.log(error);
       // setErrorT(error.code);
     }
   };
 
-  const saveCredentials = async (id, password) => {
+  const loginApple = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      console.log(credential);
+      const fcmToken = await getFCMToken();
+      const user = {
+        email: "test@test.com",
+        name: "testApple",
+        photo: "",
+        emailVerified: "test@test.com",
+      };
+      const response = await loginUserThirdParty(
+        credential.user,
+        fcmToken,
+        user,
+        3
+      );
+      await afterLogin(response, user, 3);
+      // Alert.alert("Login Successful", `User ID: ${credential.user}`);
+      // Handle successful login (send token to backend, store user data, etc.)
+    } catch (error) {
+      if (error.code === "ERR_CANCELED") {
+        Alert.alert("Login Canceled", "User canceled Apple login");
+      } else {
+        Alert.alert("Login Failed", "An error occurred");
+      }
+    }
+  };
+
+  const saveCredentials = async (id, password, fcmToken) => {
     try {
       await SecureStore.setItemAsync(
         "userData",
-        JSON.stringify({ id, password })
+        JSON.stringify({ id, password, fcmToken })
       );
     } catch (error) {
       console.error("Failed to store credentials securely", error);
@@ -140,11 +175,11 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const saveCredentialsThirdParty = async (idToken, type = 1) => {
+  const saveCredentialsThirdParty = async (idToken, user, type) => {
     try {
       await SecureStore.setItemAsync(
         "userData",
-        JSON.stringify({ idToken, type })
+        JSON.stringify({ idToken, fcmToken, user,type })
       );
     } catch (error) {
       console.error("Failed to store credentials securely", error);
@@ -157,12 +192,17 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (submitValidation()) {
-      const response = await loginUser(formData.id, formData.password);
+      const fcmToken = await getFCMToken();
+      const response = await loginUser(
+        formData.id,
+        formData.password,
+        fcmToken
+      );
       await afterLogin(response);
     }
   };
 
-  const afterLogin = async (response, type = 0) => {
+  const afterLogin = async (response, user = {}, type = 0) => {
     if (response.token) {
       const roundInfo = await getRoundInfo(
         response.token,
@@ -171,11 +211,28 @@ const LoginScreen = ({ navigation }) => {
       if (remember && formData?.id && formData?.password) {
         await saveCredentials(formData.id, formData.password);
       } else if (type) {
-        const id =
-          type === 1
-            ? response.data.user.googleId
-            : response.data.user.facebookId;
-        await saveCredentialsThirdParty(id, type);
+        switch (type) {
+          case 1:
+            await saveCredentialsThirdParty(
+              response.data.user.googleId,
+              user,
+              type
+            );
+            break;
+          case 2:
+            await saveCredentialsThirdParty(
+              response.data.user.facebookId,
+              user,
+              type
+            );
+            break;
+          case 3:
+            await saveCredentialsThirdParty(
+              response.data.user.appleId,
+              user,
+              type
+            );
+        }
       }
       updateUserData({
         token: response.token,
@@ -232,7 +289,10 @@ const LoginScreen = ({ navigation }) => {
       setErrors({ password: "Password is required" });
       return false;
     } else {
-      setErrors({ id: "Email/Username is required", password: "Password is required" });
+      setErrors({
+        id: "Email/Username is required",
+        password: "Password is required",
+      });
       return false;
     }
   };
@@ -327,6 +387,68 @@ const LoginScreen = ({ navigation }) => {
                           </Text>
                         </HStack>
                       </Button>
+                      <AppleAuthentication.AppleAuthenticationButton
+                        buttonType={
+                          AppleAuthentication.AppleAuthenticationButtonType
+                            .CONTINUE
+                        }
+                        buttonStyle={
+                          AppleAuthentication.AppleAuthenticationButtonStyle
+                            .WHITE
+                        }
+                        cornerRadius={30}
+                        style={{
+                          width: "100%",
+                          height: 50,
+                          shadowColor: "#000",
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.3,
+                          shadowRadius: 5,
+                        }}
+                        onPress={loginApple}
+                      />
+                      {/* <TouchableOpacity
+                        onPress={loginApple}
+                        style={{
+                          backgroundColor: "black", // Apple button black background
+                          borderRadius: 30,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          height: 70,
+                          width: 70, // Square button to make it round
+                          shadowColor: "#000",
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.3,
+                          shadowRadius: 5,
+                        }}
+                      >
+                        <Image
+                          source={{
+                            uri: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+                          }}
+                          style={{ width: 40, height: 40, tintColor: "white" }} // White Apple logo
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity> */}
+                      <AppleAuthentication.AppleAuthenticationButton
+                        buttonType={
+                          AppleAuthentication.AppleAuthenticationButtonType
+                            .SIGN_IN
+                        }
+                        buttonStyle={
+                          AppleAuthentication.AppleAuthenticationButtonStyle
+                            .WHITE
+                        }
+                        cornerRadius={30}
+                        style={{
+                          // width: '100%',
+                          height: 50, // Increase height for better logo-to-text ratio
+                          shadowColor: "#000",
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.3,
+                          shadowRadius: 5,
+                        }}
+                      />
 
                       <Pressable onPress={() => setShowMoreOptions(true)}>
                         <Text
@@ -377,118 +499,28 @@ const LoginScreen = ({ navigation }) => {
                             </Text>
                           </Pressable>
                           <Text fontFamily={"Regular"} fontSize={"lg"}>
-                            {" "}to start!
+                            {" "}
+                            to start!
                           </Text>
                         </HStack>
                       </VStack>
                     </HStack>
 
-                <VStack space={5} mt="2">
-                <AppleAuthentication.AppleAuthenticationButton
-                    buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-                    buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                    cornerRadius={5}
-                    style={{ width: 200, height: 50 }}
-                    // onPress={loginApple}
-                  />
-                  <Button
-                    rounded={30}
-                    shadow="6"
-                    size="lg"
-                    height="15%"
-                    onPress={() => loginGoogle()}
-                    padding={0}
-                    bg={"white"}
-                    _pressed={{
-                      // below props will only be applied on button is pressed
-                      bg: "gray.100",
-                      _text: {
-                        color: "warmGray.50",
-                      },
-                    }}
-                  >
-                    <HStack
-                      alignItems={"center"}
-                      // space={5}
-                    >
-                      {/* <img src="../assets/google_icon.png" alt="" /> */}
-                      <Image
-                        size={45}
-                        right="5"
-                        source={require("../assets/Buttonicons/google_icon.png")}
-                        alt="google icon"
-                      />
-                      <Text
-                        textAlign={"left"}
-                        fontFamily={"Regular Medium"}
-                        fontSize={"lg"}
-                        color={"#191919"}
-                      >
-                        Continue with Google
-                      </Text>
-
-                      {/* <AntDesign name="google" size={24} color="#f9f8f2" /> */}
-                      {/* <GoogleSigninButton
-                        size={GoogleSigninButton.Size.Icon}
-                        color={GoogleSigninButton.Color.Light}
-                        onPress={signIn}
-                      /> */}
-                    </HStack>
-                  </Button>
-
-                  <Button
-                    rounded={30}
-                    shadow="6"
-                    size="lg"
-                    _pressed={{
-                      // below props will only be applied on button is pressed
-                      backgroundColor: "blue.600",
-                      _text: {
-                        color: "warmGray.50",
-                      },
-                    }}
-                    onPress={loginFb}
-                    backgroundColor="rgb(26,119,242)"
-                  >
-                    <HStack space={3}>
-                      <FontAwesome
-                        name="facebook-f"
-                        size={26}
-                        color="white"
-                        style={{ right: "10" }}
-                      />
-                      <Text
-                        textAlign={"left"}
-                        fontFamily={"Regular Medium"}
-                        fontSize={"lg"}
-                        color={"white"}
-                      >
-                        Continue with Facebook
-                      </Text>
-                    </HStack>
-                  </Button>
-                  <Text
-                    fontFamily={"Regular Semi Bold"}
-                    fontSize={"lg"}
-                    textAlign="center"
-                  >
-                    Or
-                  </Text>
-
-                  <FormControl isRequired isInvalid={"id" in errors}>
-                    <Input
-                      fontSize="lg"
-                      fontFamily={"Regular Medium"}
-                      onChangeText={(value) =>
-                        setData({
-                          ...formData,
-                          id: value,
-                        })
-                      }
-                      placeholder="Email/Username"
-                    />
-                    <FormControl.ErrorMessage></FormControl.ErrorMessage>
-                  </FormControl>
+                    <VStack space={5} mt="2">
+                      <FormControl isRequired isInvalid={"id" in errors}>
+                        <Input
+                          fontSize="lg"
+                          fontFamily={"Regular Medium"}
+                          onChangeText={(value) =>
+                            setData({
+                              ...formData,
+                              id: value,
+                            })
+                          }
+                          placeholder="Email/Username"
+                        />
+                        <FormControl.ErrorMessage></FormControl.ErrorMessage>
+                      </FormControl>
 
                       <FormControl isRequired isInvalid={"password" in errors}>
                         <Input
@@ -608,7 +640,7 @@ const LoginScreen = ({ navigation }) => {
                 >
                   By continuing, you agree to our{" "}
                   <Text
-                    style={{ color: "#6666ff"}}
+                    style={{ color: "#6666ff" }}
                     onPress={() =>
                       Linking.openURL(
                         "https://jocellany.notion.site/Habital-Hub-Privacy-Policy-19ad835ad38480a0a3eacab002d7f67c?pvs=4"
@@ -619,7 +651,7 @@ const LoginScreen = ({ navigation }) => {
                   </Text>{" "}
                   and{" "}
                   <Text
-                    style={{color: "#6666ff" }}
+                    style={{ color: "#6666ff" }}
                     onPress={() =>
                       Linking.openURL(
                         "https://jocellany.notion.site/Habital-Hub-License-Copyright-Agreement-19ad835ad38480a1bde0eab563765e81?pvs=4"
