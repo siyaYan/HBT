@@ -7,9 +7,8 @@ import {
   Modal,
   ScrollView,
 } from "native-base";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Path } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 import {
   VStack,
   HStack,
@@ -56,7 +55,7 @@ const RegisterScreen = ({ navigation }) => {
     },
     password: false,
     confirmPassword: "Please confirm your password.",
-    textProp: "Input your username start with charactor.",
+    textProp: "Username must start with a character",
   });
 
   const [showVerifyModal, setShowVerifyModal] = useState(false);
@@ -337,7 +336,7 @@ const RegisterScreen = ({ navigation }) => {
               <VStack w="100%" h="100%" space={6}>
                 <VStack>
                   <Text
-                    mt={10}
+                    mt={2}
                     ml={2}
                     fontSize="3xl"
                     style={{ fontFamily: "Bold" }}
@@ -366,10 +365,20 @@ const RegisterScreen = ({ navigation }) => {
                       </FormControl.ErrorMessage>
                     ) : (
                       <FormControl.HelperText ml={3} mt={1}>
-                        <Text fontFamily={"Regular"} fontSize="sm">
-                          {showMessage.textProp
-                            ? showMessage.textProp
-                            : "✅ Username"}
+                        <Text fontFamily="Regular" fontSize="sm">
+                          {showMessage.textProp ? (
+                            showMessage.textProp
+                          ) : (
+                            <>
+                              <Svg width={20} height={20} viewBox="0 0 50 50">
+                                <Path
+                                  d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                                  fill="#49a579"
+                                />
+                              </Svg>
+                              Username
+                            </>
+                          )}
                         </Text>
                       </FormControl.HelperText>
                     )}
@@ -377,7 +386,7 @@ const RegisterScreen = ({ navigation }) => {
                   <FormControl>
                     <Input
                       size="lg"
-                      placeholder="Nickname"
+                      placeholder="Nickname (Optional)"
                       value={formData.nickname}
                       onChangeText={(value) =>
                         setData({
@@ -390,7 +399,7 @@ const RegisterScreen = ({ navigation }) => {
                       <Text fontFamily={"Regular"} fontSize="sm">
                         {formData.nickname
                           ? "Hey " + formData.nickname + " 👋🏻"
-                          : "Nick name is optional"}
+                          : "How would you like to be called?"}
                       </Text>
                     </FormControl.HelperText>
                   </FormControl>
@@ -404,10 +413,20 @@ const RegisterScreen = ({ navigation }) => {
                     />
                     {errors.email ? (
                       <FormControl.HelperText ml={3} mt={1}>
-                        <Text fontFamily={"Regular"} fontSize="sm">
-                          {formData.email
-                            ? "✅ Email"
-                            : "Please input your email address"}
+                        <Text fontFamily="Regular" fontSize="sm">
+                          {formData.email ? (
+                            <>
+                              <Svg width={20} height={20} viewBox="0 0 50 50">
+                                <Path
+                                  d="M38.4,15.41c4.3-6.2,8.27-8.39,7.45-10.02-1.13-2.24-9.92-.68-16.82,2.12C17.48,12.21,2.52,23.95,4.17,36.33c.47,3.51,2.15,6.14,3.2,7.55,1.25-4.95,3.91-12.59,10.08-19.77,4.54-5.28,9.7-8.85,9.94-8.59.26.28-5.51,4.82-10.55,12.2-4.48,6.55-6.74,12.94-7.98,17.59.41.11.99.24,1.71.31,0,0,1.03.11,2.1.02,8.96-.7,16.02-9.06,16.02-9.06,6.44-7.63,2.93-11.39,9.71-21.17Z"
+                                  fill="#49a579"
+                                />
+                              </Svg>
+                              Email
+                            </>
+                          ) : (
+                            "Please input your email address"
+                          )}
                         </Text>
                       </FormControl.HelperText>
                     ) : (
