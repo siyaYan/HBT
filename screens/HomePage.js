@@ -685,7 +685,7 @@ const HomeScreen = ({ navigation }) => {
       <Modal isOpen={isOpened} onClose={handleClose}>
         <Modal.Content maxWidth="400px" width="90%">
           <Modal.CloseButton />
-          <Modal.Header>Rround invitations</Modal.Header>
+          <Modal.Header>Round invitations</Modal.Header>
           <Modal.Body>
             {/* <View style={[styles.modalContent, { width: width * 1 }]}> */}
             {filteredUsers?.filtered?.length > 0 ? (
