@@ -24,8 +24,8 @@ import {
   deleteFriendOrWithdrawRequestById,
 } from "../components/Endpoint";
 import Background from "../components/Background";
-import { Feather } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+// import { Feather } from "@expo/vector-icons";
+// import { Entypo } from "@expo/vector-icons";
 import { SvgXml } from "react-native-svg";
 
 const InviteScreen = ({ navigation }) => {
@@ -159,10 +159,9 @@ const InviteScreen = ({ navigation }) => {
                   />
                   <FormControl.ErrorMessage ml={2} mt={2}>
                     <Text fontFamily={"Regular"} fontSize="sm">
-                      
-                    {!formData.userId
-      ? "Please enter a username."
-      : "No users were found matching your search."}
+                      {!formData.userId
+                        ? "Please enter a username."
+                        : "No users were found matching your search."}
                     </Text>
                   </FormControl.ErrorMessage>
                 </FormControl>
@@ -267,8 +266,8 @@ const InviteScreen = ({ navigation }) => {
                               >
                                 <SvgXml
                                   xml={myCircleSVG("#191919")}
-                                  width={30}
-                                  height={30}
+                                  width={25}
+                                  height={25}
                                 />
                                 <Text fontFamily={"Regular"} fontSize="xs">
                                   Linked
@@ -277,38 +276,71 @@ const InviteScreen = ({ navigation }) => {
                             ) : pend != false ? (
                               pend.data.senderId == userData.data._id ? (
                                 <Pressable onPress={handleCancel}>
-                                  <SvgXml
-                                    xml={widthdrawSvg()}
-                                    width={30}
-                                    height={30}
-                                  />
-                                  <Text fontFamily={"Regular"} fontSize="xs">
-                                    Withdraw
-                                  </Text>
+                                  <VStack alignItems="center" space={1}>
+                                    <SvgXml
+                                      xml={widthdrawSvg()}
+                                      width={25}
+                                      height={25}
+                                    />
+                                    <Text fontFamily={"Regular"} fontSize="xs">
+                                      Withdraw
+                                    </Text>
+                                  </VStack>
                                 </Pressable>
                               ) : (
+                                // <Pressable onPress={handleAccept}>
+                                //   <AntDesign
+                                //     name="checkcircleo"
+                                //     size={30}
+                                //     color="#191919"
+                                //   />
+                                //   <Text fontFamily={"Regular"} fontSize="xs">
+                                //     Accept
+                                //   </Text>
+                                // </Pressable>
                                 <Pressable onPress={handleAccept}>
-                                  <AntDesign
-                                    name="checkcircleo"
-                                    size={30}
-                                    color="#191919"
-                                  />
-                                  <Text fontFamily={"Regular"} fontSize="xs">
-                                    Accept
-                                  </Text>
+                                  <VStack alignItems="center" space={1}>
+                                    <SvgXml
+                                      xml={acceptSvg()}
+                                      width={25}
+                                      height={25}
+                                    />
+                                    <Text fontFamily={"Regular"} fontSize="xs">
+                                      Accept
+                                    </Text>
+                                  </VStack>
                                 </Pressable>
                               )
                             ) : (
-                              <Pressable onPress={handleConnect}>
-                                <Feather
-                                  name="send"
-                                  size={30}
-                                  color="#191919"
+                              <Pressable
+                                onPress={handleConnect}
+                                style={{
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <SvgXml
+                                  xml={connectSvg()}
+                                  width={30}
+                                  height={30}
                                 />
                                 <Text fontFamily={"Regular"} fontSize="xs">
                                   Connect
                                 </Text>
                               </Pressable>
+                              // <Pressable onPress={handleConnect}>
+                              //   <VStack alignItems="center" space={1}>
+                              //   <Feather
+                              //     name="send"
+                              //     size={25}
+                              //     color="#191919"
+                              //   />
+                              //   <Text fontFamily={"Regular"} fontSize="xs">
+                              //     Connect
+                              //   </Text>
+                              //   </VStack>
+                              // </Pressable>
                             )}
                           </Box>
                         </HStack>
@@ -354,3 +386,9 @@ const myCircleSVG = () => `
   <path class="cls-1" d="M44.93,38.98h-14.61c-.55,0-.99-.44-.99-.99s.44-.99.99-.99h14.61c.55,0,.99.44.99.99s-.44.99-.99.99Z"/>
   <path class="cls-1" d="M44.93,43.35h-14.61c-.55,0-.99-.44-.99-.99s.44-.99.99-.99h14.61c.55,0,.99.44.99.99s-.44.99-.99.99Z"/>
 </svg>`;
+
+const acceptSvg = () => `
+  <?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><rect class="cls-1" x="13.98" y="26.52" width="11.88" height="4.07" rx="2.03" ry="2.03" transform="translate(28.16 -5.28) rotate(48.58)"/><rect class="cls-1" x="17.29" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(64.26 18.56) rotate(127.86)"/></svg>`;
+
+const connectSvg = () =>
+  `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke:#000;stroke-miterlimit:10;}</style></defs><path class="cls-1" d="M31.67,42.77c-.89,0-1.73-.35-2.38-1.01l-.13-.13-5.8-15.07-14.99-5.72-.14-.13c-.88-.86-1.21-2.08-.9-3.26.32-1.19,1.22-2.08,2.41-2.38l14.44-3.69,14.32-4.02c1.18-.33,2.41-.01,3.27.86.87.87,1.19,2.09.86,3.27l-4.03,14.34-3.68,14.42c-.3,1.19-1.19,2.09-2.38,2.41-.29.08-.59.12-.88.12ZM30.72,40.6c.38.32.88.42,1.36.29.54-.14.95-.56,1.09-1.1l3.69-14.44,4.03-14.37c.15-.54,0-1.1-.39-1.49s-.96-.54-1.49-.39l-14.34,4.03-14.46,3.69c-.54.14-.95.54-1.1,1.08-.13.49-.02.98.29,1.36l15.37,5.86,5.95,15.46Z"/><path class="cls-1" d="M24.07,26.76c-.23,0-.47-.09-.64-.27-.36-.36-.36-.93,0-1.29l6.91-6.91c.36-.36.93-.36,1.29,0s.36.93,0,1.29l-6.91,6.91c-.18.18-.41.27-.64.27Z"/></svg>`;
