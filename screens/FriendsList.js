@@ -17,7 +17,6 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import Background2 from "../components/Background2";
-import { Entypo } from "@expo/vector-icons";
 import {
   getFriends,
   deleteFriendOrWithdrawRequestById,
@@ -28,9 +27,8 @@ import {
   getNoteUpdate,
 } from "../components/Endpoint";
 import { useFocusEffect } from "@react-navigation/native";
-import { SwipeListView } from "react-native-swipe-list-view";
 import { SvgXml } from "react-native-svg";
-import { TouchableOpacity } from "react-native";
+
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();

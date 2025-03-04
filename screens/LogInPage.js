@@ -21,7 +21,7 @@ import {
   Text,
   Image,
 } from "native-base";
-import { Alert, Linking, TouchableOpacity } from "react-native";
+import { Alert, Linking } from "react-native";
 import {
   loginUser,
   forgetSendEmail,

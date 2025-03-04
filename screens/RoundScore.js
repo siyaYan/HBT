@@ -5,6 +5,7 @@ import { getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
+
 function calculateEndDate(date, days) {
   const result = new Date(date);
   result.setDate(result.getDate() + days);

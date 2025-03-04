@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  Center,
   Box,
   VStack,
   HStack,
@@ -18,14 +17,12 @@ import { useData } from "../context/DataContext";
 import {
   connectByUserId,
   findByUserIdAndUsername,
-  getFriends,
   reactReceivedRequest,
   getRelationByUserId,
   deleteFriendOrWithdrawRequestById,
 } from "../components/Endpoint";
 import Background from "../components/Background";
-// import { Feather } from "@expo/vector-icons";
-// import { Entypo } from "@expo/vector-icons";
+
 import { SvgXml } from "react-native-svg";
 
 
