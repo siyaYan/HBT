@@ -8,7 +8,11 @@ import AccountStackNavigator from "../components/AccountStackNavigator";
 import RoundStackNavigator from "../components/RoundStackNavigator";
 import ForumStackNavigator from "../components/ForumStackNavigator";
 import * as SecureStore from "expo-secure-store";
-import { loginUser, getRoundInfo } from "../components/Endpoint";
+import {
+  loginUser,
+  getRoundInfo,
+  loginUserThirdParty,
+} from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
 import InviteScreen from "../screens/InviteFriends";
@@ -53,10 +57,46 @@ export default function AppContainer() {
         // console.log(
         //   "Credentials successfully loaded for user " + storedCredentials
         // );
-        const response = await loginUser(
-          storedCredentials.id,
-          storedCredentials.password
-        );
+        var response;
+        JSON.stringify({ idToken, fcmToken, type });
+        if (storedCredentials?.type) {
+          switch (storedCredentials.type) {
+            case 1:
+              response = await loginUserThirdParty(
+                storedCredentials.idToken,
+                storedCredentials.fcmToken,
+                storedCredentials.user,
+                1
+              );
+              break;
+            case 2:
+              response = await loginUserThirdParty(
+                storedCredentials.idToken,
+                storedCredentials.fcmToken,
+                storedCredentials.user,
+                2
+              );
+              break;
+            case 3:
+              response = await loginUserThirdParty(
+                storedCredentials.idToken,
+                storedCredentials.fcmToken,
+                storedCredentials.user,
+                3
+              );
+              break;
+            default:
+              idToken = storedCredentials.id;
+              break;
+          }
+        } else {
+          response = await loginUser(
+            storedCredentials.id,
+            storedCredentials.password,
+            storedCredentials.fcmToken
+          );
+        }
+
         // console.log('response',response);
         if (response.token) {
           const roundInfo = await getRoundInfo(

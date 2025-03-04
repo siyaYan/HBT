@@ -1,4 +1,3 @@
-import { Center } from 'native-base';
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SvgXml } from 'react-native-svg';

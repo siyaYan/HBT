@@ -22,7 +22,6 @@ import {
 } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import { SvgXml } from "react-native-svg";
@@ -111,12 +110,6 @@ const AccountSettingScreen = ({ navigation }) => {
 
     try {
       if (!result.canceled) {
-        // Compress the image before upload
-        // const compressedImage = await ImageManipulator.manipulateAsync(
-        //   result.assets[0].uri,
-        //   [{ resize: { width: 800 } }], // Reduce resolution
-        //   { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress quality
-        // );
         setSelectedImage(result); // Update UI with compressed image
 
         const response = await updateAvatar(

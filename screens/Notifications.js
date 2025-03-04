@@ -319,7 +319,7 @@ const NotificationScreen = ({ navigation }) => {
                 ) : (
                   <SvgXml xml={myCircleSVG("#191919")} width={35} height={35} />
                 )}
-{/* 
+                {/* 
                 <Pressable onPress={() => clearAll("friendrequests")}>
                   <SvgXml xml={readAllSvg()} width={35} height={35} />
                 </Pressable> */}
@@ -493,7 +493,7 @@ const NotificationScreen = ({ navigation }) => {
                       width={30}
                       height={30}
                     />
-                       <Badge // bg="red.400"
+                    <Badge // bg="red.400"
                       colorScheme="danger"
                       rounded="full"
                       mt={-8}
@@ -637,7 +637,7 @@ const NotificationScreen = ({ navigation }) => {
                 </Text>
               </HStack>
               <Box w={"96%"} h={"40%"} alignSelf={"center"}>
-                <ScrollView w={"100%"} h="40%">       
+                <ScrollView w={"100%"} h="40%">
                   {history?.length > 0 ? (
                     <Box my="2" w={"95%"} alignSelf={"center"}>
                       {history?.map((item, index) =>
