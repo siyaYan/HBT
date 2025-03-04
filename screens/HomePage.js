@@ -836,11 +836,11 @@ const HomeScreen = ({ navigation }) => {
               <Text
                 marginTop={"25%"}
                 fontFamily={"Regular"}
-                fontSize="xl"
+                fontSize="lg"
                 textAlign={"center"}
                 marginBottom={"25%"}
               >
-                No round invitation
+                No round invitation yet :)
               </Text>
             )}
             {/* </View> */}

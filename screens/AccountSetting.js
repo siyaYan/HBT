@@ -561,7 +561,7 @@ const AccountSettingScreen = ({ navigation }) => {
                     rounded="30"
                     fontFamily={"Regular Medium"}
                     size="lg"
-                    mr={3}
+                    mr={2.5}
                     w="93%"
                     placeholder="Nickname"
                     value={formData.nickname}
@@ -576,8 +576,9 @@ const AccountSettingScreen = ({ navigation }) => {
                           ? "black"
                           : "grey"
                       )}
-                      width={40}
-                      height={40}
+                      width={35}
+                      height={35}
+                      style={{ marginTop: 4 }}
                     />
                   </Pressable>
                 </Box>
@@ -612,7 +613,7 @@ const AccountSettingScreen = ({ navigation }) => {
                     rounded="30"
                     fontFamily={"Regular Medium"}
                     size="lg"
-                    mr={3}
+                    mr={2.5}
                     w="93%"
                     placeholder="e.g. JohnDoe123"
                     value={formData.username}
@@ -629,8 +630,9 @@ const AccountSettingScreen = ({ navigation }) => {
                           ? "black"
                           : "grey"
                       )}
-                      width={40}
-                      height={40}
+                      width={35}
+                      height={35}
+                      style={{ marginTop: 4 }}
                     />
                   </Pressable>
                 </Box>
@@ -664,7 +666,7 @@ const AccountSettingScreen = ({ navigation }) => {
                     rounded="30"
                     fontFamily={"Regular Medium"}
                     size="lg"
-                    mr={3}
+                    mr={2.5}
                     w="93%"
                     placeholder="Email"
                     value={formData.email}
@@ -677,8 +679,9 @@ const AccountSettingScreen = ({ navigation }) => {
                           ? "black"
                           : "grey"
                       )}
-                      width={40}
-                      height={40}
+                      width={35}
+                      height={35}
+                      style={{ marginTop: 4 }}
                     />
                   </Pressable>
                 </Box>
@@ -781,11 +784,15 @@ const AccountSettingScreen = ({ navigation }) => {
                   size="lg"
                   px={5}
                   // variant="unstyled"
+                  height={12}
                   variant="outline"
                   borderRadius="full"
                   width={"100%"}
                   style={{
-                    borderColor: "red",
+                    borderColor: "red.500",
+                  }}
+                  _pressed={{
+                    bg: "#rgba(250,250,250,0.5)",
                   }}
                 >
                   <HStack>
@@ -812,7 +819,7 @@ const AccountSettingScreen = ({ navigation }) => {
               </Modal.Header>
               <Modal.Body>
                 <Text>
-                  This will permanently delete your account, including all your
+                  This can't be undone, permanently delete your account, including all your
                   history and records of progress.{" "}
                 </Text>
               </Modal.Body>
@@ -842,29 +849,6 @@ const AccountSettingScreen = ({ navigation }) => {
                     Delete
                   </Button>
                 </Button.Group>
-                {/* <Button.Group space={2}>
-                <Button
-                  rounded={30}
-                  width="48%"
-                  size={"md"}
-                  _text={{
-                    color: "#f9f8f2",
-                  }}
-                  colorScheme="#606060"
-                  onPress={() => setModalVisible(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  rounded={30}
-                  width="48%"
-                  size={"md"}
-                  colorScheme="#ff061e"
-                  onPress={deleteAccount}
-                >
-                  Delete
-                </Button>
-              </Button.Group> */}
               </Modal.Footer>
             </Modal.Content>
           </Modal>

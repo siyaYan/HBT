@@ -145,8 +145,8 @@ export default function AuthenticatedScreens({ navigation }) {
                     xml={uploadSvg(
                       accessibilityState.selected ? "#49a579" : "#191919"
                     )}
-                    width={28}
-                    height={28}
+                    width={30}
+                    height={30}
                     top={0}
                   />
                   <Text style={styles.tabLabel(accessibilityState.selected)}>

@@ -216,11 +216,10 @@ const RoundInfoScreen = ({ route, navigation }) => {
               (round.isAllowedInvite || round.userId == userData.data._id) && (
                 <Button
                   onPress={inviteFriend}
-                  mt="5"
+                  mt="2"
                   width="100%"
                   rounded={30}
                   size="lg"
-                  rounded={30}
                   bg="#49a579"
                   _text={{
                     color: "#f9f8f2",
