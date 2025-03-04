@@ -199,9 +199,17 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                       {/* If already active, then hide invite button, show as linked */}
                       {friendInRound ? (
                         friendStatus === "A" ? (
-                          <SvgXml xml={circleSvg("#606060")} width={30} height={30} />
+                          <SvgXml
+                            xml={circleSvg("rgba(96, 96, 96, 0.3)")}
+                            width={30}
+                            height={30}
+                          />
                         ) : friendStatus === "P" ? (
-                          <Feather name="refresh-cw" size={30} color="#606060" />
+                          <Feather
+                            name="refresh-cw"
+                            size={30}
+                            color="rgba(96, 96, 96, 0.3)"
+                          />
                         ) : (
                           <Pressable
                             onPress={() => {
@@ -221,23 +229,22 @@ const RoundInviteFriendsScreen = ({ route, navigation }) => {
                           </Pressable>
                         )
                       ) : (
-
                         <Pressable
-                        onPress={() => {
-                         console.log("item", item);
+                          onPress={() => {
+                            console.log("item", item);
                             handlePressInvite(item);
-                        }}
-                        style={{
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <SvgXml xml={connectSvg()} width={30} height={30} />
-                        <Text fontFamily={"Regular"} fontSize="xs">
-                          Invite
-                        </Text>
-                      </Pressable>
+                          }}
+                          style={{
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <SvgXml xml={connectSvg()} width={30} height={30} />
+                          <Text fontFamily={"Regular"} fontSize="xs">
+                            Invite
+                          </Text>
+                        </Pressable>
                       )}
                     </HStack>
                   );

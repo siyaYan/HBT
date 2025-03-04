@@ -430,12 +430,8 @@ const NotificationScreen = ({ navigation }) => {
                                     source={{ uri: item.profileImageUrl }}
                                   />
                                 ) : (
-                                  // <FontAwesome name="check" size={24} color="black" />
-                                  <SvgXml
-                                    xml={acceptSvg()}
-                                    width={25}
-                                    height={25}
-                                  />
+                                  <FontAwesome name="check" size={24} color="black" />
+                                 
                                 )}
 
                                 <VStack>
