@@ -252,6 +252,7 @@ const FriendsScreen = ({ navigation }) => {
         <OptionMenu navigation={navigation} />
         <Box mt="9" w="85%">
           <VStack space={1} alignItems="left">
+             {/* First Section */}
             <HStack w={"100%"} justifyContent={"space-between"}>
               {received?.length > 0 ? (
                 <Box>
@@ -287,6 +288,7 @@ const FriendsScreen = ({ navigation }) => {
                 />
               )}
             </HStack>
+            
             <Box
               mt={3}
               h="15%"
@@ -379,12 +381,6 @@ const FriendsScreen = ({ navigation }) => {
                           </Text>
                         </VStack>
                       </HStack>
-                      {/* <Text fontFamily={"Regular"} fontSize="lg">
-                        {received[1].username}
-                      </Text>
-                      <Text fontFamily={"Regular"} fontSize="lg">
-                        {received[1].nickname}
-                      </Text> */}
                       <HStack space="3">
                         <Pressable onPress={() => acceptFriend(2)}>
                           <SvgXml xml={acceptSvg()} width={25} height={25} />
@@ -409,7 +405,7 @@ const FriendsScreen = ({ navigation }) => {
                 </Text>
               )}
             </Box>
-
+            
             <Divider
               m="2"
               _light={{
@@ -421,6 +417,7 @@ const FriendsScreen = ({ navigation }) => {
               alignSelf={"center"}
               w="90%"
             />
+            {/* Second section */}
             <HStack w={"100%"} justifyContent={"space-between"}>
               {sent?.length > 0 ? (
                 <Box>
@@ -522,6 +519,7 @@ const FriendsScreen = ({ navigation }) => {
                 </Text>
               )}
             </Box>
+            
             <Divider
               m="2"
               _light={{
@@ -616,16 +614,10 @@ const FriendsScreen = ({ navigation }) => {
                               source={{ uri: item.profileImageUrl }}
                             />
                           ) : (
-                            // <FontAwesome name="check" size={24} color="black" />
-                            <SvgXml xml={acceptSvg()} width={25} height={25} />
+                            <FontAwesome name="check" size={24} color="black" />
+                            // <SvgXml xml={acceptSvg()} width={25} height={25} />
                           )}
-                          {/* <Text fontFamily={"Regular"} fontSize="md">
-                          {item.username}
-                        </Text>
-                        <Text fontFamily={"Regular"} fontSize="md">
-                          {item.nickname}
-                        </Text>
-                        <Avatar size="md" source={{ uri: item.profileImageUrl }} /> */}
+                          
                           <VStack>
                             <Text fontSize="lg" fontWeight="bold">
                               {item.nickname}
