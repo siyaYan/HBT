@@ -617,13 +617,14 @@ const LoginScreen = ({ navigation }) => {
 
                       <Pressable onPress={() => setShowMoreOptions(false)}>
                         <Text
+                          bottom={"7"}
                           fontFamily={"Regular Semi Bold"}
                           fontSize={"lg"}
                           textAlign="center"
                           color="#49a579"
                           textDecorationLine="underline"
                         >
-                          Log in with your social account
+                          Social login options
                         </Text>
                       </Pressable>
                     </VStack>

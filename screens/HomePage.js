@@ -545,7 +545,7 @@ const HomeScreen = ({ navigation }) => {
                     round.level
                   );
                 }}
-                rounded="30"
+                rounded="20"
                 mt="5"
                 width="80%"
                 height="100"
@@ -592,7 +592,7 @@ const HomeScreen = ({ navigation }) => {
                     style={{
                       color: "#FFFFFF",
                       fontFamily: "Regular Semi Bold",
-                      fontSize: 20, // Use a number for fontSize instead of "lg"
+                      fontSize: 15, // Use a number for fontSize instead of "lg"
                     }}
                   >
                     {formattedDifference} (

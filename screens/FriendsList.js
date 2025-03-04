@@ -211,14 +211,16 @@ const FriendsScreen = ({ navigation }) => {
     }
   };
   const deleteCurrent = (item, i) => {
-    if (item == "sent") {
-      console.log("delete current item");
-      setSent((currentSent) => [
-        ...currentSent.slice(0, i - 1),
-        ...currentSent.slice(i),
-      ]);
-      const id = sent[i - 1]?._id;
-      deleteFriendOrRequestByID(id);
+    if (item === "sent") {
+      console.log("Deleting sent invite at index:", i);
+
+      const id = sent[i]?._id; // Ensure correct ID
+      if (id) {
+        deleteFriendOrRequestByID(id);
+      }
+
+      // Corrected array slicing logic (remove the item at index i)
+      setSent((currentSent) => currentSent.filter((_, index) => index !== i));
     }
     if (item === "friend") {
       setShowModal(false);
@@ -293,18 +295,17 @@ const FriendsScreen = ({ navigation }) => {
                       {received[0].nickname}
                     </Text>
                     <HStack space="3">
-                      <SvgXml
-                        onPress={() => acceptFriend(1)}
-                        xml={acceptSvg()}
-                        width={30}
-                        height={30}
-                      />
-                      <SvgXml
-                        onPress={() => rejectFriend(1)}
-                        xml={declineSvg()}
-                        width={30}
-                        height={30}
-                      />
+                      <Pressable onPress={() => acceptFriend(1)}>
+                        <SvgXml xml={acceptSvg()} width={25} height={25} />
+                      </Pressable>
+                      <Pressable onPress={() => rejectFriend(1)}>
+                        <SvgXml
+                          onPress={() => rejectFriend(1)}
+                          xml={declineSvg()}
+                          width={25}
+                          height={25}
+                        />
+                      </Pressable>
                     </HStack>
                   </HStack>
                   {received?.length > 1 ? (
@@ -333,18 +334,12 @@ const FriendsScreen = ({ navigation }) => {
                         {received[1].nickname}
                       </Text>
                       <HStack space="3">
-                        <SvgXml
-                          onPress={() => acceptFriend(2)}
-                          xml={acceptSvg()}
-                          width={30}
-                          height={30}
-                        />
-                        <SvgXml
-                          onPress={() => rejectFriend(2)}
-                          xml={declineSvg()}
-                          width={30}
-                          height={30}
-                        />
+                        <Pressable onPress={() => acceptFriend(2)}>
+                          <SvgXml xml={acceptSvg()} width={25} height={25} />
+                        </Pressable>
+                        <Pressable onPress={() => rejectFriend(2)}>
+                          <SvgXml xml={declineSvg()} width={25} height={25} />
+                        </Pressable>
                       </HStack>
                     </HStack>
                   ) : (
@@ -382,84 +377,68 @@ const FriendsScreen = ({ navigation }) => {
             </HStack>
             <Box
               mt={3}
-              h="15%"
+              h="16%"
               w={"90%"}
               alignSelf={"center"}
               justifyContent={"center"}
             >
               {sent?.length > 0 ? (
-                <VStack space={3}>
-                  <HStack
-                    w={"100%"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
-                    {sent[0] && sent[0].profileImageUrl ? (
-                      <Avatar
-                        bg="white"
-                        mb="1"
-                        size={"md"}
-                        source={{ uri: sent[0].profileImageUrl }}
-                      />
-                    ) : (
-                      <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                        <AntDesign name="user" size={20} color="black" />
-                      </Avatar>
-                    )}
-                    <Text fontFamily={"Regular"} fontSize="lg">
-                      {sent[0].username}
-                    </Text>
-                    <Text fontFamily={"Regular"} fontSize="lg">
-                      {sent[0].nickname}
-                    </Text>
-                    <VStack justifyContent={"center"} alignItems={"center"}>
-                      <Pressable onPress={() => deleteCurrent("sent", 1)}>
-                        <SvgXml xml={widthdrawSvg()} width={30} height={30} />
-                      </Pressable>
-                      <Text fontFamily={"Regular"} fontSize="10">
-                        Withdraw
-                      </Text>
-                    </VStack>
-                  </HStack>
-                  {sent?.length > 1 ? (
-                    <HStack
-                      w={"100%"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      {sent[1] && sent[1].profileImageUrl ? (
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size={"md"}
-                          source={{ uri: sent[1].profileImageUrl }}
-                        />
-                      ) : (
-                        <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                          <AntDesign name="user" size={20} color="black" />
-                        </Avatar>
-                      )}
+                <ScrollView w={"100%"}>
+                  <VStack space={3}>
+                    {sent.map((item, index) => (
+                      <HStack
+                        key={item._id}
+                        w={"100%"}
+                        alignItems={"center"}
+                        justifyContent={"space-between"}
+                      >
+                        <HStack alignItems="center" space={6} p={2}>
+                          {item.profileImageUrl ? (
+                            <Avatar
+                              bg="white"
+                              mb="1"
+                              size={"md"}
+                              source={{ uri: item.profileImageUrl }}
+                            />
+                          ) : (
+                            <Avatar bg="white" mb="1" size="md" borderWidth={2}>
+                              <AntDesign name="user" size={20} color="black" />
+                            </Avatar>
+                          )}
 
-                      <Text fontFamily={"Regular"} fontSize="lg">
-                        {sent[1].username}
-                      </Text>
-                      <Text fontFamily={"Regular"} fontSize="lg">
-                        {sent[1].nickname}
-                      </Text>
+                          <VStack>
+                            <Text fontSize="lg" fontWeight="bold">
+                              {item.nickname}
+                            </Text>
+                            <Text fontSize="sm" color="gray.500">
+                              @{item.username}
+                            </Text>
+                          </VStack>
+                        </HStack>
 
-                      <VStack justifyContent={"center"} alignItems={"center"}>
-                        <Pressable onPress={() => deleteCurrent("sent", 2)}>
-                          <SvgXml xml={widthdrawSvg()} width={30} height={30} />
-                        </Pressable>
-                        <Text fontFamily={"Regular"} fontSize="10">
-                          Withdraw
-                        </Text>
-                      </VStack>
-                    </HStack>
-                  ) : (
-                    ""
-                  )}
-                </VStack>
+                        <VStack justifyContent={"center"} alignItems={"center"}>
+                          <Pressable
+                            onPress={() => deleteCurrent("sent", index)}
+                            style={{
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <SvgXml
+                              xml={widthdrawSvg()}
+                              width={25}
+                              height={25}
+                            />
+                          </Pressable>
+                          <Text fontFamily={"Regular"} fontSize="10">
+                            Withdraw
+                          </Text>
+                        </VStack>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </ScrollView>
               ) : (
                 <Text
                   marginTop={"-10%"}
@@ -550,22 +529,25 @@ const FriendsScreen = ({ navigation }) => {
                         m={1}
                         key={index}
                       >
-                        {item.profileImageUrl ? (
-                          <Avatar
-                            bg="white"
-                            mb="1"
-                            size={"md"}
-                            source={{ uri: item.profileImageUrl }}
-                          />
-                        ) : (
-                          // <FontAwesome name="check" size={24} color="black" />
-                          <SvgXml
-                            xml={acceptSvg("#191919")}
-                            width={35}
-                            height={35}
-                          />
-                        )}
-                        <Text fontFamily={"Regular"} fontSize="md">
+                        <HStack
+                          alignItems="center"
+                          space={6}
+                          p={2}
+                          // borderBottomWidth={1}
+                          // borderColor="#ddd"
+                        >
+                          {item.profileImageUrl ? (
+                            <Avatar
+                              bg="white"
+                              mb="1"
+                              size={"md"}
+                              source={{ uri: item.profileImageUrl }}
+                            />
+                          ) : (
+                            // <FontAwesome name="check" size={24} color="black" />
+                            <SvgXml xml={acceptSvg()} width={25} height={25} />
+                          )}
+                          {/* <Text fontFamily={"Regular"} fontSize="md">
                           {item.username}
                         </Text>
                         <Text fontFamily={"Regular"} fontSize="md">
@@ -573,8 +555,9 @@ const FriendsScreen = ({ navigation }) => {
                         </Text>
                         <Pressable
                           onPress={() => deleteOption(index + 1)}
-                          style={{ transform: [{ translateY: -3 }] }}
+                          // style={{ transform: [{ translateY: -3 }] }}
                         >
+                          {/* <SvgXml xml={unlinkSvg()} width={25} height={25} /> */}
                           <Image
                             size={8}
                             source={require("../assets/UIicons/Unlink.png")}
