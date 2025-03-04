@@ -22,6 +22,19 @@ import { onMessage } from "firebase/messaging";
 
 //   console.log("Subscribed to topic!");
 // }
+const registerForPushNotifications = async () => {
+  try {
+    // Request notification permissions
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Notification permissions not granted");
+      return;
+    }
+
+  } catch (error) {
+    console.error("Error push permission:", error);
+  }
+};
 
 async function prepare() {
   await SplashScreen.preventAutoHideAsync();
@@ -30,6 +43,7 @@ async function prepare() {
 export default function App() {
   useEffect(() => {
     prepare();
+    registerForPushNotifications();
     // Handle foreground notifications
     const unsubscribe = onMessage(messaging, (message) => {
       console.log("Foreground notification received:", message);

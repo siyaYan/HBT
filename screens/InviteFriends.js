@@ -28,6 +28,7 @@ import { Feather } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { SvgXml } from "react-native-svg";
 
+
 const InviteScreen = ({ navigation }) => {
   useEffect(() => {
     console.log(userData, "invite page");
@@ -159,10 +160,15 @@ const InviteScreen = ({ navigation }) => {
                   />
                   <FormControl.ErrorMessage ml={2} mt={2}>
                     <Text fontFamily={"Regular"} fontSize="sm">
-                      
-                    {!formData.userId
-      ? "Please enter a username."
-      : "No users were found matching your search."}
+<<<<<<< HEAD
+                      {!formData.userId
+                        ? "Please enter a username."
+                        : "No users were found matching your search."}
+=======
+                      {!errors.userId
+                        ? "No users were found matching your search."
+                        : ""}
+>>>>>>> parent of 98f82ea (Merge remote-tracking branch 'origin/main' into appleLogin)
                     </Text>
                   </FormControl.ErrorMessage>
                 </FormControl>
@@ -176,147 +182,113 @@ const InviteScreen = ({ navigation }) => {
                     This is YOU!
                   </Text>
                 ) : (
-                  <>
-                    <Button
-                      onPress={handleSearch}
-                      rounded="30"
-                      shadow="6"
-                      width="100%"
-                      size="lg"
-                      bg="#49a579"
-                      _text={{
-                        color: "#f9f8f2",
-                        fontFamily: "Regular Medium",
-                        fontSize: "lg",
-                      }}
-                      _pressed={{
-                        // below props will only be applied on button is pressed
-                        bg: "emerald.600",
-                        _text: {
-                          color: "warmGray.50",
-                        },
-                      }}
-                    >
-                      Search
-                    </Button>
-                    {/* Code for showing search friend result*/}
-                    {findUser.user.profileImageUrl &&
-                    !(
-                      formData.userId.toLowerCase() == userData.data.email ||
-                      formData.userId == userData.data.username
-                    ) ? (
-                      <Box w={"100%"}>
-                        <HStack
-                          w={"100%"}
-                          rounded={"25"}
-                          alignItems={"center"}
-                          justifyContent={"space-between"} // Spread items across the line
-                          space={3}
-                          backgroundColor={
-                            linked ? "rgba(73,165,121,0.2)" : "light.100"
-                          }
-                          paddingY={2}
-                          paddingX={4} // Optional: Add padding to avoid touching edges
-                        >
-                          <HStack
-                            alignItems="center"
-                            space={6}
-                            p={2}
-                            // borderBottomWidth={1}
-                            // borderColor="#ddd"
-                          >
-                            {findUser.user.profileImageUrl ? (
-                              <Avatar
-                                bg="f9f8f2"
-                                mb="1"
-                                ml={1}
-                                size={"md"}
-                                source={{ uri: findUser.user.profileImageUrl }}
-                                rounded={100}
-                              />
-                            ) : (
-                              <Avatar
-                                bg="#f9f8f2"
-                                mb="2"
-                                size="md"
-                                borderWidth={2}
-                              >
-                                <AntDesign
-                                  name="user"
-                                  size={20}
-                                  color="black"
-                                />
-                              </Avatar>
-                            )}
+                  <Button
+                    onPress={handleSearch}
+                    rounded="30"
+                    shadow="6"
+                    width="100%"
+                    size="lg"
+                    bg="#49a579"
+                    _text={{
+                      color: "#f9f8f2",
+                      fontFamily: "Regular Medium",
+                      fontSize: "lg",
+                    }}
+                    _pressed={{
+                      // below props will only be applied on button is pressed
+                      bg: "emerald.600",
+                      _text: {
+                        color: "warmGray.50",
+                      },
+                    }}
+                  >
+                    Search
+                  </Button>
+                )}
 
-                            <VStack>
-                              <Text fontSize="lg" fontWeight="bold">
-                                {findUser.user.nickname}
+                {/* Code for showing search friend result*/}
+                {findUser.user.profileImageUrl &&
+                !(
+                  formData.userId.toLowerCase() == userData.data.email ||
+                  formData.userId == userData.data.username
+                ) ? (
+                  <Box w={"100%"}>
+                    <HStack
+                      w={"100%"}
+                      rounded={"25"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      space={7}
+                      backgroundColor={
+                        linked ? "rgba(73,165,121,0.2)" : "light.100"
+                      }
+                      paddingY={2}
+                    >
+                      {findUser.user.profileImageUrl ? (
+                        <Avatar
+                          bg="f9f8f2"
+                          mb="1"
+                          ml={1}
+                          size={"md"}
+                          source={{ uri: findUser.user.profileImageUrl }}
+                          rounded={100}
+                        />
+                      ) : (
+                        <Avatar bg="#f9f8f2" mb="2" size="md" borderWidth={2} >
+                          <AntDesign name="user" size={20} color="black" />
+                        </Avatar>
+                      )}
+                      <Text fontFamily={"Regular"} fontSize="lg">
+                        {findUser.user.username}
+                      </Text>
+                      <Text fontFamily={"Regular"} fontSize="lg">
+                        {findUser.user.nickname}
+                      </Text>
+                      <Box>
+                        {linked ? (
+                          <Pressable
+                            onPress={() => {
+                              navigation.navigate("MyCircle");
+                            }}
+                          >
+                            <SvgXml xml={myCircleSVG("#191919")} width={30} height={30} />
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              Linked
+                            </Text>
+                          </Pressable>
+                        ) : pend != false ? (
+                          pend.data.senderId == userData.data._id ? (
+                            <Pressable onPress={handleCancel}>
+                              <SvgXml xml={widthdrawSvg()} width={30} height={30} />
+                              <Text fontFamily={"Regular"} fontSize="xs">
+                                Withdraw
                               </Text>
-                              <Text fontSize="sm" color="gray.500">
-                                @{findUser.user.username}
+                            </Pressable>
+                          ) : (
+                            <Pressable onPress={handleAccept}>
+                              <AntDesign
+                                name="checkcircleo"
+                                size={30}
+                                color="#191919"
+                              />
+                              <Text fontFamily={"Regular"} fontSize="xs">
+                                Accept
                               </Text>
-                            </VStack>
-                          </HStack>
-                          <Box>
-                            {linked ? (
-                              <Pressable
-                                onPress={() => {
-                                  navigation.navigate("MyCircle");
-                                }}
-                              >
-                                <SvgXml
-                                  xml={myCircleSVG("#191919")}
-                                  width={30}
-                                  height={30}
-                                />
-                                <Text fontFamily={"Regular"} fontSize="xs">
-                                  Linked
-                                </Text>
-                              </Pressable>
-                            ) : pend != false ? (
-                              pend.data.senderId == userData.data._id ? (
-                                <Pressable onPress={handleCancel}>
-                                  <SvgXml
-                                    xml={widthdrawSvg()}
-                                    width={30}
-                                    height={30}
-                                  />
-                                  <Text fontFamily={"Regular"} fontSize="xs">
-                                    Withdraw
-                                  </Text>
-                                </Pressable>
-                              ) : (
-                                <Pressable onPress={handleAccept}>
-                                  <AntDesign
-                                    name="checkcircleo"
-                                    size={30}
-                                    color="#191919"
-                                  />
-                                  <Text fontFamily={"Regular"} fontSize="xs">
-                                    Accept
-                                  </Text>
-                                </Pressable>
-                              )
-                            ) : (
-                              <Pressable onPress={handleConnect}>
-                                <Feather
-                                  name="send"
-                                  size={30}
-                                  color="#191919"
-                                />
-                                <Text fontFamily={"Regular"} fontSize="xs">
-                                  Connect
-                                </Text>
-                              </Pressable>
-                            )}
-                          </Box>
-                        </HStack>
+                            </Pressable>
+                          )
+                        ) : (
+                          <Pressable onPress={handleConnect}>
+                            <Feather name="send" size={30} color="#191919"/>
+                            <Text fontFamily={"Regular"} fontSize="xs">
+                              Connect
+                            </Text>
+                          </Pressable>
+                        )}
                       </Box>
-                    ) : (
-                      ""
-                    )}
-                  </>
+                    </HStack>
+                  </Box>
+                ) : (
+                  ""
                 )}
               </VStack>
             </Box>
@@ -329,6 +301,7 @@ const InviteScreen = ({ navigation }) => {
 
 export default InviteScreen;
 
+
 const widthdrawSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
@@ -337,6 +310,8 @@ const widthdrawSvg = () => `
     <path class="cls-1" d="M10.46,32.72c-.38.68-1.35.68-1.74,0l-2.98-5.3s-3.1-5.23-3.1-5.23c-.4-.67.09-1.51.87-1.5l6.08.07,6.08-.07c.78,0,1.26.83.87,1.5,0,0-3.1,5.23-3.1,5.23s-2.98,5.3-2.98,5.3Z"/>
     <path class="cls-1" d="M27.03,4.53C15.58,4.53,6.29,13.99,6.57,25.5h.02s4.42-4.25,4.42-4.25c1.84-7.85,9.29-13.56,17.88-12.61,7.54.84,13.65,6.93,14.49,14.47,1.11,9.92-6.66,18.36-16.36,18.36-4.33,0-8.27-1.7-11.21-4.44l-2.88,2.78c3.69,3.52,8.68,5.69,14.17,5.67,10.73-.04,19.79-8.63,20.36-19.35.63-11.79-8.78-21.58-20.44-21.58Z"/>
   </svg>`;
+
+
 
 const myCircleSVG = () => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">

@@ -13,7 +13,6 @@ import {
   ScrollView,
   Modal,
   Avatar,
-  Badge,
 } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
@@ -250,40 +249,16 @@ const FriendsScreen = ({ navigation }) => {
         <OptionMenu navigation={navigation} />
         <Box mt="9" w="85%">
           <VStack space={1} alignItems="left">
-            <HStack w={"100%"} justifyContent={"space-between"}>
-              {received?.length > 0 ? (
-                <Box>
-                  <SvgXml
-                    // style={{ transform: [{ translateY: -20 }] }}
-                    xml={incomingRequestSVG()}
-                    width={35}
-                    height={35}
-                  />
-                  <Badge // bg="red.400"
-                    colorScheme="danger"
-                    rounded="full"
-                    mt={-8}
-                    mr={-3}
-                    px={1}
-                    py={0}
-                    zIndex={1}
-                    variant="solid"
-                    alignSelf="flex-end"
-                    _text={{
-                      fontSize: 12,
-                    }}
-                  >
-                    {received?.length}
-                  </Badge>
-                </Box>
-              ) : (
-                <SvgXml
-                  // style={{ transform: [{ translateY: -20 }] }}
-                  xml={incomingRequestSVG()}
-                  width={35}
-                  height={35}
-                />
-              )}
+            <HStack>
+              <SvgXml
+                style={{ transform: [{ translateY: -20 }] }}
+                xml={incomingRequestSVG()}
+                width={35}
+                height={35}
+              />
+              <Text ml={2} fontFamily={"Regular"} fontSize="lg">
+                {received?.length > 0 ? received.length : ""}
+              </Text>
             </HStack>
             <Box
               mt={3}
@@ -299,47 +274,37 @@ const FriendsScreen = ({ navigation }) => {
                     alignItems={"center"}
                     justifyContent={"space-between"}
                   >
-                    <HStack
-                      alignItems="center"
-                      space={6}
-                      p={2}
-                      // borderBottomWidth={1}
-                      // borderColor="#ddd"
-                    >
-                      {received[0] && received[0].profileImageUrl ? (
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size={"md"}
-                          source={{ uri: received[0].profileImageUrl }}
-                        />
-                      ) : (
-                        <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                          <AntDesign name="user" size={20} color="black" />
-                        </Avatar>
-                      )}
-                      <VStack>
-                        <Text fontSize="lg" fontWeight="bold">
-                          {received[0].nickname}
-                        </Text>
-                        <Text fontSize="sm" color="gray.500">
-                          @{received[0].username}
-                        </Text>
-                      </VStack>
-                    </HStack>
-
+                    {received[0] && received[0].profileImageUrl ? (
+                      <Avatar
+                        bg="white"
+                        mb="1"
+                        size={"md"}
+                        source={{ uri: received[0].profileImageUrl }}
+                      />
+                    ) : (
+                      <Avatar bg="white" mb="1" size="md" borderWidth={2}>
+                        <AntDesign name="user" size={20} color="black" />
+                      </Avatar>
+                    )}
+                    <Text fontFamily={"Regular"} fontSize="lg">
+                      {received[0].username}
+                    </Text>
+                    <Text fontFamily={"Regular"} fontSize="lg">
+                      {received[0].nickname}
+                    </Text>
                     <HStack space="3">
-                      <Pressable onPress={() => acceptFriend(1)}>
-                        <SvgXml xml={acceptSvg()} width={30} height={30} />
-                      </Pressable>
-                      <Pressable onPress={() => rejectFriend(1)}>
-                        <SvgXml
-                          onPress={() => rejectFriend(1)}
-                          xml={declineSvg()}
-                          width={30}
-                          height={30}
-                        />
-                      </Pressable>
+                      <SvgXml
+                        onPress={() => acceptFriend(1)}
+                        xml={acceptSvg()}
+                        width={30}
+                        height={30}
+                      />
+                      <SvgXml
+                        onPress={() => rejectFriend(1)}
+                        xml={declineSvg()}
+                        width={30}
+                        height={30}
+                      />
                     </HStack>
                   </HStack>
                   {received?.length > 1 ? (
@@ -348,48 +313,38 @@ const FriendsScreen = ({ navigation }) => {
                       alignItems={"center"}
                       justifyContent={"space-between"}
                     >
-                      <HStack
-                        alignItems="center"
-                        space={6}
-                        p={2}
-                        // borderBottomWidth={1}
-                        // borderColor="#ddd"
-                      >
-                        {received[1] && received[1].profileImageUrl ? (
-                          <Avatar
-                            bg="white"
-                            mb="1"
-                            size={"md"}
-                            source={{ uri: received[1].profileImageUrl }}
-                          />
-                        ) : (
-                          <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                            <AntDesign name="user" size={20} color="black" />
-                          </Avatar>
-                        )}
-                        {/* <Avatar size="md" source={{ uri: received[1].profileImageUrl }} /> */}
-                        <VStack>
-                          <Text fontSize="lg" fontWeight="bold">
-                            {received[1].nickname}
-                          </Text>
-                          <Text fontSize="sm" color="gray.500">
-                            @{received[1].username}
-                          </Text>
-                        </VStack>
-                      </HStack>
-                      {/* <Text fontFamily={"Regular"} fontSize="lg">
+                      {received[1] && received[1].profileImageUrl ? (
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size={"md"}
+                          source={{ uri: received[1].profileImageUrl }}
+                        />
+                      ) : (
+                        <Avatar bg="white" mb="1" size="md" borderWidth={2}>
+                          <AntDesign name="user" size={20} color="black" />
+                        </Avatar>
+                      )}
+
+                      <Text fontFamily={"Regular"} fontSize="lg">
                         {received[1].username}
                       </Text>
                       <Text fontFamily={"Regular"} fontSize="lg">
                         {received[1].nickname}
-                      </Text> */}
+                      </Text>
                       <HStack space="3">
-                        <Pressable onPress={() => acceptFriend(2)}>
-                          <SvgXml xml={acceptSvg()} width={30} height={30} />
-                        </Pressable>
-                        <Pressable onPress={() => rejectFriend(2)}>
-                          <SvgXml xml={declineSvg()} width={30} height={30} />
-                        </Pressable>
+                        <SvgXml
+                          onPress={() => acceptFriend(2)}
+                          xml={acceptSvg()}
+                          width={30}
+                          height={30}
+                        />
+                        <SvgXml
+                          onPress={() => rejectFriend(2)}
+                          xml={declineSvg()}
+                          width={30}
+                          height={30}
+                        />
                       </HStack>
                     </HStack>
                   ) : (
@@ -419,31 +374,11 @@ const FriendsScreen = ({ navigation }) => {
               alignSelf={"center"}
               w="90%"
             />
-            <HStack w={"100%"} justifyContent={"space-between"}>
-              {sent?.length > 0 ? (
-                <Box>
-                  <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
-
-                  <Badge // bg="red.400"
-                    colorScheme="danger"
-                    rounded="full"
-                    mt={-8}
-                    mr={-3}
-                    px={1}
-                    py={0}
-                    zIndex={1}
-                    variant="solid"
-                    alignSelf="flex-end"
-                    _text={{
-                      fontSize: 12,
-                    }}
-                  >
-                    {sent?.length}
-                  </Badge>
-                </Box>
-              ) : (
-                <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
-              )}
+            <HStack>
+              <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
+              <Text fontFamily={"Regular"} fontSize="lg">
+                {sent?.length > 0 ? sent.length : ""}
+              </Text>
             </HStack>
             <Box
               mt={3}
@@ -459,41 +394,24 @@ const FriendsScreen = ({ navigation }) => {
                     alignItems={"center"}
                     justifyContent={"space-between"}
                   >
-                    <HStack
-                      alignItems="center"
-                      space={6}
-                      p={2}
-                      // borderBottomWidth={1}
-                      // borderColor="#ddd"
-                    >
-                      {sent[0] && sent[0].profileImageUrl ? (
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size={"md"}
-                          source={{ uri: sent[0].profileImageUrl }}
-                        />
-                      ) : (
-                        <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                          <AntDesign name="user" size={20} color="black" />
-                        </Avatar>
-                      )}
-                      {/* <Avatar size="md" source={{ uri: item.profileImageUrl }} /> */}
-                      <VStack>
-                        <Text fontSize="lg" fontWeight="bold">
-                          {sent[0].nickname}
-                        </Text>
-                        <Text fontSize="sm" color="gray.500">
-                          @{sent[0].username}
-                        </Text>
-                      </VStack>
-                    </HStack>
-                    {/* <Text fontFamily={"Regular"} fontSize="lg">
+                    {sent[0] && sent[0].profileImageUrl ? (
+                      <Avatar
+                        bg="white"
+                        mb="1"
+                        size={"md"}
+                        source={{ uri: sent[0].profileImageUrl }}
+                      />
+                    ) : (
+                      <Avatar bg="white" mb="1" size="md" borderWidth={2}>
+                        <AntDesign name="user" size={20} color="black" />
+                      </Avatar>
+                    )}
+                    <Text fontFamily={"Regular"} fontSize="lg">
                       {sent[0].username}
                     </Text>
                     <Text fontFamily={"Regular"} fontSize="lg">
                       {sent[0].nickname}
-                    </Text> */}
+                    </Text>
                     <VStack justifyContent={"center"} alignItems={"center"}>
                       <Pressable onPress={() => deleteCurrent("sent", 1)}>
                         <SvgXml xml={widthdrawSvg()} width={30} height={30} />
@@ -509,41 +427,25 @@ const FriendsScreen = ({ navigation }) => {
                       alignItems={"center"}
                       justifyContent={"space-between"}
                     >
-                      <HStack
-                        alignItems="center"
-                        space={6}
-                        p={2}
-                        // borderBottomWidth={1}
-                        // borderColor="#ddd"
-                      >
-                        {sent[1] && sent[1].profileImageUrl ? (
-                          <Avatar
-                            bg="white"
-                            mb="1"
-                            size={"md"}
-                            source={{ uri: sent[1].profileImageUrl }}
-                          />
-                        ) : (
-                          <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                            <AntDesign name="user" size={20} color="black" />
-                          </Avatar>
-                        )}
+                      {sent[1] && sent[1].profileImageUrl ? (
+                        <Avatar
+                          bg="white"
+                          mb="1"
+                          size={"md"}
+                          source={{ uri: sent[1].profileImageUrl }}
+                        />
+                      ) : (
+                        <Avatar bg="white" mb="1" size="md" borderWidth={2}>
+                          <AntDesign name="user" size={20} color="black" />
+                        </Avatar>
+                      )}
 
-                        <VStack>
-                          <Text fontSize="lg" fontWeight="bold">
-                            {sent[1].nickname}
-                          </Text>
-                          <Text fontSize="sm" color="gray.500">
-                            @{sent[1].username}
-                          </Text>
-                        </VStack>
-                      </HStack>
-                      {/* <Text fontFamily={"Regular"} fontSize="lg">
+                      <Text fontFamily={"Regular"} fontSize="lg">
                         {sent[1].username}
                       </Text>
                       <Text fontFamily={"Regular"} fontSize="lg">
                         {sent[1].nickname}
-                      </Text> */}
+                      </Text>
 
                       <VStack justifyContent={"center"} alignItems={"center"}>
                         <Pressable onPress={() => deleteCurrent("sent", 2)}>
@@ -648,40 +550,27 @@ const FriendsScreen = ({ navigation }) => {
                         m={1}
                         key={index}
                       >
-                        <HStack
-                          alignItems="center"
-                          space={6}
-                          p={2}
-                          // borderBottomWidth={1}
-                          // borderColor="#ddd"
-                        >
-                          {item.profileImageUrl ? (
-                            <Avatar
-                              bg="white"
-                              mb="1"
-                              size={"md"}
-                              source={{ uri: item.profileImageUrl }}
-                            />
-                          ) : (
-                            // <FontAwesome name="check" size={24} color="black" />
-                            <SvgXml xml={acceptSvg()} width={35} height={35} />
-                          )}
-                          {/* <Text fontFamily={"Regular"} fontSize="md">
+                        {item.profileImageUrl ? (
+                          <Avatar
+                            bg="white"
+                            mb="1"
+                            size={"md"}
+                            source={{ uri: item.profileImageUrl }}
+                          />
+                        ) : (
+                          // <FontAwesome name="check" size={24} color="black" />
+                          <SvgXml
+                            xml={acceptSvg("#191919")}
+                            width={35}
+                            height={35}
+                          />
+                        )}
+                        <Text fontFamily={"Regular"} fontSize="md">
                           {item.username}
                         </Text>
                         <Text fontFamily={"Regular"} fontSize="md">
                           {item.nickname}
                         </Text>
-                        <Avatar size="md" source={{ uri: item.profileImageUrl }} /> */}
-                          <VStack>
-                            <Text fontSize="lg" fontWeight="bold">
-                              {item.nickname}
-                            </Text>
-                            <Text fontSize="sm" color="gray.500">
-                              @{item.username}
-                            </Text>
-                          </VStack>
-                        </HStack>
                         <Pressable
                           onPress={() => deleteOption(index + 1)}
                           style={{ transform: [{ translateY: -3 }] }}
@@ -692,6 +581,11 @@ const FriendsScreen = ({ navigation }) => {
                             alt="Unlink"
                           />
                         </Pressable>
+                        {/* <SvgXml
+                            xml={unlinkSvg("#191919")}
+                            width={35}
+                            height={35}
+                            /> */}
                       </HStack>
                     ))}
                   </Box>
@@ -768,7 +662,12 @@ const unlinkSvg = () => `
   </svg>`;
 
 const acceptSvg = () => `
-  <?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><rect class="cls-1" x="13.98" y="26.52" width="11.88" height="4.07" rx="2.03" ry="2.03" transform="translate(28.16 -5.28) rotate(48.58)"/><rect class="cls-1" x="17.29" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(64.26 18.56) rotate(127.86)"/></svg>`;
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+    <defs>
+      <style>.cls-1{fill:#000;stroke-width:0px;}</style>
+    </defs>
+    <path class="cls-1" d="M25,4.53C13.71,4.53,4.53,13.72,4.53,25s9.18,20.47,20.47,20.47,20.47-9.18,20.47-20.47S36.29,4.53,25,4.53ZM34.27,19.72l-10.14,13.05c-.69.89-1.97,1.05-2.85.36-.16-.13-.29-.27-.4-.43l-5.05-5.72c-.74-.84-.66-2.13.18-2.87.84-.74,2.13-.66,2.87.18l3.56,4.04,8.62-11.09c.69-.89,1.97-1.05,2.85-.36s1.05,1.97.36,2.85Z"/>
+  </svg>`;
 
 const declineSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
