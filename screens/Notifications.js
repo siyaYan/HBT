@@ -174,40 +174,94 @@ const NotificationScreen = ({ navigation }) => {
     }
   };
 
+  // const clearAllNotification = async () => {
+  //   const response = await clearAllNotifications(
+  //     userData.token,
+  //     userData.data.email
+  //   );
+  //   if (!response) {
+  //     console.log("clear all notification was unsucessful.");
+  //   }
+  //   // Handle success or error response
+  //   if (response.status == "success") {
+  //     updateNotes(friendRequest.length);
+  //     console.log("clear all notifications success:", response);
+  //   } else {
+  //     console.error(
+  //       "clear all notifications was unsucessful.:",
+  //       response.message
+  //     );
+  //   }
+  // };
+
+  // const clearAllFriendRequest = async () => {
+  //   const response = await clearAllFriendRequests(userData.token);
+  //   if (!response) {
+  //     console.log("clear all notification was unsucessful.");
+  //   }
+  //   // Handle success or error response
+  //   if (response.status == "success") {
+  //     updateNotes(notificates.length);
+  //     console.log("clear all notifications success:", response);
+  //   } else {
+  //     console.error(
+  //       "clear all notifications was unsucessful.:",
+  //       response.message
+  //     );
+  //   }
+  // };
   const clearAllNotification = async () => {
+    // Optimistically clear state immediately
+    const previousNotificates = notificates; // Save previous state
+    setNotificates([]); // Update UI instantly
+
     const response = await clearAllNotifications(
       userData.token,
       userData.data.email
     );
+
     if (!response) {
-      console.log("clear all notification was unsucessful.");
+      console.log("Clear all notification was unsuccessful.");
+      setNotificates(previousNotificates); // Restore previous state on failure
+      return;
     }
+
     // Handle success or error response
     if (response.status == "success") {
       updateNotes(friendRequest.length);
-      console.log("clear all notifications success:", response);
+      console.log("Clear all notifications success:", response);
     } else {
       console.error(
-        "clear all notifications was unsucessful.:",
+        "Clear all notifications was unsuccessful:",
         response.message
       );
+      setNotificates(previousNotificates); // Restore previous state on failure
     }
   };
 
   const clearAllFriendRequest = async () => {
+    // Optimistically clear state immediately
+    const previousFriendRequests = friendRequest; // Save previous state
+    setFriendRequest([]); // Update UI instantly
+
     const response = await clearAllFriendRequests(userData.token);
+
     if (!response) {
-      console.log("clear all notification was unsucessful.");
+      console.log("Clear all friend request was unsuccessful.");
+      setFriendRequest(previousFriendRequests); // Restore previous state on failure
+      return;
     }
+
     // Handle success or error response
     if (response.status == "success") {
       updateNotes(notificates.length);
-      console.log("clear all notifications success:", response);
+      console.log("Clear all friend requests success:", response);
     } else {
       console.error(
-        "clear all notifications was unsucessful.:",
+        "Clear all friend requests was unsuccessful:",
         response.message
       );
+      setFriendRequest(previousFriendRequests); // Restore previous state on failure
     }
   };
 
@@ -288,17 +342,20 @@ const NotificationScreen = ({ navigation }) => {
       <Background2 />
       <Flex direction="column" alignItems="center">
         <Box safeArea w="90%" alignItems="center">
-          <Box mt="5" w="95%">
+          <Box mt="9" w="85%">
             <VStack space={1} alignItems="left">
+             
+
               <HStack w={"100%"} justifyContent={"space-between"}>
-                {friendRequest?.length > 0 ? (
+                {(notificates?.length || 0) + (friendRequest?.length || 0) >
+                0 ? (
+                  // Render this section if there are notifications or friend requests
                   <Box>
                     <SvgXml
-                      xml={myCircleSVG("#191919")}
-                      width={35}
-                      height={35}
+                      xml={bellNotificationSVG("#191919")}
+                      width={30}
+                      height={30}
                     />
-
                     <Badge // bg="red.400"
                       colorScheme="danger"
                       rounded="full"
@@ -313,28 +370,39 @@ const NotificationScreen = ({ navigation }) => {
                         fontSize: 12,
                       }}
                     >
-                      {friendRequest?.length}
+                      {(notificates?.length || 0) +
+                        (friendRequest?.length || 0)}
                     </Badge>
                   </Box>
                 ) : (
-                  <SvgXml xml={myCircleSVG("#191919")} width={35} height={35} />
+                  <SvgXml
+                    xml={bellNotificationSVG("#191919")}
+                    width={35}
+                    height={35}
+                  />
                 )}
 
-                <Pressable onPress={() => clearAll("friendrequests")}>
-                  <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
+                <Pressable
+                  onPress={async () => {
+                    await clearAllNotification();
+                    await clearAllFriendRequest();
+                  }}
+                >
+                  <SvgXml xml={readAllSvg()} width={35} height={35} />
                 </Pressable>
               </HStack>
+
               <Box
-                h="24%"
+                h="43.3%"
                 w={"95%"}
                 alignSelf={"center"}
                 justifyContent={"center"}
               >
                 <ScrollView w={"100%"}>
+                  {/* Friend Request Notifications */}
                   {friendRequest?.length > 0 ? (
                     <Box mt={"2"} w={"95%"} alignSelf={"center"}>
                       {friendRequest?.map((item, index) =>
-                        // (item.requestRole == "sent"?item.username:'qqq')
                         item.requestRole == "received" ? (
                           <Box
                             mt={"2"}
@@ -347,33 +415,34 @@ const NotificationScreen = ({ navigation }) => {
                               alignItems={"center"}
                               justifyContent={"space-between"}
                             >
-                              {item.profileImageUrl ? (
-                                <Avatar
-                                  bg="white"
-                                  mb="1"
-                                  size={"md"}
-                                  source={{ uri: item.profileImageUrl }}
-                                />
-                              ) : (
-                                <Avatar
-                                  bg="white"
-                                  mb="1"
-                                  size="md"
-                                  borderWidth={2}
-                                >
-                                  <AntDesign
-                                    name="user"
-                                    size={20}
-                                    color="black"
+                              <HStack
+                                alignItems="center"
+                                space={6}
+                                p={2}
+                                // borderBottomWidth={1}
+                                // borderColor="#ddd"
+                              >
+                                {item.profileImageUrl ? (
+                                  <Avatar
+                                    bg="white"
+                                    mb="1"
+                                    size={"md"}
+                                    source={{ uri: item.profileImageUrl }}
                                   />
-                                </Avatar>
-                              )}
-                              <Text fontFamily={"Regular"} fontSize="lg">
-                                {item.username}
-                              </Text>
-                              <Text fontFamily={"Regular"} fontSize="lg">
-                                {item.nickname}
-                              </Text>
+                                ) : (
+                                  <FontAwesome name="check" size={24} color="black" />
+                                 
+                                )}
+
+                                <VStack>
+                                  <Text fontSize="lg" fontWeight="bold">
+                                    {item.nickname}
+                                  </Text>
+                                  <Text fontSize="sm" color="gray.500">
+                                    @{item.username}
+                                  </Text>
+                                </VStack>
+                              </HStack>
                               <HStack space="3">
                                 <Pressable onPress={() => acceptFriend(index)}>
                                   <SvgXml
@@ -404,34 +473,39 @@ const NotificationScreen = ({ navigation }) => {
                               alignItems={"center"}
                               justifyContent={"space-between"}
                             >
-                              {item.profileImageUrl ? (
-                                <Avatar
-                                  bg="white"
-                                  mb="1"
-                                  size={"md"}
-                                  source={{ uri: item.profileImageUrl }}
-                                />
-                              ) : (
-                                <Avatar
-                                  bg="white"
-                                  mb="1"
-                                  size="md"
-                                  borderWidth={2}
-                                >
-                                  <AntDesign
-                                    name="user"
-                                    size={20}
-                                    color="black"
+                              <HStack
+                                alignItems="center"
+                                space={6}
+                                p={2}
+                                // borderBottomWidth={1}
+                                // borderColor="#ddd"
+                              >
+                                {item.profileImageUrl ? (
+                                  <Avatar
+                                    bg="white"
+                                    mb="1"
+                                    size={"md"}
+                                    source={{ uri: item.profileImageUrl }}
                                   />
-                                </Avatar>
-                              )}
+                                ) : (
+                                  // <FontAwesome name="check" size={24} color="black" />
+                                  <SvgXml
+                                    xml={acceptSvg()}
+                                    width={25}
+                                    height={25}
+                                  />
+                                )}
 
-                              <Text fontFamily={"Regular"} fontSize="lg">
-                                {item.username}
-                              </Text>
-                              <Text fontFamily={"Regular"} fontSize="lg">
-                                {item.nickname}
-                              </Text>
+                                <VStack>
+                                  <Text fontSize="lg" fontWeight="bold">
+                                    {item.nickname}
+                                  </Text>
+                                  <Text fontSize="sm" color="gray.500">
+                                    @{item.username}
+                                  </Text>
+                                </VStack>
+                              </HStack>
+
                               <HStack space="3">
                                 {item.status == "linked" ? (
                                   <AntDesign
@@ -439,9 +513,7 @@ const NotificationScreen = ({ navigation }) => {
                                     size={28}
                                     color="black"
                                   />
-                                ) : (
-                                  ""
-                                )}
+                                ) : null}
                                 <Pressable
                                   onPress={() =>
                                     clearCurrent("received", index)
@@ -459,79 +531,13 @@ const NotificationScreen = ({ navigation }) => {
                         )
                       )}
                     </Box>
-                  ) : (
-                    <Text
-                      // marginTop={"-10%"}
-                      fontFamily={"Regular"}
-                      fontSize="xl"
-                      textAlign={"center"}
-                      margin={"12"}
-                    >
-                      You are all caught up :D
-                    </Text>
-                  )}
-                </ScrollView>
-              </Box>
+                  ) : null}
 
-              <Divider
-                mt="-3"
-                _light={{
-                  bg: "muted.300",
-                }}
-                _dark={{
-                  bg: "muted.700",
-                }}
-                alignSelf={"center"}
-                w="90%"
-              />
-
-              <HStack w={"100%"} justifyContent={"space-between"}>
-                {notificates?.length ? (
-                  <Box>
-                    <SvgXml
-                      xml={bellNotificationSVG("#191919")}
-                      width={30}
-                      height={30}
-                    />
-                       <Badge // bg="red.400"
-                      colorScheme="danger"
-                      rounded="full"
-                      mt={-8}
-                      mr={-3}
-                      px={1}
-                      py={0}
-                      zIndex={1}
-                      variant="solid"
-                      alignSelf="flex-end"
-                      _text={{
-                        fontSize: 12,
-                      }}
-                    >
-                      {notificates?.length}
-                    </Badge>
-                  </Box>
-                ) : (
-                  <SvgXml
-                    xml={bellNotificationSVG("#191919")}
-                    width={35}
-                    height={35}
-                  />
-                )}
-                <SvgXml xml={readAllSvg("#191919")} width={35} height={35} />
-              </HStack>
-
-              <Box
-                h="16%"
-                w={"95%"}
-                alignSelf={"center"}
-                justifyContent={"center"}
-              >
-                <ScrollView w={"100%"}>
+                  {/* Other Notifications */}
                   {notificates?.length > 0 ? (
                     <Box my="2" w="95%" alignSelf="center">
                       {notificates?.map((item, index) =>
                         item.user === "system" ? (
-                          // For system notifications: show only the message and close button
                           <HStack
                             key={index}
                             w="100%"
@@ -543,7 +549,6 @@ const NotificationScreen = ({ navigation }) => {
                             <Text flex={1} fontFamily="Regular" fontSize="md">
                               {item.content}
                             </Text>
-
                             <Pressable
                               onPress={() => clearCurrent("notificates", index)}
                             >
@@ -555,7 +560,6 @@ const NotificationScreen = ({ navigation }) => {
                             </Pressable>
                           </HStack>
                         ) : (
-                          // For user notifications: show avatar, username, message, and close button
                           <HStack
                             key={index}
                             w="100%"
@@ -606,20 +610,23 @@ const NotificationScreen = ({ navigation }) => {
                         )
                       )}
                     </Box>
-                  ) : (
+                  ) : null}
+
+                  {/* If No Notifications */}
+                  {friendRequest?.length === 0 && notificates?.length === 0 ? (
                     <Text
                       fontFamily={"Regular"}
                       fontSize="xl"
                       textAlign={"center"}
-                      margin={"10"}
+                      margin={"12"}
                     >
                       You are all caught up :D
                     </Text>
-                  )}
+                  ) : null}
                 </ScrollView>
               </Box>
 
-              {/* <Divider
+              <Divider
               m="2"
               _light={{
                 bg: "muted.300",
@@ -629,7 +636,7 @@ const NotificationScreen = ({ navigation }) => {
               }}
               alignSelf={"center"}
               w="90%"
-            /> */}
+            />
 
               <HStack w={"100%"} mt={"5"} justifyContent={"space-between"}>
                 <Text mt={"1"} fontFamily={"Regular Semi Bold"} fontSize="2xl">
@@ -637,7 +644,7 @@ const NotificationScreen = ({ navigation }) => {
                 </Text>
               </HStack>
               <Box w={"96%"} h={"40%"} alignSelf={"center"}>
-                <ScrollView w={"100%"} h="40%">       
+                <ScrollView w={"100%"} h="40%">
                   {history?.length > 0 ? (
                     <Box my="2" w={"95%"} alignSelf={"center"}>
                       {history?.map((item, index) =>
@@ -730,12 +737,7 @@ const myCircleSVG = () => `
 </svg>`;
 
 const readAllSvg = () => `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-  <defs>
-    <style>.cls-1{fill:#000;stroke-width:0px;}</style>
-  </defs>
-  <path class="cls-1" d="M25,4.53C13.71,4.53,4.53,13.72,4.53,25s9.18,20.47,20.47,20.47,20.47-9.18,20.47-20.47S36.29,4.53,25,4.53ZM34.27,19.72l-10.14,13.05c-.69.89-1.97,1.05-2.85.36-.16-.13-.29-.27-.4-.43l-5.05-5.72c-.74-.84-.66-2.13.18-2.87.84-.74,2.13-.66,2.87.18l3.56,4.04,8.62-11.09c.69-.89,1.97-1.05,2.85-.36s1.05,1.97.36,2.85Z"/>
-</svg>`;
+<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><rect class="cls-1" x="13.98" y="26.52" width="11.88" height="4.07" rx="2.03" ry="2.03" transform="translate(28.16 -5.28) rotate(48.58)"/><rect class="cls-1" x="17.29" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(64.26 18.56) rotate(127.86)"/></svg>`;
 
 const bellNotificationSVG = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
@@ -746,9 +748,7 @@ const bellNotificationSVG = () => `
   </svg>`;
 
 const acceptSvg = () => `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-    <path class="cls-1" d="M25,4.53C13.71,4.53,4.53,13.72,4.53,25s9.18,20.47,20.47,20.47,20.47-9.18,20.47-20.47S36.29,4.53,25,4.53ZM34.27,19.72l-10.14,13.05c-.69.89-1.97,1.05-2.85.36-.16-.13-.29-.27-.4-.43l-5.05-5.72c-.74-.84-.66-2.13.18-2.87.84-.74,2.13-.66,2.87.18l3.56,4.04,8.62-11.09c.69-.89,1.97-1.05,2.85-.36s1.05,1.97.36,2.85Z"/>
-  </svg>`;
+ <?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><rect class="cls-1" x="13.98" y="26.52" width="11.88" height="4.07" rx="2.03" ry="2.03" transform="translate(28.16 -5.28) rotate(48.58)"/><rect class="cls-1" x="17.29" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(64.26 18.56) rotate(127.86)"/></svg>`;
 
 const declineSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">

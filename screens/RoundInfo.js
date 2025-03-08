@@ -22,7 +22,7 @@ import { leaveRound, getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
-  const { roundData, updateRounds, deleteRoundData, updateacceptRoundData } =
+  const { roundData, updateRounds, deleteRoundData, updateAcceptRoundData } =
     useRound();
   const roundId = route.params.id;
   const { state: state, gohabit: gohabit } = route.params || {}; // Safe access to route params
@@ -51,7 +51,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
     // updateRoundData(newRoundData); // Update context with new data
     console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
-    updateacceptRoundData(newRoundData);
+    updateAcceptRoundData(newRoundData);
     // const {roundData} = useRound();
     console.log("-----home page round context", roundData.data);
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
@@ -216,11 +216,10 @@ const RoundInfoScreen = ({ route, navigation }) => {
               (round.isAllowedInvite || round.userId == userData.data._id) && (
                 <Button
                   onPress={inviteFriend}
-                  mt="5"
+                  mt="2"
                   width="100%"
                   rounded={30}
                   size="lg"
-                  rounded={30}
                   bg="#49a579"
                   _text={{
                     color: "#f9f8f2",

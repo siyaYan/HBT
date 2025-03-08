@@ -24,10 +24,9 @@ import {
   deleteFriendOrWithdrawRequestById,
 } from "../components/Endpoint";
 import Background from "../components/Background";
-import { Feather } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+// import { Feather } from "@expo/vector-icons";
+// import { Entypo } from "@expo/vector-icons";
 import { SvgXml } from "react-native-svg";
-
 
 const InviteScreen = ({ navigation }) => {
   useEffect(() => {
@@ -160,9 +159,9 @@ const InviteScreen = ({ navigation }) => {
                   />
                   <FormControl.ErrorMessage ml={2} mt={2}>
                     <Text fontFamily={"Regular"} fontSize="sm">
-                      {!errors.userId
-                        ? "No users were found matching your search."
-                        : ""}
+                      {!formData.userId
+                        ? "Please enter a username."
+                        : "No users were found matching your search."}
                     </Text>
                   </FormControl.ErrorMessage>
                 </FormControl>
@@ -176,113 +175,180 @@ const InviteScreen = ({ navigation }) => {
                     This is YOU!
                   </Text>
                 ) : (
-                  <Button
-                    onPress={handleSearch}
-                    rounded="30"
-                    shadow="6"
-                    width="100%"
-                    size="lg"
-                    bg="#49a579"
-                    _text={{
-                      color: "#f9f8f2",
-                      fontFamily: "Regular Medium",
-                      fontSize: "lg",
-                    }}
-                    _pressed={{
-                      // below props will only be applied on button is pressed
-                      bg: "emerald.600",
-                      _text: {
-                        color: "warmGray.50",
-                      },
-                    }}
-                  >
-                    Search
-                  </Button>
-                )}
-
-                {/* Code for showing search friend result*/}
-                {findUser.user.profileImageUrl &&
-                !(
-                  formData.userId.toLowerCase() == userData.data.email ||
-                  formData.userId == userData.data.username
-                ) ? (
-                  <Box w={"100%"}>
-                    <HStack
-                      w={"100%"}
-                      rounded={"25"}
-                      alignItems={"center"}
-                      justifyContent={"center"}
-                      space={7}
-                      backgroundColor={
-                        linked ? "rgba(73,165,121,0.2)" : "light.100"
-                      }
-                      paddingY={2}
+                  <>
+                    <Button
+                      onPress={handleSearch}
+                      rounded="30"
+                      shadow="6"
+                      width="100%"
+                      size="lg"
+                      bg="#49a579"
+                      _text={{
+                        color: "#f9f8f2",
+                        fontFamily: "Regular Medium",
+                        fontSize: "lg",
+                      }}
+                      _pressed={{
+                        // below props will only be applied on button is pressed
+                        bg: "emerald.600",
+                        _text: {
+                          color: "warmGray.50",
+                        },
+                      }}
                     >
-                      {findUser.user.profileImageUrl ? (
-                        <Avatar
-                          bg="f9f8f2"
-                          mb="1"
-                          ml={1}
-                          size={"md"}
-                          source={{ uri: findUser.user.profileImageUrl }}
-                          rounded={100}
-                        />
-                      ) : (
-                        <Avatar bg="#f9f8f2" mb="2" size="md" borderWidth={2} >
-                          <AntDesign name="user" size={20} color="black" />
-                        </Avatar>
-                      )}
-                      <Text fontFamily={"Regular"} fontSize="lg">
-                        {findUser.user.username}
-                      </Text>
-                      <Text fontFamily={"Regular"} fontSize="lg">
-                        {findUser.user.nickname}
-                      </Text>
-                      <Box>
-                        {linked ? (
-                          <Pressable
-                            onPress={() => {
-                              navigation.navigate("MyCircle");
-                            }}
+                      Search
+                    </Button>
+                    {/* Code for showing search friend result*/}
+                    {findUser.user.profileImageUrl &&
+                    !(
+                      formData.userId.toLowerCase() == userData.data.email ||
+                      formData.userId == userData.data.username
+                    ) ? (
+                      <Box w={"100%"}>
+                        <HStack
+                          w={"100%"}
+                          rounded={"25"}
+                          alignItems={"center"}
+                          justifyContent={"space-between"} // Spread items across the line
+                          space={3}
+                          backgroundColor={
+                            linked ? "rgba(73,165,121,0.2)" : "light.100"
+                          }
+                          paddingY={2}
+                          paddingX={4} // Optional: Add padding to avoid touching edges
+                        >
+                          <HStack
+                            alignItems="center"
+                            space={6}
+                            p={2}
+                            // borderBottomWidth={1}
+                            // borderColor="#ddd"
                           >
-                            <SvgXml xml={myCircleSVG("#191919")} width={30} height={30} />
-                            <Text fontFamily={"Regular"} fontSize="xs">
-                              Linked
-                            </Text>
-                          </Pressable>
-                        ) : pend != false ? (
-                          pend.data.senderId == userData.data._id ? (
-                            <Pressable onPress={handleCancel}>
-                              <SvgXml xml={widthdrawSvg()} width={30} height={30} />
-                              <Text fontFamily={"Regular"} fontSize="xs">
-                                Withdraw
-                              </Text>
-                            </Pressable>
-                          ) : (
-                            <Pressable onPress={handleAccept}>
-                              <AntDesign
-                                name="checkcircleo"
-                                size={30}
-                                color="#191919"
+                            {findUser.user.profileImageUrl ? (
+                              <Avatar
+                                bg="f9f8f2"
+                                mb="1"
+                                ml={1}
+                                size={"md"}
+                                source={{ uri: findUser.user.profileImageUrl }}
+                                rounded={100}
                               />
-                              <Text fontFamily={"Regular"} fontSize="xs">
-                                Accept
+                            ) : (
+                              <Avatar
+                                bg="#f9f8f2"
+                                mb="2"
+                                size="md"
+                                borderWidth={2}
+                              >
+                                <AntDesign
+                                  name="user"
+                                  size={20}
+                                  color="black"
+                                />
+                              </Avatar>
+                            )}
+
+                            <VStack>
+                              <Text fontSize="lg" fontWeight="bold">
+                                {findUser.user.nickname}
                               </Text>
-                            </Pressable>
-                          )
-                        ) : (
-                          <Pressable onPress={handleConnect}>
-                            <Feather name="send" size={30} color="#191919"/>
-                            <Text fontFamily={"Regular"} fontSize="xs">
-                              Connect
-                            </Text>
-                          </Pressable>
-                        )}
+                              <Text fontSize="sm" color="gray.500">
+                                @{findUser.user.username}
+                              </Text>
+                            </VStack>
+                          </HStack>
+                          <Box>
+                            {linked ? (
+                              <Pressable
+                                onPress={() => {
+                                  navigation.navigate("MyCircle");
+                                }}
+                              >
+                                <SvgXml
+                                  xml={myCircleSVG("#191919")}
+                                  width={25}
+                                  height={25}
+                                />
+                                <Text fontFamily={"Regular"} fontSize="xs">
+                                  Linked
+                                </Text>
+                              </Pressable>
+                            ) : pend != false ? (
+                              pend.data.senderId == userData.data._id ? (
+                                <Pressable onPress={handleCancel}>
+                                  <VStack alignItems="center" space={1}>
+                                    <SvgXml
+                                      xml={widthdrawSvg()}
+                                      width={25}
+                                      height={25}
+                                    />
+                                    <Text fontFamily={"Regular"} fontSize="xs">
+                                      Withdraw
+                                    </Text>
+                                  </VStack>
+                                </Pressable>
+                              ) : (
+                                // <Pressable onPress={handleAccept}>
+                                //   <AntDesign
+                                //     name="checkcircleo"
+                                //     size={30}
+                                //     color="#191919"
+                                //   />
+                                //   <Text fontFamily={"Regular"} fontSize="xs">
+                                //     Accept
+                                //   </Text>
+                                // </Pressable>
+                                <Pressable onPress={handleAccept}>
+                                  <VStack alignItems="center" space={1}>
+                                    <SvgXml
+                                      xml={acceptSvg()}
+                                      width={25}
+                                      height={25}
+                                    />
+                                    <Text fontFamily={"Regular"} fontSize="xs">
+                                      Accept
+                                    </Text>
+                                  </VStack>
+                                </Pressable>
+                              )
+                            ) : (
+                              <Pressable
+                                onPress={handleConnect}
+                                style={{
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <SvgXml
+                                  xml={connectSvg()}
+                                  width={30}
+                                  height={30}
+                                />
+                                <Text fontFamily={"Regular"} fontSize="xs">
+                                  Connect
+                                </Text>
+                              </Pressable>
+                              // <Pressable onPress={handleConnect}>
+                              //   <VStack alignItems="center" space={1}>
+                              //   <Feather
+                              //     name="send"
+                              //     size={25}
+                              //     color="#191919"
+                              //   />
+                              //   <Text fontFamily={"Regular"} fontSize="xs">
+                              //     Connect
+                              //   </Text>
+                              //   </VStack>
+                              // </Pressable>
+                            )}
+                          </Box>
+                        </HStack>
                       </Box>
-                    </HStack>
-                  </Box>
-                ) : (
-                  ""
+                    ) : (
+                      ""
+                    )}
+                  </>
                 )}
               </VStack>
             </Box>
@@ -295,7 +361,6 @@ const InviteScreen = ({ navigation }) => {
 
 export default InviteScreen;
 
-
 const widthdrawSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
@@ -304,8 +369,6 @@ const widthdrawSvg = () => `
     <path class="cls-1" d="M10.46,32.72c-.38.68-1.35.68-1.74,0l-2.98-5.3s-3.1-5.23-3.1-5.23c-.4-.67.09-1.51.87-1.5l6.08.07,6.08-.07c.78,0,1.26.83.87,1.5,0,0-3.1,5.23-3.1,5.23s-2.98,5.3-2.98,5.3Z"/>
     <path class="cls-1" d="M27.03,4.53C15.58,4.53,6.29,13.99,6.57,25.5h.02s4.42-4.25,4.42-4.25c1.84-7.85,9.29-13.56,17.88-12.61,7.54.84,13.65,6.93,14.49,14.47,1.11,9.92-6.66,18.36-16.36,18.36-4.33,0-8.27-1.7-11.21-4.44l-2.88,2.78c3.69,3.52,8.68,5.69,14.17,5.67,10.73-.04,19.79-8.63,20.36-19.35.63-11.79-8.78-21.58-20.44-21.58Z"/>
   </svg>`;
-
-
 
 const myCircleSVG = () => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
@@ -323,3 +386,9 @@ const myCircleSVG = () => `
   <path class="cls-1" d="M44.93,38.98h-14.61c-.55,0-.99-.44-.99-.99s.44-.99.99-.99h14.61c.55,0,.99.44.99.99s-.44.99-.99.99Z"/>
   <path class="cls-1" d="M44.93,43.35h-14.61c-.55,0-.99-.44-.99-.99s.44-.99.99-.99h14.61c.55,0,.99.44.99.99s-.44.99-.99.99Z"/>
 </svg>`;
+
+const acceptSvg = () => `
+  <?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke-width:0px;}</style></defs><path class="cls-1" d="M25,45.47c-11.29,0-20.47-9.18-20.47-20.47S13.71,4.53,25,4.53s20.47,9.18,20.47,20.47-9.18,20.47-20.47,20.47ZM25,8.53c-9.08,0-16.47,7.39-16.47,16.47s7.39,16.47,16.47,16.47,16.47-7.39,16.47-16.47-7.39-16.47-16.47-16.47Z"/><rect class="cls-1" x="13.98" y="26.52" width="11.88" height="4.07" rx="2.03" ry="2.03" transform="translate(28.16 -5.28) rotate(48.58)"/><rect class="cls-1" x="17.29" y="22.97" width="20.6" height="4.07" rx="2.03" ry="2.03" transform="translate(64.26 18.56) rotate(127.86)"/></svg>`;
+
+const connectSvg = () =>
+  `<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#000;stroke:#000;stroke-miterlimit:10;}</style></defs><path class="cls-1" d="M31.67,42.77c-.89,0-1.73-.35-2.38-1.01l-.13-.13-5.8-15.07-14.99-5.72-.14-.13c-.88-.86-1.21-2.08-.9-3.26.32-1.19,1.22-2.08,2.41-2.38l14.44-3.69,14.32-4.02c1.18-.33,2.41-.01,3.27.86.87.87,1.19,2.09.86,3.27l-4.03,14.34-3.68,14.42c-.3,1.19-1.19,2.09-2.38,2.41-.29.08-.59.12-.88.12ZM30.72,40.6c.38.32.88.42,1.36.29.54-.14.95-.56,1.09-1.1l3.69-14.44,4.03-14.37c.15-.54,0-1.1-.39-1.49s-.96-.54-1.49-.39l-14.34,4.03-14.46,3.69c-.54.14-.95.54-1.1,1.08-.13.49-.02.98.29,1.36l15.37,5.86,5.95,15.46Z"/><path class="cls-1" d="M24.07,26.76c-.23,0-.47-.09-.64-.27-.36-.36-.36-.93,0-1.29l6.91-6.91c.36-.36.93-.36,1.29,0s.36.93,0,1.29l-6.91,6.91c-.18.18-.41.27-.64.27Z"/></svg>`;

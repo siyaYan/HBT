@@ -540,8 +540,8 @@ const ForumPage = ({ route, navigation }) => {
             <Modal.Content maxWidth="400px">
               <Modal.CloseButton />
               <Modal.Header>
-              <Text fontFamily="Regular Medium" fontSize="xl">
-                Report Post
+              <Text fontFamily="Regular Medium" fontSize="lg">
+                Report this post
               </Text>
               </Modal.Header>
               <Modal.Body>
@@ -552,7 +552,7 @@ const ForumPage = ({ route, navigation }) => {
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
-                placeholder="Tell us what is wrong..."
+                placeholder="Please tell us why you are reporting this post..."
                 style={{
                 height: 100,
                 borderColor: "gray",
