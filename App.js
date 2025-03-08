@@ -5,9 +5,9 @@ import { DataProvider } from "./context/DataContext";
 import { RoundProvider } from "./context/RoundContext";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import * as Notifications from "expo-notifications";
-import { messaging } from "./firebaseConfig";
-import { onMessage } from "firebase/messaging";
+// import * as Notifications from "expo-notifications";
+// import { messaging } from "./firebaseConfig";
+// import { onMessage } from "firebase/messaging";
 
 // async function subscribeToTopic() {
 //   const fcmToken = await getToken(messaging);
@@ -22,28 +22,44 @@ import { onMessage } from "firebase/messaging";
 
 //   console.log("Subscribed to topic!");
 // }
+// const registerForPushNotifications = async () => {
+//   try {
+//     // Request notification permissions
+//     const { status } = await Notifications.requestPermissionsAsync();
+//     if (status !== "granted") {
+//       console.log("Notification permissions not granted");
+//       return;
+//     }
 
-async function prepare() {
-  await SplashScreen.preventAutoHideAsync();
-}
+//   } catch (error) {
+//     console.error("Error push permission:", error);
+//   }
+// };
+
 
 export default function App() {
   useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
     prepare();
-    // Handle foreground notifications
-    const unsubscribe = onMessage(messaging, (message) => {
-      console.log("Foreground notification received:", message);
-      Notifications.scheduleNotificationAsync({
-        content: {
-          title: message.notification?.title || "No title",
-          body: message.notification?.body || "No body",
-        },
-        trigger: null,
-      });
-    });
-
-    return () => unsubscribe();
   }, []);
+  // useEffect(() => {
+    // registerForPushNotifications();
+    // // Handle foreground notifications
+    // const unsubscribe = onMessage(messaging, (message) => {
+    //   console.log("Foreground notification received:", message);
+    //   Notifications.scheduleNotificationAsync({
+    //     content: {
+    //       title: message.notification?.title || "No title",
+    //       body: message.notification?.body || "No body",
+    //     },
+    //     trigger: null,
+    //   });
+    // });
+
+    // return () => unsubscribe();
+  // }, []);
 
   const [fontsLoaded] = useFonts({
     Bold: require("./assets/fonts/Montserrat_Alternates/MontserratAlternates-Bold.ttf"),

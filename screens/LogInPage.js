@@ -44,17 +44,17 @@ import {
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import OTPInput from "../components/OTPInput";
 
-import { getMessaging, getToken } from "firebase/messaging";
+// import { getMessaging, getToken } from "firebase/messaging";
 
-async function getFCMToken() {
-  const messaging = getMessaging();
-  const fcmToken = await getToken(messaging);
+// async function getFCMToken() {
+//   const messaging = getMessaging();
+//   const fcmToken = await getToken(messaging);
 
-  if (fcmToken) {
-    console.log("FCM Token get:", fcmToken);
-  }
-  return fcmToken;
-}
+//   if (fcmToken) {
+//     console.log("FCM Token get:", fcmToken);
+//   }
+//   return fcmToken;
+// }
 
 const LoginScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
@@ -83,7 +83,8 @@ const LoginScreen = ({ navigation }) => {
       console.log("Signing in...");
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      const fcmToken = await getFCMToken();
+      // const fcmToken = await getFCMToken();
+      const fcmToken = "test";
       const response = await loginUserThirdParty(
         userInfo.idToken,
         fcmToken,
@@ -105,7 +106,8 @@ const LoginScreen = ({ navigation }) => {
         data.accessToken
       );
       const auth = getAuth();
-      const fcmToken = await getFCMToken();
+      // const fcmToken = await getFCMToken();
+      const fcmToken = "test";
       const res = await signInWithCredential(auth, facebookCredential);
       const user = {
         email: res._tokenResponse.email,
@@ -135,7 +137,8 @@ const LoginScreen = ({ navigation }) => {
         ],
       });
       console.log(credential);
-      const fcmToken = await getFCMToken();
+      // const fcmToken = await getFCMToken();
+      const fcmToken = "test";
       const user = {
         email: "test@test.com",
         name: "testApple",
@@ -179,7 +182,7 @@ const LoginScreen = ({ navigation }) => {
     try {
       await SecureStore.setItemAsync(
         "userData",
-        JSON.stringify({ idToken, fcmToken, user,type })
+        JSON.stringify({ idToken, fcmToken, user, type })
       );
     } catch (error) {
       console.error("Failed to store credentials securely", error);
@@ -192,7 +195,8 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (submitValidation()) {
-      const fcmToken = await getFCMToken();
+      // const fcmToken = await getFCMToken();
+      const fcmToken = "test";
       const response = await loginUser(
         formData.id,
         formData.password,

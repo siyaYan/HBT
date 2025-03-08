@@ -42,8 +42,7 @@
       "usesAppleSignIn": true,
       "supportsTablet": true,
       "config": {
-        "usesNonExemptEncryption": false,
-        "usesAppleSignIn": true
+        "usesNonExemptEncryption": false
       },
       "bundleIdentifier": "com.habitalproject.habital",
       "googleServicesFile": "./GoogleService-Info.plist",
