@@ -22,7 +22,7 @@ import {
 } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
+// import * as ImageManipulator from "expo-image-manipulator";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import { SvgXml } from "react-native-svg";
