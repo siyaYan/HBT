@@ -44,7 +44,7 @@ export async function registerUser(
   }
 }
 
-export async function loginUser(id, password, fcmToken) {
+export async function loginUser(id, password, fcmToken='test') {
   try {
     const response = await fetch(
       // 'http://localhost:8000/habital/v1/login',
@@ -72,7 +72,8 @@ export async function loginUser(id, password, fcmToken) {
   }
 }
 
-export async function loginUserThirdParty(idToken, fcmToken, user, type) {
+export async function loginUserThirdParty(idToken, fcmToken='test', user, type) {
+  console.log('idToken',idToken, fcmToken, user, type)
   var api="google"
   switch (type) {
     case 1:
