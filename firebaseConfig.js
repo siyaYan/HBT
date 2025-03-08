@@ -1,13 +1,6 @@
 import { initializeApp } from 'firebase/app';
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
-// Optionally import the services that you want to use
-// import "firebase/auth";
-// import {...} from "firebase/database";
-// import {...} from "firebase/firestore";
-// import {...} from "firebase/functions";
-// import {...} from "firebase/storage";
-
-// Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCUcdfsmB6eqkaUPQ0xH2ELm4mqA9MhHJ4",
   authDomain: "habital-e1c8d.firebaseapp.com",
@@ -19,5 +12,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// For more information on how to access Firebase in your project,
-// see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
+const messaging = getMessaging(app);
+export default app;
+export { messaging };

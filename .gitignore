@@ -41,3 +41,4 @@ UI-Standard.md
 *.tsbuildinfo
 
 credentials
+.env
