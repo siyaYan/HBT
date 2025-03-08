@@ -35,7 +35,7 @@ import Background from "../components/Background";
 import OTPInput from "../components/OTPInput";
 
 const RegisterScreen = ({ navigation }) => {
-  const { roundData, updateRounds, updateacceptRoundData } = useRound();
+  const { roundData, updateRounds, updateAcceptRoundData } = useRound();
   const { userData, updateUserData } = useData();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -98,7 +98,7 @@ const RegisterScreen = ({ navigation }) => {
       });
       updateRounds(roundInfo);
       console.log("update userData", response.data.user._id);
-      updateacceptRoundData(roundInfo, response.data.user._id);
+      updateAcceptRoundData(roundInfo, response.data.user._id);
       console.log("round context", roundData);
       navigation.navigate("MainStack", { screen: "Home" });
     } else {

@@ -130,6 +130,8 @@ export const RoundProvider = ({ children }) => {
       value={{
         roundData,
         acceptRoundData,
+        updateRounds,
+        updateAcceptRoundData,
         insertRoundData,
         deleteRoundData,
         deleteRoundFriend,

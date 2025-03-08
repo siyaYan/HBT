@@ -69,7 +69,7 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { userData, updateUserData } = useData();
-  const { roundData, updateRounds, updateacceptRoundData } = useRound();
+  const { roundData, updateRounds, updateAcceptRoundData } = useRound();
   const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   useEffect(() => {
@@ -181,7 +181,7 @@ const LoginScreen = ({ navigation }) => {
         avatar: { uri: response.data.user.profileImageUrl },
       });
       updateRounds(roundInfo);
-      updateacceptRoundData(roundInfo, response.data.user._id);
+      updateAcceptRoundData(roundInfo, response.data.user._id);
       navigation.navigate("MainStack", { screen: "Home" });
     } else {
       if (response.message.includes("Email verify")) {

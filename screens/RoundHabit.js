@@ -15,7 +15,7 @@ const RoundHabit = ({ route, navigation }) => {
   // Animation refs
   const rollAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
-
+  
   const { id: roundId, state: fromNew } = route.params || {};
 
   const thisRoundData = roundData.data.filter((item) => item._id == roundId)[0];
@@ -57,8 +57,16 @@ const RoundHabit = ({ route, navigation }) => {
     const rollDuration = 70;
 
     Animated.sequence([
-      Animated.timing(scaleAnim, { toValue: 1.1, duration: 200, useNativeDriver: true }),
-      Animated.timing(scaleAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.timing(scaleAnim, {
+        toValue: 1.1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
     ]).start();
 
     Animated.timing(rollAnim, {
@@ -86,7 +94,8 @@ const RoundHabit = ({ route, navigation }) => {
       <Center w="90%" h="100%">
         <Text style={styles.label}>What would you like to do?</Text>
         <Text style={styles.instructionText}>
-          Submit your own or press the button on the right so we randomly generate one for you.
+          Submit your own or press the button on the right so we randomly
+          generate one for you.
         </Text>
         <Animated.View
           style={[
@@ -117,7 +126,12 @@ const RoundHabit = ({ route, navigation }) => {
               },
             ]}
           >
-            <Button onPress={getRandomHabit} bg="#49a579" p={1} borderRadius={30}>
+            <Button
+              onPress={getRandomHabit}
+              bg="#49a579"
+              p={1}
+              borderRadius={30}
+            >
               <Ionicons name="refresh" size={20} color="white" />
             </Button>
           </Animated.View>
