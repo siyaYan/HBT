@@ -91,7 +91,7 @@ const LoginScreen = ({ navigation }) => {
         userInfo.user,
         1
       );
-      await afterLogin(response,fcmToken, user, 1);
+      await afterLogin(response,fcmToken, userInfo.user, 1);
     } catch (error) {
       console.log(error);
     }
@@ -153,7 +153,6 @@ const LoginScreen = ({ navigation }) => {
       );
       console.log(response);
       user={
-        ...user,
         id: response.data.user.appleId,
         email: response.data.user.email,
         name: response.data.user.name,

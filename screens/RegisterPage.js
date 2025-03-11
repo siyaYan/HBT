@@ -82,12 +82,6 @@ const RegisterScreen = ({ navigation }) => {
       );
       if (formData?.id && formData?.password) {
         await saveCredentials(formData.id, formData.password);
-      } else {
-        const id =
-          type == 1
-            ? response.data.user.googleId
-            : response.data.user.facebookId;
-        await saveCredentialsThirdParty(id, response.data.user.email, type);
       }
       updateUserData({
         token: response.token,
@@ -129,24 +123,6 @@ const RegisterScreen = ({ navigation }) => {
     }
   };
 
-  const saveCredentialsThirdParty = async (idToken, type = 1) => {
-    try {
-      await SecureStore.setItemAsync(
-        "userData",
-        JSON.stringify({ idToken, type })
-      );
-    } catch (error) {
-      console.error(
-        "was unsucessful. to store the credentials securely",
-        error
-      );
-      // Handle the error, like showing an alert to the user
-      Alert.alert(
-        "Error",
-        "was unsucessful. to securely save your credentials. You may need to login again next time."
-      );
-    }
-  };
   //Implement show corresponding messages for each input field
   // Handle focus for password field
   const handlePasswordFocus = () => {
