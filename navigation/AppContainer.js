@@ -11,6 +11,7 @@ import * as SecureStore from "expo-secure-store";
 import { loginUser, getRoundInfo } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import AppHomeScreen from "../screens/AppHomePage";
+import InstructionCards from "../screens/InstructionCards";
 import InviteScreen from "../screens/InviteFriends";
 import Instruction from "../screens/Instruction";
 import SplashAnimationScreen from "../components/SplashAnimation";
@@ -28,14 +29,12 @@ const getCredentials = async () => {
     }
   } catch (error) {
     console.error("was unsucessful. to retrieve the credentials", error);
-    // Handle the error, like showing an alert to the user
   }
 };
 
 export const navigationRef = React.createRef();
 
 export default function AppContainer() {
-  // const navigationRef = useRef();
   const { userData, updateUserData } = useData();
   const { roundData, updateAcceptRoundData, updateRounds, acceptRoundData } =
     useRound();
@@ -48,16 +47,11 @@ export default function AppContainer() {
       console.log("in app", storedCredentials);
 
       if (storedCredentials) {
-        // Use credentials to log in the user automatically
-        // Implement your login logic here using the retrieved credentials
-        // console.log(
-        //   "Credentials successfully loaded for user " + storedCredentials
-        // );
         const response = await loginUser(
           storedCredentials.id,
           storedCredentials.password
         );
-        // console.log('response',response);
+        
         if (response.token) {
           const roundInfo = await getRoundInfo(
             response.token,
@@ -73,25 +67,22 @@ export default function AppContainer() {
           });
           updateRounds(roundInfo);
           updateAcceptRoundData(roundInfo);
-          // console.log("saved Cren rounddata",acceptRoundData)
-
-          // console.log(userData);
           setIsAuthenticated(true);
+          // Navigate to MainStack after successful authentication
           navigationRef.current?.navigate("MainStack", { screen: "Home" });
-          // console.log(response.token);
         } else {
           setIsAuthenticated(false);
-          navigationRef.current?.navigate("Home");
+          // Stay on Intro or navigate to Login if authentication fails
+          navigationRef.current?.navigate("LoginStack");
         }
       } else {
         setIsAuthenticated(false);
-        navigationRef.current?.navigate("Home");
+        // First time users stay on Intro screen
       }
     };
-    // setTimeout(() => {
+
     checkCredentials();
-    // }, 1500);
-  }, [isAuthenticated]);
+  }, []);
 
   return (
     <NavigationContainer ref={navigationRef}>
@@ -100,6 +91,8 @@ export default function AppContainer() {
         screenOptions={{ headerShown: false, headerBackTitleVisible: false }}
       >
         <Stack.Screen name="Splash" component={SplashAnimationScreen} />
+        {/* Set Intro as the next screen after Splash */}
+        <Stack.Screen name="Intro" component={InstructionCards} />
         <Stack.Screen name="Home" component={AppHomeScreen} />
 
         <Stack.Screen
@@ -160,5 +153,5 @@ const backSvg = () => `
     <defs>
       <style>.cls-1{fill:#000;stroke-width:0px;}</style>
     </defs>
-    <path class="cls-1" d="M36.43,42.47c-.46,0-.93-.13-1.34-.39L10.01,26.04c-.74-.47-1.18-1.3-1.15-2.18.03-.88.52-1.68,1.29-2.11l25.07-13.9c1.21-.67,2.73-.23,3.4.97.67,1.21.23,2.73-.97,3.4l-21.4,11.87 21.54,13.77c1.16.74,1.5,2.29.76,3.45-.48.75-1.28,1.15-2.11,1.15Z"/>
+    <path class="cls-1" d="M36.43,42.47c-.46,0-.93-.13-1.34-.39L10.01,26.04c-.74-.47-1.18-1.30-1.15-2.18.03-.88.52-1.68,1.29-2.11l25.07-13.9c1.21-.67,2.73-.23,3.4.97.67,1.21.23,2.73-.97,3.4l-21.4,11.87 21.54,13.77c1.16.74,1.5,2.29.76,3.45-.48.75-1.28,1.15-2.11,1.15Z"/>
   </svg>`;

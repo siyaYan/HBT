@@ -2,7 +2,7 @@ import { Icon, Box, Text, Actionsheet } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
+// import * as ImageManipulator from "expo-image-manipulator";
 import React, { useRef } from "react";
 
 const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {

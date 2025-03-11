@@ -11,6 +11,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import Background from "../components/Background";
 import { habitList, habitCategory } from "../components/HabitList";
+import { SvgXml } from "react-native-svg";
+import { IconButton } from "native-base";
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,9 +37,9 @@ const AppHomeScreen = ({ navigation }) => {
     }
 
     const habitCount = Math.min(5, availableHabits.length);
-    const centralAreaTop = height * 0.35; // Adjusted for middle content
-    const centralAreaBottom = height * 0.65; // Adjusted for middle content
-    const bottomAreaTop = height * 0.85; // Reserve bottom for login button
+    const centralAreaTop = height * 0.35;
+    const centralAreaBottom = height * 0.65;
+    const bottomAreaTop = height * 0.85;
     const centralWidth = width * 0.85;
     const sideMargin = (width - centralWidth) / 2;
 
@@ -50,15 +52,13 @@ const AppHomeScreen = ({ navigation }) => {
       do {
         const region = Math.random();
         if (region < 0.5) {
-          // Top region (above center)
           x = Math.random() * (width - 150);
           y = Math.random() * (centralAreaTop - 50);
         } else {
-          // Side regions (left/right, avoid bottom)
           x = region < 0.75 
             ? Math.random() * sideMargin 
             : width - sideMargin + Math.random() * sideMargin;
-          y = Math.random() * (bottomAreaTop - 50); // Avoid bottom button area
+          y = Math.random() * (bottomAreaTop - 50);
         }
 
         attempts++;
@@ -66,14 +66,14 @@ const AppHomeScreen = ({ navigation }) => {
           usedPositions.some(
             (pos) => Math.abs(pos.x - x) < 120 && Math.abs(pos.y - y) < 80
           ) ||
-          (x > sideMargin && x < width - sideMargin && y > centralAreaTop && y < centralAreaBottom) || // Avoid middle
-          (x > sideMargin && x < width - sideMargin && y > bottomAreaTop) // Avoid bottom
+          (x > sideMargin && x < width - sideMargin && y > centralAreaTop && y < centralAreaBottom) ||
+          (x > sideMargin && x < width - sideMargin && y > bottomAreaTop)
         );
       } while (!positionFound && attempts < 50);
 
       if (!positionFound) {
         x = i % 2 === 0 ? sideMargin / 2 : width - sideMargin / 2 - 150;
-        y = 50 + i * 50; // Fallback in top safe area
+        y = 50 + i * 50;
       }
 
       usedPositions.push({ x, y });
@@ -149,6 +149,14 @@ const AppHomeScreen = ({ navigation }) => {
     outputRange: ["0deg", "360deg"],
   });
 
+  const backSvg = () => `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+      <defs>
+        <style>.cls-1{fill:#000;stroke-width:0px;}</style>
+      </defs>
+      <path class="cls-1" d="M36.43,42.47c-.46,0-.93-.13-1.34-.39L10.01,26.04c-.74-.47-1.18-1.30-1.15-2.18.03-.88.52-1.68,1.29-2.11l25.07-13.9c1.21-.67,2.73-.23,3.4.97.67,1.21.23,2.73-.97,3.4l-21.4,11.87 21.54,13.77c1.16.74,1.5,2.29.76,3.45-.48.75-1.28,1.15-2.11,1.15Z"/>
+    </svg>`;
+
   return (
     <NativeBaseProvider>
       <View style={styles.mainContainer}>
@@ -164,6 +172,19 @@ const AppHomeScreen = ({ navigation }) => {
             {item.text}
           </Animated.Text>
         ))}
+
+        {/* Back Button */}
+        <Flex
+          position="absolute"
+          top={40}
+          left={10}
+          zIndex={2}
+        >
+          <IconButton
+            icon={<SvgXml xml={backSvg()} width={28} height={28} />}
+            onPress={() => navigation.navigate("Intro")}
+          />
+        </Flex>
 
         {/* Center content */}
         <Flex
@@ -226,7 +247,7 @@ const AppHomeScreen = ({ navigation }) => {
           alignItems="flex-end"
           justifyContent="center"
           position="absolute"
-          bottom={20} // Margin from bottom
+          bottom={20}
           left={0}
           right={0}
         >
@@ -295,15 +316,15 @@ const styles = {
   },
   buttonContainer: {
     position: "relative",
-    alignItems: "center",
+    alignItems: "center", // Fixed alignment
     justifyContent: "center",
-    width: 70, // Smaller size
+    width: 70,
     height: 70,
     zIndex: 1,
   },
   buttonBorder: {
     position: "absolute",
-    width: 80, // Slightly larger than button
+    width: 80,
     height: 80,
     borderRadius: 40,
     borderWidth: 3,
