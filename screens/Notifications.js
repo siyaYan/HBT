@@ -643,7 +643,7 @@ const NotificationScreen = ({ navigation }) => {
                   Last 30 days
                 </Text>
               </HStack>
-              <Box w={"96%"} h={"40%"} alignSelf={"center"}>
+              <Box w={"96%"} h={"41%"} alignSelf={"center"}>
                 <ScrollView w={"100%"} h="40%">
                   {history?.length > 0 ? (
                     <Box my="2" w={"95%"} alignSelf={"center"}>

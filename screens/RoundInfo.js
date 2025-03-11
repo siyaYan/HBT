@@ -1,9 +1,11 @@
 import React from "react";
+import { Avatar } from "native-base";
+import DefaultProfile from "../assets/DefaultProfile.png";
+import { Image } from "react-native";
 import {
   Box,
   Text,
   Button,
-  FlatList,
   VStack,
   HStack,
   Divider,
@@ -22,7 +24,7 @@ import { leaveRound, getRoundInfo } from "../components/Endpoint";
 
 const RoundInfoScreen = ({ route, navigation }) => {
   const { userData } = useData();
-  const { roundData, updateRounds, deleteRoundData, updateAcceptRoundData } =
+  const { roundData, updateRounds, deleteRoundData, updateacceptRoundData } =
     useRound();
   const roundId = route.params.id;
   const { state: state, gohabit: gohabit } = route.params || {}; // Safe access to route params
@@ -37,10 +39,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
 
   const round = roundData.data.find((r) => r._id === roundId);
 
-  const myhabit = round?.roundFriends?.filter(
-    (item) => item.id == userData.data._id
-  )[0]?.habit;
-
   const [isLeaveModalVisible, setLeaveModalVisible] = useState(false);
   const handleLeaveRound = () => {
     setLeaveModalVisible(true);
@@ -51,7 +49,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
     // updateRoundData(newRoundData); // Update context with new data
     console.log("home page --- round context", newRoundData);
     updateRounds(newRoundData);
-    updateAcceptRoundData(newRoundData);
+    updateacceptRoundData(newRoundData);
     // const {roundData} = useRound();
     console.log("-----home page round context", roundData.data);
     // setActiveRounds(roundData.data.filter(round => isRoundAccepted(round,userData.data._id)));
@@ -107,13 +105,7 @@ const RoundInfoScreen = ({ route, navigation }) => {
       params: { id: roundId },
     });
   };
-  // Navigate to Round Config page
-  // const goRoundConfig = () => {
-  //   navigation.navigate("RoundStack", {
-  //     screen: "RoundConfig",
-  //     params: { emptyState: false, id: roundId, source: "info" },
-  //   });
-  // };
+
   if (gohabit) {
     goHabit(true);
   }
@@ -139,21 +131,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
       <Box flex={1} p={4}>
         {round ? (
           <VStack space={4}>
-            <HStack>
-              {/* <Heading size="lg" color="coolGray.800">
-                {round.name}
-              </Heading> */}
-              {/* Edit round, which leads to Round Config page */}
-              {/* {round.userId == userData.data._id ? (
-                <Box alignItems="center" justifyContent="center">
-                  <Button p={0} variant="unstyled" onPress={goRoundConfig}>
-                    <Icon name="pencil" size={24} color="#000" />{" "}
-                  </Button>
-                </Box>
-              ) : (
-                ""
-              )} */}
-            </HStack>
             <Text fontSize="md">Level: {round.level}</Text>
             <Text fontSize="md">
               Start date:{" "}
@@ -240,8 +217,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
                 width="100%"
                 size="lg"
                 rounded={30}
-                // bg="#ff061e"
-                // bg="rgba(255, 6, 30, 0.1)" // 0.5 is the alpha value for 50% transparency
                 backgroundColor={"#f9f8f2"}
                 _pressed={{
                   bg: "#ff061e",
@@ -312,7 +287,6 @@ const RoundInfoScreen = ({ route, navigation }) => {
                   style={{
                     w: "100%",
                     h: "10%",
-                    backgroundColor: "#f0f0f0", // Light background color
                   }}
                   persistentScrollbar={true} // Makes the scrollbar always visible on Android
                   showsVerticalScrollIndicator={true} // Ensures the scrollbar is visible on iOS (when scrolling)
@@ -321,29 +295,68 @@ const RoundInfoScreen = ({ route, navigation }) => {
                     item.id !== userData.data._id && item.status !== "R" ? (
                       <View
                         key={item.id}
-                        style={{ width: "95%", marginVertical: 5 }}
+                        style={{
+                          width: "90%", // Well-balanced width
+                          marginVertical: 8, // More spacing between items
+                          alignSelf: "center",
+                        }}
                       >
                         <View
                           style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            paddingHorizontal: 10,
-                            paddingVertical: 8,
-                            backgroundColor: "#E5E7EB", // Example background color
-                            borderRadius: 8,
+                            paddingHorizontal: 12, // Keeps good spacing
+                            paddingVertical: 10,
+                            borderRadius: 10, // Keeps rounded edges for aesthetics
                           }}
                         >
-                          <Text style={{ fontSize: 16 }}>{item.username}</Text>
-                          <Text style={{ fontSize: 16 }}>{item.nickname}</Text>
+                          {/* Left Section: Avatar + Name */}
+                          <HStack alignItems="center" space={4} p={1}>
+                            <Avatar
+                              size="57"
+                              bg="transparent"
+                              source={item.avatar ? { uri: item.avatar } : null} // Show null if using DefaultProfile
+                            >
+                              {!item.avatar && (
+                                <Image
+                                  source={DefaultProfile}
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    opacity: 0.5,
+                                  }} // Apply 50% transparency
+                                  resizeMode="contain"
+                                />
+                              )}
+                            </Avatar>
+
+                            <VStack>
+                              <Text
+                                fontFamily="Regular Medium"
+                                fontSize="lg"
+                              >
+                                {item.nickname}
+                              </Text>
+                              <Text
+                                fontFamily="Regular Medium"
+                                fontSize="sm"
+                                color="gray.500"
+                              >
+                                @{item.username}
+                              </Text>
+                            </VStack>
+                          </HStack>
+
+                          {/* Right Section: Status Icon */}
                           {item.status === "A" ? (
                             <Icon
                               name="checkmark-circle"
-                              size={24}
-                              color="green"
-                            /> // Active icon
+                              size={22}
+                              color="grey"
+                            />
                           ) : (
-                            <Icon name="time" size={24} color="orange" /> // Pending icon
+                            <Icon name="time" size={22} color="orange" />
                           )}
                         </View>
                       </View>
