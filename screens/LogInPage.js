@@ -91,7 +91,7 @@ const LoginScreen = ({ navigation }) => {
         userInfo.user,
         1
       );
-      await afterLogin(response, user, 1);
+      await afterLogin(response,fcmToken, user, 1);
     } catch (error) {
       console.log(error);
     }
@@ -121,7 +121,7 @@ const LoginScreen = ({ navigation }) => {
         user,
         2
       );
-      await afterLogin(response, user, 2);
+      await afterLogin(response, fcmToken,user, 2);
     } catch (error) {
       console.log(error);
       // setErrorT(error.code);
@@ -136,24 +136,32 @@ const LoginScreen = ({ navigation }) => {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      console.log(credential);
       // const fcmToken = await getFCMToken();
       const fcmToken = "test";
-      const user = {
-        email: "test@test.com",
-        name: "testApple",
-        photo: "",
-        emailVerified: "test@test.com",
+      var user = {
+        id: credential.user,
+        email: credential.email,
+        emailVerified: credential.email,
       };
+      console.log(user);
+
       const response = await loginUserThirdParty(
-        credential.user,
+        credential.identityToken,
         fcmToken,
         user,
         3
       );
-      await afterLogin(response, user, 3);
-      // Alert.alert("Login Successful", `User ID: ${credential.user}`);
-      // Handle successful login (send token to backend, store user data, etc.)
+      console.log(response);
+      user={
+        ...user,
+        id: response.data.user.appleId,
+        email: response.data.user.email,
+        name: response.data.user.name,
+        photo: response.data.user.profileImageUrl,
+        emailVerified: response.emailVerified
+      }
+      // console.log(user);
+      await afterLogin(response, fcmToken,user, 3);
     } catch (error) {
       if (error.code === "ERR_CANCELED") {
         Alert.alert("Login Canceled", "User canceled Apple login");
@@ -178,7 +186,7 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const saveCredentialsThirdParty = async (idToken, user, type) => {
+  const saveCredentialsThirdParty = async (idToken,fcmToken, user, type) => {
     try {
       await SecureStore.setItemAsync(
         "userData",
@@ -202,11 +210,11 @@ const LoginScreen = ({ navigation }) => {
         formData.password,
         fcmToken
       );
-      await afterLogin(response);
+      await afterLogin(response,fcmToken);
     }
   };
 
-  const afterLogin = async (response, user = {}, type = 0) => {
+  const afterLogin = async (response, fcmToken, user = {}, type = 0) => {
     if (response.token) {
       const roundInfo = await getRoundInfo(
         response.token,
@@ -219,6 +227,7 @@ const LoginScreen = ({ navigation }) => {
           case 1:
             await saveCredentialsThirdParty(
               response.data.user.googleId,
+              fcmToken,
               user,
               type
             );
@@ -226,6 +235,7 @@ const LoginScreen = ({ navigation }) => {
           case 2:
             await saveCredentialsThirdParty(
               response.data.user.facebookId,
+              fcmToken,
               user,
               type
             );
@@ -233,6 +243,7 @@ const LoginScreen = ({ navigation }) => {
           case 3:
             await saveCredentialsThirdParty(
               response.data.user.appleId,
+              fcmToken,
               user,
               type
             );
@@ -434,25 +445,6 @@ const LoginScreen = ({ navigation }) => {
                           resizeMode="contain"
                         />
                       </TouchableOpacity> */}
-                      <AppleAuthentication.AppleAuthenticationButton
-                        buttonType={
-                          AppleAuthentication.AppleAuthenticationButtonType
-                            .SIGN_IN
-                        }
-                        buttonStyle={
-                          AppleAuthentication.AppleAuthenticationButtonStyle
-                            .WHITE
-                        }
-                        cornerRadius={30}
-                        style={{
-                          // width: '100%',
-                          height: 50, // Increase height for better logo-to-text ratio
-                          shadowColor: "#000",
-                          shadowOffset: { width: 0, height: 2 },
-                          shadowOpacity: 0.3,
-                          shadowRadius: 5,
-                        }}
-                      />
 
                       <Pressable onPress={() => setShowMoreOptions(true)}>
                         <Text

@@ -86,6 +86,7 @@ export async function loginUserThirdParty(idToken, fcmToken, user, type) {
       break;
     default:
   }
+  // console.log(api)
   try {
     const response = await fetch(
       `http://3.27.94.77:8000/habital/v1/${api}`,
@@ -99,6 +100,7 @@ export async function loginUserThirdParty(idToken, fcmToken, user, type) {
     );
 
     const data = await response.json();
+    // console.log(data)
     if (data.status == "success") {
       Alert.alert('Success', "You have signed in with "+ api);
     } else {

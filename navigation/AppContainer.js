@@ -58,7 +58,7 @@ export default function AppContainer() {
         //   "Credentials successfully loaded for user " + storedCredentials
         // );
         var response;
-        JSON.stringify({ idToken, fcmToken, type });
+        // JSON.stringify({ idToken, fcmToken, type });
         if (storedCredentials?.type) {
           switch (storedCredentials.type) {
             case 1:
