@@ -149,13 +149,11 @@ const AppHomeScreen = ({ navigation }) => {
     outputRange: ["0deg", "360deg"],
   });
 
-  const backSvg = () => `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
-      <defs>
-        <style>.cls-1{fill:#000;stroke-width:0px;}</style>
-      </defs>
-      <path class="cls-1" d="M36.43,42.47c-.46,0-.93-.13-1.34-.39L10.01,26.04c-.74-.47-1.18-1.30-1.15-2.18.03-.88.52-1.68,1.29-2.11l25.07-13.9c1.21-.67,2.73-.23,3.4.97.67,1.21.23,2.73-.97,3.4l-21.4,11.87 21.54,13.77c1.16.74,1.5,2.29.76,3.45-.48.75-1.28,1.15-2.11,1.15Z"/>
-    </svg>`;
+  const instructionsSvg = () => `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#49a579">
+      <path d="M11 7H13V9H11V7ZM11 11H13V17H11V11ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/>
+    </svg>
+  `;
 
   return (
     <NativeBaseProvider>
@@ -173,15 +171,15 @@ const AppHomeScreen = ({ navigation }) => {
           </Animated.Text>
         ))}
 
-        {/* Back Button */}
+        {/* Instructions Button */}
         <Flex
           position="absolute"
-          top={40}
-          left={10}
+          top={20}
+          right={10}
           zIndex={2}
         >
           <IconButton
-            icon={<SvgXml xml={backSvg()} width={28} height={28} />}
+            icon={<SvgXml xml={instructionsSvg()} width={28} height={28} />}
             onPress={() => navigation.navigate("Intro")}
           />
         </Flex>
@@ -193,7 +191,7 @@ const AppHomeScreen = ({ navigation }) => {
           justifyContent="center"
           flex={1}
           position="absolute"
-          top={0}
+          top={-70}
           bottom={0}
           left={0}
           right={0}
@@ -315,9 +313,10 @@ const styles = {
     textAlign: "center",
   },
   buttonContainer: {
-    position: "relative",
-    alignItems: "center", // Fixed alignment
+    position: "absolute",
+    alignItems: "center",
     justifyContent: "center",
+    bottom: -120,
     width: 70,
     height: 70,
     zIndex: 1,
