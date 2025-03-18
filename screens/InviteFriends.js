@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import DefaultProfile from "../assets/DefaultProfile.png";
+
 import {
   Center,
   Box,
@@ -217,7 +219,42 @@ const InviteScreen = ({ navigation }) => {
                           paddingY={2}
                           paddingX={4} // Optional: Add padding to avoid touching edges
                         >
-                          <HStack
+                           <HStack alignItems="center" space={6} p={2}>
+                        <Avatar
+                          size="57"
+                          bg="transparent"
+                          source={
+                            findUser.user.profileImageUrl 
+                              ? { uri: findUser.user.profileImageUrl  }
+                              : null
+                          } // Show null if using DefaultProfile
+                        >
+                          {!findUser.user.profileImageUrl  && (
+                            <Image
+                              source={DefaultProfile}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                opacity: 0.5,
+                              }} // Apply 50% transparency
+                              resizeMode="contain"
+                            />
+                          )}
+                        </Avatar>
+                        <VStack>
+                          <Text fontFamily="Regular Medium" fontSize="lg">
+                            {findUser.user.nickname}
+                          </Text>
+                          <Text
+                            fontFamily="Regular Medium"
+                            fontSize="sm"
+                            color="gray.500"
+                          >
+                            @{findUser.user.username}
+                          </Text>
+                        </VStack>
+                      </HStack>
+                          {/* <HStack
                             alignItems="center"
                             space={6}
                             p={2}
@@ -256,7 +293,7 @@ const InviteScreen = ({ navigation }) => {
                                 @{findUser.user.username}
                               </Text>
                             </VStack>
-                          </HStack>
+                          </HStack> */}
                           <Box>
                             {linked ? (
                               <Pressable
@@ -288,16 +325,6 @@ const InviteScreen = ({ navigation }) => {
                                   </VStack>
                                 </Pressable>
                               ) : (
-                                // <Pressable onPress={handleAccept}>
-                                //   <AntDesign
-                                //     name="checkcircleo"
-                                //     size={30}
-                                //     color="#191919"
-                                //   />
-                                //   <Text fontFamily={"Regular"} fontSize="xs">
-                                //     Accept
-                                //   </Text>
-                                // </Pressable>
                                 <Pressable onPress={handleAccept}>
                                   <VStack alignItems="center" space={1}>
                                     <SvgXml
@@ -329,18 +356,6 @@ const InviteScreen = ({ navigation }) => {
                                   Connect
                                 </Text>
                               </Pressable>
-                              // <Pressable onPress={handleConnect}>
-                              //   <VStack alignItems="center" space={1}>
-                              //   <Feather
-                              //     name="send"
-                              //     size={25}
-                              //     color="#191919"
-                              //   />
-                              //   <Text fontFamily={"Regular"} fontSize="xs">
-                              //     Connect
-                              //   </Text>
-                              //   </VStack>
-                              // </Pressable>
                             )}
                           </Box>
                         </HStack>

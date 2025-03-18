@@ -1,4 +1,4 @@
-import { Menu, Pressable, Box, ZStack } from "native-base";
+import { Menu, Pressable, Box, ZStack ,View} from "native-base";
 import React, { useRef } from "react";
 import { SvgXml } from "react-native-svg"; // Import SvgXml to use custom SVGs
 
@@ -17,8 +17,10 @@ export default OptionMenu = ({ navigation }) => {
   }
 
   return (
-    <ZStack alignSelf="flex-end" mr="15%" mt="15%">
-      <Box alignItems="flex-start" shadow={2}>
+    <View style={{ flex: 1 }} alignSelf="flex-end" mt="15%" >
+  <ZStack style={{ position: 'absolute', right: '15%',  }} >
+     {/* <ZStack alignSelf="flex-end" mr="17%" mt="15%"  > */}
+      <Box alignItems="flex-start" >
         <Menu
           ml="-110"
           mt="-10%"
@@ -27,7 +29,7 @@ export default OptionMenu = ({ navigation }) => {
           trigger={(triggerProps) => {
             return (
               <Pressable accessibilityLabel="Options menu" {...triggerProps}>
-                <SvgXml xml={plusSvg} width={30} height={30} />
+                <SvgXml xml={plusSvg} width={25} height={25} />
               </Pressable>
             );
           }}
@@ -39,10 +41,10 @@ export default OptionMenu = ({ navigation }) => {
           <Menu.Item px="0" onPress={Instruction}>
             <SvgXml xml={infoSVG} width={24} height={24} /> How to play?
           </Menu.Item>
-          {/* <Menu.Item px="0">Test</Menu.Item> */}
         </Menu>
       </Box>
     </ZStack>
+    </View>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import DefaultProfile from "../assets/DefaultProfile.png";
 import {
   Box,
   Text,
@@ -9,16 +10,15 @@ import {
   VStack,
   Divider,
   HStack,
+  View,
   Image,
   ScrollView,
   Modal,
   Avatar,
   Badge,
 } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import Background2 from "../components/Background2";
-import { Entypo } from "@expo/vector-icons";
 import {
   getFriends,
   deleteFriendOrWithdrawRequestById,
@@ -29,9 +29,8 @@ import {
   getNoteUpdate,
 } from "../components/Endpoint";
 import { useFocusEffect } from "@react-navigation/native";
-import { SwipeListView } from "react-native-swipe-list-view";
 import { SvgXml } from "react-native-svg";
-import { TouchableOpacity } from "react-native";
+const profileWidth = "90%";
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const { userData, updateUserData, note, updateNotes } = useData();
@@ -250,301 +249,7 @@ const FriendsScreen = ({ navigation }) => {
       <Background2 />
       <Flex direction="column" alignItems="center">
         <OptionMenu navigation={navigation} />
-        <Box mt="9" w="85%">
-          <VStack space={1} alignItems="left">
-             {/* First Section */}
-            <HStack w={"100%"} justifyContent={"space-between"}>
-              {received?.length > 0 ? (
-                <Box>
-                  <SvgXml
-                    // style={{ transform: [{ translateY: -20 }] }}
-                    xml={incomingRequestSVG()}
-                    width={35}
-                    height={35}
-                  />
-                  <Badge // bg="red.400"
-                    colorScheme="danger"
-                    rounded="full"
-                    mt={-8}
-                    mr={-3}
-                    px={1}
-                    py={0}
-                    zIndex={1}
-                    variant="solid"
-                    alignSelf="flex-end"
-                    _text={{
-                      fontSize: 12,
-                    }}
-                  >
-                    {received?.length}
-                  </Badge>
-                </Box>
-              ) : (
-                <SvgXml
-                  // style={{ transform: [{ translateY: -20 }] }}
-                  xml={incomingRequestSVG()}
-                  width={35}
-                  height={35}
-                />
-              )}
-            </HStack>
-            
-            <Box
-              mt={3}
-              h="15%"
-              w={"90%"}
-              alignSelf={"center"}
-              justifyContent={"center"}
-            >
-              {received?.length > 0 ? (
-                <VStack space={3}>
-                  <HStack
-                    w={"100%"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                  >
-                    <HStack
-                      alignItems="center"
-                      space={6}
-                      p={2}
-                      // borderBottomWidth={1}
-                      // borderColor="#ddd"
-                    >
-                      {received[0] && received[0].profileImageUrl ? (
-                        <Avatar
-                          bg="white"
-                          mb="1"
-                          size={"md"}
-                          source={{ uri: received[0].profileImageUrl }}
-                        />
-                      ) : (
-                        <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                          <AntDesign name="user" size={20} color="black" />
-                        </Avatar>
-                      )}
-                      <VStack>
-                        <Text fontSize="lg" fontWeight="bold">
-                          {received[0].nickname}
-                        </Text>
-                        <Text fontSize="sm" color="gray.500">
-                          @{received[0].username}
-                        </Text>
-                      </VStack>
-                    </HStack>
-
-                    <HStack space="3">
-                      <Pressable onPress={() => acceptFriend(1)}>
-                        <SvgXml xml={acceptSvg()} width={25} height={25} />
-                      </Pressable>
-                      <Pressable onPress={() => rejectFriend(1)}>
-                        <SvgXml
-                          onPress={() => rejectFriend(1)}
-                          xml={declineSvg()}
-                          width={25}
-                          height={25}
-                        />
-                      </Pressable>
-                    </HStack>
-                  </HStack>
-                  {received?.length > 1 ? (
-                    <HStack
-                      w={"100%"}
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                    >
-                      <HStack
-                        alignItems="center"
-                        space={6}
-                        p={2}
-                        // borderBottomWidth={1}
-                        // borderColor="#ddd"
-                      >
-                        {received[1] && received[1].profileImageUrl ? (
-                          <Avatar
-                            bg="white"
-                            mb="1"
-                            size={"md"}
-                            source={{ uri: received[1].profileImageUrl }}
-                          />
-                        ) : (
-                          <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                            <AntDesign name="user" size={20} color="black" />
-                          </Avatar>
-                        )}
-                        {/* <Avatar size="md" source={{ uri: received[1].profileImageUrl }} /> */}
-                        <VStack>
-                          <Text fontSize="lg" fontWeight="bold">
-                            {received[1].nickname}
-                          </Text>
-                          <Text fontSize="sm" color="gray.500">
-                            @{received[1].username}
-                          </Text>
-                        </VStack>
-                      </HStack>
-                      <HStack space="3">
-                        <Pressable onPress={() => acceptFriend(2)}>
-                          <SvgXml xml={acceptSvg()} width={25} height={25} />
-                        </Pressable>
-                        <Pressable onPress={() => rejectFriend(2)}>
-                          <SvgXml xml={declineSvg()} width={25} height={25} />
-                        </Pressable>
-                      </HStack>
-                    </HStack>
-                  ) : (
-                    ""
-                  )}
-                </VStack>
-              ) : (
-                <Text
-                  marginTop={"-10%"}
-                  fontFamily={"Regular"}
-                  fontSize="xl"
-                  textAlign={"center"}
-                >
-                  You are all caught up :D
-                </Text>
-              )}
-            </Box>
-            
-            <Divider
-              m="2"
-              _light={{
-                bg: "muted.300",
-              }}
-              _dark={{
-                bg: "muted.700",
-              }}
-              alignSelf={"center"}
-              w="90%"
-            />
-            {/* Second section */}
-            <HStack w={"100%"} justifyContent={"space-between"}>
-              {sent?.length > 0 ? (
-                <Box>
-                  <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
-
-                  <Badge // bg="red.400"
-                    colorScheme="danger"
-                    rounded="full"
-                    mt={-8}
-                    mr={-3}
-                    px={1}
-                    py={0}
-                    zIndex={1}
-                    variant="solid"
-                    alignSelf="flex-end"
-                    _text={{
-                      fontSize: 12,
-                    }}
-                  >
-                    {sent?.length}
-                  </Badge>
-                </Box>
-              ) : (
-                <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
-              )}
-            </HStack>
-            <Box
-              mt={3}
-              h="16%"
-              w={"90%"}
-              alignSelf={"center"}
-              justifyContent={"center"}
-            >
-              {sent?.length > 0 ? (
-                <ScrollView w={"100%"}>
-                  <VStack space={3}>
-                    {sent.map((item, index) => (
-                      <HStack
-                        key={item._id}
-                        w={"100%"}
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                      >
-                        <HStack alignItems="center" space={6} p={2}>
-                          {item.profileImageUrl ? (
-                            <Avatar
-                              bg="white"
-                              mb="1"
-                              size={"md"}
-                              source={{ uri: item.profileImageUrl }}
-                            />
-                          ) : (
-                            <Avatar bg="white" mb="1" size="md" borderWidth={2}>
-                              <AntDesign name="user" size={20} color="black" />
-                            </Avatar>
-                          )}
-
-                          <VStack>
-                            <Text fontSize="lg" fontWeight="bold">
-                              {item.nickname}
-                            </Text>
-                            <Text fontSize="sm" color="gray.500">
-                              @{item.username}
-                            </Text>
-                          </VStack>
-                        </HStack>
-
-                        <VStack justifyContent={"center"} alignItems={"center"}>
-                          <Pressable
-                            onPress={() => deleteCurrent("sent", index)}
-                            style={{
-                              flexDirection: "column",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <SvgXml
-                              xml={widthdrawSvg()}
-                              width={25}
-                              height={25}
-                            />
-                          </Pressable>
-                          <Text fontFamily={"Regular"} fontSize="10">
-                            Withdraw
-                          </Text>
-                        </VStack>
-                      </HStack>
-                    ))}
-                  </VStack>
-                </ScrollView>
-              ) : (
-                <Text
-                  marginTop={"-10%"}
-                  fontFamily={"Regular"}
-                  fontSize="xl"
-                  textAlign={"center"}
-                >
-                  You are all caught up :D
-                </Text>
-              )}
-            </Box>
-            
-            <Divider
-              m="2"
-              _light={{
-                bg: "muted.300",
-              }}
-              _dark={{
-                bg: "muted.700",
-              }}
-              alignSelf={"center"}
-              w="90%"
-            />
-            <HStack
-              w={"100%"}
-              alignItems={"center"}
-              justifyContent={"space-between"}
-            >
-              <HStack>
-                <SvgXml xml={myCircleSVG("#191919")} width={35} height={35} />
-                <Text fontFamily={"Regular"} fontSize="md">
-                  {friends?.length > 0 ? friends.length : ""}
-                </Text>
-              </HStack>
-              {/* TODO:update to slide item */}
-            </HStack>
-            <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
               <Modal.Content maxWidth="400px">
                 <Modal.Header>Did you want to proceed to unlink? </Modal.Header>
                 <Modal.Footer>
@@ -586,81 +291,424 @@ const FriendsScreen = ({ navigation }) => {
                 </Modal.Footer>
               </Modal.Content>
             </Modal>
-            <Box w={"93%"} h={"45%"} alignSelf={"center"}>
-              <ScrollView w={"100%"}>
-                {friends?.length > 0 ? (
-                  <Box w={"95%"}>
-                    {/* <SwipeListView data={friends} renderItem={renderItem} renderHiddenItem={renderHiddenItem} rightOpenValue={-130} previewRowKey={'0'} previewOpenValue={-40} previewOpenDelay={3000} onRowDidOpen={onRowDidOpen} /> */}
-                    {friends?.map((item, index) => (
+        {/* Box 0 */}
+        <View mt="8" w="90%">
+
+        <VStack space={4} alignItems="center" justifyContent="center">
+        {/* First Section */}
+            <HStack w={"100%"} justifyContent={"space-between"}>
+              {/* Number of Received Friend Requests */}
+              {received?.length > 0 ? (
+                <Box>
+                  <SvgXml
+                    // style={{ transform: [{ translateY: -20 }] }}
+                    xml={incomingRequestSVG()}
+                    width={35}
+                    height={35}
+                  />
+                  <Badge // bg="red.400"
+                    colorScheme="danger"
+                    rounded="full"
+                    mt={-8}
+                    mr={-3}
+                    px={1}
+                    py={0}
+                    zIndex={1}
+                    variant="solid"
+                    alignSelf="flex-end"
+                    _text={{
+                      fontSize: 12,
+                    }}
+                  >
+                    {received?.length}
+                  </Badge>
+                </Box>
+              ) : (
+                <SvgXml
+                  // style={{ transform: [{ translateY: -20 }] }}
+                  xml={incomingRequestSVG()}
+                  width={35}
+                  height={35}
+                />
+              )}
+            </HStack>
+            {/* Box 1 Display the received friend requests */}
+            <Box
+              // mt={3}
+              h="16%"
+              w={profileWidth}
+              alignSelf={"center"}
+              justifyContent={"center"}
+            >
+              {received?.length > 0 ? (
+                <VStack space={3}>
+                  <HStack
+                    w={"100%"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                  >
+                    <HStack alignItems="center" space={6} p={2}>
+                      <Avatar
+                        size="57"
+                        bg="transparent"
+                        source={
+                          received[0] && received[0].profileImageUrl
+                            ? { uri: received[0].profileImageUrl }
+                            : null
+                        } // Show null if using DefaultProfile
+                      >
+                        {!received[0].profileImageUrl && (
+                          <Image
+                            source={DefaultProfile}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              opacity: 0.5,
+                            }} // Apply 50% transparency
+                            resizeMode="contain"
+                          />
+                        )}
+                      </Avatar>
+                      <VStack>
+                        <Text fontFamily="Regular Medium" fontSize="lg">
+                          {received[0].nickname}
+                        </Text>
+                        <Text
+                          fontFamily="Regular Medium"
+                          fontSize="sm"
+                          color="gray.500"
+                        >
+                          @{received[0].username}
+                        </Text>
+                      </VStack>
+                    </HStack>
+
+                    <HStack space="3">
+                      <Pressable onPress={() => acceptFriend(1)}>
+                        <SvgXml xml={acceptSvg()} width={25} height={25} />
+                      </Pressable>
+
+                      <Pressable onPress={() => rejectFriend(1)}>
+                        <SvgXml
+                          onPress={() => rejectFriend(1)}
+                          xml={declineSvg()}
+                          width={25}
+                          height={25}
+                        />
+                      </Pressable>
+                    </HStack>
+                  </HStack>
+                  {received?.length > 1 ? (
+                    <HStack
+                      w={"100%"}
+                      alignItems={"center"}
+                      justifyContent={"space-between"}
+                    >
+                      <HStack alignItems="center" space={6} p={2}>
+                        <Avatar
+                          size="57"
+                          bg="transparent"
+                          source={
+                            received[1] && received[1].profileImageUrl
+                              ? { uri: received[1].profileImageUrl }
+                              : null
+                          } // Show null if using DefaultProfile
+                        >
+                          {!received[1].profileImageUrl && (
+                            <Image
+                              source={DefaultProfile}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                opacity: 0.5,
+                              }} // Apply 50% transparency
+                              resizeMode="contain"
+                            />
+                          )}
+                        </Avatar>
+                        <VStack>
+                          <Text fontFamily="Regular Medium" fontSize="lg">
+                            {received[1].nickname}
+                          </Text>
+                          <Text
+                            fontFamily="Regular Medium"
+                            fontSize="sm"
+                            color="gray.500"
+                          >
+                            @{received[1].username}
+                          </Text>
+                        </VStack>
+                      </HStack>
+                      <HStack space="3">
+                        <Pressable onPress={() => acceptFriend(2)}>
+                          <SvgXml xml={acceptSvg()} width={25} height={25} />
+                        </Pressable>
+                        <Pressable onPress={() => rejectFriend(2)}>
+                          <SvgXml xml={declineSvg()} width={25} height={25} />
+                        </Pressable>
+                      </HStack>
+                    </HStack>
+                  ) : (
+                    ""
+                  )}
+                </VStack>
+              ) : (
+                <Text
+                  marginTop={"-10%"}
+                  fontFamily={"Regular"}
+                  fontSize="xl"
+                  textAlign={"center"}
+                >
+                  You are all caught up :D
+                </Text>
+              )}
+            </Box>
+
+            <Divider
+              m="2"
+              _light={{
+                bg: "muted.300",
+              }}
+              _dark={{
+                bg: "muted.700",
+              }}
+              alignSelf={"center"}
+              w="90%"
+            />
+            {/* Second section */}
+            <HStack w={"100%"} justifyContent={"space-between"}>
+              {sent?.length > 0 ? (
+                <Box>
+                  <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
+
+                  <Badge // bg="red.400"
+                    colorScheme="danger"
+                    rounded="full"
+                    mt={-8}
+                    mr={-3}
+                    px={1}
+                    py={0}
+                    zIndex={1}
+                    variant="solid"
+                    alignSelf="flex-end"
+                    _text={{
+                      fontSize: 12,
+                    }}
+                  >
+                    {sent?.length}
+                  </Badge>
+                </Box>
+              ) : (
+                <SvgXml xml={outGoingRequestSVG()} width={35} height={35} />
+              )}
+            </HStack>
+            {/* Box 2 */}
+            <Box
+              // mt={3}
+              h="10%"
+              w={profileWidth}
+              alignSelf={"center"}
+              justifyContent={"center"}
+            >
+              {sent?.length > 0 ? (
+                <ScrollView w={"100%"}>
+                  <VStack space={3}>
+                    {sent?.map((item, index) => (
                       <HStack
+                        key={item._id}
                         w={"100%"}
                         alignItems={"center"}
-                        justifyContent={"space-between"}
-                        m={1}
-                        key={index}
+                        justifyContent={"flex-end"}
                       >
-                        <HStack
-                          alignItems="center"
-                          space={6}
-                          p={2}
-                          // borderBottomWidth={1}
-                          // borderColor="#ddd"
-                        >
-                          {item.profileImageUrl ? (
-                            <Avatar
-                              bg="white"
-                              mb="1"
-                              size={"md"}
-                              source={{ uri: item.profileImageUrl }}
-                            />
-                          ) : (
-                            // <FontAwesome name="check" size={24} color="black" />
-                            <SvgXml xml={acceptSvg()} width={25} height={25} />
-                          )}
-                          
+                        <HStack alignItems="center" space={6} p={2}>
+                          <Avatar
+                            size="57"
+                            bg="transparent"
+                            source={
+                              item && item.profileImageUrl
+                                ? { uri: item.profileImageUrl }
+                                : null
+                            } // Show null if using DefaultProfile
+                          >
+                            {!item.profileImageUrl && (
+                              <Image
+                                source={DefaultProfile}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  opacity: 0.5,
+                                }} // Apply 50% transparency
+                                resizeMode="contain"
+                              />
+                            )}
+                          </Avatar>
                           <VStack>
-                            <Text fontSize="lg" fontWeight="bold">
+                            <Text fontFamily="Regular Medium" fontSize="lg">
                               {item.nickname}
                             </Text>
-                            <Text fontSize="sm" color="gray.500">
+                            <Text
+                              fontFamily="Regular Medium"
+                              fontSize="sm"
+                              color="#606060"
+                            >
                               @{item.username}
                             </Text>
                           </VStack>
                         </HStack>
-                        <Pressable
-                          onPress={() => deleteOption(index + 1)}
-                          // style={{ transform: [{ translateY: -3 }] }}
-                        >
-                          {/* <SvgXml xml={unlinkSvg()} width={25} height={25} /> */}
-                          <Image
-                            size={8}
-                            source={require("../assets/UIicons/Unlink.png")}
-                            alt="Unlink"
-                          />
-                        </Pressable>
+
+                        <VStack ml="auto" justifyContent={"center"} alignItems={"center"}>
+                          <Pressable
+                            onPress={() => deleteCurrent("sent", index)}
+                          >
+                            <SvgXml
+                              xml={widthdrawSvg()}
+                              width={25}
+                              height={25}
+                            />
+                           
+                          </Pressable>
+                         {/* <Text
+                            fontFamily={"Regular"}
+                            fontSize="10"
+                            style={{ marginLeft: -15 }}  // adjust the value as needed
+                          >
+                            Withdraw
+                          </Text> */}
+                        </VStack>
                       </HStack>
                     ))}
-                  </Box>
-                ) : (
-                  <Pressable onPress={() => navigation.navigate("Invite")}>
-                    <Image
-                      source={require("../assets/Animations/AddFriends.gif")}
-                      alt="Add Friends GIF"
-                      style={{ alignSelf: "center", width: 100, height: 100 }}
-                    />
-                    <Text
-                      fontFamily={"Regular"}
-                      fontSize="xl"
-                      textAlign={"center"}
-                    >
-                      Add friends to start a round!
-                    </Text>
-                  </Pressable>
-                )}
-              </ScrollView>
+                  </VStack>
+                </ScrollView>
+              ) : (
+                <Text
+                  marginTop={"-10%"}
+                  fontFamily={"Regular"}
+                  fontSize="xl"
+                  textAlign={"center"}
+                >
+                  You are all caught up :D
+                </Text>
+              )}
+            </Box>
+
+            <Divider
+              m="2"
+              _light={{
+                bg: "muted.300",
+              }}
+              _dark={{
+                bg: "muted.700",
+              }}
+              alignSelf={"center"}
+              w="90%"
+            /> 
+            <HStack
+              w={"100%"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
+            >
+              <HStack>
+                <SvgXml xml={myCircleSVG("#191919")} width={35} height={35} />
+                <Text fontFamily={"Regular"} fontSize="md">
+                  {friends?.length > 0 ? friends.length : ""}
+                </Text>
+              </HStack>
+          
+            </HStack>
+            {/* Box 3 */}
+          
+            <Box
+              // mt={3}
+              h="45%"
+              w={profileWidth}
+              alignSelf={"center"}
+              justifyContent={"center"}
+            >
+              {friends?.length > 0 ? (
+                <ScrollView>
+                  <VStack space={3}>
+                    {friends?.map((item, index) => (
+                      <HStack
+                      key={index}
+                        w={"100%"}
+                        alignItems={"center"}
+                        justifyContent={"flex-end"}
+                      >
+                        <HStack alignItems="center" space={6} p={2}>
+                          <Avatar
+                            size="57"
+                            bg="transparent"
+                            source={
+                              item && item.profileImageUrl
+                                ? { uri: item.profileImageUrl }
+                                : null
+                            } // Show null if using DefaultProfile
+                          >
+                            {!item.profileImageUrl && (
+                              <Image
+                                source={DefaultProfile}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  opacity: 0.5,
+                                }} // Apply 50% transparency
+                                resizeMode="contain"
+                              />
+                            )}
+                          </Avatar>
+                          <VStack>
+                            <Text fontFamily="Regular Medium" fontSize="lg">
+                              {item.nickname}
+                            </Text>
+                            <Text
+                              fontFamily="Regular Medium"
+                              fontSize="sm"
+                              color="#606060"
+                            >
+                              @{item.username}
+                            </Text>
+                          </VStack>
+                        </HStack>
+                        <VStack ml="auto" justifyContent={"center"} alignItems={"center"}>
+                          <Pressable
+                            onPress={() => deleteOption(index + 1)}
+                          >
+                            <Image
+                              style={{ width: 25, height: 25 }}
+                              source={require("../assets/UIicons/Unlink.png")}
+                              alt="Unlink"
+                            />
+                           
+                          </Pressable>
+                          {/* <Text fontFamily={"Regular"} fontSize="10">
+                            Unlink
+                          </Text>
+                           */}
+                        </VStack>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </ScrollView>
+              ) : (
+                <Pressable onPress={() => navigation.navigate("Invite")}>
+                  <Image
+                    source={require("../assets/Animations/AddFriends.gif")}
+                    alt="Add Friends GIF"
+                    style={{ alignSelf: "center", width: 100, height: 100 }}
+                  />
+                  <Text
+                    fontFamily={"Regular"}
+                    fontSize="xl"
+                    textAlign={"center"}
+                  >
+                    Add friends to start a round!
+                  </Text>
+                </Pressable>
+              )}
             </Box>
           </VStack>
-        </Box>
+        </View>
+        
       </Flex>
     </NativeBaseProvider>
   );
