@@ -291,6 +291,7 @@ export async function deleteUser(id, token) {
     );
 
     const data = await response.json();
+    // console.log(data)
     if (data.status == "success") {
       Alert.alert("Success", "Account deleted");
     } else {

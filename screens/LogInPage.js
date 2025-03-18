@@ -35,6 +35,9 @@ import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
+import { initializeApp } from "firebase/app";
+import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getAuth,
   FacebookAuthProvider,
@@ -43,6 +46,21 @@ import {
 } from "firebase/auth";
 import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 import OTPInput from "../components/OTPInput";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCUcdfsmB6eqkaUPQ0xH2ELm4mqA9MhHJ4",
+  authDomain: "habital-e1c8d.firebaseapp.com",
+  projectId: "habital-e1c8d",
+  storageBucket: "habital-e1c8d.appspot.com",
+  messagingSenderId: "720818502811",
+  appId: "1:720818502811:web:6516136f1df011ce289a3e",
+  measurementId: "G-EVZCE105VF",
+};
+
+const app = initializeApp(firebaseConfig);
+// const auth = initializeAuth(app, {
+//   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+// });
 
 // import { getMessaging, getToken } from "firebase/messaging";
 
@@ -91,7 +109,7 @@ const LoginScreen = ({ navigation }) => {
         userInfo.user,
         1
       );
-      await afterLogin(response,fcmToken, userInfo.user, 1);
+      await afterLogin(response, fcmToken, userInfo.user, 1);
     } catch (error) {
       console.log(error);
     }
@@ -102,26 +120,30 @@ const LoginScreen = ({ navigation }) => {
       console.log("Signing in...");
       await LoginManager.logInWithPermissions(["public_profile", "email"]);
       const data = await AccessToken.getCurrentAccessToken();
+      // console.log(data);
       const facebookCredential = FacebookAuthProvider.credential(
         data.accessToken
       );
+      // console.log(facebookCredential);
       const auth = getAuth();
+      // console.log(auth)
       // const fcmToken = await getFCMToken();
       const fcmToken = "test";
       const res = await signInWithCredential(auth, facebookCredential);
-      const user = {
+      var user = {
         email: res._tokenResponse.email,
         name: res._tokenResponse.displayName,
         photo: res._tokenResponse.photoUrl,
         emailVerified: res._tokenResponse.emailVerified,
       };
+      console.log("fb user", user);
       const response = await loginUserThirdParty(
         res._tokenResponse.oauthAccessToken,
         fcmToken,
         user,
         2
       );
-      await afterLogin(response, fcmToken,user, 2);
+      await afterLogin(response, fcmToken, user, 2);
     } catch (error) {
       console.log(error);
       // setErrorT(error.code);
@@ -152,15 +174,15 @@ const LoginScreen = ({ navigation }) => {
         3
       );
       console.log(response);
-      user={
+      user = {
         id: response.data.user.appleId,
         email: response.data.user.email,
         name: response.data.user.name,
         photo: response.data.user.profileImageUrl,
-        emailVerified: response.emailVerified
-      }
+        emailVerified: response.emailVerified,
+      };
       // console.log(user);
-      await afterLogin(response, fcmToken,user, 3);
+      await afterLogin(response, fcmToken, user, 3);
     } catch (error) {
       if (error.code === "ERR_CANCELED") {
         Alert.alert("Login Canceled", "User canceled Apple login");
@@ -185,7 +207,7 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const saveCredentialsThirdParty = async (idToken,fcmToken, user, type) => {
+  const saveCredentialsThirdParty = async (idToken, fcmToken, user, type) => {
     try {
       await SecureStore.setItemAsync(
         "userData",
@@ -209,7 +231,7 @@ const LoginScreen = ({ navigation }) => {
         formData.password,
         fcmToken
       );
-      await afterLogin(response,fcmToken);
+      await afterLogin(response, fcmToken);
     }
   };
 
@@ -336,7 +358,6 @@ const LoginScreen = ({ navigation }) => {
           >
             <Center w="90%" h="100%">
               <VStack w="100%" space={5}>
-                {/* Default View: Google and Facebook Buttons */}
                 {!showMoreOptions && (
                   <>
                     <HStack
@@ -362,14 +383,16 @@ const LoginScreen = ({ navigation }) => {
                       >
                         <HStack alignItems={"center"}>
                           <Image
-                            size={45}
-                            right="5"
+                            size={39}
+                            right="3"
+                            marginY={2}
                             source={require("../assets/Buttonicons/google_icon.png")}
                             alt="google icon"
+                            // Change icon color
                           />
                           <Text
                             fontFamily={"Regular Medium"}
-                            fontSize={"lg"}
+                            fontSize={"xl"}
                             color={"#191919"}
                           >
                             Continue with Google
@@ -390,60 +413,49 @@ const LoginScreen = ({ navigation }) => {
                             name="facebook-f"
                             size={26}
                             color="white"
-                            style={{ right: "10" }}
+                            style={{
+                              right: "5",
+                              padding: 2,
+                              tintColor: "#3b5998",
+                            }} // Change icon color
                           />
                           <Text
                             fontFamily={"Regular Medium"}
-                            fontSize={"lg"}
+                            fontSize={"xl"}
                             color={"white"}
                           >
                             Continue with Facebook
                           </Text>
                         </HStack>
                       </Button>
-                      <AppleAuthentication.AppleAuthenticationButton
-                        buttonType={
-                          AppleAuthentication.AppleAuthenticationButtonType
-                            .CONTINUE
-                        }
-                        buttonStyle={
-                          AppleAuthentication.AppleAuthenticationButtonStyle
-                            .WHITE
-                        }
-                        cornerRadius={30}
-                        style={{
-                          width: "100%",
-                          height: 50,
-                          shadowColor: "#000",
-                          shadowOffset: { width: 0, height: 2 },
-                          shadowOpacity: 0.3,
-                          shadowRadius: 5,
-                        }}
+                      <Button
+                        rounded={30}
+                        shadow="6"
+                        size="lg"
                         onPress={loginApple}
-                      />
-                      {/* <TouchableOpacity
-                        onPress={loginApple}
-                        style={{
-                          backgroundColor: "black", // Apple button black background
-                          borderRadius: 30,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: 70,
-                          width: 70, // Square button to make it round
-                          shadowColor: "#000",
-                          shadowOffset: { width: 0, height: 2 },
-                          shadowOpacity: 0.3,
-                          shadowRadius: 5,
-                        }}
+                        bg={"white"}
+                        _pressed={{ bg: "gray.100" }}
                       >
-                        <Image
-                          source={{
-                            uri: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-                          }}
-                          style={{ width: 40, height: 40, tintColor: "white" }} // White Apple logo
-                          resizeMode="contain"
-                        />
-                      </TouchableOpacity> */}
+                        <HStack space={3}>
+                          <FontAwesome
+                            name="apple"
+                            size={26}
+                            color="black"
+                            style={{
+                              right: "5",
+                              padding: 0,
+                              tintColor: "#3b5998",
+                            }} // Change icon color
+                          />
+                          <Text
+                            fontFamily={"Regular Medium"}
+                            fontSize={"xl"}
+                            color={"#191919"}
+                          >
+                            Continue with Apple
+                          </Text>
+                        </HStack>
+                      </Button>
 
                       <Pressable onPress={() => setShowMoreOptions(true)}>
                         <Text

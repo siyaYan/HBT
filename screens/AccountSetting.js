@@ -842,9 +842,7 @@ const AccountSettingScreen = ({ navigation }) => {
                     width="48%"
                     size={"md"}
                     colorScheme="red"
-                    onPress={() => {
-                      onPress = { deleteAccount };
-                    }}
+                    onPress={deleteAccount}
                   >
                     Delete
                   </Button>
