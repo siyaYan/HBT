@@ -3,7 +3,7 @@ the default image(1&5) in simulator have problems in uploading process.
 
 'http://localhost:8000/habital/v1/',
 Cloud server:
-http://3.27.94.77:8000/habital/v1/
+https://habitalcity.com/habital/v1/
 
 Local TestAccount:
 Siya@test.com

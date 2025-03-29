@@ -15,7 +15,7 @@ export async function registerUser(
     confirmPassword);
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/signup",
+      "https://habitalcity.com/habital/v1/signup",
       // 'http://localhost:8000/habital/v1/signup',
       {
         method: "POST",
@@ -48,7 +48,7 @@ export async function loginUser(id, password, fcmToken) {
   try {
     const response = await fetch(
       // 'http://localhost:8000/habital/v1/login',
-      "http://3.27.94.77:8000/habital/v1/login",
+      "https://habitalcity.com/habital/v1/login",
       {
         method: "POST",
         headers: {
@@ -89,7 +89,7 @@ export async function loginUserThirdParty(idToken, fcmToken, user, type) {
   // console.log(api)
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/${api}`,
+      `https://habitalcity.com/habital/v1/${api}`,
       {
         method: "POST",
         headers: {
@@ -117,7 +117,7 @@ export async function loginUserThirdParty(idToken, fcmToken, user, type) {
 export async function verifyEmail(id, token) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/users/${id}/verify-email/${token}`,
+      `https://habitalcity.com/habital/v1/users/${id}/verify-email/${token}`,
       {
         method: "PATCH",
         headers: {
@@ -143,7 +143,7 @@ export async function verifyEmail(id, token) {
 export async function tokenResetPassword(password, passwordConfirm, code) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/reset-password/" + code,
+      "https://habitalcity.com/habital/v1/users/reset-password/" + code,
       {
         method: "PATCH",
         headers: {
@@ -175,7 +175,7 @@ export async function tokenResetPassword(password, passwordConfirm, code) {
 export async function forgetSendEmail(email) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/forgot-password",
+      "https://habitalcity.com/habital/v1/users/forgot-password",
       {
         method: "POST",
         headers: {
@@ -210,7 +210,7 @@ export async function resetPassword(
   //dummy success
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/password",
+      "https://habitalcity.com/habital/v1/users/" + userId + "/password",
       {
         method: "PATCH",
         headers: {
@@ -248,7 +248,7 @@ export async function resetProfile(userId, token, nickname, username) {
   // // console.log(userId)
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId,
+      "https://habitalcity.com/habital/v1/users/" + userId,
       {
         method: "PATCH",
         headers: {
@@ -277,7 +277,7 @@ export async function resetProfile(userId, token, nickname, username) {
 export async function deleteUser(id, token) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/delete",
+      "https://habitalcity.com/habital/v1/delete",
       {
         method: "POST",
         headers: {
@@ -306,9 +306,9 @@ export async function deleteUser(id, token) {
 
 export async function resetSendEmail(token, userId, email) {
   try {
-    // const response = await fetch("http://3.27.94.77:8000/habital/v1/users/"+userId+"/profileImage", {
+    // const response = await fetch("https://habitalcity.com/habital/v1/users/"+userId+"/profileImage", {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" +
+      "https://habitalcity.com/habital/v1/users/" +
         userId +
         "/request-email-change",
       {
@@ -339,7 +339,7 @@ export async function resetSendEmail(token, userId, email) {
 export async function resetEmail(token, userId, resetToken) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" +
+      "https://habitalcity.com/habital/v1/users/" +
         userId +
         "/verify-email-change/" +
         resetToken,
@@ -380,9 +380,9 @@ export async function updateAvatar(token, userId, avatar) {
   formData.append("profileImage", file);
 
   try {
-    // const response = await fetch("http://3.27.94.77:8000/habital/v1/users/"+userId+"/profileImage", {
+    // const response = await fetch("https://habitalcity.com/habital/v1/users/"+userId+"/profileImage", {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId + "/profile-image",
+      "https://habitalcity.com/habital/v1/users/" + userId + "/profile-image",
       {
         method: "POST",
         headers: {
@@ -409,7 +409,7 @@ export async function updateAvatar(token, userId, avatar) {
 export async function findByUserIdAndUsername(token, userId) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/users/" + userId,
+      "https://habitalcity.com/habital/v1/users/" + userId,
       // "http://localhost:8000/habital/v1/users/" + userId ,
       {
         method: "GET",
@@ -431,7 +431,7 @@ export async function findByUserIdAndUsername(token, userId) {
 export async function connectByUserId(token, senderId, receiverId) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/friend-requests",
+      "https://habitalcity.com/habital/v1/friend-requests",
       // 'http://localhost:8000/habital/v1/friend-requests',
       {
         method: "POST",
@@ -464,7 +464,7 @@ export async function connectByUserId(token, senderId, receiverId) {
 export async function getFriends(token) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/friend-requests/getAllFriends",
+      "https://habitalcity.com/habital/v1/friend-requests/getAllFriends",
       {
         method: "GET",
         headers: {
@@ -484,7 +484,7 @@ export async function getFriends(token) {
 export async function getSendRequest(token) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/friend-requests/sender",
+      "https://habitalcity.com/habital/v1/friend-requests/sender",
       // 'http://localhost:8000/habital/v1/friend-requests/sender',
       {
         method: "GET",
@@ -506,7 +506,7 @@ export async function getSendRequest(token) {
 export async function getRelationByUserId(token, senderId, receiverId) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/friend-requests",
+      "https://habitalcity.com/habital/v1/friend-requests",
       // 'http://localhost:8000/habital/v1/friend-requests',
       {
         method: "PATCH",
@@ -532,7 +532,7 @@ export async function getRelationByUserId(token, senderId, receiverId) {
 export async function getReceivedRequest(token) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/friend-requests/receiver",
+      "https://habitalcity.com/habital/v1/friend-requests/receiver",
       // 'http://localhost:8000/habital/v1/friend-requests/receiver',
       {
         method: "GET",
@@ -554,7 +554,7 @@ export async function reactReceivedRequest(token, friendRequestId, react) {
   // console.log(friendRequestId,react)
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}`,
+      `https://habitalcity.com/habital/v1/friend-requests/${friendRequestId}`,
       {
         method: "PATCH",
         headers: {
@@ -578,7 +578,7 @@ export async function reactReceivedRequest(token, friendRequestId, react) {
 export async function deleteFriends(token) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/friend-requests/deleteAllFriends`,
+      `https://habitalcity.com/habital/v1/friend-requests/deleteAllFriends`,
       {
         method: "DELETE",
         headers: {
@@ -602,7 +602,7 @@ export async function deleteFriendOrWithdrawRequestById(
   // console.log(friendRequestId)
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}/deleteFriend`,
+      `https://habitalcity.com/habital/v1/friend-requests/${friendRequestId}/deleteFriend`,
       {
         method: "DELETE",
         headers: {
@@ -623,7 +623,7 @@ export async function deleteFriendOrWithdrawRequestById(
 export async function getNotifiableFriendRequests(token) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/friend-requests/notifiable",
+      "https://habitalcity.com/habital/v1/friend-requests/notifiable",
       // 'http://localhost:8000/habital/v1/friend-requests/notifiable',
       {
         method: "GET",
@@ -645,7 +645,7 @@ export async function getNotifiableFriendRequests(token) {
 export async function getNotifiableNotification(token, userId) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/notifications/${userId}/notifiable`,
+      `https://habitalcity.com/habital/v1/notifications/${userId}/notifiable`,
       // `http://localhost:8000/habital/v1/notifications/${userId}/notifiable`,
       {
         method: "GET",
@@ -667,7 +667,7 @@ export async function getNotifiableNotification(token, userId) {
 export async function getNotificationHistory(token, userId) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/notifications/${userId}/history`,
+      `https://habitalcity.com/habital/v1/notifications/${userId}/history`,
       // `http://localhost:8000/habital/v1/notifications/${userId}/history`,
       {
         method: "GET",
@@ -689,7 +689,7 @@ export async function getNotificationHistory(token, userId) {
 export async function clearNotificationById(token, userId, notificationId) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/notifications/${userId}/acknowledge/${notificationId}`,
+      `https://habitalcity.com/habital/v1/notifications/${userId}/acknowledge/${notificationId}`,
       // `http://localhost:8000/habital/v1/notifications/${userId}/acknowledge/${notificationId}`,
       {
         method: "PATCH",
@@ -711,7 +711,7 @@ export async function clearNotificationById(token, userId, notificationId) {
 export async function clearAllNotifications(token, userId) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/notifications/${userId}/acknowledgeAll`,
+      `https://habitalcity.com/habital/v1/notifications/${userId}/acknowledgeAll`,
       // `http://localhost:8000/habital/v1/notifications/${userId}/acknowledgeAll`,
       {
         method: "PATCH",
@@ -733,7 +733,7 @@ export async function clearAllNotifications(token, userId) {
 export async function clearAllFriendRequests(token) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/friend-requests/acknowledgeAll`,
+      `https://habitalcity.com/habital/v1/friend-requests/acknowledgeAll`,
       // `http://localhost:8000/habital/v1/friend-requests/acknowledgeAll`,
       {
         method: "PATCH",
@@ -755,7 +755,7 @@ export async function clearAllFriendRequests(token) {
 export async function clearFriendRequestById(token, friendRequestId) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/friend-requests/${friendRequestId}/acknowledge`,
+      `https://habitalcity.com/habital/v1/friend-requests/${friendRequestId}/acknowledge`,
       // `http://localhost:8000/habital/v1/friend-requests/${friendRequestId}/acknowledge`,
       {
         method: "PATCH",
@@ -777,7 +777,7 @@ export async function clearFriendRequestById(token, friendRequestId) {
 export async function getNoteUpdate(token, userId) {
   let res = 0;
   const response1 = await fetch(
-    "http://3.27.94.77:8000/habital/v1/friend-requests/notifiable",
+    "https://habitalcity.com/habital/v1/friend-requests/notifiable",
     // 'http://localhost:8000/habital/v1/friend-requests/notifiable',
     {
       method: "GET",
@@ -788,7 +788,7 @@ export async function getNoteUpdate(token, userId) {
     }
   );
   const response2 = await fetch(
-    `http://3.27.94.77:8000/habital/v1/notifications/${userId}/notifiable`,
+    `https://habitalcity.com/habital/v1/notifications/${userId}/notifiable`,
     // `http://localhost:8000/habital/v1/notifications/${userId}/notifiable`,
     {
       method: "GET",
@@ -816,7 +816,7 @@ export async function addPost(id,post,token) {
   formData.append("image", post.image);
   formData.append("text", post.text);
   try {
-    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/add/${id}`, {
+    const response= await fetch(`https://habitalcity.com/habital/v1/forum/add/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -854,7 +854,7 @@ export async function addPost(id,post,token) {
 
 export async function getForum(id,token) {
   try {
-    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/get/${id}`, {
+    const response= await fetch(`https://habitalcity.com/habital/v1/forum/get/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -890,7 +890,7 @@ export async function getForum(id,token) {
 export async function likeMessage(roundId,messageId,token) {
   try {
     
-    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/like/${roundId}/${messageId}`, {
+    const response= await fetch(`https://habitalcity.com/habital/v1/forum/like/${roundId}/${messageId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -916,7 +916,7 @@ export async function likeMessage(roundId,messageId,token) {
 
 export async function cancelLike(roundId,messageId,token) {
   try {
-    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/cancell/${roundId}/${messageId}`, {
+    const response= await fetch(`https://habitalcity.com/habital/v1/forum/cancell/${roundId}/${messageId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -943,7 +943,7 @@ export async function cancelLike(roundId,messageId,token) {
 
 export async function deleteMessage(roundId,messageId,token) {
   try {
-    const response= await fetch(`http://3.27.94.77:8000/habital/v1/forum/delete/${roundId}/${messageId}`, {
+    const response= await fetch(`https://habitalcity.com/habital/v1/forum/delete/${roundId}/${messageId}`, {
       method: 'DELETE',
       headers: {
         "Content-Type": "multipart/form-data",
@@ -972,7 +972,7 @@ export async function deleteMessage(roundId,messageId,token) {
 export async function createRound(roundData, token) {
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/round/create",
+      "https://habitalcity.com/habital/v1/round/create",
       {
         method: "POST",
         headers: {
@@ -1004,7 +1004,7 @@ export async function createRound(roundData, token) {
 // Chapter 4 Round Configuration
 
 // export async function updateRound(roundData, token) {
-//   fetch("http://3.27.94.77:8000/habital/v1/round/create", {
+//   fetch("https://habitalcity.com/habital/v1/round/create", {
 //     method: "POST",
 //     headers: {
 //       "Content-Type": "application/json",
@@ -1031,7 +1031,7 @@ export async function createRound(roundData, token) {
 export async function getRoundInfo(token, Id) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round/${Id}`,
+      `https://habitalcity.com/habital/v1/round/${Id}`,
       {
         method: "GET",
         headers: {
@@ -1055,7 +1055,7 @@ export async function getRoundInfo(token, Id) {
 export async function updateRoundInfo(token, newRoundData) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round/${newRoundData._id}`,
+      `https://habitalcity.com/habital/v1/round/${newRoundData._id}`,
       {
         method: "PATCH",
         headers: {
@@ -1096,7 +1096,7 @@ export async function updateRoundStatus(token, roundId, newStatus) {
     console.log(newStatus)
     console.log("Updating status for round", roundId);  
     const response = await fetch(  
-      `http://3.27.94.77:8000/habital/v1/round/${roundId}`,  
+      `https://habitalcity.com/habital/v1/round/${roundId}`,  
       {  
         method: "PATCH",  
         headers: {  
@@ -1128,7 +1128,7 @@ export async function leaveRound(token, roundId) {
   try {  
     console.log("Leaving round", roundId);  
     const response = await fetch(  
-      `http://3.27.94.77:8000/habital/v1/round/leave/${roundId}`,  
+      `https://habitalcity.com/habital/v1/round/leave/${roundId}`,  
       {  
         method: "PATCH",  
         headers: {  
@@ -1161,7 +1161,7 @@ export async function updateRoundhabit(token, roundId, newHabit) {
   
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round/${roundId}/updatehabit`,
+      `https://habitalcity.com/habital/v1/round/${roundId}/updatehabit`,
       {
         method: "PATCH",
         headers: {
@@ -1197,7 +1197,7 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
     // console.log("Pass to Endpoint round Id",roundId);
     // console.log("Pass to Endpoint new friend",newFriendList);
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round/${roundId}/friendlist/add`,
+      `https://habitalcity.com/habital/v1/round/${roundId}/friendlist/add`,
       {
         method: "POST",
         headers: {
@@ -1241,7 +1241,7 @@ export async function updateRoundFriendList(token, roundId, newFriendList) {
 export async function deleteRound(token, roundId) {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round/${roundId}`,
+      `https://habitalcity.com/habital/v1/round/${roundId}`,
       {
         method: "DELETE",
         headers: {
@@ -1271,7 +1271,7 @@ export async function createRoundNotification(
 
   try {
     const response = await fetch(
-      "http://3.27.94.77:8000/habital/v1/round-invitation/create",
+      "https://habitalcity.com/habital/v1/round-invitation/create",
       {
         method: "POST",
         headers: {
@@ -1311,7 +1311,7 @@ export async function createRoundNotification(
 export async function getRoundInvitation(token, receiver = "receiver") {
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round-invitation/${receiver}`,
+      `https://habitalcity.com/habital/v1/round-invitation/${receiver}`,
 
       {
         method: "GET",
@@ -1334,7 +1334,7 @@ export async function reactRoundRequest(token, roundInvitationId, react) {
   // console.log(friendRequestId,react)
   try {
     const response = await fetch(
-      `http://3.27.94.77:8000/habital/v1/round-invitation/${roundInvitationId}`,
+      `https://habitalcity.com/habital/v1/round-invitation/${roundInvitationId}`,
       {
         method: "PATCH",
         headers: {
@@ -1360,7 +1360,7 @@ export async function getScoreBoard(token, roundId) {
   try {  
     // console.log("calculate or get scoreboard", roundId);  
     const response = await fetch(  
-      `http://3.27.94.77:8000/habital/v1/round/calculateScoreBoard/${roundId}`,  
+      `https://habitalcity.com/habital/v1/round/calculateScoreBoard/${roundId}`,  
       {  
         method: "GET",  
         headers: {  
@@ -1391,7 +1391,7 @@ export async function createNotification(
   receiverId,
   content
 ) {
-  const endpoint = `http://3.27.94.77:8000/habital/v1/notifications/create`; // Replace with your actual endpoint URL
+  const endpoint = `https://habitalcity.com/habital/v1/notifications/create`; // Replace with your actual endpoint URL
 
   try {
     const response = await fetch(endpoint, {
