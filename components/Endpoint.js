@@ -393,6 +393,7 @@ export async function updateAvatar(token, userId, avatar) {
       }
     );
     const data = await response.json();
+    console.log("Raw response:", responseText);
     // console.log(data, "update avatar");
     if (data.status == "Successful operation") {
       // Alert.alert("Success", "Avatar updated!");

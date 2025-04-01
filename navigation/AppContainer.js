@@ -18,10 +18,20 @@ import AppHomeScreen from "../screens/AppHomePage";
 import InstructionCards from "../screens/InstructionCards";
 import InviteScreen from "../screens/InviteFriends";
 import Instruction from "../screens/Instruction";
-import SplashAnimationScreen from "../components/SplashAnimation";
 import { IconButton } from "native-base";
 import { useRound } from "../context/RoundContext";
 import { SvgXml } from "react-native-svg";
+import { View, StyleSheet } from "react-native";
+import LottieView from "lottie-react-native";
+
+const stylesSplash = StyleSheet.create({
+  animationContainer: {
+    backgroundColor: "#6666ff",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+});
 
 const Stack = createStackNavigator();
 
@@ -37,13 +47,13 @@ const getCredentials = async () => {
 };
 
 export const navigationRef = React.createRef();
-
 export default function AppContainer() {
   const { userData, updateUserData } = useData();
   const { roundData, updateAcceptRoundData, updateRounds, acceptRoundData } =
     useRound();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkCredentials = async () => {
@@ -51,13 +61,7 @@ export default function AppContainer() {
       console.log("in app", storedCredentials);
 
       if (storedCredentials) {
-        // Use credentials to log in the user automatically
-        // Implement your login logic here using the retrieved credentials
-        // console.log(
-        //   "Credentials successfully loaded for user " + storedCredentials
-        // );
         var response;
-        // JSON.stringify({ idToken, fcmToken, type });
         if (storedCredentials?.type) {
           switch (storedCredentials.type) {
             case 1:
@@ -96,7 +100,6 @@ export default function AppContainer() {
           );
         }
 
-        // console.log('response',response);
         if (response.token) {
           const roundInfo = await getRoundInfo(
             response.token,
@@ -113,33 +116,49 @@ export default function AppContainer() {
           updateRounds(roundInfo);
           updateAcceptRoundData(roundInfo);
           setIsAuthenticated(true);
-          // Navigate to MainStack after successful authentication
-          navigationRef.current?.navigate("MainStack", { screen: "Home" });
         } else {
           setIsAuthenticated(false);
-          // Stay on Intro or navigate to Login if authentication fails
-          navigationRef.current?.navigate("LoginStack");
         }
       } else {
         setIsAuthenticated(false);
-        // First time users stay on Intro screen
       }
+      setIsLoading(false);
     };
 
     checkCredentials();
   }, []);
 
+  if (isLoading) {
+    return (
+      <View style={stylesSplash.animationContainer}>
+        <LottieView
+          autoPlay
+          loop
+          style={{
+            height: 150,
+            backgroundColor: "transparent",
+          }}
+          source={require("../assets/Animations/Splash.json")}
+        />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        initialRouteName="Splash"
         screenOptions={{ headerShown: false, headerBackTitleVisible: false }}
       >
-        <Stack.Screen name="Splash" component={SplashAnimationScreen} />
-        {/* Set Intro as the next screen after Splash */}
-        <Stack.Screen name="Intro" component={InstructionCards} />
+        {isAuthenticated ? (
+          <></>
+        ) : (
+          <>
+            <Stack.Screen name="Intro" component={InstructionCards} />
+            <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
+          </>
+        )}
         <Stack.Screen name="Home" component={AppHomeScreen} />
-
+        <Stack.Screen name="MainStack" component={AuthenticatedScreens} />
         <Stack.Screen
           name="Invite"
           component={InviteScreen}
@@ -182,9 +201,6 @@ export default function AppContainer() {
             ),
           }}
         />
-
-        <Stack.Screen name="MainStack" component={AuthenticatedScreens} />
-        <Stack.Screen name="LoginStack" component={LoginStackNavigator} />
         <Stack.Screen name="AccountStack" component={AccountStackNavigator} />
         <Stack.Screen name="RoundStack" component={RoundStackNavigator} />
         <Stack.Screen name="ForumStack" component={ForumStackNavigator} />

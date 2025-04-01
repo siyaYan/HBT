@@ -18,6 +18,7 @@ import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import Background2 from "../components/Background2";
 import { SvgXml } from "react-native-svg";
+import * as SecureStore from "expo-secure-store";
 
 const SettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
@@ -50,35 +51,37 @@ const SettingScreen = ({ navigation }) => {
 
   const deleteCredentials = async () => {
     try {
-      await deleteItemAsyncs(["userData"]);
+      const res = await SecureStore.deleteItemAsync("userData");
+      // await deleteItemAsyncs(["userData"]);
       updateUserData({
         token: "",
         data: "",
         avatar: "",
       });
-      const allKeys = await AsyncStorage.getAllKeys(); // Get all keys from AsyncStorage
-      const matchingKeys = allKeys.filter((key) =>
-        key.startsWith(`lastCheck_1`)
-      ); // Filter keys that match the pattern
-      await deleteItemAsyncs(matchingKeys);
+      // const allKeys = await AsyncStorage.getAllKeys(); // Get all keys from AsyncStorage
+      // const matchingKeys = allKeys.filter((key) =>
+      //   key.startsWith(`lastCheck_1`)
+      // ); // Filter keys that match the pattern
+      // await deleteItemAsyncs(matchingKeys);
+      console.log("was sucessful. to delete the credentials", res);
     } catch (error) {
       console.error("was unsucessful. to delete the credentials", error);
       // Handle the error, like showing an alert to the user
     }
   };
 
-  const deleteItemAsyncs = async (keys) => {
-    try {
-      if (keys.length > 0) {
-        await AsyncStorage.multiRemove(keys); // Remove all keys in one operation
-        console.log(`Keys removed:`, keys);
-      } else {
-        console.log("No keys to remove.");
-      }
-    } catch (error) {
-      console.error("Failed to delete keys:", error);
-    }
-  };
+  // const deleteItemAsyncs = async (keys) => {
+  //   try {
+  //     if (keys.length > 0) {
+  //       await AsyncStorage.multiRemove(keys); // Remove all keys in one operation
+  //       console.log(`Keys removed:`, keys);
+  //     } else {
+  //       console.log("No keys to remove.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to delete keys:", error);
+  //   }
+  // };
   return (
     <NativeBaseProvider>
       <Background2 />

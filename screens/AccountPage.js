@@ -17,7 +17,6 @@ import {
 import { useData } from "../context/DataContext";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-// import * as ImageManipulator from "expo-image-manipulator";
 import Background from "../components/Background";
 import { updateAvatar } from "../components/Endpoint";
 import AntDesign from "@expo/vector-icons/AntDesign";
