@@ -416,7 +416,6 @@ const LoginScreen = ({ navigation }) => {
                             style={{
                               right: "5",
                               padding: 2,
-                              tintColor: "#3b5998",
                             }} // Change icon color
                           />
                           <Text
@@ -444,7 +443,7 @@ const LoginScreen = ({ navigation }) => {
                             style={{
                               right: "5",
                               padding: 0,
-                              tintColor: "#3b5998",
+  
                             }} // Change icon color
                           />
                           <Text
