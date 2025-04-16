@@ -132,7 +132,7 @@ export default function AppContainer() {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        initialRouteName="Splash"
+        initialRouteName="Home"
         screenOptions={{ headerShown: false, headerBackTitleVisible: false }}
       >
         <Stack.Screen name="Splash" component={SplashAnimationScreen} />
