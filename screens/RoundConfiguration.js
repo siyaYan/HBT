@@ -12,7 +12,6 @@ import {
   Menu,
   Pressable,
   HStack,
-  KeyboardAvoidingView,
   Modal,
 } from "native-base";
 import { useState, useEffect } from "react";
@@ -29,6 +28,7 @@ import {
 } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 
 // Function to add days to a date
 function calculateEndDate(date, days) {
@@ -234,10 +234,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   // }, [isModalVisible]);
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <Center w="100%">
         <Background />
         <Box
@@ -589,7 +586,7 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
           </Center>
         </Box>
       </Center>
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
