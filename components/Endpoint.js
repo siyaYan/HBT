@@ -104,7 +104,7 @@ export async function loginUserThirdParty(idToken, fcmToken, user, type) {
     if (data.status == "success") {
       console.log(data)
       if(data.exist){
-        Alert.alert('Success', "Exist account, merge "+ api +" with your account");
+        Alert.alert('Success', "An account with the same email address under "+ api +" already exists and has now been linked to your account.");
       }else{
         Alert.alert('Success', "You have signed in with "+ api);
       }
