@@ -6,7 +6,6 @@ import {
   IconButton,
   Actionsheet,
   useDisclose,
-  NativeBaseProvider,
   Modal,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -495,14 +494,17 @@ const AccountSettingScreen = ({ navigation }) => {
     Keyboard.dismiss();
     setModalVisible(true);
   };
+  const updateAvatar=()=>{
+    Keyboard.dismiss()
+    onOpen();
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <NativeBaseProvider>
         <Center w="100%">
           <Background />
           <Box w="80%" h="100%" maxW="320">
-            <Pressable onPress={onOpen}>
+            <Pressable onPress={updateAvatar}>
               <Box py="5" alignItems="center" justifyContent="center">
                 {selectedImage ? (
                   <Avatar
@@ -850,7 +852,7 @@ const AccountSettingScreen = ({ navigation }) => {
               </Modal.Footer>
             </Modal.Content>
           </Modal>
-          <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
+          <Actionsheet isOpen={isOpen} onOpen={onOpen} onClose={onClose} size="full">
             <Actionsheet.Content>
               <Box
                 w="100%"
@@ -888,7 +890,6 @@ const AccountSettingScreen = ({ navigation }) => {
             </Actionsheet.Content>
           </Actionsheet>
         </Center>
-      </NativeBaseProvider>
     </TouchableWithoutFeedback>
   );
 };

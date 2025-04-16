@@ -6,6 +6,7 @@ import { updateRoundhabit } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import { habitList } from "../components/HabitList";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 
 const RoundHabit = ({ route, navigation }) => {
   const [text, setText] = useState("");
@@ -15,7 +16,7 @@ const RoundHabit = ({ route, navigation }) => {
   // Animation refs
   const rollAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  
+
   const { id: roundId, state: fromNew } = route.params || {};
 
   const thisRoundData = roundData.data.filter((item) => item._id == roundId)[0];
@@ -90,74 +91,76 @@ const RoundHabit = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Center w="90%" h="100%">
-        <Text style={styles.label}>What would you like to do?</Text>
-        <Text style={styles.instructionText}>
-          Submit your own or press the button on the right so we randomly
-          generate one for you.
-        </Text>
-        <Animated.View
-          style={[
-            styles.inputContainer,
-            {
-              transform: [
-                {
-                  translateY: rollAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, 5],
-                  }),
-                },
-              ],
-            },
-          ]}
-        >
-          <TextInput
-            style={styles.input}
-            value={text}
-            onChangeText={setText}
-            placeholder={myHabit || "Enter your habit"}
-          />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Center w="90%" h="100%">
+          <Text style={styles.label}>What would you like to do?</Text>
+          <Text style={styles.instructionText}>
+            Submit your own or press the button on the right so we randomly
+            generate one for you.
+          </Text>
           <Animated.View
             style={[
-              styles.randomButton,
+              styles.inputContainer,
               {
-                transform: [{ scale: scaleAnim }],
+                transform: [
+                  {
+                    translateY: rollAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, 5],
+                    }),
+                  },
+                ],
               },
             ]}
           >
-            <Button
-              onPress={getRandomHabit}
-              bg="#49a579"
-              p={1}
-              borderRadius={30}
+            <TextInput
+              style={styles.input}
+              value={text}
+              onChangeText={setText}
+              placeholder={myHabit || "Enter your habit"}
+            />
+            <Animated.View
+              style={[
+                styles.randomButton,
+                {
+                  transform: [{ scale: scaleAnim }],
+                },
+              ]}
             >
-              <Ionicons name="refresh" size={20} color="white" />
-            </Button>
+              <Button
+                onPress={getRandomHabit}
+                bg="#49a579"
+                p={1}
+                borderRadius={30}
+              >
+                <Ionicons name="refresh" size={20} color="white" />
+              </Button>
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-        <Button
-          variant="info"
-          onPress={handleSubmit}
-          width="95%"
-          rounded={30}
-          size="lg"
-          bg="#49a579"
-          _text={{
-            color: "#f9f8f2",
-            fontFamily: "Regular Medium",
-            fontSize: "lg",
-          }}
-          _pressed={{ bg: "#3c7d5e" }}
-        >
-          Save my habit
-        </Button>
-        {/* Display text at absolute bottom */}
-        <View style={styles.displayTextContainer}>
-          <Text style={styles.displayText}>{text}</Text>
-        </View>
-      </Center>
-    </View>
+          <Button
+            variant="info"
+            onPress={handleSubmit}
+            width="95%"
+            rounded={30}
+            size="lg"
+            bg="#49a579"
+            _text={{
+              color: "#f9f8f2",
+              fontFamily: "Regular Medium",
+              fontSize: "lg",
+            }}
+            _pressed={{ bg: "#3c7d5e" }}
+          >
+            Save my habit
+          </Button>
+          {/* Display text at absolute bottom */}
+          <View style={styles.displayTextContainer}>
+            <Text style={styles.displayText}>{text}</Text>
+          </View>
+        </Center>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
