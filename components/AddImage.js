@@ -5,7 +5,7 @@ import * as ImagePicker from "expo-image-picker";
 // import * as ImageManipulator from "expo-image-manipulator";
 import React, { useRef } from "react";
 
-const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
+const AddImage = ({ isOpen, onOpen, onClose, navigation }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   useEffect(() => {
     (async () => {
@@ -26,42 +26,51 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
     const result = await ImagePicker.launchImageLibraryAsync();
     try {
       if (!result.canceled) {
-        const res={
-          uri:result.assets[0].uri,
+        const res = {
+          uri: result.assets[0].uri,
           type: result.assets[0].type,
-          name: result.assets[0].fileName, 
-        }
+          name: result.assets[0].fileName,
+        };
         // console.log(res)
         setSelectedImage(res);
-        onClose()
-        navigation.navigate("ForumStack", {screen: "ForumDraft", params: {res }});
+        onClose();
+        navigation.navigate("ForumStack", {
+          screen: "ForumDraft",
+          params: { res },
+        });
       }
     } catch (e) {
       console.log(e.message);
     }
   };
-    const handleTakePicture = async () => {
-      const result = await ImagePicker.launchCameraAsync({
-        quality: 0.6, // Reduce image quality
-        allowsEditing: true,
-      });
-    
-      try {
-        if (!result.canceled) {
-          const res={
-            uri: result.assets[0].uri,
-            type: result.assets[0].type,
-            name: 'test.jpg', 
-          }
-          console.log(res)
-          setSelectedImage(res);
-          onClose()
-          navigation.navigate("ForumStack", {screen: "ForumDraft", params: {res }});
-        }
-      } catch (e) {
-        console.log(e.message);
+  const handleTakePicture = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      quality: 0.6, // Reduce image quality
+      allowsEditing: true,
+    });
+
+    try {
+      if (!result.canceled) {
+        const res = {
+          uri: result.assets[0].uri,
+          type: result.assets[0].type,
+          name: "test.jpg",
+        };
+
+        // Since you don't have ImageManipulator, you can rely on the `quality` option in `launchCameraAsync`
+        // to reduce the image size. The `quality` parameter already compresses the image.
+        console.log(res);
+        setSelectedImage(res);
+        onClose();
+        navigation.navigate("ForumStack", {
+          screen: "ForumDraft",
+          params: { res },
+        });
       }
-    };
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
   // const handleTakePicture = async () => {
   //   const result = await ImagePicker.launchCameraAsync();
 
@@ -76,41 +85,35 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation}) => {
   //   }
   // };
   return (
-        <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
-          <Actionsheet.Content>
-            <Box
-              w="100%"
-              h={60}
-              px={4}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Text
-                fontSize="16"
-                color="gray.500"
-                _dark={{
-                  color: "gray.300",
-                }}
-              >
-                Pick photo from
-              </Text>
-            </Box>
-            <Actionsheet.Item
-              onPress={handleTakePicture}
-              alignItems="center"
-              startIcon={<Icon as={MaterialIcons} size="6" name="camera-alt" />}
-            >
-              Take Photo
-            </Actionsheet.Item>
-            <Actionsheet.Item
-              onPress={handleChooseImage}
-              alignItems="center"
-              startIcon={<Icon as={MaterialIcons} name="camera" size="6" />}
-            >
-              Photo Album
-            </Actionsheet.Item>
-          </Actionsheet.Content>
-        </Actionsheet>
+    <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
+      <Actionsheet.Content>
+        <Box w="100%" h={60} px={4} justifyContent="center" alignItems="center">
+          <Text
+            fontSize="16"
+            color="gray.500"
+            _dark={{
+              color: "gray.300",
+            }}
+          >
+            Pick photo from
+          </Text>
+        </Box>
+        <Actionsheet.Item
+          onPress={handleTakePicture}
+          alignItems="center"
+          startIcon={<Icon as={MaterialIcons} size="6" name="camera-alt" />}
+        >
+          Take Photo
+        </Actionsheet.Item>
+        <Actionsheet.Item
+          onPress={handleChooseImage}
+          alignItems="center"
+          startIcon={<Icon as={MaterialIcons} name="camera" size="6" />}
+        >
+          Photo Album
+        </Actionsheet.Item>
+      </Actionsheet.Content>
+    </Actionsheet>
   );
 };
 

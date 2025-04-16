@@ -159,7 +159,7 @@ const ForumPage = ({ route, navigation }) => {
   const handleUpload = () => {
     setIsModalVisible(true);
     onOpen();
-    console.log("open", isModalVisible);
+    // console.log("open", isModalVisible);
   };
   const handleModal = (value) => {
     setShowModal(true);
