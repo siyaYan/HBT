@@ -102,7 +102,12 @@ export async function loginUserThirdParty(idToken, fcmToken, user, type) {
     const data = await response.json();
     // console.log(data)
     if (data.status == "success") {
-      Alert.alert('Success', "You have signed in with "+ api);
+      console.log(data)
+      if(data.exist){
+        Alert.alert('Success', "Exist account, merge "+ api +" with your account");
+      }else{
+        Alert.alert('Success', "You have signed in with "+ api);
+      }
     } else {
       Alert.alert("Unsuccessful", data.message || "Login was unsucessful.");
     }
