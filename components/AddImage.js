@@ -2,7 +2,7 @@ import { Icon, Box, Text, Actionsheet } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
-// import * as ImageManipulator from "expo-image-manipulator";
+import * as ImageManipulator from "expo-image-manipulator";
 import React, { useRef } from "react";
 
 const AddImage = ({ isOpen, onOpen, onClose, navigation }) => {
@@ -56,15 +56,25 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation }) => {
           type: result.assets[0].type,
           name: "test.jpg",
         };
+        // Compress the image
+        const manipResult = await ImageManipulator.manipulateAsync(
+          res.uri,
+          [{ resize: { width: 800 } }], // Resize to a width of 800px
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress and save as JPEG
+        );
 
-        // Since you don't have ImageManipulator, you can rely on the `quality` option in `launchCameraAsync`
-        // to reduce the image size. The `quality` parameter already compresses the image.
-        console.log(res);
-        setSelectedImage(res);
+        const compressedRes = {
+          uri: manipResult.uri,
+          type: res.type,
+          name: res.name,
+        };
+
+        console.log(compressedRes);
+        setSelectedImage(compressedRes);
         onClose();
         navigation.navigate("ForumStack", {
           screen: "ForumDraft",
-          params: { res },
+          params: { res: compressedRes },
         });
       }
     } catch (e) {
