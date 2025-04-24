@@ -54,7 +54,7 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation }) => {
         const res = {
           uri: result.assets[0].uri,
           type: result.assets[0].type,
-          name: "test.jpg",
+          name: "pic.jpg",
         };
         // Compress the image
         const manipResult = await ImageManipulator.manipulateAsync(

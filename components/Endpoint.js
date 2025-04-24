@@ -378,8 +378,10 @@ export async function updateAvatar(token, userId, avatar) {
   const file = {
     uri: avatar.uri, // Local file URI
     type: "image/jpeg", // MIME type of the image
-    name: avatar.fileName, // Any file name
+    name: avatar.fileName?avatar.fileName:avatar.name, // Any file name
   };
+
+  console.log(file);
 
   const formData = new FormData();
   formData.append("profileImage", file);
@@ -398,7 +400,7 @@ export async function updateAvatar(token, userId, avatar) {
       }
     );
     const data = await response.json();
-    console.log("Raw response:", responseText);
+    console.log("Raw response:", data);
     // console.log(data, "update avatar");
     if (data.status == "Successful operation") {
       // Alert.alert("Success", "Avatar updated!");
