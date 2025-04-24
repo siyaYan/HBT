@@ -12,6 +12,7 @@ import { SvgXml } from "react-native-svg";
 const Stack = createStackNavigator();
 export default function ForumStackNavigator({ route, navigation }) {
   const { acceptRoundData } = useRound();
+  // const { prePage: currentPage } = route.params || {};
   const { id: roundId, isFromHome: isFromHome } = route.params.params || {}; // Use optional chaining to prevent crashes if params are missing
   const activeRound = acceptRoundData?.data.filter(
     (item) => item.status === "A"
@@ -65,7 +66,23 @@ export default function ForumStackNavigator({ route, navigation }) {
               marginY={0}
               icon={<SvgXml xml={backSvg()} width={28} height={28} />}
               onPress={() => {
-                navigation.goBack(); // Ensure it navigates to the previous screen
+                if (route.params?.params?.currentPage === "ForumPage") {
+                  navigation.navigate("ForumStack", {
+                  screen: "ForumPage",
+                  params: { id: thisRound._id },
+                  });
+                } else {
+                  navigation.goBack();
+                }
+                // if (prePage && prePage == "ForumPage") {
+                //   console.log("ForumPage");
+                //   navigation.navigate("ForumStack", {
+                //     screen: "ForumPage",
+                //     params: { id: thisRound._id },
+                //   });
+                // } else {
+                //   navigation.goBack();
+                // }
               }}
             />
           ),

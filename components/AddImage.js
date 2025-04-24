@@ -36,7 +36,7 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation }) => {
         onClose();
         navigation.navigate("ForumStack", {
           screen: "ForumDraft",
-          params: { res },
+          params: { res, currentPage: navigation.getState().routes[navigation.getState().index].name },
         });
       }
     } catch (e) {
@@ -74,7 +74,7 @@ const AddImage = ({ isOpen, onOpen, onClose, navigation }) => {
         onClose();
         navigation.navigate("ForumStack", {
           screen: "ForumDraft",
-          params: { res: compressedRes },
+          params: { res: compressedRes, currentPage: navigation.getState().routes[navigation.getState().index].name },
         });
       }
     } catch (e) {
