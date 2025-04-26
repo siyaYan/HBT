@@ -42,3 +42,5 @@ UI-Standard.md
 
 credentials
 .env
+
+.env.local

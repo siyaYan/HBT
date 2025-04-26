@@ -8,6 +8,19 @@ import * as SplashScreen from "expo-splash-screen";
 // import * as Notifications from "expo-notifications";
 // import { messaging } from "./firebaseConfig";
 // import { onMessage } from "firebase/messaging";
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://ca545135f59212509ffbe51a31d1d78a@o4509216724549632.ingest.us.sentry.io/4509216728481792',
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 // async function subscribeToTopic() {
 //   const fcmToken = await getToken(messaging);
@@ -37,7 +50,7 @@ import * as SplashScreen from "expo-splash-screen";
 // };
 
 
-export default function App() {
+export default Sentry.wrap(function App() {
   useEffect(() => {
     async function prepare() {
       await SplashScreen.preventAutoHideAsync();
@@ -114,4 +127,4 @@ export default function App() {
       </DataProvider>
     </NativeBaseProvider>
   );
-}
+});

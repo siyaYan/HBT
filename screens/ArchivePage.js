@@ -8,7 +8,6 @@ import { ScrollView } from "react-native";
 
 import * as Sentry from "@sentry/react-native";
 
-
 const ArchivePage = ({ navigation }) => {
   const { userData } = useData();
   const { roundData } = useRound();
@@ -24,8 +23,8 @@ const ArchivePage = ({ navigation }) => {
   }, []);
   const generateCards = useCallback(() => {
     Sentry.addBreadcrumb({
-      category: 'data',
-      message: 'Generating archived rounds',
+      category: "data",
+      message: "Generating archived rounds",
       data: { roundDataLength: roundData?.data?.length || 0 },
     });
     if (!roundData?.data) return; // Early return if data is not ready
@@ -35,7 +34,9 @@ const ArchivePage = ({ navigation }) => {
       name: item.name,
       userId: item.userId,
       startData: formatDate(item.startDate),
-      num: item.roundFriends?.filter((people) => people.status === "A").length || 0,
+      num:
+        item.roundFriends?.filter((people) => people.status === "A").length ||
+        0,
       timeframe: calculateEndDate(item.startDate, item.level),
     }));
     setArchivedRounds(roundList);
@@ -89,7 +90,7 @@ const ArchivePage = ({ navigation }) => {
   // };
   const handleRoundPress = (roundId) => {
     Sentry.addBreadcrumb({
-      category: 'navigation',
+      category: "navigation",
       message: `Navigating to ForumPage with roundId: ${roundId}`,
     });
     navigation.navigate("ForumStack", {
@@ -126,12 +127,18 @@ const ArchivePage = ({ navigation }) => {
     <Center w="100%">
       <Background />
       <Flex direction="column" justifyContent="flex-start">
+        <Button
+          title="Try!"
+          onPress={() => {
+            Sentry.captureException(new Error("First error"));
+          }}
+        />
         <ScrollView
           ref={scrollViewRef}
           h={"100%"}
           w={"100%"}
           contentContainerStyle={{ flexGrow: 1, marginVertical: 5 }}
-          >
+        >
           {/* onContentSizeChange={handleContentSizeChange} */}
           {archivedRounds.length > 0 ? (
             archivedRounds.map((item, index) => (
