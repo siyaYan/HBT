@@ -23,7 +23,11 @@
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview"
+      "channel": "preview",
+      "env": {
+        "SENTRY_UPLOAD_SOURCE_MAPS": "true",
+        "SENTRY_AUTH_TOKEN": "a5070dae224211f092ce364a8ac23e2e"
+      }
     },
     "production": {
       "channel": "production"
