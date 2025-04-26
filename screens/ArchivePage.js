@@ -6,28 +6,61 @@ import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
 import { ScrollView } from "react-native";
 
+import * as Sentry from "@sentry/react-native";
+
+
 const ArchivePage = ({ navigation }) => {
   const { userData } = useData();
   const { roundData } = useRound();
   const scrollViewRef = useRef(null);
   const [archivedRounds, setArchivedRounds] = useState([]);
   const [contentHeight, setContentHeight] = useState(0);
-  const generateCards = () => {
-    const finishedRound = roundData.data.filter((item) => item.status == "F");
-    const roundList = [];
-    finishedRound.map((item) => {
-      const archivedItem = {
-        _id: item._id,
-        name: item.name,
-        userId: item.userId,
-        startData: formatDate(item.startDate),
-        num: item.roundFriends.filter((people) => people.status == "A").length,
-        timeframe: calculateEndDate(item.startDate, item.level),
-      };
-      roundList.push(archivedItem);
+  // In ArchivePage
+  useEffect(() => {
+    Sentry.addBreadcrumb({
+      category: "navigation",
+      message: "Navigated to ArchivePage",
     });
+  }, []);
+  const generateCards = useCallback(() => {
+    Sentry.addBreadcrumb({
+      category: 'data',
+      message: 'Generating archived rounds',
+      data: { roundDataLength: roundData?.data?.length || 0 },
+    });
+    if (!roundData?.data) return; // Early return if data is not ready
+    const finishedRound = roundData.data.filter((item) => item.status === "F");
+    const roundList = finishedRound.map((item) => ({
+      _id: item._id,
+      name: item.name,
+      userId: item.userId,
+      startData: formatDate(item.startDate),
+      num: item.roundFriends?.filter((people) => people.status === "A").length || 0,
+      timeframe: calculateEndDate(item.startDate, item.level),
+    }));
     setArchivedRounds(roundList);
-  };
+  }, [roundData]); // Depend on roundData
+  // const generateCards = () => {
+  //   Sentry.addBreadcrumb({
+  //     category: "data",
+  //     message: "Generating archived rounds",
+  //     data: { roundDataLength: roundData?.data?.length || 0 },
+  //   });
+  //   const finishedRound = roundData.data.filter((item) => item.status == "F");
+  //   const roundList = [];
+  //   finishedRound.map((item) => {
+  //     const archivedItem = {
+  //       _id: item._id,
+  //       name: item.name,
+  //       userId: item.userId,
+  //       startData: formatDate(item.startDate),
+  //       num: item.roundFriends.filter((people) => people.status == "A").length,
+  //       timeframe: calculateEndDate(item.startDate, item.level),
+  //     };
+  //     roundList.push(archivedItem);
+  //   });
+  //   setArchivedRounds(roundList);
+  // };
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -48,24 +81,47 @@ const ArchivePage = ({ navigation }) => {
     return formatDate(endDateTimestamp);
   };
 
-  const handleRoundPress = async (roundId) => {
+  // const handleRoundPress = async (roundId) => {
+  //   navigation.navigate("ForumStack", {
+  //     screen: "ForumPage",
+  //     params: { id: roundId },
+  //   });
+  // };
+  const handleRoundPress = (roundId) => {
+    Sentry.addBreadcrumb({
+      category: 'navigation',
+      message: `Navigating to ForumPage with roundId: ${roundId}`,
+    });
     navigation.navigate("ForumStack", {
       screen: "ForumPage",
       params: { id: roundId },
     });
   };
 
+  // useEffect(() => {
+  //   generateCards();
+  // }, [roundData]);
   useEffect(() => {
     generateCards();
-  }, [roundData]);
+  }, [generateCards, roundData?.data]);
 
-  const handleContentSizeChange = (width, height) => {
-    setContentHeight(height);
-    if (scrollViewRef.current) {
+  // const handleContentSizeChange = (width, height) => {
+  //   setContentHeight(height);
+  //   if (scrollViewRef.current) {
+  //     scrollViewRef.current.scrollToEnd({ animated: false });
+  //   }
+  // };
+  useEffect(() => {
+    if (scrollViewRef.current && archivedRounds.length > 0) {
       scrollViewRef.current.scrollToEnd({ animated: false });
     }
+  }, [archivedRounds]);
+  const handleContentSizeChange = (width, height) => {
+    setContentHeight(height);
+    // if (scrollViewRef.current) {
+    //   scrollViewRef.current.scrollToEnd({ animated: false });
+    // }
   };
-
   return (
     <Center w="100%">
       <Background />
@@ -75,8 +131,8 @@ const ArchivePage = ({ navigation }) => {
           h={"100%"}
           w={"100%"}
           contentContainerStyle={{ flexGrow: 1, marginVertical: 5 }}
-          onContentSizeChange={handleContentSizeChange}
-        >
+          >
+          {/* onContentSizeChange={handleContentSizeChange} */}
           {archivedRounds.length > 0 ? (
             archivedRounds.map((item, index) => (
               <View
