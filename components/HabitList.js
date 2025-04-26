@@ -1,130 +1,129 @@
 const habitList = [
-    // Morning Kickstart
-    "Make your bed with full effort – hospital corners if you can",
-    "Put your phone down for the first 10 minutes after waking up",
-    "Drink a full glass of water before checking your messages",
-    "Step outside for 30 seconds and take a deep breath",
-    "Move your body for at least 2 minutes after waking up",
-    "Play a song that sets the right tone for the day",
-    "Put on proper clothes even if you’re staying home",
-    "Let natural light in as soon as you wake up",
-    "Plan your caffeine intake – don't drink it out of habit",
-    "Decide on one small 'win' for today before you start anything else",
-  
-    // Productivity Boosters
-    "Organise your space before starting work",
-    "Wear shoes even if working from home – it helps focus",
-    "Set a random timer for 10 minutes and declutter something",
-    "Write tomorrow’s to-do list before finishing today",
-    "Put your phone in another room when you need deep focus",
-    "Use a weird rule like 'no emails before 10am' to force creativity",
-    "Try setting your work playlist to film scores – no lyrics, no distractions",
-    "Stand up every time you answer a call",
-    "Delete one digital item daily (file, email, unused app, or bookmark)",
-    "Use a physical timer instead of your phone for focus sessions",
-  
-    // Mental Wellbeing
-    "Write down three things that went well – even if small",
-    "Eat one meal without any screens, distractions, or scrolling",
-    "Keep a ‘good news’ note where you record small wins",
-    "Reduce decision fatigue – decide what you’ll wear tomorrow",
-    "Take one full minute to appreciate something (a view, a smell, a song)",
-    "Send yourself a positive message as if you were texting a friend",
-    "Try doing a small task slowly and mindfully – just for the experience",
-    "Don’t say anything negative about yourself for 24 hours",
-    "Read something positive before bed instead of doomscrolling",
-    "Do something boring for 5 minutes – let your brain wander naturally",
-  
-    // Things to Stop Doing
-    "Don’t check social media until you’ve finished breakfast",
-    "Skip hitting snooze – set your alarm across the room",
-    "Don’t eat lunch at your desk – even if it's just a 5-minute break",
-    "Try a ‘no complaining’ challenge for one day",
-    "Stop bringing your phone into the bathroom – just try it",
-    "Say no to one thing that drains your energy unnecessarily",
-    "Resist responding to messages instantly – create space for yourself",
-    "Avoid re-watching or re-reading things you've already seen",
-    "Unfollow or mute an account that doesn’t add value to your life",
-    "Don’t add new tasks to your to-do list today – just complete what’s there",
-  
-    // Night-Time Reset
-    "Put your phone down at least an hour before bed",
-    "Dim the lights 30 minutes before sleeping",
-    "Write down any lingering thoughts to clear your mind",
-    "Set tomorrow’s clothes out – even if it's just lounge wear",
-    "Tidy up one small area before heading to bed",
-    "Do a short stretching or unwinding routine before sleeping",
-    "Listen to something calming instead of watching TV before bed",
-    "Place your alarm somewhere that forces you to get out of bed",
-    "Try sleeping with no alarms at least once a week to reset your body clock",
-    "Write down how you actually feel about the day, no matter what",
-  
-    // Social Connection
-    "Send a random appreciation message to someone",
-    "Take 30 seconds to properly thank someone in your life",
-    "Give a compliment that isn’t about looks",
-    "Make eye contact and smile at one stranger",
-    "Start a conversation with someone you see often but never speak to",
-    "Listen properly today – try not to mentally ‘prepare’ your response",
-    "Call someone instead of texting – even if it’s just a short one",
-    "Check in on a friend you haven’t spoken to in a while",
-    "Ask a different type of question – one that makes someone think",
-    "Spend time with someone without any distractions, even for 5 minutes",
-  
-    // Digital Wellbeing
-    "Turn your phone screen to greyscale for a few hours",
-    "Mute a WhatsApp or group chat that overwhelms you",
-    "Clear your home screen – remove cluttered apps",
-    "Turn off push notifications for non-essential apps",
-    "Reduce brightness before bed instead of scrolling in full light",
-    "Create a ‘no phone’ rule for one specific activity (e.g., meals, showers)",
-    "Delete one app you haven’t used in the last month",
-    "Unsubscribe from one email newsletter you don’t need",
-    "Organise your phone by moving time-wasting apps off the home screen",
-    "Replace mindless scrolling with something intentional (book, podcast, or journaling)",
-  
-    // ✅ Financial & Lifestyle Wellbeing
-    "Check your bank balance daily without judgement",
-    "Set a daily spending limit – even if it’s small",
-    "Use cash instead of card for one purchase today",
-    "Cancel a subscription you haven’t used in the past month",
-    "Avoid impulse spending – screenshot and come back to it tomorrow",
-    "Take 5 minutes to review and update your budget",
-    "Write down a ‘money rule’ for yourself (e.g., ‘never buy on the first visit’)",
-    "Find one thing in your home that you don’t use and consider selling it",
-    "Plan at least one meal for the next day to reduce waste",
-    "Look up the price of something you want, but don’t buy it today",
-  
-    // ✅ Environmental & Physical Wellbeing
-    "Take one unnecessary thing out of your bag to lighten your load",
-    "Use a reusable bottle instead of buying a drink today",
-    "Turn off a light or appliance when you don’t need it",
-    "Pick up a piece of litter if you see one",
-    "Walk instead of drive for at least one small trip today",
-    "Try eating a plant-based meal today",
-    "Spend 5 minutes looking at something green – a tree, plant, or park",
-    "Set a 10-minute ‘tech-free’ time where you do nothing but be present",
-    "Move your body in a way that actually feels fun, not forced",
-    "Open a window or step outside for some fresh air",
-  
-  ];
+  // Morning Kickstart
+  "Smooth your bedsheets with one flourish – make your bed look neat in 20 seconds",
+  "Stay screen-free for 10 minutes after waking – breathe, stretch, or sip water",
+  "Sip water with a twist – add a mint leaf or a quick ‘today’s gonna rock’ thought",
+  "Step outside for 10 seconds – listen for one sound, like birds or wind",
+  "Wiggle your body for 60 seconds – shimmy, twist, or march in place",
+  "Play a song that sparks joy – pick one that feels like your day’s anthem",
+  "Slip on a favorite accessory – a bracelet, scarf, or cozy socks, even at home",
+  "Pull back curtains or crack a window – let morning light wake your space",
+  "Delay coffee for 30 minutes – notice your natural energy first",
+  "Name one micro-win for today – e.g., ‘say hi to a neighbor’ or ‘eat a veggie’",
 
-  const habitCategory = [
-    "Workout 🏋️‍♂️", 
-    "Healthy Eating 🥗", 
-    "Sleep 😴", 
-    "Care for Others ❤️", 
-    "Self-Care 🛀", 
-    "Mindfulness 🧘‍♂️", 
-    "Hydration 💧", 
-    "Digital Detox 📵", 
-    "Financial Well-being 💰", 
-    "Time Management ⏳", 
-    "Personal Growth 📚", 
-    "Social Connection 🤝", 
-    "Nature & Outdoors 🌿", 
-    "Gratitude 🙏", 
-    "Mental Resilience 💪"
-  ];
-  
-  export { habitList, habitCategory };  
+  // Productivity Boosters
+  "Clear one small work area – stack papers or wipe a desk in 2 minutes",
+  "Put on ‘focus socks’ – a specific pair to signal it’s work time",
+  "Tidy one thing for 3 minutes – a shelf, bag, or email inbox",
+  "List 2 tasks for tomorrow – keep it short to end your day with clarity",
+  "Hide your phone in a bag for 25 minutes – dive into one task uninterrupted",
+  "Ban one app for the morning – e.g., no social media until lunch",
+  "Play nature sounds for focus – waves, forest, or wind to stay calm",
+  "Stand or stretch every 45 minutes – reset your body and brain",
+  "Trash one old note or file – clear a tiny bit of digital chaos",
+  "Use a paper timer – jot ‘20 min’ on a note and cross it off when done",
+
+  // Mental Wellbeing
+  "Jot one happy moment – e.g., ‘laughed at a meme’ on a sticky note",
+  "Savor one meal distraction-free – focus on flavors for 2 minutes",
+  "Keep a ‘spark’ list – note tiny joys, like ‘sunset glow’ or ‘good chat’",
+  "Choose tomorrow’s shirt tonight – free up morning mental space",
+  "Notice one detail for 20 seconds – a flower’s color or coffee’s warmth",
+  "Send yourself a pep-talk text – e.g., ‘You’ve got this!’",
+  "Do one chore mindfully – sweep or wash a cup with total focus",
+  "Skip self-doubt talk for 2 hours – redirect to something neutral",
+  "Read one feel-good sentence before bed – from a book or saved quote",
+  "Embrace 2 minutes of boredom – stare out a window, no phone",
+
+  // Things to Stop Doing
+  "Avoid social media until after breakfast – start your day with you, not feeds",
+  "Skip snooze entirely – set your alarm 5 feet away",
+  "Eat lunch away from screens – even if it’s just at a table nearby",
+  "Try a ‘no grumbling’ challenge for 2 hours – find humor instead",
+  "Keep your phone out of the bathroom – make it a sacred tech-free zone",
+  "Decline one draining request – politely save your energy",
+  "Wait 3 minutes before texting back – give yourself breathing room",
+  "Avoid replaying old movies or posts – seek a fresh story instead",
+  "Unfollow one account that bums you out – curate a happier feed",
+  "Cap your to-do list today – no new tasks, just finish one",
+
+  // Night-Time Reset
+  "Switch your phone to silent 30 minutes before bed – wind down fully",
+  "Use a soft light 15 minutes before sleep – a candle or dim lamp works",
+  "Scrawl one worry to let it go – rip it up or tuck it away",
+  "Set out tomorrow’s shoes – make mornings feel ready-to-go",
+  "Straighten one corner – fold a towel or clear a bedside table",
+  "Stretch one body part – roll your wrists or loosen your shoulders",
+  "Listen to a mellow audio – a short story or calming music, no screens",
+  "Put your alarm out of arm’s reach – force a proper wake-up",
+  "Skip alarms one weekend morning – let your body decide when to rise",
+  "Note one word for your day’s vibe – e.g., ‘calm,’ ‘rushed,’ or ‘fun’",
+
+  // Social Connection
+  "Ping someone with a quick ‘you rock’ note – spread a smile",
+  "Give a specific thank-you – e.g., ‘Your joke made my day’",
+  "Compliment a non-physical trait – e.g., ‘Your patience is amazing’",
+  "Smile at one person you pass – a cashier, neighbor, or stranger",
+  "Say hi to a familiar stranger – the dog-walker or store clerk you always see",
+  "Ear on, haste off – listen to someone without rushing to respond",
+  "Call a friend for 90 seconds – just to hear their voice",
+  "Text someone you’ve lost touch with – a simple ‘how’s life?’ works",
+  "Ask a curious question – e.g., ‘What’s a random thing you love?’",
+  "Share 2 distraction-free minutes – be fully with someone, no devices",
+
+  // Digital Wellbeing
+  "Go greyscale for 2 hours – dull your phone’s allure",
+  "Mute one chat that’s too noisy – reclaim your mental space",
+  "Clear your phone’s home screen – one app or none for simplicity",
+  "Kill notifications for one app – pick something that nags you",
+  "Lower screen brightness at dusk – ease your eyes into night",
+  "No phones during one ritual – e.g., tea, meals, or bedtime prep",
+  "Ditch one app you barely use – free up a sliver of space",
+  "Unsubscribe from one junk email – hit ‘unsubscribe’ and celebrate",
+  "Bury time-suck apps in a folder – make them a hassle to open",
+  "Trade 5 minutes of scrolling for a micro-hobby – sketch, hum, or journal",
+
+  // Financial & Lifestyle Wellbeing
+  "Peek at your balance for 5 seconds – stay aware, no overthinking",
+  "Set a $3 daily ‘fun’ limit – track it for a tiny challenge",
+  "Use cash for one small buy – feel the exchange in your hands",
+  "Drop one unused subscription – check your apps or card statement",
+  "Save a want for tomorrow – snap a pic instead of buying now",
+  "Scan one recent purchase – spot a habit, no judgment",
+  "Set one money micro-rule – e.g., ‘skip impulse snacks’",
+  "Pick one item to rehome – a mug, shirt, or book you don’t need",
+  "Cook one meal from pantry staples – cut food waste today",
+  "Price-check a wish-list item – but wait a day to decide",
+
+  // Environmental & Physical Wellbeing
+  "Ditch one bag item – lighten your load by one thing",
+  "Use a reusable cup or bottle all day – skip disposable drinks",
+  "Switch off one unused plug – a charger or lamp to save power",
+  "Grab one piece of litter – toss it to clean your path",
+  "Walk one short distance – to the store or mailbox, if doable",
+  "Toss one fruit or veg into a meal – an apple slice or some greens",
+  "Gaze at nature for 2 minutes – a tree, cloud, or blade of grass",
+  "Take a 3-minute screen break – just sit and soak in your surroundings",
+  "Move for fun – hop, sway, or stretch for 90 seconds",
+  "Open a window for 3 minutes – let fresh air clear your head"
+];
+
+const habitCategory = [
+  "Workout 🏋️‍♂️", 
+  "Healthy Eating 🥗", 
+  "Sleep 😴", 
+  "Care for Others ❤️", 
+  "Self-Care 🛀", 
+  "Mindfulness 🧘‍♂️", 
+  "Hydration 💧", 
+  "Digital Detox 📵", 
+  "Financial Well-being 💰", 
+  "Time Management ⏳", 
+  "Personal Growth 📚", 
+  "Social Connection 🤝", 
+  "Nature & Outdoors 🌿", 
+  "Gratitude 🙏", 
+  "Mental Resilience 💪"
+];
+
+export { habitList, habitCategory };

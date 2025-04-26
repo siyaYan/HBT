@@ -20,9 +20,10 @@ const AppHomeScreen = ({ navigation }) => {
   const { userData } = useData();
   const [habit, setHabit] = useState("Tap the button to get a healthy habit!");
   const fadeAnims = useRef([...Array(5)].map(() => new Animated.Value(0))).current;
-  const rollAnim = useRef(new Animated.Value(0)).current;
   const borderSpinAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
+  const textAnim = useRef(new Animated.Value(0)).current;
+  const boxColorAnim = useRef(new Animated.Value(0)).current;
   const [backgroundHabits, setBackgroundHabits] = useState([]);
   const animationTimeouts = useRef([]);
 
@@ -87,14 +88,14 @@ const AppHomeScreen = ({ navigation }) => {
     fadeAnims.forEach((anim, index) => {
       const animate = () => {
         Animated.sequence([
-          Animated.timing(anim, { toValue: 1, duration: 4000, useNativeDriver: true }),
-          Animated.timing(anim, { toValue: 0, duration: 4000, useNativeDriver: true }),
+          Animated.timing(anim, { toValue: 1, duration: 3000, useNativeDriver: true }),
+          Animated.timing(anim, { toValue: 0, duration: 3000, useNativeDriver: true }),
         ]).start(() => {
-          const timeout = setTimeout(animate, Math.floor(Math.random() * 10000) + 5000);
+          const timeout = setTimeout(animate, Math.floor(Math.random() * 8000) + 4000);
           animationTimeouts.current[index] = timeout;
         });
       };
-      const initialTimeout = setTimeout(animate, Math.random() * 5000);
+      const initialTimeout = setTimeout(animate, Math.random() * 4000);
       animationTimeouts.current[index] = initialTimeout;
     });
   };
@@ -109,45 +110,98 @@ const AppHomeScreen = ({ navigation }) => {
   }, []);
 
   const getNewHabit = () => {
-    const rollDuration = 70;
+    // Reset animations
+    textAnim.setValue(0);
+    boxColorAnim.setValue(0);
+    borderSpinAnim.setValue(0);
 
+    // Border spin (smoother, multi-rotation)
     Animated.timing(borderSpinAnim, {
       toValue: 1,
-      duration: 1200,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+
+    // Button bounce (spring for tactile feel)
+    Animated.spring(scaleAnim, {
+      toValue: 1.15,
+      friction: 3,
+      tension: 40,
       useNativeDriver: true,
     }).start(() => {
-      borderSpinAnim.setValue(0);
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 3,
+        tension: 40,
+        useNativeDriver: true,
+      }).start();
     });
 
+    // Box background color flash
     Animated.sequence([
-      Animated.timing(scaleAnim, { toValue: 1.1, duration: 200, useNativeDriver: true }),
-      Animated.timing(scaleAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.timing(boxColorAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: false,
+      }),
+      Animated.timing(boxColorAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: false,
+      }),
     ]).start();
 
-    Animated.timing(rollAnim, {
+    // Text pulse animation
+    Animated.timing(textAnim, {
       toValue: 1,
-      duration: rollDuration,
+      duration: 300,
       useNativeDriver: true,
-    }).start(() => {
-      rollAnim.setValue(0);
-    });
+    }).start();
 
+    // Rapid habit selection (reduced to 5 cycles)
     let rollIndex = 0;
     const interval = setInterval(() => {
-      if (rollIndex < 8) {
+      if (rollIndex < 5) {
         setHabit(habitList[Math.floor(Math.random() * habitList.length)]);
         rollIndex++;
       } else {
         clearInterval(interval);
         setHabit(habitList[Math.floor(Math.random() * habitList.length)]);
+        Animated.timing(textAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
       }
-    }, 200);
+    }, 150);
   };
 
   const borderSpin = borderSpinAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
+    outputRange: ["0deg", "720deg"], // Multi-rotation for flair
   });
+
+  const textPulse = textAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.5, 1],
+  });
+
+  const textScale = textAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.95, 1],
+  });
+
+  const boxBackgroundColor = boxColorAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255,255,255,0.95)", "#e6f4ea"],
+  });
+
+  const backgroundHabitRotation = fadeAnims.map((anim) =>
+    anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["-5deg", "5deg"],
+    })
+  );
 
   const instructionsSvg = () => `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#49a579">
@@ -164,7 +218,12 @@ const AppHomeScreen = ({ navigation }) => {
             key={index}
             style={[
               styles.backgroundHabit,
-              { left: item.x, top: item.y, opacity: fadeAnims[index] },
+              {
+                left: item.x,
+                top: item.y,
+                opacity: fadeAnims[index],
+                transform: [{ rotate: backgroundHabitRotation[index] }],
+              },
             ]}
           >
             {item.text}
@@ -197,25 +256,19 @@ const AppHomeScreen = ({ navigation }) => {
           right={0}
         >
           <Box w="90%" maxW="350" alignItems="center">
-            <View style={styles.habitBox}>
+            <Animated.View style={[styles.habitBox, { backgroundColor: boxBackgroundColor }]}>
               <Animated.Text
                 style={[
                   styles.habitText,
                   {
-                    transform: [
-                      {
-                        translateY: rollAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [0, 10],
-                        }),
-                      },
-                    ],
+                    opacity: textPulse,
+                    transform: [{ scale: textScale }],
                   },
                 ]}
               >
                 {habit}
               </Animated.Text>
-            </View>
+            </Animated.View>
             <TouchableOpacity
               style={styles.buttonContainer}
               onPress={getNewHabit}
@@ -287,14 +340,13 @@ const styles = {
     position: "absolute",
     fontSize: 20,
     fontWeight: "bold",
-    color: "rgba(0, 0, 0, 0.2)",
+    color: "rgba(0, 0, 0, 0.3)", // Slightly more visible
     textAlign: "center",
     width: 150,
     zIndex: 0,
     pointerEvents: "none",
   },
   habitBox: {
-    backgroundColor: "rgba(255,255,255,0.95)",
     padding: 20,
     borderRadius: 20,
     marginBottom: 50,
