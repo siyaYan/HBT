@@ -39,7 +39,7 @@ export default function RoundStackNavigator({ route, navigation }) {
 
     // Adjust daysLeft based on level if needed
     const finalDaysLeft = Math.abs(daysLeft - thisRound?.level);
-    return finalDaysLeft==0?"Last day":finalDaysLeft+" days to go";
+    return finalDaysLeft == 0 ? "Last day" : finalDaysLeft + " days to go";
   };
 
   const isThisActiveRound = thisRound?.status == "A" ? calculateDaysLeft() : "";
@@ -61,13 +61,16 @@ export default function RoundStackNavigator({ route, navigation }) {
     // If roundId is not empty, navigate to the RoundInfo screen
     navigation.navigate("RoundStack", {
       screen: "RoundInfo",
-      params: { id: roundId , state:newInfoState},
+      params: { id: roundId, state: newInfoState },
     });
   };
   const handleScoreNavigation = (isFromHome, roundId, navigation) => {
     if (isFromHome) {
       // If roundId is empty, navigate back
-      navigation.navigate("ForumStack", { screen: "ForumPage" , params: { id: roundId ,isFromHome:isFromHome }});
+      navigation.navigate("ForumStack", {
+        screen: "ForumPage",
+        params: { id: roundId, isFromHome: isFromHome },
+      });
     } else {
       // If roundId is not empty, navigate to the RoundInfo screen
       navigation.navigate("RoundStack", {
@@ -144,11 +147,11 @@ export default function RoundStackNavigator({ route, navigation }) {
               // icon={<Ionicons name="arrow-back" size={28} color="black" />}
               icon={<SvgXml xml={backSvg()} width={28} height={28} />}
               onPress={() => {
-                if(newState){
-                  console.log("should back info wiht home", roundId);
+                if (newState) {
+                  // console.log("should back info with home", roundId);
                   goRoundInfo(roundId, true, navigation);
-                }else{
-                  console.log("----stack roundId", roundId);
+                } else {
+                  // console.log("----stack roundId", roundId);
                   goRoundInfo(roundId, false, navigation);
                 }
               }}
@@ -228,7 +231,6 @@ export default function RoundStackNavigator({ route, navigation }) {
               ) : (
                 ""
               )}
-              
             </View>
           ),
           headerStyle: {
@@ -246,8 +248,9 @@ export default function RoundStackNavigator({ route, navigation }) {
                   {
                     navigation.navigate("MainStack", { screen: "Home" });
                   }
+                } else {
+                  navigation.goBack();
                 }
-                navigation.goBack();
               }}
             />
           ),
@@ -270,7 +273,7 @@ export default function RoundStackNavigator({ route, navigation }) {
       />
     </Stack.Navigator>
   );
-};
+}
 const backSvg = () => `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
     <defs>
