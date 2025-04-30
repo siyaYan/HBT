@@ -37,19 +37,19 @@ function calculateEndDate(date, days) {
   return result;
 }
 
-function calculateDatePickerMin(acceptRound) {
-  if (acceptRound) {
+function calculateDatePickerMin(acceptRound,source) {
+  if (source === "home") {
+    const datePickerMin1 = new Date();
+    datePickerMin1.setDate(datePickerMin1.getDate() + 2);
+
+    return datePickerMin1;
+  } else {
     const endDatePlus1 = calculateEndDate(
       acceptRound.startDate,
       parseInt(acceptRound.level, 10)
     );
 
     return endDatePlus1;
-  } else {
-    const datePickerMin = new Date();
-    datePickerMin.setDate(datePickerMin.getDate() + 2);
-
-    return datePickerMin;
   }
 }
 
@@ -79,13 +79,16 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
   const round = acceptRoundData?.data.find((r) => r._id === roundId);
   const ButtonUpdateRound = source === "home" ? "Create round" : "Update round";
 
-  const datePickerMin = calculateDatePickerMin(acceptRound);
+  const datePickerMin = calculateDatePickerMin(acceptRound,source);
   const datePickerMinPlus1 = new Date(datePickerMin);
   datePickerMinPlus1.setDate(datePickerMinPlus1.getDate() + 1);
 
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
   const [startDate, setDate] = useState(
     emptyState
-      ? datePickerMinPlus1
+      ? tomorrow
       : round
       ? new Date(round.startDate)
       : datePickerMinPlus1
