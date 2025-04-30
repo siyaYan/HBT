@@ -2,9 +2,9 @@ import React, { useEffect, useCallback, useMemo, useState, memo } from 'react';
 import { FlatList, Platform } from 'react-native';
 import { Center, Flex, HStack, Text, Box, Button } from 'native-base';
 import * as Sentry from '@sentry/react-native';
-import { useData } from '../context/DataContext';
-import { useRound } from '../context/RoundContext';
-import Background from './Background'; // Adjust path
+import { useData } from "../context/DataContext";
+import { useRound } from "../context/RoundContext";
+import Background from "../components/Background";
 
 const PAGE_SIZE = 20;
 
@@ -70,7 +70,7 @@ const RoundItem = memo(({ item, userId, onPress }) => {
 
 RoundItem.displayName = 'RoundItem';
 
-const ArchivePage = () => {
+const ArchivePage = ({ navigation }) => {
   const { userData } = useData();
   const { roundData } = useRound(); // Use roundData from RoundProvider
   const [page, setPage] = useState(1);
@@ -181,13 +181,13 @@ const ArchivePage = () => {
     <Center w="100%">
       <Background />
       <Flex direction="column" justifyContent="flex-start">
-        <Button
+        {/* <Button
           title="Try!"
           onPress={() => {
             Sentry.captureException(new Error('Test error in development'));
             console.log('Sentry test error triggered');
           }}
-        />
+        /> */}
         {archivedRounds.length > 0 ? (
           <FlatList
             data={archivedRounds}

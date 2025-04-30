@@ -10,7 +10,7 @@ import { SvgXml } from "react-native-svg";
 
 const Stack = createStackNavigator();
 
-export default function AccountStackNavigator({ roundData, userData, handleRoundPress , navigation }) {
+export default function AccountStackNavigator({ navigation }) {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -82,7 +82,6 @@ export default function AccountStackNavigator({ roundData, userData, handleRound
       <Stack.Screen
           name="Archive"
           component={ArchivePage}
-          initialParams={{ roundData, userData, handleRoundPress }}
           options={{
             headerShown: true,
             title: "Archived",

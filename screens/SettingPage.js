@@ -45,19 +45,8 @@ const SettingScreen = ({ navigation }) => {
     }
   };
 
-  // const goArchivePage = async () => {
-  //   navigation.navigate("AccountStack", { screen: "Archive" });
-  // };
-  const handleRoundPress = (roundId) => {
-    console.log(`Pressed round: ${roundId}`);
-    // Your logic
-  };
-  const goArchivePage = () => {
-    navigation.navigate('Archive', {
-      roundData,
-      userData,
-      handleRoundPress,
-    });
+  const goArchivePage = async () => {
+    navigation.navigate("AccountStack", { screen: "Archive" });
   };
 
   const deleteCredentials = async () => {
