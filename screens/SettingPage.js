@@ -173,7 +173,7 @@ const SettingScreen = ({ navigation }) => {
               }}
             />
 
-            <Box alignItems="center" justifyContent="center">
+            {/* <Box alignItems="center" justifyContent="center">
               <Button
                 onPress={goArchivePage}
                 size="md"
@@ -181,7 +181,7 @@ const SettingScreen = ({ navigation }) => {
                 variant="unstyled"
               >
                 <HStack>
-                  {/* <Feather name="archive" size={26} color="black" /> */}
+
                   <SvgXml
                     xml={archiveSVG("#191919")}
                     width={25}
@@ -215,7 +215,7 @@ const SettingScreen = ({ navigation }) => {
               _dark={{
                 bg: "muted.700",
               }}
-            />
+            /> */}
 
             <Box alignItems="center" justifyContent="center">
               <Button onPress={logout} size="md" p={0} variant="unstyled">

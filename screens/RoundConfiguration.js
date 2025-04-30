@@ -252,7 +252,6 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
           <Center w="90%" h="100%">
             <VStack w="100%" h="100%" space={6}>
               <VStack w="100%" space={6}>
-                {/* Round name */}
                 <FormControl isInvalid={isInvalid.roundName}>
                   <FormControl.Label
                     ml={1}
@@ -274,7 +273,11 @@ const RoundConfigurationScreen = ({ route, navigation }) => {
                     w="93%"
                     placeholder="Enter Round name"
                     value={roundName}
-                    onChangeText={setRoundName}
+                    onChangeText={(text) => {
+                      if (text.length <= 30) {
+                        setRoundName(text);
+                      }
+                    }}
                   />
                   {isInvalid.roundName && (
                     <FormControl.ErrorMessage>
