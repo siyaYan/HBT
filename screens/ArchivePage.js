@@ -1,82 +1,103 @@
 import React, { useEffect, useCallback, useMemo, useState, memo } from 'react';
-import { FlatList, TouchableOpacity } from 'react-native'; // Replace RNButton
-import { Center, Flex, HStack, Text, Box } from 'native-base';
+import { FlatList, Platform } from 'react-native';
+import { Center, Flex, HStack, Text, Box, Button } from 'native-base';
 import * as Sentry from '@sentry/react-native';
-import Background from '../components/Background'; // Adjust path as needed
+import { useData } from '../context/DataContext';
+import { useRound } from '../context/RoundContext';
+import Background from './Background'; // Adjust path
 
-const PAGE_SIZE = 20; // Render 20 items initially
+const PAGE_SIZE = 20;
 
-// Memoized RoundItem component
-const RoundItem = memo(({ item, userId, onPress }) => (
-  <Box w="100%" minWidth="320" style={{ marginVertical: 15 }}>
-    <TouchableOpacity
-      onPress={() => onPress(item._id)}
-      style={{
-        borderRadius: 30,
-        marginTop: 5,
-        width: '100%',
-        height: 100,
-        borderWidth: 1,
-        borderColor: '#49a579',
-        backgroundColor: item.userId === userId ? '#49a579' : '#6666ff',
-        justifyContent: 'center',
-        padding: 10,
-      }}
-    >
-      <HStack justifyContent="space-between" marginY={2}>
-        <Text
-          style={{
-            color: '#FFFFFF',
-            fontFamily: 'Regular Semi Bold',
-            fontSize: 20,
-            alignSelf: 'center',
-            paddingHorizontal: 10,
-          }}
-        >
-          {item.name}
-        </Text>
-        <Text
-          style={{
-            color: '#FFFFFF',
-            fontFamily: 'Regular Semi Bold',
-            fontSize: 20,
-            alignSelf: 'center',
-          }}
-        >
-          Num: {item.num}
-        </Text>
-      </HStack>
-      <Text
+const RoundItem = memo(({ item, userId, onPress }) => {
+  useEffect(() => {
+    Sentry.addBreadcrumb({
+      category: 'render',
+      message: `Rendered RoundItem: ${item._id}`,
+    });
+  }, [item._id]);
+
+  return (
+    <Box w="100%" minWidth="320" style={{ marginVertical: 15 }}>
+      <Button
+        onPress={() => onPress(item._id)}
+        rounded="30"
+        mt="5"
+        width="100%"
+        height="100"
+        size="lg"
         style={{
-          color: '#FFFFFF',
-          fontFamily: 'Regular Semi Bold',
-          fontSize: 20,
+          borderWidth: 1,
+          borderColor: '#49a579',
         }}
+        backgroundColor={item.userId === userId ? '#49a579' : '#6666ff'}
       >
-        {item.startData} ---- {item.timeframe}
-      </Text>
-    </TouchableOpacity>
-  </Box>
-));
+        <HStack justifyContent="space-between" marginY={2}>
+          <Text
+            style={{
+              color: '#FFFFFF',
+              fontFamily: 'Regular Semi Bold',
+              fontSize: 20,
+              alignSelf: 'center',
+              paddingHorizontal: 10,
+            }}
+          >
+            {item.name}
+          </Text>
+          <Text
+            style={{
+              color: '#FFFFFF',
+              fontFamily: 'Regular Semi Bold',
+              fontSize: 20,
+              alignSelf: 'center',
+            }}
+          >
+            Num: {item.num}
+          </Text>
+        </HStack>
+        <Text
+          style={{
+            color: '#FFFFFF',
+            fontFamily: 'Regular Semi Bold',
+            fontSize: 20,
+          }}
+        >
+          {item.startData} ---- {item.timeframe}
+        </Text>
+      </Button>
+    </Box>
+  );
+});
 
-// Ensure unique keys for memo comparison
 RoundItem.displayName = 'RoundItem';
 
-const ArchivePage = ({ route }) => {
-  const { roundData, userData, handleRoundPress } = route.params || {};
+const ArchivePage = () => {
+  const { userData } = useData();
+  const { roundData } = useRound(); // Use roundData from RoundProvider
   const [page, setPage] = useState(1);
   const [archivedRounds, setArchivedRounds] = useState([]);
 
-  const formatDate = (date) => {
-    const d = new Date(date);
-    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
-  };
+  const formatDate = useCallback((date) => {
+    return new Date(date).toLocaleDateString();
+  }, []);
 
-  const calculateEndDate = (startDate, level) => {
-    const start = new Date(startDate);
-    start.setDate(start.getDate() + level);
-    return formatDate(start);
-  };
+  const calculateEndDate = useCallback((startDate, level) => {
+    return startDate; // Adjust as needed
+  }, []);
+
+  const handleRoundPress = useCallback(
+    (roundId) => {
+      Sentry.addBreadcrumb({
+        category: 'interaction',
+        message: `Pressed round: ${roundId}`,
+      });
+      console.log(`Pressed round: ${roundId}`);
+      navigation.navigate("ForumStack", {
+        screen: "ForumPage",
+        params: { id: roundId },
+      });
+    },
+    [navigation]
+  );
 
   const generateCards = useCallback(() => {
     Sentry.addBreadcrumb({
@@ -89,6 +110,7 @@ const ArchivePage = ({ route }) => {
         category: 'data',
         message: 'No roundData available',
       });
+      console.warn('No roundData available');
       return [];
     }
 
@@ -119,8 +141,9 @@ const ArchivePage = ({ route }) => {
       data: { roundListLength: roundList.length },
     });
 
+    console.log('Generated roundList:', roundList);
     return roundList;
-  }, [roundData, page]);
+  }, [roundData, page, formatDate, calculateEndDate]);
 
   const roundList = useMemo(() => generateCards(), [generateCards]);
 
@@ -136,11 +159,11 @@ const ArchivePage = ({ route }) => {
     ({ item }) => (
       <RoundItem
         item={item}
-        userId={userData.data._id}
+        userId={userData?.data?._id}
         onPress={handleRoundPress}
       />
     ),
-    [userData.data._id, handleRoundPress]
+    [userData?.data?._id, handleRoundPress]
   );
 
   useEffect(() => {
@@ -148,15 +171,23 @@ const ArchivePage = ({ route }) => {
       category: 'navigation',
       message: 'Navigated to ArchivePage',
     });
+    console.log('ArchivePage data:', { roundData, userData });
     return () => {
-      setArchivedRounds([]); // Clean up on unmount
+      setArchivedRounds([]);
     };
-  }, []);
+  }, [roundData, userData]);
 
   return (
     <Center w="100%">
       <Background />
       <Flex direction="column" justifyContent="flex-start">
+        <Button
+          title="Try!"
+          onPress={() => {
+            Sentry.captureException(new Error('Test error in development'));
+            console.log('Sentry test error triggered');
+          }}
+        />
         {archivedRounds.length > 0 ? (
           <FlatList
             data={archivedRounds}
@@ -164,7 +195,7 @@ const ArchivePage = ({ route }) => {
             keyExtractor={(item) => item._id.toString()}
             initialNumToRender={10}
             windowSize={5}
-            removeClippedSubviews={true}
+            removeClippedSubviews={Platform.OS === 'ios'}
             maxToRenderPerBatch={10}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
