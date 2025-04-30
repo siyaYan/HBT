@@ -159,7 +159,6 @@ const HomeScreen = ({ navigation }) => {
   const [pendingReceived, setPendingReceived] = useState([]);
   const [processedRounds, setProcessedRounds] = useState([]);
   const [showRoundFriendValidation, setShowRoundFriendValidation] = useState(false);
-  const [show10PerRoundValidation, setShow10PerRoundValidation] = useState(false);
 
   const handleCloseRoundFriendValidation = () => {
     setShowRoundFriendValidation(false);

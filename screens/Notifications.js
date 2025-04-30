@@ -1,26 +1,14 @@
 import { useState, useCallback } from "react";
 import {
-  Box,
   Text,
   NativeBaseProvider,
   Flex,
-  VStack,
-  Divider,
-  HStack,
-  Image,
-  ScrollView,
-  Badge,
-  Pressable,
-  Avatar,
+  View
 } from "native-base";
-import { AntDesign } from "@expo/vector-icons";
 import { useData } from "../context/DataContext";
 import Background2 from "../components/Background2";
-import { FontAwesome } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { getRoundInvitation } from "../components/Endpoint";
-import { SvgXml } from "react-native-svg";
 
 // Ensure these SVG constants are defined or imported from your assets
 const Decline = `
@@ -105,69 +93,10 @@ const NotificationScreen = ({ navigation }) => {
     <Background2 />
     <Flex direction="column" alignItems="center">
       <OptionMenu navigation={navigation} />
-        <Text fontSize="xl" fontWeight="bold" mb={4}>
-          Round Invitations
-        </Text>
-        <ScrollView>
-          {invitations.length > 0 ? (
-            invitations.map((invitation, index) => (
-              <HStack
-                key={index}
-                alignItems="center"
-                justifyContent="space-between"
-                mb={3}
-                p={2}
-                borderWidth={1}
-                borderColor="gray.300"
-                borderRadius="md"
-              >
-                <HStack alignItems="center" space={3}>
-                  {invitation.senderAvatar ? (
-                    <Avatar size="md" source={{ uri: invitation.senderAvatar }} />
-                  ) : (
-                    <Avatar size="md">
-                      <AntDesign name="user" size={24} color="black" />
-                    </Avatar>
-                  )}
-                  <VStack>
-                    <Text fontSize="lg" fontWeight="bold">
-                      {invitation.senderName || "Unknown"}
-                    </Text>
-                    <Text fontSize="sm" color="gray.500">
-                      @{invitation.senderUsername || "unknown"}
-                    </Text>
-                  </VStack>
-                </HStack>
-                <HStack space={3}>
-                  <Pressable onPress={() => {
-                    // Navigate to invitation details if needed
-                    navigation.navigate("RoundInvitationDetails", {
-                      invitationId: invitation._id,
-                    });
-                  }}>
-                    <SvgXml xml={infoSVG} width={30} height={30} />
-                  </Pressable>
-                  <Pressable onPress={() => {
-                    // Accept invitation logic here
-                  }}>
-                    <SvgXml xml={ReadAllNoti} width={30} height={30} />
-                  </Pressable>
-                  <Pressable onPress={() => {
-                    // Decline invitation logic here
-                  }}>
-                    <SvgXml xml={Decline} width={30} height={30} />
-                  </Pressable>
-                </HStack>
-              </HStack>
-            ))
-          ) : (
-            <Text textAlign="center" mt={10} fontSize="lg">
-              No round invitations yet
-            </Text>
-          )}
-        </ScrollView>
         </Flex>
-      
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  <Text style={{ fontSize: 16, color: '#888' }}>Nothing to show here yet</Text>
+</View>
     </NativeBaseProvider>
   );
 };

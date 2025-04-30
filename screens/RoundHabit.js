@@ -93,6 +93,8 @@ const RoundHabit = ({ route, navigation }) => {
   };
 
   return (
+    <NativeBaseProvider>
+            <Background />
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={styles.container}>
         <Center w="90%" h="100%">
@@ -163,6 +165,7 @@ const RoundHabit = ({ route, navigation }) => {
         </Center>
       </View>
     </TouchableWithoutFeedback>
+    </NativeBaseProvider>
   );
 };
 
