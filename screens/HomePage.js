@@ -161,18 +161,30 @@ const HomeScreen = ({ navigation }) => {
   const [showRoundFriendValidation, setShowRoundFriendValidation] = useState(false);
   const [show10PerRoundValidation, setShow10PerRoundValidation] = useState(false);
 
-  const handleCloseRoundFriendValidation = () => setShowRoundFriendValidation(false);
+  const handleCloseRoundFriendValidation = () => {
+    setShowRoundFriendValidation(false);
+  };
   const { userData } = useData();
-  const { acceptRoundData, updateRounds } = useRound();
+  const { acceptRoundData, roundData, updateRounds } = useRound();
 
   const { width, height } = Dimensions.get("window");
   const [showFinalScore, setShowFinalScore] = useState(null);
+
+  // const medalColors = {
+  //   Gold: "rgb(255, 215, 0)", // Gold in RGB
+  //   Silver: "rgb(192, 192, 192)", // Silver in RGB
+  //   Bronze: "rgb(205, 127, 50)", // Bronze in RGB
+  // };
+  
+
+  const [show10PerRoundValidation, setShow10PerRoundValidation] =
+    useState(false);
 
   useFocusEffect(
     useCallback(() => {
       getRoundInvitationData();
       getRoundData();
-    }, [userData])
+    }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
 
   useEffect(() => {

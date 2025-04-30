@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, Animated } from "react-native";
-import { Button, Center } from "native-base";
+import { Button, Center ,NativeBaseProvider} from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { updateRoundhabit } from "../components/Endpoint";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import { habitList } from "../components/HabitList";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import Background from "../components/Background";
+
 
 const RoundHabit = ({ route, navigation }) => {
   const [text, setText] = useState("");

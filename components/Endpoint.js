@@ -819,6 +819,47 @@ export async function getNoteUpdate(token, userId) {
   return res;
 }
 
+export async function getFriendNoteUpdate(token) {
+  let res = 0;
+  const response1 = await fetch(
+    "http://3.27.94.77:8000/habital/v1/friend-requests/notifiable",
+    // 'http://localhost:8000/habital/v1/friend-requests/notifiable',
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (response1) {
+    const data1 = await response1.json();
+    res = res + data1.data.length;
+  }
+  
+  return res;
+}
+
+
+export async function getSystemNoteUpdate(token, userId) {
+  let res = 0;
+  const response2 = await fetch(
+    `http://3.27.94.77:8000/habital/v1/notifications/${userId}/notifiable`,
+    // `http://localhost:8000/habital/v1/notifications/${userId}/notifiable`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if (response2) {
+    const data2 = await response2.json();
+    res = res + data2.data.length;
+  }
+  return res;
+}
 export async function addPost(id,post,token) {
   const formData = new FormData();
   formData.append("image", post.image);

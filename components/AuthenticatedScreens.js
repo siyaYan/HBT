@@ -8,7 +8,11 @@ import AddImage from "../components/AddImage";
 import { useData } from "../context/DataContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
-import { getNoteUpdate } from "../components/Endpoint";
+import {
+  getNoteUpdate,
+  getSystemNoteUpdate,
+  getFriendNoteUpdate,
+} from "../components/Endpoint";
 import { Button, useDisclose } from "native-base";
 import { useRound } from "../context/RoundContext";
 import { SvgXml } from "react-native-svg";
@@ -17,23 +21,42 @@ const Tab = createBottomTabNavigator();
 
 export default function AuthenticatedScreens({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { userData, updateUserData, note, updateNotes } = useData();
+  const {
+    userData,
+    updateUserData,
+    systemNote,
+    updateSystemNotes,
+    friendNote,
+    updateFriendNotes,
+  } = useData();
   const { isOpen, onOpen, onClose } = useDisclose();
   const { acceptRoundData } = useRound();
   const activeRound = acceptRoundData?.data.filter(
     (item) => item.status === "A"
   )[0];
-  const updateNote = async () => {
-    const res = await getNoteUpdate(userData.token, userData.data.email);
-    if (res > 0) {
-      console.log("update note in main");
-      updateNotes(res);
-    }
+  const updateSystemNote = async () => {
+    const res = await getSystemNoteUpdate(userData.token, userData.data.email);
+    // console.log("-------",userData.data.email)
+    // if (res > 0) {
+    updateSystemNotes(res);
+    // }
   };
+
+  const updateFriendNote = async () => {
+    const res = await getFriendNoteUpdate(userData.token);
+
+    // if (res > 0) {
+    updateFriendNotes(res);
+    // }
+  };
+
   useEffect(() => {
-    console.log("This is main tab, note is :", note);
-    updateNote();
-  }, [updateNotes]);
+    updateSystemNote();
+  }, [updateSystemNotes]);
+
+  useEffect(() => {
+    updateFriendNote();
+  }, [updateFriendNotes]);
 
   const onPress = (value) => {
     if (value.target.includes("Upload") && activeRound) {
@@ -105,14 +128,21 @@ export default function AuthenticatedScreens({ navigation }) {
                 }}
                 style={styles.tabButton(accessibilityState.selected)}
               >
-                <SvgXml
-                  xml={circleSvg(
-                    accessibilityState.selected ? "#49a579" : "#191919"
+                <View style={{ position: "relative" }}>
+                  <SvgXml
+                    xml={circleSvg(
+                      accessibilityState.selected ? "#49a579" : "#191919"
+                    )}
+                    width={28}
+                    height={28}
+                    top={0}
+                  />
+                  {friendNote > 0 && (
+                    <View style={styles.badgeContainer}>
+                      <Text style={styles.badgeText}>{friendNote}</Text>
+                    </View>
                   )}
-                  width={28}
-                  height={28}
-                  top={0}
-                />
+                </View>
                 <Text style={styles.tabLabel(accessibilityState.selected)}>
                   Circle
                 </Text>
@@ -179,31 +209,31 @@ export default function AuthenticatedScreens({ navigation }) {
             tabBarButton: ({ accessibilityState, onPress }) => (
               <TouchableOpacity
                 onPress={() => {
-                  setIsModalVisible(false); // Reset showModal to false
-                  onPress(); // Call the original onPress handler
+                  setIsModalVisible(false);
+                  onPress();
                 }}
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+                style={styles.tabButton(accessibilityState.selected)}
               >
-                {/* <MaterialCommunityIcons
-                  name="fruit-cherries"
-                  size={32}
-                  color={note > 0 ? "#49a579" : "#191919"}
-                /> */}
-
-                <SvgXml
-                  xml={notificationSvg(note > 0 ? "#ff061e" : "#606060")}
-                  width={28}
-                  height={28}
-                />
-                <Text
-                  style={styles.tabLabelUpdates(
-                    accessibilityState.selected ? "#49a579" : "#191919"
-                  )}
-                >
+                <View style={{ position: "relative" }}>
+                  <SvgXml
+                    // xml={notificationSvg(
+                    //   accessibilityState.selected
+                    //     ? "#49a579"
+                    //     : systemNote > 0
+                    //     ? "#ff061e"
+                    //     : "#606060"
+                    // )}
+                    xml={RoundInvitationBefore()}
+                    width={40}
+                    height={40}
+                  />
+                  {/* {systemNote > 1 && (
+                    <View style={styles.badgeContainer}>
+                      <Text style={styles.badgeText}>{systemNote}</Text>
+                    </View>
+                  )} */}
+                </View>
+                <Text style={styles.tabLabel(accessibilityState.selected)}>
                   Activity
                 </Text>
               </TouchableOpacity>
@@ -288,6 +318,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
   }),
+  badgeContainer: {
+    position: "absolute",
+    top: -4,
+    right: -4,
+    backgroundColor: "red",
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 2,
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: "bold",
+  },
 });
 
 const homeSvg = (color) => `
@@ -315,3 +362,73 @@ const settingsSvg = (color) => `
 <path class="cls-1" d="M18.17,44.71c-.91,0-1.84-.2-2.74-.6-2.77-1.25-4.26-4.11-3.73-7.1l.27-1.51h-1.53c-3.04,0-5.58-1.98-6.32-4.92s.55-5.89,3.23-7.34l1.35-.73-.96-1.2c-1.89-2.37-1.93-5.6-.09-8.01,1.84-2.42,4.95-3.24,7.75-2.05l1.41.6.34-1.5c.68-2.96,3.17-5,6.21-5.07,3.05-.05,5.62,1.85,6.44,4.78l.41,1.48,1.38-.67c2.74-1.32,5.89-.64,7.83,1.69,1.95,2.33,2.06,5.55.28,8.01l-.9,1.24,1.38.67c2.74,1.32,4.17,4.2,3.56,7.18-.61,2.98-3.05,5.07-6.09,5.21l-1.53.07.34,1.49c.68,2.96-.69,5.88-3.39,7.26-2.71,1.38-5.87.77-7.87-1.51l-1.01-1.15-.96,1.2c-1.28,1.61-3.13,2.47-5.06,2.47ZM12.79,14.56c-.91,0-1.63.5-2.08,1.08-.61.8-.92,2.08.04,3.28l3.83,4.8-5.4,2.92c-1.35.73-1.57,2.03-1.32,3.01.25.98,1.06,2.02,2.59,2.02h6.14l-1.09,6.04c-.27,1.51.61,2.49,1.53,2.91.92.42,2.24.43,3.19-.77l3.83-4.8,4.04,4.62c1.01,1.15,2.33,1.08,3.23.62.9-.46,1.73-1.48,1.39-2.98l-1.37-5.98,6.13-.28c1.53-.07,2.29-1.15,2.5-2.14s-.08-2.28-1.46-2.94l-5.53-2.66,3.6-4.97c.9-1.24.53-2.51-.11-3.28-.65-.77-1.83-1.36-3.21-.69l-5.53,2.66-1.64-5.91c-.41-1.48-1.63-1.99-2.64-1.96-1.01.02-2.2.58-2.54,2.08l-1.37,5.98-5.65-2.4c-.39-.17-.76-.24-1.1-.24Z"/>
 <circle class="cls-1" cx="23.89" cy="25" r="3.41" fill="${color}"/>
 </svg>`;
+
+const RoundInvitationBefore = (primaryColor = "#93D8C5", accentColor = "#FF061E") => `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <g transform="translate(0,9.5) scale(0.5) translate(0,-15)">
+    <path fill="${primaryColor}" d="M15.01,35.39c4.84,4.13,9.47,8.07,14.09,12.02c6.07,5.18,12.14,10.36,18.21,15.53
+      c1.95,1.66,3.5,1.62,5.53-0.12c10.38-8.88,20.76-17.76,31.14-26.64c0.27-0.23,0.55-0.45,0.95-0.77
+      c0.03,0.44,0.06,0.74,0.06,1.05c0,11.59,0,23.17,0,34.76c0,2.6-1.38,3.98-3.98,3.98c-20.66,0-41.32,0-61.97,0
+      c-2.66,0-4.02-1.37-4.02-4.05c0-11.51,0-23.03,0-34.54C15.01,36.29,15.01,35.97,15.01,35.39z"/>
+    <path fill="${primaryColor}" d="M81.59,33.64c-10.28,8.8-20.57,17.61-30.94,26.48c-0.37,0.32-0.92,0.32-1.29,0L18.35,33.57
+      c-0.44-0.37-0.57-0.97-0.34-1.45c0.22-0.45,0.81-0.6,1.04-0.65c1.91-0.44,21.73-0.08,25.17-0.02c12.21,0,24.41,0.01,36.62,0.01
+      c0.46,0.01,0.88,0.25,1.09,0.64C82.17,32.6,82.04,33.24,81.59,33.64z"/>
+    <path fill="${accentColor}" d="M53.59,57.18c-1.75-1.27-4.3-1.65-5.34-0.88c-0.1,0.07-0.34,0.27-0.7,0.45
+      c-0.16-0.8-1.34-5.75-6.66-7.06c0.19-0.41,0.48-0.76,0.93-0.97c0.22-0.1,0.31-0.35,0.21-0.57
+      c-0.1-0.22-0.36-0.31-0.57-0.21c-2.31,1.05-1.68,4.43-1.65,4.57c0.04,0.21,0.22,0.35,0.42,0.35c0.03,0,0.06,0,0.08-0.01
+      c0.23-0.05,0.39-0.27,0.34-0.51c0-0.02-0.17-0.91-0.02-1.82c5.23,1.26,6.04,6.25,6.07,6.47c0,0.02,0.01,0.04,0.01,0.06
+      c-0.46,0.11-0.82,0.09-0.95,0.1c-1.34,0.07-3.94,3.46-3.14,6.83c0.72,3.02,3.88,4.81,6.71,4.73
+      c3.52-0.1,6.66-3.08,6.76-6.42C56.18,60.36,55.24,58.37,53.59,57.18z"/>
+  </g>
+</svg>
+`;
+
+
+
+
+const RoundInvitationNewMessage = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+
+<path fill="#93D8C5" d="M20.77,34.47c10.28-8.8,20.57-17.61,30.94-26.48c0.37-0.32,0.92-0.32,1.29,0l31.01,26.55
+	c0.44,0.37,0.57,0.97,0.34,1.45c-0.22,0.45-0.81,0.6-1.04,0.65c-1.91,0.44-21.73,0.08-25.17,0.02c-12.21,0-24.41-0.01-36.62-0.01
+	c-0.46-0.01-0.88-0.25-1.09-0.64C20.19,35.5,20.31,34.87,20.77,34.47z"/>
+
+<path fill="#FF061E" d="M61.76,42.01c-3.71-2.69-9.13-3.49-11.33-1.88c-0.22,0.16-0.71,0.57-1.49,0.96
+	c-0.33-1.7-2.84-12.21-14.14-14.99c0.4-0.87,1.02-1.62,1.98-2.06c0.46-0.21,0.66-0.75,0.46-1.21c-0.21-0.46-0.76-0.66-1.21-0.46
+	c-4.91,2.23-3.56,9.4-3.5,9.71c0.09,0.44,0.47,0.74,0.9,0.74c0.06,0,0.12-0.01,0.18-0.02c0.5-0.1,0.82-0.58,0.72-1.08
+	c-0.01-0.03-0.36-1.92-0.04-3.87c11.09,2.67,12.82,13.27,12.89,13.74c0.01,0.04,0.02,0.08,0.03,0.12c-0.99,0.23-1.74,0.2-2.02,0.22
+	c-2.85,0.14-8.37,7.34-6.66,14.49c1.53,6.4,8.23,10.21,14.25,10.04c7.46-0.21,14.13-6.54,14.35-13.64
+	C67.25,48.77,65.25,44.55,61.76,42.01z"/>
+
+<path fill="#93D8C5" d="M87.38,45.47c0-2.32,0-4.63,0-6.95c0-0.31-0.03-0.61-0.06-1.05c-4.96,1.39-11.42,3.74-18.36,7.82
+c-7.39,4.34-12.83,9.18-16.55,13.02c-4.22-4.09-10.15-9.03-17.98-13.46c-6.29-3.56-12.17-5.87-17.03-7.39c0,9.51,0,19.02,0,28.54
+c-0.22,3.05-0.13,5.5,0,7.22c0.09,1.15,0.22,2.24,1.03,3.04c0.67,0.67,1.67,1.01,3,1.01c20.66,0,41.32,0,61.97,0
+c2.6,0,3.98-1.38,3.98-3.98c0-2.4,0-4.8,0-7.2c0,0,0,0,0-0.01C87.42,63.8,87.44,56.2,87.38,45.47z"/>
+</svg>
+`;
+
+
+const RoundInvitationAfter = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+
+<path fill="#93D8C5" d="M15.01,35.39c4.84,4.13,9.47,8.07,14.09,12.02c6.07,5.18,12.14,10.36,18.21,15.53c1.95,1.66,3.5,1.62,5.53-0.12
+	c10.38-8.88,20.76-17.76,31.14-26.64c0.27-0.23,0.55-0.45,0.95-0.77c0.03,0.44,0.06,0.74,0.06,1.05c0,11.59,0,23.17,0,34.76
+	c0,2.6-1.38,3.98-3.98,3.98c-20.66,0-41.32,0-61.97,0c-2.66,0-4.02-1.37-4.02-4.05c0-11.51,0-23.03,0-34.54
+	C15.01,36.29,15.01,35.97,15.01,35.39z"/>
+
+<path fill="#93D8C5" d="M81.59,33.64c-10.28,8.8-20.57,17.61-30.94,26.48c-0.37,0.32-0.92,0.32-1.29,0L18.35,33.57
+	c-0.44-0.37-0.57-0.97-0.34-1.45c0.22-0.45,0.81-0.6,1.04-0.65c1.91-0.44,21.73-0.08,25.17-0.02c12.21,0,24.41,0.01,36.62,0.01
+	c0.46,0.01,0.88,0.25,1.09,0.64C82.17,32.6,82.04,33.24,81.59,33.64z"/>
+
+<path fill="gray" d="M53.59,57.18c-1.75-1.27-4.3-1.65-5.34-0.88c-0.1,0.07-0.34,0.27-0.7,0.45c-0.16-0.8-1.34-5.75-6.66-7.06
+	c0.19-0.41,0.48-0.76,0.93-0.97c0.22-0.1,0.31-0.35,0.21-0.57c-0.1-0.22-0.36-0.31-0.57-0.21c-2.31,1.05-1.68,4.43-1.65,4.57
+	c0.04,0.21,0.22,0.35,0.42,0.35c0.03,0,0.06,0,0.08-0.01c0.23-0.05,0.39-0.27,0.34-0.51c0-0.02-0.17-0.91-0.02-1.82
+	c5.23,1.26,6.04,6.25,6.07,6.47c0,0.02,0.01,0.04,0.01,0.06c-0.46,0.11-0.82,0.09-0.95,0.1c-1.34,0.07-3.94,3.46-3.14,6.83
+	c0.72,3.02,3.88,4.81,6.71,4.73c3.52-0.1,6.66-3.08,6.76-6.42C56.18,60.36,55.24,58.37,53.59,57.18z"/>
+</svg>
+`;
+

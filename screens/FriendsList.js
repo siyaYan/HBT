@@ -26,14 +26,14 @@ import {
   getSendRequest,
   getReceivedRequest,
   reactReceivedRequest,
-  getNoteUpdate,
+  getFriendNoteUpdate,
 } from "../components/Endpoint";
 import { useFocusEffect } from "@react-navigation/native";
 import { SvgXml } from "react-native-svg";
 const profileWidth = "90%";
 const FriendsScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
-  const { userData, updateUserData, note, updateNotes } = useData();
+  const { userData,updateFriendNotes } = useData();
   const [deleted, setDelete] = useState(0);
   const [received, setReceived] = useState([]);
   const [sent, setSent] = useState([]);
@@ -46,14 +46,15 @@ const FriendsScreen = ({ navigation }) => {
       updateFriendList();
       updateSendRequest();
       updateReceivedRequest();
-      updateNote();
+      updateFriendNote();
+      
     }, [userData]) // Depend on `userInfo` to re-run the effect when it changes or the tab comes into focus
   );
 
-  const updateNote = async () => {
-    const res = await getNoteUpdate(userData.token, userData.data.email);
+  const updateFriendNote = async () => {
+    const res = await getFriendNoteUpdate(userData.token);
     // if (res > 0) {
-    updateNotes(res);
+      updateFriendNotes(res);
     // }
   };
   const updateFriendList = async () => {

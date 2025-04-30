@@ -56,8 +56,10 @@ const loadFromStorage = async (key, defaultValue = null) => {
 export const DataProvider = ({ children }) => {
   const [userData, setUserData] = useState({ data: '', token: '' });
   const [note, setNotes] = useState(0);
+  const [friendNote, setFriendNotes] = useState(0);
+  const [systemNote, setSystemNotes] = useState(0);
 
-  // Load data on mount
+  // Load data from AsyncStorage on component mount
   useEffect(() => {
     const loadData = async () => {
       const savedUserData = await loadFromStorage('userData', { data: '', token: '' });
