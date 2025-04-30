@@ -601,7 +601,7 @@ const HomeScreen = ({ navigation }) => {
         style={[styles.button, { position: "absolute", top: height - 420, left: width / 2 - 175 }]}
       >
         {isOpened ? (
-          <SvgXml xml={RoundInvitationNewMessage} opacity="0.5" width={350} height={350} />
+          <SvgXml xml={RoundInvitationBefore} opacity="0.5" width={350} height={350} />
         ) : (
           <SvgXml
             xml={pendingReceived.length > 0 ? RoundInvitationBefore : RoundInvitationAfter}
