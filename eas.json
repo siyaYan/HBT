@@ -30,6 +30,10 @@
       }
     },
     "production": {
+      "ios": {
+          "image": "latest"  // or "macos-xcode-16"
+        },
+
       "channel": "production"
     }
   },
