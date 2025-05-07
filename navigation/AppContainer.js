@@ -63,34 +63,16 @@ export default function AppContainer() {
       if (storedCredentials) {
         var response;
         if (storedCredentials?.type) {
-          switch (storedCredentials.type) {
-            case 1:
-              response = await loginUserThirdParty(
-                storedCredentials.idToken,
-                storedCredentials.fcmToken,
-                storedCredentials.user,
-                1
-              );
-              break;
-            case 2:
-              response = await loginUserThirdParty(
-                storedCredentials.idToken,
-                storedCredentials.fcmToken,
-                storedCredentials.user,
-                2
-              );
-              break;
-            case 3:
-              response = await loginUserThirdParty(
-                storedCredentials.idToken,
-                storedCredentials.fcmToken,
-                storedCredentials.user,
-                3
-              );
-              break;
-            default:
-              idToken = storedCredentials.id;
-              break;
+          const validTypes = [1, 2, 3];
+          if (validTypes.includes(storedCredentials.type)) {
+            response = await loginUserThirdParty(
+              storedCredentials.idToken,
+              storedCredentials.fcmToken,
+              storedCredentials.user,
+              storedCredentials.type
+            );
+          } else {
+            idToken = storedCredentials.id;
           }
         } else {
           response = await loginUser(

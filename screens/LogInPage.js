@@ -244,30 +244,18 @@ const LoginScreen = ({ navigation }) => {
       if (remember && formData?.id && formData?.password) {
         await saveCredentials(formData.id, formData.password);
       } else if (type) {
-        switch (type) {
-          case 1:
-            await saveCredentialsThirdParty(
-              response.data.user.googleId,
-              fcmToken,
-              user,
-              type
-            );
-            break;
-          case 2:
-            await saveCredentialsThirdParty(
-              response.data.user.facebookId,
-              fcmToken,
-              user,
-              type
-            );
-            break;
-          case 3:
-            await saveCredentialsThirdParty(
-              response.data.user.appleId,
-              fcmToken,
-              user,
-              type
-            );
+        const idMap = {
+          1: response.data.user.googleId,
+          2: response.data.user.facebookId,
+          3: response.data.user.appleId,
+        };
+        
+        const thirdPartyId = idMap[type];
+        
+        if (thirdPartyId) {
+          await saveCredentialsThirdParty(thirdPartyId, fcmToken, user, type);
+        } else {
+          console.warn(`Unexpected login type: ${type}`);
         }
       }
       updateUserData({

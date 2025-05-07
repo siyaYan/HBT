@@ -73,18 +73,17 @@ export async function loginUser(id, password, fcmToken) {
 }
 
 export async function loginUserThirdParty(idToken, fcmToken, user, type) {
-  var api="google"
-  switch (type) {
-    case 1:
-      api = 'google'
-      break;
-    case 2:
-      api = 'facebook'
-      break;
-    case 3:
-      api = 'apple'
-      break;
-    default:
+  // var api="google"
+  const providerMap = {
+    1: 'google',
+    2: 'facebook',
+    3: 'apple'
+  };
+  
+  var api = providerMap[type];
+  if (!api) {
+    api= 'google'; // Default to Google if type is not recognized
+    // throw new Error(`Unsupported login type: ${type}`);
   }
   // console.log(api)
   try {

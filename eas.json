@@ -31,9 +31,9 @@
     },
     "production": {
       "ios": {
-          "image": "latest"  // or "macos-xcode-16"
+          "image": "latest" ,// or "macos-xcode-16"
+          "buildConfiguration": "Release"
         },
-
       "channel": "production"
     }
   },

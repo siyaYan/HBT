@@ -33,7 +33,7 @@
     "bcryptjs": "^2.4.3",
     "expo": "^49.0.21",
     "expo-app-loading": "^2.1.1",
-    "expo-apple-authentication": "~6.1.0",
+    "expo-apple-authentication": "^7.2.4",
     "expo-auth-session": "~5.0.2",
     "expo-build-properties": "~0.8.3",
     "expo-crypto": "~12.4.1",
