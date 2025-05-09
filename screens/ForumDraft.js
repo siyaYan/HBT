@@ -1,5 +1,5 @@
 import { Box, View, Center, Image, Button } from "native-base";
-import { TextareaItem } from "@ant-design/react-native";
+import { TextArea } from "native-base";
 import { useState, useEffect } from "react";
 import React from "react";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
@@ -53,20 +53,21 @@ const ForumDraft = ({ navigation, route }) => {
             />
           </View>
           <View w="85%" h={"48%"} margin={"10%"}>
-            <TextareaItem
-              onChange={(value) => {
+            <TextArea
+              value={post.text}
+              onChangeText={(value) => {
                 setPost({ ...post, text: value });
               }}
               borderRadius={10}
-              clear
+              clearButtonMode="while-editing"
               style={{
                 lineHeight: 25,
                 fontSize: 20,
                 fontFamily: "Regular Medium",
               }}
-              rows={10}
-              placeholder="Input yout text."
-              count={150}
+              numberOfLines={10}
+              placeholder="Input your text."
+              maxLength={150}
             />
             <Button
               onPress={handlePost}

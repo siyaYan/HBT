@@ -10,7 +10,8 @@ import {
   HStack,
   useDisclose,
   Button,
-  Input
+  Input,
+  Card,
 } from "native-base";
 import DraggableFAB from "../components/DraggableFAB";
 import { SvgXml } from "react-native-svg"; // Import SvgXml to use custom SVGs
@@ -18,15 +19,15 @@ import { useState, useEffect } from "react";
 import React, { useRef } from "react";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
-import { Card, WingBlank } from "@ant-design/react-native";
+import { Text, Image, Pressable } from "react-native";
 import Background from "../components/Background";
-import { Pressable, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import {
   getForum,
   likeMessage,
   cancelLike,
   deleteMessage,
-  createNotification
+  createNotification,
 } from "../components/Endpoint";
 import AddImage from "../components/AddImage";
 import { useIsFocused } from "@react-navigation/native";
@@ -112,7 +113,12 @@ const ForumPage = ({ route, navigation }) => {
     setPosts((prevPosts) => prevPosts.filter((post) => post.id !== messageId));
   };
   const reportPost = async (messageId, content) => {
-    const res = await createNotification(userData.token, userData.data._id, 'system', userData.data._id+' report '+messageId+':'+content);
+    const res = await createNotification(
+      userData.token,
+      userData.data._id,
+      "system",
+      userData.data._id + " report " + messageId + ":" + content
+    );
     console.log(res);
   };
   const generateItem = (data, user) => {
@@ -304,7 +310,7 @@ const ForumPage = ({ route, navigation }) => {
                                 : "#f9f8f2",
                           }}
                         >
-                          <Card.Body style={{ padding: 8 }}>
+                          <Card.Content style={{ padding: 8 }}>
                             <View style={{ position: "relative" }}>
                               <Image
                                 source={{ uri: item.image }}
@@ -317,7 +323,7 @@ const ForumPage = ({ route, navigation }) => {
                                 resizeMode="cover"
                               />
                             </View>
-                          </Card.Body>
+                          </Card.Content>
 
                           <Card.Footer
                             style={{
@@ -327,77 +333,67 @@ const ForumPage = ({ route, navigation }) => {
                               paddingVertical: 5,
                               paddingHorizontal: 20,
                             }}
-                            content={
+                          >
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                              }}
+                            >
                               <View
                                 style={{
-                                  flexDirection: "row",
                                   alignItems: "center",
+                                  marginRight: 10,
+                                  top: -10,
+                                  minHeight: 90, // Set a fixed height that covers avatar and nickname
+                                  justifyContent: "center",
                                 }}
                               >
-                                <View
+                                <Pressable
+                                  onPress={() =>
+                                    roundActive && handleModal(item.userId)
+                                  }
+                                >
+                                  <Avatar
+                                    bg="pink.600"
+                                    size="md"
+                                    source={{ uri: item.profileImageUrl }}
+                                  />
+                                </Pressable>
+                                <Text
                                   style={{
-                                    flexDirection: "row",
-                                    alignItems: "flex-start",
+                                    marginTop: 5,
+                                    textAlign: "center",
+                                    fontWeight: "bold",
+                                    color: "#191919",
                                   }}
                                 >
-                                  {/* Left Column: Avatar and Nickname */}
-                                  <View
+                                  {item.nickname}
+                                </Text>
+                              </View>
+
+                              <View style={{ flex: 1 }}>
+                                <Box
+                                  style={{
+                                    backgroundColor: "#f9f8f2",
+                                    borderRadius: 8,
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 5,
+                                    minHeight: 70, // Same minimum height as the left column
+                                  }}
+                                >
+                                  <Text
                                     style={{
-                                      alignItems: "center",
-                                      marginRight: 10,
-                                      top: -10,
-                                      minHeight: 90, // Set a fixed height that covers avatar and nickname
-                                      justifyContent: "center",
+                                      color: "#191919",
+                                      flexWrap: "wrap",
                                     }}
                                   >
-                                    <Pressable
-                                      onPress={() =>
-                                        roundActive && handleModal(item.userId)
-                                      }
-                                    >
-                                      <Avatar
-                                        bg="pink.600"
-                                        size="md"
-                                        source={{ uri: item.profileImageUrl }}
-                                      />
-                                    </Pressable>
-                                    <Text
-                                      style={{
-                                        marginTop: 5,
-                                        textAlign: "center",
-                                        fontWeight: "bold",
-                                        color: "#191919",
-                                      }}
-                                    >
-                                      {item.nickname}
-                                    </Text>
-                                  </View>
-
-                                  {/* Right Column: Post Text */}
-                                  <View style={{ flex: 1 }}>
-                                    <View
-                                      style={{
-                                        backgroundColor: "#f9f8f2",
-                                        borderRadius: 8,
-                                        paddingHorizontal: 10,
-                                        paddingVertical: 5,
-                                        minHeight: 70, // Same minimum height as the left column
-                                      }}
-                                    >
-                                      <Text
-                                        style={{
-                                          color: "#191919",
-                                          flexWrap: "wrap",
-                                        }}
-                                      >
-                                        {item.text || ""}
-                                      </Text>
-                                    </View>
-                                  </View>
-                                </View>
+                                    {item.text || ""}
+                                  </Text>
+                                </Box>
                               </View>
-                            }
-                          />
+                            </View>
+                          </Card.Footer>
                         </Card>
 
                         {/* Like Badge declared after the Card so it renders on top */}
@@ -525,48 +521,48 @@ const ForumPage = ({ route, navigation }) => {
                   deletePost(selectedPostId);
                   setDeleteModalVisible(false);
                 }}
-                >
+              >
                 Delete
-                </Button>
-              </Button.Group>
-              </Modal.Footer>
-            </Modal.Content>
-            </Modal>
-            <Modal
-            isOpen={reportModalVisible}
-            onClose={() => setReportModalVisible(false)}
-            animationPreset="fade"
-            >
-            <Modal.Content maxWidth="400px">
-              <Modal.CloseButton />
-              <Modal.Header>
-              <Text fontFamily="Regular Medium" fontSize="lg">
-                Report this post
-              </Text>
-              </Modal.Header>
-              <Modal.Body>
-              {/* <Text>
+              </Button>
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={reportModalVisible}
+        onClose={() => setReportModalVisible(false)}
+        animationPreset="fade"
+      >
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header>
+            <Text fontFamily="Regular Medium" fontSize="lg">
+              Report this post
+            </Text>
+          </Modal.Header>
+          <Modal.Body>
+            {/* <Text>
                 Tell us what is wrong!
               </Text> */}
-              <Input
-                multiline
-                numberOfLines={4}
-                textAlignVertical="top"
-                placeholder="Please tell us why you are reporting this post..."
-                style={{
+            <Input
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+              placeholder="Please tell us why you are reporting this post..."
+              style={{
                 height: 100,
                 borderColor: "gray",
                 // borderWidth: 1,
                 // padding: 10,
                 // borderRadius: 0,
-                }}
-                value={content}
-                onChangeText={(text) => setContent(text)}
-              />
-              </Modal.Body>
-              <Modal.Footer>
-              <Button.Group space={2}>
-                <Button
+              }}
+              value={content}
+              onChangeText={(text) => setContent(text)}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Group space={2}>
+              <Button
                 colorScheme="blueGray"
                 rounded={30}
                 width="48%"
@@ -575,10 +571,10 @@ const ForumPage = ({ route, navigation }) => {
                   color: "#f9f8f2",
                 }}
                 onPress={() => setReportModalVisible(false)}
-                >
+              >
                 Cancel
-                </Button>
-                <Button
+              </Button>
+              <Button
                 rounded={30}
                 width="48%"
                 size={"md"}

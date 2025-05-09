@@ -1,9 +1,14 @@
-const {
-  getSentryExpoConfig
-} = require("@sentry/react-native/metro");
+const { getDefaultConfig } = require("@expo/metro-config");
+const { withSentryConfig } = require("@sentry/react-native/metro");
 
-/** @type {import('expo/metro-config').MetroConfig} */
-const config = getSentryExpoConfig(__dirname);
+const config = getDefaultConfig(__dirname);
+
+// Optional: extend for cjs support if needed
 config.resolver.assetExts.push("cjs");
 
-module.exports = config;
+// Wrap the Expo config with Sentry config — this is safe
+// module.exports = withSentryConfig(config);
+module.exports = withSentryConfig(config, {
+  // Optional: disable rewriting source maps if you don't need it
+  // rewriteSourceMapPaths: false,
+});
