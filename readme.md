@@ -1,3 +1,7 @@
+Notes for fixing libs and build with new ios image Xcode16
+use Expo50, and get rid of react-native-firebase use expo-firebase
+get rid of ant-design
+some libs are to outdated  and incompatible with Xcode16
 Notes for testing:
 the default image(1&5) in simulator have problems in uploading process.
 
