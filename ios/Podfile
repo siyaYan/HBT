@@ -7,7 +7,7 @@ podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties
 ENV['RCT_NEW_ARCH_ENABLED'] = podfile_properties['newArchEnabled'] == 'true' ? '1' : '0'
 ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] = podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
 
-platform :ios, podfile_properties['ios.deploymentTarget'] || '13.4'
+platform :ios, '18.0'
 install! 'cocoapods',
   :deterministic_uuids => false
 
@@ -24,18 +24,18 @@ prepare_react_native_project!
 #   }
 # }
 # ```
-flipper_config = FlipperConfiguration.disabled
-if ENV['NO_FLIPPER'] == '1' then
-  # Explicitly disabled through environment variables
-  flipper_config = FlipperConfiguration.disabled
-elsif podfile_properties.key?('ios.flipper') then
-  # Configure Flipper in Podfile.properties.json
-  if podfile_properties['ios.flipper'] == 'true' then
-    flipper_config = FlipperConfiguration.enabled(["Debug", "Release"])
-  elsif podfile_properties['ios.flipper'] != 'false' then
-    flipper_config = FlipperConfiguration.enabled(["Debug", "Release"], { 'Flipper' => podfile_properties['ios.flipper'] })
-  end
-end
+# flipper_config = FlipperConfiguration.disabled
+# if ENV['NO_FLIPPER'] == '1' then
+#   # Explicitly disabled through environment variables
+#   flipper_config = FlipperConfiguration.disabled
+# elsif podfile_properties.key?('ios.flipper') then
+#   # Configure Flipper in Podfile.properties.json
+#   if podfile_properties['ios.flipper'] == 'true' then
+#     flipper_config = FlipperConfiguration.enabled(["Debug", "Release"])
+#   elsif podfile_properties['ios.flipper'] != 'false' then
+#     flipper_config = FlipperConfiguration.enabled(["Debug", "Release"], { 'Flipper' => podfile_properties['ios.flipper'] })
+#   end
+# end
 
 target 'Habital' do
   use_expo_modules!
@@ -50,7 +50,7 @@ target 'Habital' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/..",
     # Note that if you have use_frameworks! enabled, Flipper will not work if enabled
-    :flipper_configuration => flipper_config
+    # :flipper_configuration => flipper_config
   )
 
   post_install do |installer|
