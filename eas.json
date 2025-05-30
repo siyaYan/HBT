@@ -32,10 +32,13 @@
     },
     "production": {
       "ios": {
-          "image": "macos-sonoma-14.3-xcode-15.3" ,// or "macos-xcode-16"
-          "buildConfiguration": "Release"
+          "image": "macos-sequoia-15.3-xcode-16.2" 
         },
-      "channel": "production"
+      "channel": "production",
+      "env": {
+        "SENTRY_UPLOAD_SOURCE_MAPS": "true",
+        "SENTRY_AUTH_TOKEN": "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"
+      }
     }
   },
   "submit": {
