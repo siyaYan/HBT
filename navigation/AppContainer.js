@@ -7,7 +7,7 @@ import LoginStackNavigator from "../components/LoginStackNavigator";
 import AccountStackNavigator from "../components/AccountStackNavigator";
 import RoundStackNavigator from "../components/RoundStackNavigator";
 import ForumStackNavigator from "../components/ForumStackNavigator";
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   loginUser,
   getRoundInfo,
@@ -37,7 +37,7 @@ const Stack = createStackNavigator();
 
 const getCredentials = async () => {
   try {
-    const credentials = await SecureStore.getItemAsync("userData");
+    const credentials = await AsyncStorage.getItem("userData");
     if (credentials) {
       return JSON.parse(credentials);
     }

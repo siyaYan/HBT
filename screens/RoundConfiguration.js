@@ -17,7 +17,7 @@ import {
 import { useState, useEffect } from "react";
 import { SvgXml } from "react-native-svg";
 import Background from "../components/Background";
-import { Switch } from "react-native-elements";
+import { Switch } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "react-native-ui-datepicker";
 import { AntDesign } from "@expo/vector-icons";

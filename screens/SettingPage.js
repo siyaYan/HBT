@@ -18,7 +18,6 @@ import { useData } from "../context/DataContext";
 import OptionMenu from "../components/OptionMenu";
 import Background2 from "../components/Background2";
 import { SvgXml } from "react-native-svg";
-import * as SecureStore from "expo-secure-store";
 
 const SettingScreen = ({ navigation }) => {
   const { userData, updateUserData } = useData();
@@ -51,7 +50,7 @@ const SettingScreen = ({ navigation }) => {
 
   const deleteCredentials = async () => {
     try {
-      const res = await SecureStore.deleteItemAsync("userData");
+      const res = await AsyncStorage.removeItem("userData");
       // await deleteItemAsyncs(["userData"]);
       updateUserData({
         token: "",

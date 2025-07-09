@@ -28,7 +28,7 @@ import {
   verifyEmail,
   loginUserThirdParty,
 } from "../components/Endpoint";
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
@@ -106,7 +106,7 @@ const RegisterScreen = ({ navigation }) => {
 
   const saveCredentials = async (id, password) => {
     try {
-      await SecureStore.setItemAsync(
+      await AsyncStorage.setItem(
         "userData",
         JSON.stringify({ id, password })
       );

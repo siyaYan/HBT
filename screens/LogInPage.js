@@ -29,7 +29,7 @@ import {
   verifyEmail,
   loginUserThirdParty,
 } from "../components/Endpoint";
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
 import Background from "../components/Background";
@@ -194,7 +194,7 @@ const LoginScreen = ({ navigation }) => {
 
   const saveCredentials = async (id, password, fcmToken) => {
     try {
-      await SecureStore.setItemAsync(
+      await AsyncStorage.setItem(
         "userData",
         JSON.stringify({ id, password, fcmToken })
       );
@@ -209,7 +209,7 @@ const LoginScreen = ({ navigation }) => {
 
   const saveCredentialsThirdParty = async (idToken, fcmToken, user, type) => {
     try {
-      await SecureStore.setItemAsync(
+      await AsyncStorage.setItem(
         "userData",
         JSON.stringify({ idToken, fcmToken, user, type })
       );

@@ -19,7 +19,7 @@ import { useState, useEffect } from "react";
 import React, { useRef } from "react";
 import { useData } from "../context/DataContext";
 import { useRound } from "../context/RoundContext";
-import { Text, Image, Pressable } from "react-native";
+import { Pressable } from "react-native";
 import Background from "../components/Background";
 import { StyleSheet, ScrollView } from "react-native";
 import {
