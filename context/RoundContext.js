@@ -85,7 +85,7 @@ export const RoundProvider = ({ children }) => {
         console.warn('No userId available for acceptRoundData'); // Debug log
         return;
       }
-      const acceptedRounds = newRounds.data.filter((round) =>
+      const acceptedRounds = newRounds?.data?.filter((round) =>
         isRoundAccepted(round, userData.data._id)
       );
       setAcceptRoundData({ data: acceptedRounds });
@@ -93,7 +93,7 @@ export const RoundProvider = ({ children }) => {
       Sentry.addBreadcrumb({
         category: 'data',
         message: 'Updated acceptRoundData',
-        data: { acceptedRoundsCount: acceptedRounds.length },
+        data: { acceptedRoundsCount: acceptedRounds?.length },
       });
     },
     [userData?.data?._id]
