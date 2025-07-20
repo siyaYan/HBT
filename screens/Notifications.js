@@ -72,7 +72,7 @@ const NotificationScreen = ({ navigation }) => {
   const [invitations, setInvitations] = useState([]);
 
   const updateNote = async () => {
-    const res = await getRoundInvitation(userData.token);
+    const res = await getRoundInvitation(userData?.token);
     if (res && res.data && res.data.length > 0) {
       setInvitations(res.data);
       updateNotes(res.data);

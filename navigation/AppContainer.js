@@ -100,7 +100,7 @@ export default function AppContainer() {
           );
         }
 
-        if (response.token) {
+        if (response?.token) {
           const roundInfo = await getRoundInfo(
             response.token,
             response.data.user._id

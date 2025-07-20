@@ -35,7 +35,7 @@ export default function AuthenticatedScreens({ navigation }) {
     (item) => item.status === "A"
   )[0];
   const updateSystemNote = async () => {
-    const res = await getSystemNoteUpdate(userData.token, userData.data.email);
+    const res = await getSystemNoteUpdate(userData?.token, userData.data.email);
     // console.log("-------",userData.data.email)
     // if (res > 0) {
     updateSystemNotes(res);

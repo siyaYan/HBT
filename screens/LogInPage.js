@@ -236,7 +236,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const afterLogin = async (response, fcmToken, user = {}, type = 0) => {
-    if (response.token) {
+    if (response?.token) {
       const roundInfo = await getRoundInfo(
         response.token,
         response.data.user._id

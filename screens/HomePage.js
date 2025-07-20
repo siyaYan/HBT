@@ -214,7 +214,7 @@ const HomeScreen = ({ navigation }) => {
 
   const getRoundInvitationData = async () => {
     try {
-      const res = await getRoundInvitation(userData.token);
+      const res = await getRoundInvitation(userData?.token);
       const pending = res?.data.filter((invitation) => invitation.status === "P");
       setPendingReceived(pending || []);
     } catch (error) {
@@ -224,7 +224,7 @@ const HomeScreen = ({ navigation }) => {
 
   const getRoundData = async () => {
     try {
-      const res = await getRoundInfo(userData.token, userData.data._id);
+      const res = await getRoundInfo(userData?.token, userData.data._id);
       updateRounds(res);
     } catch (error) {
       console.error("Error fetching round data:", error);
@@ -299,7 +299,7 @@ const HomeScreen = ({ navigation }) => {
 
   const fetchRoundInfo = async (roundId) => {
     try {
-      return await getRoundInfo(userData.token, roundId);
+      return await getRoundInfo(userData?.token, roundId);
     } catch (error) {
       console.error("Error fetching round info:", error);
       return { data: [] };
@@ -356,7 +356,7 @@ const HomeScreen = ({ navigation }) => {
     const id = pendingReceived[index]._id;
     const res = await reactRequest(id, "A");
     if (res) {
-      const RoundInfoList = await getRoundInfo(userData.token, userData.data._id);
+      const RoundInfoList = await getRoundInfo(userData?.token, userData.data._id);
       updateRounds(RoundInfoList);
     }
   };
@@ -373,7 +373,7 @@ const HomeScreen = ({ navigation }) => {
 
   const reactRequest = async (id, react) => {
     try {
-      const response = await reactRoundRequest(userData.token, id, react);
+      const response = await reactRoundRequest(userData?.token, id, react);
       if (response.status === "success") {
         console.log("react request success:", response);
         return true;
@@ -389,7 +389,7 @@ const HomeScreen = ({ navigation }) => {
 
   const updateStatusAndDate = async (roundId, newStatus) => {
     try {
-      const response = await updateRoundStatus(userData.token, roundId, newStatus);
+      const response = await updateRoundStatus(userData?.token, roundId, newStatus);
       if (newStatus === "F") {
         setShowFinalScore(roundId);
         setScoreBoardOpen(true);

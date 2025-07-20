@@ -56,7 +56,7 @@ const AccountScreen = ({ navigation }) => {
       if (!result.canceled) {
         setSelectedImage(result);
         const response = await updateAvatar(
-          userData.token,
+          userData?.token,
           userData.data.email,
           result.assets[0]
         );

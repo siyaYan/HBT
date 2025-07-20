@@ -132,7 +132,7 @@ const AccountSettingScreen = ({ navigation }) => {
         setSelectedImage({assets:[compressedRes]});
 
         const resDate= await updateAvatar(
-          userData.token,
+          userData?.token,
           userData.data.email,
           compressedRes
         );
@@ -345,7 +345,7 @@ const AccountSettingScreen = ({ navigation }) => {
     ) {
       const response = await resetProfile(
         userData.data.email,
-        userData.token,
+        userData?.token,
         formData.nickname,
         userData.data.username
       );
@@ -374,7 +374,7 @@ const AccountSettingScreen = ({ navigation }) => {
     ) {
       const response = await resetProfile(
         userData.data.email,
-        userData.token,
+        userData?.token,
         userData.data.nickname,
         formData.username
       );
@@ -398,7 +398,7 @@ const AccountSettingScreen = ({ navigation }) => {
 
   async function saveEmail() {
     const response = await resetEmail(
-      userData.token,
+      userData?.token,
       userData.data.email,
       formData.token
     );
@@ -428,7 +428,7 @@ const AccountSettingScreen = ({ navigation }) => {
   async function sendToken() {
     if (inputChange.email) {
       const response = await resetSendEmail(
-        userData.token,
+        userData?.token,
         userData.data.email,
         formData.email
       );
