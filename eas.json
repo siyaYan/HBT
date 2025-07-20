@@ -22,9 +22,12 @@
       "channel": "development"
     },
     "preview": {
+      "developmentClient": true,
       "distribution": "internal",
       "channel": "preview",
       "env": {
+        "ENV": "production",
+        "NODE_ENV": "production",
         "SENTRY_UPLOAD_SOURCE_MAPS": "true",
         "SENTRY_AUTH_TOKEN": "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"
       }
